@@ -4,6 +4,7 @@ import path from "path";
 import cors from "cors";
 import { fileURLToPath } from "url";
 import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 // Import route modules
 import authRoutes from "./routes/authRoutes.js";
 // Import MongoDB connection utility
@@ -14,12 +15,20 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const uri = process.env.MONGODB_URI;
-if (!uri) {
-  throw new Error("MongoDB connection string (MONGO_URI) is not defined");
-}
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((error) => console.error("Failed to connect to MongoDB:", error));
 
-const client = new MongoClient(uri);
+// const uri = process.env.MONGODB_URI;
+// if (!uri) {
+//   throw new Error("MongoDB connection string (MONGO_URI) is not defined");
+// }
+
+// const client = new MongoClient(uri);
 const app = express();
 
 app.use(cors());
