@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import ReactFlagsSelect from "react-flags-select";
 import ProgressBar from "./ProgressBar";
 import { PiHeadsetFill } from "react-icons/pi";
-import {  ModalData } from "@/utils/modalData";
+import { ModalData } from "@/utils/modalData";
 import Radio from "@/utils/Radio";
 import Checkbox from "@/utils/Checkbox";
 import { FaGoogle } from "react-icons/fa";
 import GoogleProvider from "next-auth/providers/google";
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react";
 import GoogleLoginButton from "./loginButton";
 import { useRouter } from "next/router";
 import countryList from "react-select-country-list";
@@ -17,7 +17,7 @@ interface Props {
   citizenshipCountry: string;
   setCitizenshipCountry: React.Dispatch<React.SetStateAction<string>>;
   onSelectCitizenShipCountry: (code: string) => void;
-  countryCodes: string[]
+  countryCodes: string[];
 }
 
 const StepsModal: React.FC<Props> = ({
@@ -25,33 +25,12 @@ const StepsModal: React.FC<Props> = ({
   setShouldStartjourneyShow,
   setCitizenshipCountry,
   onSelectCitizenShipCountry,
-  countryCodes
+  countryCodes,
 }) => {
   const handleCloseModal = () => {
     setShouldStartjourneyShow(false);
   };
-  const router = useRouter()
-
-  // const { data: session } = useSession()
-
-
-
-  // const options = {
-  //   providers: [
-  //     GoogleProvider({
-  //       clientId: process.env.GOOGLE_ID,
-  //       clientSecret: process.env.GOOGLE_SECRET,
-  //       authorization: {
-  //         params: {
-  //           prompt: "consent",
-  //           access_type: "offline",
-  //           response_type: "code"
-  //         }
-  //       }
-  //     })
-  //   ],
-  
-  // }
+  const router = useRouter();
 
   console.log("citizenshipCountry", citizenshipCountry);
   const [progressBarpercentage, setProgressBarPercentage] = useState(10);
@@ -69,21 +48,18 @@ const StepsModal: React.FC<Props> = ({
     deniedVisaToUs: false,
   });
 
- 
-
   console.log("step", step);
 
   const handleNextButtonClick = () => {
-    if(step ===4){
-      router.push("/loginpage")
-    }
-    else if (progressBarpercentage != 100){
+    if (step === 4) {
+      router.push("/loginpage");
+    } else if (progressBarpercentage != 100) {
       setProgressBarPercentage((prev) => prev + 10);
       setStep((prev) => prev + 1);
     }
   };
 
-  console.log("progressBarpercentage",progressBarpercentage)
+  console.log("progressBarpercentage", progressBarpercentage);
   const handleBackButtonClick = () => {
     if (progressBarpercentage > 10) {
       setProgressBarPercentage((prev) => prev - 10);
@@ -100,7 +76,7 @@ const StepsModal: React.FC<Props> = ({
     }
   };
 
-  const handleYes = (name:string) => {
+  const handleYes = (name: string) => {
     setData({
       ...data,
       [name]: true,
@@ -109,61 +85,25 @@ const StepsModal: React.FC<Props> = ({
 
   console.log("data", data);
 
-  const handleNo = (name:string) => {
+  const handleNo = (name: string) => {
     setData({
       ...data,
       [name]: false,
     });
   };
 
-  const handleSelectFromWhichCountry = (code:string) => {
+  const handleSelectFromWhichCountry = (code: string) => {
     setData({
       ...data,
       handleSelectFromWhichCountry: code,
     });
   };
 
-  const showFullCountryName = (code:string) => {
-    let country :{ label:string, value:string} = countryList().getData().find(country => country.value == code )
+  const showFullCountryName = (code: string) => {
+    let country: { label: string; value: string } = countryList()
+      .getData()
+      .find((country) => country.value == code);
     return country.label;
-    let fullCountryName = "";
-    switch (code) {
-      case "IN":
-        fullCountryName = "India";
-        break;
-
-      case "GB":
-        fullCountryName = "United Kingdom";
-        break;
-
-      case "IE":
-        fullCountryName = "Ireland";
-        break;
-
-      case "IT":
-        fullCountryName = "Italy";
-        break;
-      case "NL":
-        fullCountryName = "Netherlands";
-        break;
-
-      case "SE":
-        fullCountryName = "Sweden";
-        break;
-
-      case "CA":
-        fullCountryName = "Canada";
-        break;
-
-      case "US":
-        fullCountryName = "United States";
-        break;
-
-      default:
-        fullCountryName = "INDIA";
-    }
-
-    return fullCountryName;
   };
 
   return (
@@ -304,7 +244,9 @@ const StepsModal: React.FC<Props> = ({
                         selected={data.handleSelectFromWhichCountry}
                         onSelect={handleSelectFromWhichCountry}
                         className="bg-white text-black"
-                        countries={countryCodes?.filter(c=>c!==citizenshipCountry)}
+                        countries={countryCodes?.filter(
+                          (c) => c !== citizenshipCountry
+                        )}
                         searchable
                         /*showSelectedLabel={showSelectedLabel}
         selectedSize={selectedSize}
@@ -340,11 +282,11 @@ const StepsModal: React.FC<Props> = ({
 
             {step === 2 && (
               <>
-                <div      className={`${
-                    data.haveSpouseOrProperty
-                      ? "border-2 border-red-400"
-                      : ""
-                  } m-4`}>
+                <div
+                  className={`${
+                    data.haveSpouseOrProperty ? "border-2 border-red-400" : ""
+                  } m-4`}
+                >
                   <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
                     <Radio
                       text="Yes"
@@ -368,9 +310,7 @@ const StepsModal: React.FC<Props> = ({
 
                 <div
                   className={`${
-                    !data.haveSpouseOrProperty
-                      ? "border-2 border-red-400"
-                      : ""
+                    !data.haveSpouseOrProperty ? "border-2 border-red-400" : ""
                   } m-4`}
                 >
                   <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
@@ -405,11 +345,13 @@ const StepsModal: React.FC<Props> = ({
             )}
             {step === 3 && (
               <>
-                <div className={`${
+                <div
+                  className={`${
                     data.travelledInternationallyAndReturnedHome
                       ? "border-2 border-red-400"
                       : ""
-                  } m-4`}>
+                  } m-4`}
+                >
                   <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
                     <Radio
                       text="Yes"
@@ -477,9 +419,11 @@ const StepsModal: React.FC<Props> = ({
 
             {step === 4 && (
               <>
-                <div  className={`${
+                <div
+                  className={`${
                     data.deniedVisaToUs ? "border-2 border-red-400" : ""
-                  } m-4`}>
+                  } m-4`}
+                >
                   <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
                     <Radio
                       text="Yes"
