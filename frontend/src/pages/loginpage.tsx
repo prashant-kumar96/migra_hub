@@ -53,9 +53,11 @@ const LoginPage = () => {
           // Navigate to dashboard
           console.log("we are here");
           localStorage.setItem("token", result?.data?.token);
+          setLoading(false);
           router.push("/dashboard");
         } else {
           console.log("result", result);
+          setLoading(false);
         }
       } else {
         const result = await loginUser(data);
@@ -65,8 +67,10 @@ const LoginPage = () => {
           console.log("we are here");
           localStorage.setItem("token", result?.data?.token);
           router.push("/dashboard");
+          setLoading(false);
         } else {
           console.log("result", result);
+          setLoading(false);
         }
       }
     } catch (err) {

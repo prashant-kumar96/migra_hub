@@ -5,9 +5,10 @@ import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/authRoutes.js";
-import User from "./models/user.js";
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
+import User from "./models/user.js";
+
 
 dotenv.config();
 

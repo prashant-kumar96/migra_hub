@@ -2,12 +2,9 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import User from "../models/user";
-
-
+import User from "../models/user.js";
 
 async function login(req: any, res: any) {
-
   console.log("login is run");
   try {
     const JWT_SECRET: any = process.env.JWT_SECRET;
@@ -32,7 +29,6 @@ async function login(req: any, res: any) {
 }
 
 async function register(req: any, res: any) {
-
   const JWT_SECRET: any = process.env.JWT_SECRET;
   console.log("req body", req.body);
   const { email, password, name, role } = req.body;
