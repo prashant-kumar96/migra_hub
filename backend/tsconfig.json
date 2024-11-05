@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "module": "NodeNext",
+    "module": "node16",
     "noEmitOnError": false,
-
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node16",
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -12,5 +11,8 @@
     "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src/**/*.ts"],
+  "ts-node": {
+    "esm": true // «———— enabling ESM for ts-node
+  },
   "exclude": ["node_modules"]
 }

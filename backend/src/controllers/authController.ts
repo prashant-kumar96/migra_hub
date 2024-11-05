@@ -1,14 +1,15 @@
+//@ts-ignore
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import User, { IUser } from "../models/User.js";
+import User from "../models/user.js";
 
 async function login(req: any, res: any) {
   console.log("login is run");
-  const JWT_SECRET: any = process.env.JWT_SECRET;
-  const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const JWT_SECRET: any = process.env.JWT_SECRET;
+    const { email, password } = req.body;
+    const user: any = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -22,6 +23,7 @@ async function login(req: any, res: any) {
       user: { username: user.username, id: user._id, role: user.role },
     });
   } catch (error) {
+    console.log("error", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
