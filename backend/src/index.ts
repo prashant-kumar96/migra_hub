@@ -5,10 +5,10 @@ import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/authRoutes.js";
+import visaDataRoutes from "./routes/visaDataRoutes.js";
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/user.js";
-
 
 dotenv.config();
 
@@ -30,6 +30,7 @@ connectWithMongoose(); // Mongoose connection
 // Connect to MongoDB using Mongoose
 
 app.use("/api/auth", authRoutes);
+app.use("/api/visaData", visaDataRoutes);
 const client = new MongoClient(uri);
 app.get("/users", async () => {
   await client.connect();

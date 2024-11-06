@@ -18,6 +18,7 @@ interface Props {
   setCitizenshipCountry: React.Dispatch<React.SetStateAction<string>>;
   onSelectCitizenShipCountry: (code: string) => void;
   countryCodes: string[];
+  destinationCountry: string;
 }
 
 const StepsModal: React.FC<Props> = ({
@@ -26,13 +27,17 @@ const StepsModal: React.FC<Props> = ({
   setCitizenshipCountry,
   onSelectCitizenShipCountry,
   countryCodes,
+  destinationCountry,
 }) => {
   const handleCloseModal = () => {
     setShouldStartjourneyShow(false);
   };
   const router = useRouter();
 
-  console.log("citizenshipCountry", citizenshipCountry);
+  console.log("citizenshipCountry@@", citizenshipCountry);
+  console.log("destinationCountry@@", destinationCountry);
+  const [passportCountry, setPassportCountry] =
+    useState<string>(citizenshipCountry);
   const [progressBarpercentage, setProgressBarPercentage] = useState(10);
 
   const [step, setStep] = useState(0);
@@ -41,8 +46,11 @@ const StepsModal: React.FC<Props> = ({
   );
 
   const [data, setData] = useState({
-    areYouApplyingFromIndia: false,
-    handleSelectFromWhichCountry: "",
+    citizenshipCountry,
+    destinationCountry,
+    passportCountry,
+    areYouApplyingFromPassportCountry: false,
+    whereWillYouApplyForYourVisa: "",
     haveSpouseOrProperty: false,
     travelledInternationallyAndReturnedHome: false,
     deniedVisaToUs: false,
@@ -52,7 +60,11 @@ const StepsModal: React.FC<Props> = ({
 
   const handleNextButtonClick = () => {
     if (step === 4) {
-      router.push("/loginpage");
+      // router.push("/loginpage");
+      router.push({
+        pathname: "/loginpage",
+        query: data,
+      });
     } else if (progressBarpercentage != 100) {
       setProgressBarPercentage((prev) => prev + 10);
       setStep((prev) => prev + 1);
@@ -69,6 +81,7 @@ const StepsModal: React.FC<Props> = ({
 
   const handleSelectCitizenShipCountry = (code: string) => {
     onSelectCitizenShipCountry(code);
+    setPassportCountry(code);
     if (code === "IN") {
       setShowRiskDecreased(true);
     } else {
@@ -95,7 +108,7 @@ const StepsModal: React.FC<Props> = ({
   const handleSelectFromWhichCountry = (code: string) => {
     setData({
       ...data,
-      handleSelectFromWhichCountry: code,
+      whereWillYouApplyForYourVisa: code,
     });
   };
 
@@ -192,7 +205,7 @@ const StepsModal: React.FC<Props> = ({
               <>
                 <div
                   className={`m-4 ${
-                    data.areYouApplyingFromIndia
+                    data.areYouApplyingFromPassportCountry
                       ? "border-2 border-red-400"
                       : ""
                   }`}
@@ -200,9 +213,11 @@ const StepsModal: React.FC<Props> = ({
                   <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
                     <Radio
                       text="Yes"
-                      onChange={() => handleYes("areYouApplyingFromIndia")}
-                      name="areYouApplyingFromIndia"
-                      checked={data.areYouApplyingFromIndia}
+                      onChange={() =>
+                        handleYes("areYouApplyingFromPassportCountry")
+                      }
+                      name="areYouApplyingFromPassportCountry"
+                      checked={data.areYouApplyingFromPassportCountry}
                     />
                   </div>
                   {/* {data.areYouApplyingFromIndia && (
@@ -221,7 +236,7 @@ const StepsModal: React.FC<Props> = ({
 
                 <div
                   className={`${
-                    !data.areYouApplyingFromIndia
+                    !data.areYouApplyingFromPassportCountry
                       ? "border-2 border-red-400"
                       : ""
                   } m-4`}
@@ -230,19 +245,21 @@ const StepsModal: React.FC<Props> = ({
                     <Radio
                       text="No"
                       textColor="white"
-                      onChange={() => handleNo("areYouApplyingFromIndia")}
-                      name="areYouApplyingFromIndia"
-                      checked={!data.areYouApplyingFromIndia}
+                      onChange={() =>
+                        handleNo("areYouApplyingFromPassportCountry")
+                      }
+                      name="areYouApplyingFromPassportCountry"
+                      checked={!data.areYouApplyingFromPassportCountry}
                     />
                   </div>
-                  {!data.areYouApplyingFromIndia && (
+                  {!data.areYouApplyingFromPassportCountry && (
                     <>
                       <h2 className="leading-relaxed text-gray-900 dark:text-gray-900 text-4xl text-center py-8 bg-white mb-4">
                         {ModalData[step].questionForNo}
                       </h2>
 
                       <ReactFlagsSelect
-                        selected={data.handleSelectFromWhichCountry}
+                        selected={data.whereWillYouApplyForYourVisa}
                         onSelect={handleSelectFromWhichCountry}
                         className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
                         countries={countryCodes?.filter(

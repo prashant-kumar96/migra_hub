@@ -1,9 +1,25 @@
+import { me } from "@/api/auth";
+import { getSingleVisaData } from "@/api/visaData";
 import AfterLoginLayout from "@/components/AfterLoginLayout";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { RiSlowDownFill } from "react-icons/ri";
 
 const Dashboard = () => {
+  const getmedata = async () => {
+    const result = await me();
+    console.log("result getmedata", result?.data?.user.visaDataId);
+    const resultVisaData = await getSingleVisaData(
+      result?.data?.user.visaDataId
+    );
+
+    console.log("resultVisaData", resultVisaData);
+  };
+
+  useEffect(() => {
+    getmedata();
+  }, []);
+
   return (
     <div className="flex w-full justify-center items-center">
       <div className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 text-center justify-center">

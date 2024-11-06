@@ -5,8 +5,9 @@ import FaceBookLoginButton from "@/components/FacebookLoginButton";
 import GoogleLoginButton from "@/components/loginButton";
 import ButtonLoader from "@/utils/buttonLoader";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEye, FaLock } from "react-icons/fa";
 import { IoPersonSharp } from "react-icons/io5";
@@ -20,6 +21,10 @@ const LoginPage = () => {
     email: "",
     password: "",
   });
+
+  const [showIndexPage, setShowIndexPage] = useState(false);
+
+  const [stepsData, setStepsData] = useState<any>();
 
   const [isPasswordTypePassword, setIsPasswordTypePassword] = useState(true);
   const handleChange = (e) => {
@@ -39,12 +44,13 @@ const LoginPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm({});
 
   const onSubmit = async (data) => {
     setLoading(true);
     console.log(data);
-    const newData = { ...data, role: "USER" };
+    const newData = { ...data, role: "USER", stepsData };
     try {
       if (isSignUpShowing) {
         const result = await registerUser(newData);
@@ -56,12 +62,12 @@ const LoginPage = () => {
           setLoading(false);
           router.push("/dashboard");
         } else {
-          console.log("result", result);
+          console.log("result@@@", result);
           setLoading(false);
         }
       } else {
         const result = await loginUser(data);
-        console.log("result loginUser", result);
+        console.log("result loginUser@@@@@@@", result);
         if (result?.status === 200) {
           // Navigate to dashboard
           console.log("we are here");
@@ -69,12 +75,23 @@ const LoginPage = () => {
           router.push("/dashboard");
           setLoading(false);
         } else {
-          console.log("result", result);
+          console.log("result@@@", result);
           setLoading(false);
         }
       }
     } catch (err) {
-      console.log("err", err);
+      setLoading(false);
+      console.log("errstatus", err);
+      if (err.status === 400) {
+        setError("password", {
+          type: "manual",
+          message: err?.response?.data?.message,
+        });
+
+        if (err?.response?.data?.extraInfo === "Info Incomplete") {
+          setShowIndexPage(true);
+        }
+      }
     }
   };
 
@@ -86,6 +103,10 @@ const LoginPage = () => {
   const handleLoginFormShow = () => {
     setIsSignUpFormShowing((prev) => !prev);
   };
+
+  useEffect(() => {
+    setStepsData(router?.query ? router?.query : "");
+  }, [router]);
 
   return (
     <div className="bg-gray-100 flex items-center justify-center  bg-white rounded-lg shadow dark:bg-gray-700 mb-2">
@@ -177,7 +198,7 @@ const LoginPage = () => {
                     value:
                       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
                     message:
-                      "Please enter password in the correct format. At least 8 characters. One lowercase letter, One uppercase letter, One number",
+                      "Please must contain at least 8 characters, one lowercase, One uppercase, One number",
                   },
                   minLength: {
                     value: 8,
@@ -199,6 +220,18 @@ const LoginPage = () => {
                 {errors?.password?.message}
               </p>
             </div>
+
+            {!showIndexPage && (
+              <div className="my-2">
+                <Link
+                  href="/"
+                  type="submit"
+                  className="w-full bg-yellow-600 text-white py-2 rounded-md px-4 text-sm"
+                >
+                  Go to steps page
+                </Link>
+              </div>
+            )}
 
             <button
               type="submit"

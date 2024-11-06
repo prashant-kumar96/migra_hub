@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
 export interface IUser extends Document {
   name: string;
@@ -9,6 +9,7 @@ export interface IUser extends Document {
   updatedAt: Date;
   profile_pic: {};
   contact: String;
+  visaDataId: ObjectId;
 }
 const roleEnum = ["USER", "SA", "COUNSELLOR"];
 const userSchema: Schema<IUser> = new Schema({
@@ -36,6 +37,7 @@ const userSchema: Schema<IUser> = new Schema({
     default: "USER",
     required: true,
   },
+  visaDataId: { type: Schema.Types.ObjectId, ref: "VisaData" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   profile_pic: { type: {} },

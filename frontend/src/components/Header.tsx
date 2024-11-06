@@ -7,6 +7,7 @@ const Header = () => {
   const [token, setToken] = useState("");
   const { data: session } = useSession();
   console.log("session", session);
+
   const router = useRouter();
 
   const handleToggle = () => {
@@ -47,6 +48,10 @@ const Header = () => {
       setToken(localStorage.getItem("token"));
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("session", session);
+  }, [session]);
 
   return (
     <header>

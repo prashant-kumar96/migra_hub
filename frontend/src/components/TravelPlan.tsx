@@ -7,6 +7,7 @@ const Banner = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
+  console.log(countryList());
   const countriesCodes = countryList()
     .getData()
     .map((c) => c.value);
@@ -18,6 +19,9 @@ const Banner = () => {
     citizenshipCountryError: "",
     destinationCountryError: "",
   });
+
+  console.log("citizenshipCountry@@@@@", citizenshipCountry);
+  console.log("destinationCountry@@@@@", destinationCountry);
 
   console.log("error", error);
 
@@ -190,6 +194,7 @@ const Banner = () => {
           setCitizenshipCountry={setCitizenshipCountry}
           onSelectCitizenShipCountry={onSelectCitizenShipCountry}
           countryCodes={countriesCodes}
+          destinationCountry={destinationCountry}
         />
       )}
     </section>
