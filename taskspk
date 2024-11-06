@@ -1,6 +1,7 @@
 work on facebook login
 
-work on displaying collected data in the dashboard;
+Work on displaying countries properly in the dashboard
+work on displaying table properly in the dashboard
 
 work on saving steps data in the database when register user by google
 
@@ -17,3 +18,4 @@ Completed: date - 06/11/2024 (Prashant)
 2 - work on language dropdown
 3 - work on saving steps data in the database with registered user by using email password
 4- work on running backend in dev mode
+5- work on displaying collected data in the dashboard;
