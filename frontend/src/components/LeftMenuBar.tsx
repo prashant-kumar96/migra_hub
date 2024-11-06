@@ -3,7 +3,7 @@ import React from "react";
 
 const LeftMenuBar = () => {
   return (
-    <div className=" w-1/6 bg-gray-800 text-white flex flex-col">
+    <div className="min-h-screen w-1/6 bg-gray-800 text-white flex flex-col">
       <div className="p-4 text-lg font-semibold">Menu</div>
       <nav className="flex-grow">
         <ul className="space-y-4">

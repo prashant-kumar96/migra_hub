@@ -31,7 +31,7 @@ const ProfilePage = () => {
   };
   return (
     <div className="w-5/6">
-      <div className="p-12">
+      <div className="px-24 py-20">
         <PersonalInfo />
 
         <div className="mt-8">

@@ -100,7 +100,7 @@ const StepsModal: React.FC<Props> = ({
   };
 
   const showFullCountryName = (code: string) => {
-    let country: { label: string; value: string } = countryList()
+    let country: any = countryList()
       .getData()
       .find((country) => country.value == code);
     return country.label;
@@ -146,7 +146,8 @@ const StepsModal: React.FC<Props> = ({
               <ProgressBar progressBarpercentage={progressBarpercentage} />
               <h2 className="leading-relaxed text-gray-900 dark:text-gray-900 text-4xl text-center py-8">
                 {ModalData[step].question}{" "}
-                {step === 1 && showFullCountryName(citizenshipCountry)}
+                {(step === 1 || step === 2) &&
+                  showFullCountryName(citizenshipCountry)}
               </h2>
             </div>
             {step === 0 && (
@@ -155,7 +156,7 @@ const StepsModal: React.FC<Props> = ({
                   <ReactFlagsSelect
                     selected={citizenshipCountry}
                     onSelect={handleSelectCitizenShipCountry}
-                    className="bg-white text-black"
+                    className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
                     countries={countryCodes}
                     searchable
                     /*showSelectedLabel={showSelectedLabel}
@@ -243,7 +244,7 @@ const StepsModal: React.FC<Props> = ({
                       <ReactFlagsSelect
                         selected={data.handleSelectFromWhichCountry}
                         onSelect={handleSelectFromWhichCountry}
-                        className="bg-white text-black"
+                        className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
                         countries={countryCodes?.filter(
                           (c) => c !== citizenshipCountry
                         )}

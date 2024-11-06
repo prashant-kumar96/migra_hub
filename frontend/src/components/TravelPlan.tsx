@@ -3,72 +3,80 @@ import ReactFlagsSelect from "react-flags-select";
 import StepsModal from "./StepsModal";
 import countryList from "react-select-country-list";
 
-
 const Banner = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
-  const countriesCodes = countryList().getData().map(c=>c.value)
-  const [citizenshipCountryCodes, setCitizenshipCountryCodes] = useState(countriesCodes);
-  const [destinationCountryCodes, setDestinationCountryCodes] = useState(countriesCodes);
+  const countriesCodes = countryList()
+    .getData()
+    .map((c) => c.value);
+  const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
+    useState(countriesCodes);
+  const [destinationCountryCodes, setDestinationCountryCodes] =
+    useState(countriesCodes);
   const [error, setError] = useState({
-    citizenshipCountryError:"",
-    destinationCountryError:"",
-  })
+    citizenshipCountryError: "",
+    destinationCountryError: "",
+  });
 
-  console.log("error",error)
+  console.log("error", error);
 
   const onSelectCitizenShipCountry = (code: string) => {
-    console.log("This is run")
-    setError((prev)=>({...prev,
-      citizenshipCountryError:""
-    }))
+    console.log("This is run");
+    setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
     setCitizenshipCountry(code);
-    let temp = [...countriesCodes]
+    let temp = [...countriesCodes];
     const index = destinationCountryCodes.indexOf(code);
-    if(index>-1){
-      temp.splice(index,1)
-      setDestinationCountryCodes(temp)
+    if (index > -1) {
+      temp.splice(index, 1);
+      setDestinationCountryCodes(temp);
     }
   };
 
   const onSelectDestinationCountry = (code: string) => {
-    setError((prev)=>({...prev,
-      destinationCountryError:""
-    }))
+    setError((prev) => ({ ...prev, destinationCountryError: "" }));
     setDestinationCountry(code);
-    let temp = [...countriesCodes]
+    let temp = [...countriesCodes];
     const index = citizenshipCountryCodes.indexOf(code);
-    if(index>-1){
-      temp.splice(index,1)
-      setCitizenshipCountryCodes(temp)
+    if (index > -1) {
+      temp.splice(index, 1);
+      setCitizenshipCountryCodes(temp);
     }
   };
 
   const handleStartjourney = () => {
-    console.log("citizenshipCountry",citizenshipCountry)
-    console.log("destinationCountry",destinationCountry)
-    if(!citizenshipCountry){
+    console.log("citizenshipCountry", citizenshipCountry);
+    console.log("destinationCountry", destinationCountry);
+    if (!citizenshipCountry) {
       console.log("we are here @@@");
-      setError((prev)=>({...prev, citizenshipCountryError:"Please select a citizenship country"}))
+      setError((prev) => ({
+        ...prev,
+        citizenshipCountryError: "Please select a citizenship country",
+      }));
     }
-    if(!destinationCountry){
-      setError((prev)=>({...prev, destinationCountryError:"Please select a destination country"}))
+    if (!destinationCountry) {
+      setError((prev) => ({
+        ...prev,
+        destinationCountryError: "Please select a destination country",
+      }));
     }
-    if(citizenshipCountry && destinationCountry){
-      setError((prev)=>({...prev, destinationCountryError:"", citizenshipCountryError:""}))
+    if (citizenshipCountry && destinationCountry) {
+      setError((prev) => ({
+        ...prev,
+        destinationCountryError: "",
+        citizenshipCountryError: "",
+      }));
       setShouldStartjourneyShow(true);
     }
   };
   console.log("citizenshipCountry", citizenshipCountry);
 
   return (
-
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 grid lg:grid-cols-2 gap-8 lg:gap-16">
         <div className="flex flex-col justify-center">
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-          MigraHub: Your Gateway to a Simplified Visitor Visa Journey
+            MigraHub: Your Gateway to a Simplified Visitor Visa Journey
           </h1>
           <p className="mb-6 text-base font-normal text-gray-500 lg:text-xl dark:text-gray-400">
             Navigate the complexities of Visitor visa process with ease
@@ -111,7 +119,7 @@ const Banner = () => {
                 <ReactFlagsSelect
                   selected={citizenshipCountry}
                   onSelect={onSelectCitizenShipCountry}
-                  className="bg-white text-black"
+                  className="w-full px-3  border shadow-md border-gray-200 rounded-lg text-gray-800"
                   countries={citizenshipCountryCodes}
                   searchable
                   /*showSelectedLabel={showSelectedLabel}
@@ -125,7 +133,10 @@ const Banner = () => {
         fullWidth={fullWidth}
         disabled={disabled} */
                 />
-               <p className="text-red-500 text-sm"> {error.citizenshipCountryError}</p>
+                <p className="text-red-500 text-sm">
+                  {" "}
+                  {error.citizenshipCountryError}
+                </p>
               </div>
               <div>
                 <label
@@ -137,7 +148,7 @@ const Banner = () => {
                 <ReactFlagsSelect
                   selected={destinationCountry}
                   onSelect={onSelectDestinationCountry}
-                  className="bg-white text-black"
+                  className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
                   countries={destinationCountryCodes}
                   searchable
                   /*showSelectedLabel={showSelectedLabel}
@@ -151,7 +162,9 @@ const Banner = () => {
         fullWidth={fullWidth}
         disabled={disabled} */
                 />
-                <p className="text-red-500 text-sm">{error.destinationCountryError}</p>
+                <p className="text-red-500 text-sm">
+                  {error.destinationCountryError}
+                </p>
               </div>
 
               <button
@@ -180,8 +193,7 @@ const Banner = () => {
         />
       )}
     </section>
- 
-  )
-}
+  );
+};
 
 export default Banner;
