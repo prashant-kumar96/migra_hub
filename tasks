@@ -1,3 +1,0 @@
-set error like wrong credentials
-when logging in using google, save the details in the mongodb database.
-save the steps of onboarding in the backend

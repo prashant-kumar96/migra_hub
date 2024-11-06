@@ -6,8 +6,9 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET; // Make sure to set this in your environment variables
 const verifyToken = (req, res, next) => {
+    var _a;
     console.log("verifyToken is run");
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
     if (!token) {
         console.log("Token is required");
         return res.status(401).json({ message: "Token is required" });

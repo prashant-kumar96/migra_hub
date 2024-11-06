@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "../models/user.js";
+import VisaData from "../models/visadata.js";
 
 async function login(req: any, res: any) {
   console.log("login is run");
@@ -31,37 +32,49 @@ async function login(req: any, res: any) {
 async function register(req: any, res: any) {
   const JWT_SECRET: any = process.env.JWT_SECRET;
   console.log("req body", req.body);
-  const { email, password, name, role } = req.body;
-  console.log("/register is run");
-  try {
-    const existingUser = await User.findOne({ email: email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+  const { email, password, name, role, stepsData } = req.body;
+  if (Object.keys(stepsData).length === 0) {
+    res.status(400).json({
+      message:
+        "Please fill all the steps from the index page before registering",
+      extraInfo: "Info Incomplete",
+    });
+  } else {
+    console.log("/register is run");
+    try {
+      const existingUser = await User.findOne({ email: email });
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+      const visadata = new VisaData(stepsData);
+      const resultVisadata = await visadata.save();
+      console.log("resultVisaData", resultVisadata);
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = new User({
+        email,
+        password: hashedPassword,
+        role,
+        name,
+        visaDataId: resultVisadata._id,
+      });
+      const result = await user.save();
+      console.log(result, "result");
+
+      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1d" });
+      res.status(200).json({
+        token,
+        user: {
+          email: user.email,
+          id: user._id,
+          message: "User registered successfully",
+          role: user.role,
+        },
+      });
+    } catch (error) {
+      console.log("Error", error);
+      res.status(500).json({ message: "Internal server error", error });
     }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({
-      email,
-      password: hashedPassword,
-      role,
-      name,
-    });
-    const result = await user.save();
-    console.log(result, "result");
-
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1d" });
-    res.status(200).json({
-      token,
-      user: {
-        email: user.email,
-        id: user._id,
-        message: "User registered successfully",
-        role: user.role,
-      },
-    });
-  } catch (error) {
-    console.log("Error", error);
-    res.status(500).json({ message: "Internal server error", error });
   }
 }
 

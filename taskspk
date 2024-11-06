@@ -1,0 +1,21 @@
+work on facebook login
+
+Work on displaying countries properly in the dashboard
+work on displaying table properly in the dashboard
+
+work on saving steps data in the database when register user by google
+
+when logging in using google, save the details in the mongodb database.
+
+also work on authentication of the token and logout on token expiry.
+
+seperate address info and personal info
+
+terms and conditions page
+
+Completed: date - 06/11/2024 (Prashant)
+1 - set error like wrong credentials on login page
+2 - work on language dropdown
+3 - work on saving steps data in the database with registered user by using email password
+4- work on running backend in dev mode
+5- work on displaying collected data in the dashboard;

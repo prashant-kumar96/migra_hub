@@ -4,9 +4,10 @@ interface props {
   type?: string;
   register: any;
   validation: any;
-  placeholder: string;
+  placeholder?: string;
   errors: any;
   id: string;
+  toUpperCase?: boolean;
 }
 const Input: React.FC<props> = ({
   label,
@@ -16,6 +17,7 @@ const Input: React.FC<props> = ({
   placeholder,
   errors,
   id,
+  toUpperCase,
 }) => {
   return (
     <div className="mb-4">
@@ -29,7 +31,9 @@ const Input: React.FC<props> = ({
         type={type}
         id={id}
         {...register(id, validation)}
-        className="w-full px-3 py-2 border shadow-md border-gray-200 rounded-lg text-gray-800"
+        className={`w-full px-3 py-2 border shadow-md border-gray-200 rounded-lg text-gray-800 ${
+          toUpperCase ? "uppercase" : ""
+        }`}
         placeholder={placeholder}
       />
       {errors && (

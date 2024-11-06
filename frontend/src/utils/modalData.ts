@@ -15,7 +15,7 @@ const ModalData = [
       "Applying outside of your passport country can make it harder to get a visa if you don't provide important context for the consular officer.",
   },
   {
-    question: "Do you either have a job, a spouse or own property in India",
+    question: "Do you either have a job, a spouse or own property in",
     // "firstLine": "It's easier to prove you'll return home and not overstay your visa if you already live there",
     // "secondLine": "We will show you the earliest time you should plan to travel, based on U.S. visa appointment wait time data for India, to help prevent you from missing your trip",
     // "questionForNo":"Where will you apply for your visa",

@@ -4,17 +4,17 @@
 
 /* Add GreyCliff CF font faces */
 @font-face {
-  font-family: 'GreyCliff CF';
-  src: url('/fonts/GreyCliffCF-Regular.woff2') format('woff2'),
-       url('/fonts/GreyCliffCF-Regular.woff') format('woff');
+  font-family: "GreyCliff CF";
+  src: url("/fonts/GreyCliffCF-Regular.woff2") format("woff2"),
+    url("/fonts/GreyCliffCF-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'GreyCliff CF';
-  src: url('/fonts/GreyCliffCF-Bold.woff2') format('woff2'),
-       url('/fonts/GreyCliffCF-Bold.woff') format('woff');
+  font-family: "GreyCliff CF";
+  src: url("/fonts/GreyCliffCF-Bold.woff2") format("woff2"),
+    url("/fonts/GreyCliffCF-Bold.woff") format("woff");
   font-weight: 700;
   font-style: bold;
 }
@@ -29,7 +29,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #FBF8F2;
+    --background: #fbf8f2;
     --foreground: #ededed;
   }
 }
@@ -38,7 +38,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'GreyCliff CF', Arial, Helvetica, sans-serif; /* Updated font family */
+  font-family: "GreyCliff CF", Arial, Helvetica, sans-serif; /* Updated font family */
 }
 
 /* Tailwind utility layer */
@@ -46,4 +46,8 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.ReactFlagsSelect-module_selectBtn__19wW7 {
+  border: 0 !important;
 }

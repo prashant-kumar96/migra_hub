@@ -25,6 +25,7 @@ const userSchema = new Schema({
         default: "USER",
         required: true,
     },
+    visaDataId: { type: Schema.Types.ObjectId, ref: "VisaData" },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     profile_pic: { type: {} },
