@@ -1,6 +1,17 @@
+work on vinod sir 32 pearls enhancements
+
+work on adding a stripe payment to the payment page
+
+work on beautifying the header
+
+work on beatifying the leftMenuBar
+
+work on left menu bar responsiveness
+
+work on saving the personal Info data to the database by making personal Info data
+
 work on facebook login
 
-Work on displaying countries properly in the dashboard
 work on displaying table properly in the dashboard
 
 work on saving steps data in the database when register user by google
@@ -8,8 +19,6 @@ work on saving steps data in the database when register user by google
 when logging in using google, save the details in the mongodb database.
 
 also work on authentication of the token and logout on token expiry.
-
-seperate address info and personal info
 
 terms and conditions page
 
@@ -19,3 +28,14 @@ Completed: date - 06/11/2024 (Prashant)
 3 - work on saving steps data in the database with registered user by using email password
 4- work on running backend in dev mode
 5- work on displaying collected data in the dashboard;
+
+Completed date - 07/11/2024 (Prashant)
+1- Work on displaying countries properly with full country name in the dashboard
+2- work on making address inside the personal Info page
+
+Completed on date - 08/11/2024 (Prashant)
+1-
+
+list of questions to ask from jimmy sir
+1- how much do we need to pay for the stripe payment
+2-

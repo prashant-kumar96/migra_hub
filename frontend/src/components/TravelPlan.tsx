@@ -27,8 +27,13 @@ const Banner = () => {
 
   const onSelectCitizenShipCountry = (code: string) => {
     console.log("This is run");
+    console.log(code);
+    const tempCountry: any = countryList()
+      .getData()
+      .find((country) => country.value === code);
+
+    setCitizenshipCountry(tempCountry);
     setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
-    setCitizenshipCountry(code);
     let temp = [...countriesCodes];
     const index = destinationCountryCodes.indexOf(code);
     if (index > -1) {
@@ -39,7 +44,10 @@ const Banner = () => {
 
   const onSelectDestinationCountry = (code: string) => {
     setError((prev) => ({ ...prev, destinationCountryError: "" }));
-    setDestinationCountry(code);
+    const tempCountry: any = countryList()
+      .getData()
+      .find((country) => country.value === code);
+    setDestinationCountry(tempCountry);
     let temp = [...countriesCodes];
     const index = citizenshipCountryCodes.indexOf(code);
     if (index > -1) {
@@ -121,7 +129,7 @@ const Banner = () => {
                   Citizenship From
                 </label>
                 <ReactFlagsSelect
-                  selected={citizenshipCountry}
+                  selected={citizenshipCountry.value}
                   onSelect={onSelectCitizenShipCountry}
                   className="w-full px-3  border shadow-md border-gray-200 rounded-lg text-gray-800"
                   countries={citizenshipCountryCodes}
@@ -150,7 +158,7 @@ const Banner = () => {
                   Destination to
                 </label>
                 <ReactFlagsSelect
-                  selected={destinationCountry}
+                  selected={destinationCountry.value}
                   onSelect={onSelectDestinationCountry}
                   className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
                   countries={destinationCountryCodes}
