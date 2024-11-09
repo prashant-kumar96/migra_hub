@@ -2,13 +2,13 @@ import mongoose, { Document, Schema } from "mongoose";
 
 export interface IVisaData extends Document {
   areYouApplyingFromPassportCountry: Boolean;
-  citizenshipCountry: String;
+  citizenshipCountry: {};
   deniedVisaToUs: Boolean;
-  destinationCountry: String;
+  destinationCountry: {};
   haveSpouseOrProperty: Boolean;
-  passportCountry: String;
+  passportCountry: {};
   travelledInternationallyAndReturnedHome: Boolean;
-  whereWillYouApplyForYourVisa: String;
+  whereWillYouApplyForYourVisa: {};
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,7 +18,7 @@ const visaDataSchema: Schema<IVisaData> = new Schema({
     type: String,
   },
   citizenshipCountry: {
-    type: String,
+    type: {},
     required: [true, "Citizenship Country is required"],
   },
   deniedVisaToUs: {
@@ -26,7 +26,7 @@ const visaDataSchema: Schema<IVisaData> = new Schema({
     required: [true, "Denied Visa To Us is required"],
   },
   destinationCountry: {
-    type: String,
+    type: {},
     required: [true, "Destination Country is required"],
   },
   haveSpouseOrProperty: {
@@ -34,14 +34,14 @@ const visaDataSchema: Schema<IVisaData> = new Schema({
     required: [true, "Have Spouse Or Property is required"],
   },
   passportCountry: {
-    type: String,
+    type: {},
   },
   travelledInternationallyAndReturnedHome: {
     type: String,
     required: [true, "Travelled Internationally And Returned Home is required"],
   },
   whereWillYouApplyForYourVisa: {
-    type: String,
+    type: {},
   },
 
   createdAt: { type: Date, default: Date.now },

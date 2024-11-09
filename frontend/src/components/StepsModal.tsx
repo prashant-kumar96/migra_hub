@@ -79,9 +79,12 @@ const StepsModal: React.FC<Props> = ({
     }
   };
 
-  const handleSelectCitizenShipCountry = (code: string) => {
-    onSelectCitizenShipCountry(code);
-    setPassportCountry(code);
+  const handleSelectPassportCountry = (code: string) => {
+    // onSelectCitizenShipCountry(code);
+    const tempCountry: any = countryList()
+      .getData()
+      .find((country) => country.value === code);
+    setPassportCountry(tempCountry);
     if (code === "IN") {
       setShowRiskDecreased(true);
     } else {
@@ -106,9 +109,12 @@ const StepsModal: React.FC<Props> = ({
   };
 
   const handleSelectFromWhichCountry = (code: string) => {
+    const tempCountry: any = countryList()
+      .getData()
+      .find((country) => country.value === code);
     setData({
       ...data,
-      whereWillYouApplyForYourVisa: code,
+      whereWillYouApplyForYourVisa: tempCountry,
     });
   };
 
@@ -159,16 +165,15 @@ const StepsModal: React.FC<Props> = ({
               <ProgressBar progressBarpercentage={progressBarpercentage} />
               <h2 className="leading-relaxed text-gray-900 dark:text-gray-900 text-4xl text-center py-8">
                 {ModalData[step].question}{" "}
-                {(step === 1 || step === 2) &&
-                  showFullCountryName(citizenshipCountry)}
+                {(step === 1 || step === 2) && citizenshipCountry.label}
               </h2>
             </div>
             {step === 0 && (
               <>
                 <div className="p-4 md:p-5 space-y-4">
                   <ReactFlagsSelect
-                    selected={citizenshipCountry}
-                    onSelect={handleSelectCitizenShipCountry}
+                    selected={passportCountry.value}
+                    onSelect={handleSelectPassportCountry}
                     className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
                     countries={countryCodes}
                     searchable
@@ -259,7 +264,7 @@ const StepsModal: React.FC<Props> = ({
                       </h2>
 
                       <ReactFlagsSelect
-                        selected={data.whereWillYouApplyForYourVisa}
+                        selected={data.whereWillYouApplyForYourVisa.value}
                         onSelect={handleSelectFromWhichCountry}
                         className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
                         countries={countryCodes?.filter(

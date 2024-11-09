@@ -5,10 +5,10 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { RiSlowDownFill } from "react-icons/ri";
 import { TbHelpHexagon } from "react-icons/tb";
+import countryList from "react-select-country-list";
 
 const Dashboard = () => {
   const [visaData, setVisaData] = useState("");
-
   const getmedata = async () => {
     const result = await me();
     console.log("result getmedata", result?.data?.user.visaDataId);
@@ -26,33 +26,80 @@ const Dashboard = () => {
     getmedata();
   }, []);
 
+  function splitCamelCaseToTitleCase(str) {
+    // Add space before uppercase letters, except at the start, and convert to title case
+    return str
+      .replace(/([a-z])([A-Z])/g, "$1 $2") // Insert space before uppercase letters
+      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2") // Handle consecutive uppercase letters
+      .split(" ") // Split into words
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
+      .join(" "); // Join back to a single string
+  }
+
+  const boxes = [
+    {
+      title: splitCamelCaseToTitleCase("areYouApplyingFromPassportCountry"),
+      value: visaData.areYouApplyingFromPassportCountry,
+    },
+    { title: splitCamelCaseToTitleCase("citizenshipCountry"), value: "India" },
+    { title: splitCamelCaseToTitleCase("deniedVisaToUs"), value: "No" },
+    { title: splitCamelCaseToTitleCase("destinationCountry"), value: "USA" },
+    { title: splitCamelCaseToTitleCase("haveSpouseOrProperty"), value: "Yes" },
+    { title: splitCamelCaseToTitleCase("passportCountry"), value: "India" },
+    {
+      title: splitCamelCaseToTitleCase(
+        "travelledInternationallyAndReturnedHome"
+      ),
+      value: "No",
+    },
+    {
+      title: splitCamelCaseToTitleCase("whereWillYouApplyForYourVisa"),
+      value: "-",
+    },
+  ];
+
   return (
     <div className="flex w-full justify-center items-center flex-col ">
-      <div className="mb-10">
-        <div className="w-96 overflow-x-auto">
-          <table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                {Object.keys(visaData).map((thh, index) => (
-                  <th scope="col" className="px-6 py-3" key={index}>
-                    {thh}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                {Object.values(visaData).map((thh, index) => (
-                  <td scope="col" className="px-6 py-3" key={index}>
-                    {thh ? thh : "-"}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      {/* <div className="mb-10">
+        <table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 w-[calc(100vw-270px)] overflow-x-auto">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
+            <tr>
+              {Object.keys(visaData).map((thh, index) => (
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left font-medium"
+                  key={index}
+                >
+                  {camelToSnake(thh)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+              {Object.values(visaData).map((thh, index) => (
+                <td scope="col" className="px-6 py-3 text-left" key={index}>
+                  {thh ? (thh == true ? "true" : thh) : "-"}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div> */}
+
+      <div className="grid grid-cols-3 gap-12">
+        {boxes.map((box, index) => (
+          <div
+            key={index}
+            className="w-52 aspect-square p-4 rounded-lg bg-gradient-to-r from-[#4c51bf] to-[#6875f5] text-white flex flex-col items-center justify-around space-y-4"
+          >
+            <div className="text-3xl font-bold mb-2">{box.value}</div>
+            <div className="text-base font-medium text-center">{box.title}</div>
+          </div>
+        ))}
       </div>
-      <div className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 text-center justify-center">
+
+      <div className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 text-center justify-center mt-8">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
           Travel Visa Denial Risk
         </h5>

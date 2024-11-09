@@ -109,13 +109,13 @@ const LoginPage = () => {
   }, [router]);
 
   return (
-    <div className="bg-gray-100 flex items-center justify-center  bg-white rounded-lg shadow dark:bg-gray-700 mb-2">
-      <div className="bg-white shadow-md rounded-lg py-20">
+    <div className="bg-gray-50 flex items-center justify-center rounded-lg shadow dark:bg-gray-700 mb-2">
+      <div className="bg-white shadow-md rounded-lg pt-10 my-10">
         <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
           Sign Up With
         </h1>
 
-        <div className="flex gap-5  px-8 my-12 justify-around">
+        <div className="flex gap-5  px-8 my-8 justify-around">
           <GoogleLoginButton />
 
           <FaceBookLoginButton />
@@ -136,7 +136,7 @@ const LoginPage = () => {
         </div>
 
         <hr />
-        <div className="p-6 py-12 ">
+        <div className="p-6 py-8 ">
           <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
             {isSignUpShowing ? "Or Sign Up With your email" : "Login Form"}
           </h1>
@@ -221,7 +221,7 @@ const LoginPage = () => {
               </p>
             </div>
 
-            {!showIndexPage && (
+            {showIndexPage && (
               <div className="my-2">
                 <Link
                   href="/"

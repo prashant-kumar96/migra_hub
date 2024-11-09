@@ -1,11 +1,17 @@
 // PersonalInfo.js
 import React, { useState } from "react";
 import { useForm } from "react-hook-form"; // Import the reusable Input component
-import ReactFlagsSelect from "react-flags-select";
 import Input from "@/utils/InputComponent";
-import countryList from "react-select-country-list";
 //import css module
 import Select from "react-select";
+import {
+  CitySelect,
+  CountrySelect,
+  StateSelect,
+} from "react-country-state-city";
+import ReactFlagsSelect from "react-flags-select";
+import countryList from "react-select-country-list";
+import "react-country-state-city/dist/react-country-state-city.css";
 
 const options = [
   { code: "en", label: "English" },
@@ -36,6 +42,8 @@ const PersonalInfo = () => {
     citizenshipCountryError: "",
     firstLanguageError: "",
   });
+  const [countryid, setCountryid] = useState(0);
+  const [stateid, setstateid] = useState(0);
   const onSubmit = (data: any) => {
     if (!citizenshipCountry) {
       setError((prev) => ({
@@ -93,7 +101,6 @@ const PersonalInfo = () => {
             placeholder="John"
             errors={errors.first_name}
           />
-
           <Input
             label="Last Name"
             type="text"
@@ -123,7 +130,6 @@ const PersonalInfo = () => {
           }}
           errors={errors.first_language}
         /> */}
-
           <div>
             <label className="block mb-2 text-base font-medium text-gray-700">
               First Language
@@ -171,7 +177,6 @@ const PersonalInfo = () => {
               </p>
             )}
           </div>
-
           <Input
             label="Passport Expiry Date"
             id="passport_expiry"
@@ -183,7 +188,101 @@ const PersonalInfo = () => {
             }}
             errors={errors.passport_expiry}
           />
+          <div className="text-gray-900">
+            <label
+              htmlFor="first_name"
+              className="block mb-2 text-base font-medium text-gray-700"
+            >
+              Current Country
+            </label>
+            <CountrySelect
+              className="block mb-2 text-base font-medium text-gray-700"
+              onChange={(e) => {
+                console.log(e);
+                setCountryid(e.id);
+              }}
+              placeHolder="Select Country"
+            />
+          </div>
+          <div className="text-gray-900">
+            <label
+              htmlFor="first_name"
+              className="block mb-2 text-base font-medium text-gray-700"
+            >
+              Province/State
+            </label>
+            <StateSelect
+              countryid={countryid}
+              className="block mb-2 text-base font-medium text-gray-700"
+              onChange={(e) => {
+                console.log(e);
+                setstateid(e.id);
+              }}
+              placeHolder="Select State"
+            />
+          </div>
+          <div className="text-gray-900">
+            <label
+              htmlFor="first_name"
+              className="block mb-2 text-base font-medium text-gray-700"
+            >
+              City/Town
+            </label>
+            <CitySelect
+              countryid={countryid}
+              stateid={stateid}
+              onChange={(e) => {
+                console.log("city", e);
+              }}
+              placeHolder="Select City"
+            />
+          </div>
+          <Input
+            label="Postal/Zip Code"
+            id="zipCode"
+            type="number"
+            register={register}
+            placeholder=""
+            validation={{
+              required: "Postal/Zip Code is required",
+            }}
+            errors={errors.zipCode}
+          />
+          <Input
+            label="Email"
+            id="email"
+            type="email"
+            register={register}
+            placeholder=""
+            validation={{
+              required: "Email is required",
+            }}
+            errors={errors.email}
+          />
+          <Input
+            label=" Phone Number"
+            id="phoneNumber"
+            type="number"
+            register={register}
+            placeholder=""
+            validation={{
+              required: "Phone Number is required",
+            }}
+            errors={errors.phoneNumber}
+          />{" "}
         </div>
+
+        <Input
+          label="Address"
+          id="Address"
+          type="text"
+          register={register}
+          placeholder=""
+          validation={{
+            required: "Address is required",
+          }}
+          errors={errors.Address}
+        />
 
         <div className="flex space-between w-full">
           <div className="mb-6 w-1/2">
@@ -273,7 +372,7 @@ const PersonalInfo = () => {
               </label>
             </div>
             {errors.gender && (
-              <p className="text-red-500 text-sm mt-2">
+              <p className="text-red-500 text-xs mt-2">
                 {errors.gender.message}
               </p>
             )}
