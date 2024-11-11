@@ -16,7 +16,7 @@ const config: Config = {
         LightBlue: "#bae6fd",
         Blue: "#38bdf8",
         Indigo: "#2C415A",
-        FloralWhite: "FBF8F2"
+        FloralWhite: "#FBF8F2"
       },
       fontFamily: {
         greycliff: ["GreyCliff CF", "sans-serif"],
