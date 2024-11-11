@@ -12,9 +12,12 @@ import { useForm } from "react-hook-form";
 import { FaEye, FaLock } from "react-icons/fa";
 import { IoPersonSharp } from "react-icons/io5";
 import { MdEmail } from "react-icons/md";
-
+import { useAtom } from "jotai";
+import { visaDataAtom } from "@/store/visaDataAtom";
 const LoginPage = () => {
   const router = useRouter();
+  console.log(router.query);
+  const [sharedState] = useAtom(visaDataAtom);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -50,7 +53,9 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     console.log(data);
-    const newData = { ...data, role: "USER", stepsData };
+    const newData = { ...data, role: "USER", data: sharedState };
+    console.log("sharedState", sharedState);
+    console.log("newData", newData);
     try {
       if (isSignUpShowing) {
         const result = await registerUser(newData);

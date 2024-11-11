@@ -1,5 +1,6 @@
 // ./src/Header.js
 import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
@@ -40,9 +41,12 @@ function Header2() {
     <header className="bg-white dark:bg-gray-900 shadow-md">
       <div className="container mx-auto flex items-center justify-between p-4">
         {/* Logo or Brand */}
-        <h1 className="ml-12 md:ml-0 text-2xl font-bold text-gray-900 dark:text-white">
+        <Link
+          href="/"
+          className="ml-12 md:ml-0 text-2xl font-bold text-gray-900 dark:text-white"
+        >
           Migrahub
-        </h1>
+        </Link>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex space-x-4">

@@ -11,6 +11,8 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import GoogleLoginButton from "./loginButton";
 import { useRouter } from "next/router";
 import countryList from "react-select-country-list";
+import { visaDataAtom } from "@/store/visaDataAtom";
+import { useAtom } from "jotai";
 
 interface Props {
   setShouldStartjourneyShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,7 +35,8 @@ const StepsModal: React.FC<Props> = ({
     setShouldStartjourneyShow(false);
   };
   const router = useRouter();
-
+  const [sharedState, setSharedState] = useAtom(visaDataAtom);
+  const [error, showError] = useState("");
   console.log("citizenshipCountry@@", citizenshipCountry);
   console.log("destinationCountry@@", destinationCountry);
   const [passportCountry, setPassportCountry] =
@@ -59,12 +62,18 @@ const StepsModal: React.FC<Props> = ({
   console.log("step", step);
 
   const handleNextButtonClick = () => {
+    if (step === 1) {
+      if (!data.whereWillYouApplyForYourVisa) {
+        showError("Please select where you will apply for your visa");
+        return;
+      } else {
+        showError("");
+      }
+    }
     if (step === 4) {
       // router.push("/loginpage");
-      router.push({
-        pathname: "/loginpage",
-        query: data,
-      });
+      setSharedState(data);
+      router.push("/loginpage");
     } else if (progressBarpercentage != 100) {
       setProgressBarPercentage((prev) => prev + 10);
       setStep((prev) => prev + 1);
@@ -585,7 +594,12 @@ const StepsModal: React.FC<Props> = ({
               <PiHeadsetFill className="text-xl" />
               <p className="text-sm">Contact Us</p>
             </div>
-
+            {error && (
+              <div className="px-6">
+                {" "}
+                <p className="text-sm text-red-500">{error}</p>
+              </div>
+            )}
             <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
               <button
                 data-modal-hide="default-modal"

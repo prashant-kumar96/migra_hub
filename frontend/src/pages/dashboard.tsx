@@ -38,23 +38,40 @@ const Dashboard = () => {
 
   const boxes = [
     {
-      title: splitCamelCaseToTitleCase("areYouApplyingFromPassportCountry"),
-      value: visaData.areYouApplyingFromPassportCountry,
+      title: splitCamelCaseToTitleCase("ApplyingFromPassportCountry"),
+      value: visaData.areYouApplyingFromPassportCountry ? "YES" : "NO",
     },
-    { title: splitCamelCaseToTitleCase("citizenshipCountry"), value: "India" },
-    { title: splitCamelCaseToTitleCase("deniedVisaToUs"), value: "No" },
-    { title: splitCamelCaseToTitleCase("destinationCountry"), value: "USA" },
-    { title: splitCamelCaseToTitleCase("haveSpouseOrProperty"), value: "Yes" },
-    { title: splitCamelCaseToTitleCase("passportCountry"), value: "India" },
+    {
+      title: splitCamelCaseToTitleCase("citizenshipCountry"),
+      value: visaData?.citizenshipCountry?.label,
+    },
+    {
+      title: splitCamelCaseToTitleCase("deniedVisaToUs"),
+      value: visaData.deniedVisaToUs ? "YES" : "NO",
+    },
+    {
+      title: splitCamelCaseToTitleCase("destinationCountry"),
+      value: visaData?.destinationCountry?.label,
+    },
+    {
+      title: splitCamelCaseToTitleCase("haveSpouseOrProperty"),
+      value: visaData.haveSpouseOrProperty ? "YES" : "NO",
+    },
+    {
+      title: splitCamelCaseToTitleCase("passportCountry"),
+      value: visaData?.passportCountry?.label,
+    },
     {
       title: splitCamelCaseToTitleCase(
         "travelledInternationallyAndReturnedHome"
       ),
-      value: "No",
+      value: visaData.travelledInternationallyAndReturnedHome ? "YES" : "NO",
     },
     {
       title: splitCamelCaseToTitleCase("whereWillYouApplyForYourVisa"),
-      value: "-",
+      value: visaData?.whereWillYouApplyForYourVisa?.label
+        ? visaData.whereWillYouApplyForYourVisa.label
+        : "-  ",
     },
   ];
 
@@ -93,7 +110,9 @@ const Dashboard = () => {
             key={index}
             className="w-52 aspect-square p-4 rounded-lg bg-gradient-to-r from-[#4c51bf] to-[#6875f5] text-white flex flex-col items-center justify-around space-y-4"
           >
-            <div className="text-3xl font-bold mb-2">{box.value}</div>
+            <div className="text-2xl font-bold mb-2 uppercase text-center">
+              {box.value}
+            </div>
             <div className="text-base font-medium text-center">{box.title}</div>
           </div>
         ))}
