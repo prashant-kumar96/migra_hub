@@ -32,6 +32,7 @@ async function login(req: any, res: any) {
 async function register(req: any, res: any) {
   const JWT_SECRET: any = process.env.JWT_SECRET;
   console.log("req body", req.body);
+  return;
   const { email, password, name, role, stepsData } = req.body;
   if (Object.keys(stepsData).length === 0) {
     res.status(400).json({
