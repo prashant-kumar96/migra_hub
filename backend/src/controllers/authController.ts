@@ -32,8 +32,9 @@ async function login(req: any, res: any) {
 async function register(req: any, res: any) {
   const JWT_SECRET: any = process.env.JWT_SECRET;
   console.log("req body", req.body);
-  const { email, password, name, role, stepsData } = req.body;
-  if (Object.keys(stepsData).length === 0) {
+  // return;
+  const { email, password, name, role, data } = req.body;
+  if (Object.keys(data).length === 0) {
     res.status(400).json({
       message:
         "Please fill all the steps from the index page before registering",
@@ -46,7 +47,7 @@ async function register(req: any, res: any) {
       if (existingUser) {
         return res.status(400).json({ message: "User already exists" });
       }
-      const visadata = new VisaData(stepsData);
+      const visadata = new VisaData(data);
       const resultVisadata = await visadata.save();
       console.log("resultVisaData", resultVisadata);
 
