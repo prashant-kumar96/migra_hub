@@ -372,7 +372,7 @@ const PersonalInfo = () => {
               </label>
             </div>
             {errors.gender && (
-              <p className="text-red-500 text-xs mt-2">
+              <p className="text-red-500 text-sm mt-2">
                 {errors.gender.message}
               </p>
             )}
