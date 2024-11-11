@@ -151,8 +151,8 @@ const Testimonials = () => {
               <button
                 className={`w-2 h-2 rounded-full ${
                   index === i
-                    ? "scale-125 bg-blue-600"
-                    : " bg-gray-400 dark:bg-slate-800"
+                    ? "scale-125 bg-Indigo ring-2 p-1"
+                    : " bg-gray-400 "
                 } `}
                 key={i}
                 onClick={() => handleSelect(i)}
