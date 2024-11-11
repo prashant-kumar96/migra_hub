@@ -104,12 +104,12 @@ const Testimonials = () => {
       <div className="container px-4 mx-auto">
         <div className="grid grid-cols-12 gap-6 items-center justify-between mb-6 md:mb-12">
           <div className="col-span-12 md:col-span-6 lg:col-span-4">
-            <h2 className="text-[38px] tracking-wide font-bold font-greycliff text-Indigo leading-normal">
-              See what our customers are saying .
+            <h2 className="text-5xl font-semibold tracking-wider capitalize text-Indigo">
+              See what our customers are saying
             </h2>
           </div>
           <div className="col-span-12 md:col-span-6 lg:col-span-5 lg:col-start-8">
-            <p className="text-lg leading-[1.7] opacity-80 text-justify font-greycliff">
+            <p className="text-lg leading-[1.7] opacity-80 text-justify font-greycliff mt-1">
               These testimonials highlight Migrahub’s expertise, reliability,
               and customer satisfaction in the visa process. Each story reflects
               the company’s commitment to providing a smooth, stress-free
@@ -137,10 +137,10 @@ const Testimonials = () => {
                       <h4 className="text-xl text-Indigo tracking-wider font-medium">
                         {testimonial.name}
                       </h4>
-                      <p className="text-base italic font-greycliff text-LightGray tracking-wider mb-2">{testimonial.review}</p>
+                      <p className="text-base italic font-greycliff text-Indigo opacity-25 tracking-wider mb-2">{testimonial.review}</p>
                     </div>
                   </div>
-                  <p className="opacity-75 font-greycliff text-justify mb-2 text-base text-DarkGray leading-6">{testimonial.content}</p>
+                  <p className="text-Gray mt-2 text-[17px] tracking-wide font-thin text-justify">{testimonial.content}</p>
                 </div>
               </div>
             ))}
