@@ -10,13 +10,13 @@ const config: Config = {
     extend: {
       colors: {
         DarkGray: "#111827",
-        LightGray: "#d1d5db",
+        LightGray: "#C0C6CE",
         Gray: "#9ca3af",
         CGBlue: "#04829E",
         LightBlue: "#bae6fd",
         Blue: "#38bdf8",
         Indigo: "#2C415A",
-        FloralWhite: "FBF8F2"
+        FloralWhite: "#FBF8F2"
       },
       fontFamily: {
         greycliff: ["GreyCliff CF", "sans-serif"],

@@ -1,117 +1,99 @@
-import React, { useState } from "react";
-import { GiEgyptianProfile } from "react-icons/gi";
-import { VscPreview } from "react-icons/vsc";
-import { MdOutlineAirplaneTicket } from "react-icons/md";
-import { BsBalloonHeartFill } from "react-icons/bs";
+import React from 'react';
 
-const Stepper = () => {
-  // Array of step objects with href, completion status, and larger icon sizes
-  const steps = [
-    {
-      id: 1,
-      title: "Step 1",
-      description: "Complete Process",
-      icon: <GiEgyptianProfile size={30} />,
-      href: "/step-1",
-      isCompleted: true,
-    },
-    {
-      id: 2,
-      title: "Step 2",
-      description: "Review and Process",
-      icon: <VscPreview size={30} />,
-      href: "/step-2",
-      isCompleted: false,
-    },
-    {
-      id: 3,
-      title: "Step 3",
-      description: "Visa Applied",
-      icon: <MdOutlineAirplaneTicket size={30} />,
-      href: "/step-3",
-      isCompleted: false,
-    },
-    {
-      id: 4,
-      title: "Step 4",
-      description: "Completed",
-      icon: <BsBalloonHeartFill size={30} />,
-      href: "/step-4",
-      isCompleted: false,
-    },
-  ];
+const features = [
+  {
+    id: 1,
+    title: "The deep ocean",
+    description:
+      "A flower in my garden, a mystery in my panties. Heart attack never stopped old Big Bear. I didn't even know we were calling him Big Bear. We never had the chance to.",
+    link: "/",
+  },
+  {
+    id: 2,
+    title: "When has justice",
+    description:
+      "Rough pomfret lemon shark plownose chimaera southern sandfish kokanee northern sea robin Antarctic cod. Yellow-and-black triplefin gulper South American Lungfish mahi-mahi, butterflyfish glass catfish soapfish ling gray mullet!",
+    link: "/",
+  },
+  {
+    id: 3,
+    title: "Organically grow",
+    description:
+      "A slice of heaven. O for awesome, this chocka full cuzzie is as rip-off as a cracker. Meanwhile, in behind the bicycle shed, Hercules Morse, as big as a horse and Mrs Falani were up to no good with a bunch of crook pikelets.",
+    link: "/",
+  },
+  {
+    id: 4,
+    title: "A slice of heaven",
+    description:
+      "Disrupt inspire and think tank, social entrepreneur but preliminary thinking think tank compelling. Inspiring, invest synergy capacity building, white paper; silo, unprecedented challenge B-corp problem-solvers.",
+    link: "/",
+  },
+];
 
-  // State to manage current step index
-  const [currentStep, setCurrentStep] = useState(1);
-
-  // Function to handle step click
-  const handleStepClick = (step) => {
-    if (step.isCompleted || step.id === currentStep) {
-      setCurrentStep(step.id);
-      window.location.href = step.href;
-    } else {
-      alert("Complete the previous steps first!");
-    }
-  };
-
+const FeatureSection = () => {
   return (
-    <div className="w-full px-24 py-4">
-      <div className="relative flex items-center justify-between w-full">
-        <div className="absolute left-0 top-2/4 h-0.5 w-full -translate-y-2/4 bg-gray-300"></div>
-        <div className="absolute left-0 top-2/4 h-0.5 w-full -translate-y-2/4 bg-gray-900 transition-all duration-500"></div>
-
-        {/* Map through steps array */}
-        {steps.map((step, index) => (
-          <div
-            key={step.id}
-            onClick={() => handleStepClick(step)}
-            className={`relative z-10 grid w-12 h-12 font-bold text-white transition-all duration-300 rounded-full place-items-center cursor-pointer ${
-              step.isCompleted || step.id === currentStep
-                ? "bg-gray-900"
-                : "bg-gray-300 text-gray-500"
-            }`}
-          >
-            {step.icon}
-            <div className="absolute -bottom-[4.5rem] w-max text-center">
-              <h6 className="block font-sans text-base font-semibold leading-relaxed tracking-normal text-gray-700">
-                {step.title}
-              </h6>
-              <p className="block font-sans text-base font-normal leading-relaxed text-gray-700">
-                {step.description}
-              </p>
+    <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+      <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
+        <div>
+          <p className="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
+            Brand new
+          </p>
+        </div>
+        <h2 className="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
+          <span className="relative inline-block">
+            <svg
+              viewBox="0 0 52 24"
+              fill="currentColor"
+              className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
+            >
+              <defs>
+                <pattern id="pattern-circle" x="0" y="0" width=".135" height=".30">
+                  <circle cx="1" cy="1" r=".7" />
+                </pattern>
+              </defs>
+              <rect fill="url(#pattern-circle)" width="52" height="24" />
+            </svg>
+            <span className="relative">The</span>
+          </span>{' '}
+          quick, brown fox jumps over a lazy dog
+        </h2>
+        <p className="text-base text-gray-700 md:text-lg">
+          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque rem aperiam, eaque ipsa quae.
+        </p>
+      </div>
+      <div className="grid gap-8 row-gap-10 lg:grid-cols-2">
+        {features.map((feature) => (
+          <div key={feature.id} className="max-w-md sm:mx-auto sm:text-center">
+            <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-indigo-50 sm:mx-auto sm:w-24 sm:h-24">
+              <svg
+                className="w-12 h-12 text-deep-purple-accent-400 sm:w-16 sm:h-16"
+                stroke="currentColor"
+                viewBox="0 0 52 52"
+              >
+                <polygon
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                  points="29 13 14 29 25 29 23 39 38 23 27 23"
+                />
+              </svg>
             </div>
+            <h6 className="mb-3 text-xl font-bold leading-5">{feature.title}</h6>
+            <p className="mb-3 text-sm text-gray-900">{feature.description}</p>
+            <a
+              href={feature.link}
+              aria-label=""
+              className="inline-flex items-center font-semibold transition-colors duration-200 text-deep-purple-accent-400 hover:text-deep-purple-800"
+            >
+              Learn more
+            </a>
           </div>
         ))}
-      </div>
-
-      <div className="flex justify-between mt-32">
-        <button
-          onClick={() =>
-            setCurrentStep((prev) => Math.max(prev - 1, 1))
-          }
-          className="select-none rounded-lg bg-gray-900 py-3 px-6 text-center text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-85 active:opacity-85 disabled:opacity-50"
-          type="button"
-          disabled={currentStep === 1}
-        >
-          Prev
-        </button>
-        <button
-          onClick={() => {
-            if (steps[currentStep - 1].isCompleted) {
-              setCurrentStep((prev) => Math.min(prev + 1, steps.length));
-            } else {
-              alert("Complete the current step to proceed!");
-            }
-          }}
-          className="select-none rounded-lg bg-gray-900 py-3 px-6 text-center text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-85 active:opacity-85 disabled:opacity-50"
-          type="button"
-          disabled={currentStep === steps.length}
-        >
-          Next
-        </button>
       </div>
     </div>
   );
 };
 
-export default Stepper;
+export default FeatureSection;

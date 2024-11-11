@@ -15,13 +15,13 @@ const WhyTrustMigraHub = () => {
         'All documents are reviewed by a team of immigration experts. Our staff is well trained and offers years of experience.',
     },
     {
-      icon: '/imgs/icons/3.png',
+      icon: '/imgs/icons/4.png',
       title: 'Secure and Safe',
       description:
         'World-class data centers and state-of-the-art security. Your credit card information will never be exposed to any government websites!',
     },
     {
-      icon: '/imgs/icons/4.png',
+      icon: '/imgs/icons/3.png',
       title: 'Awesome Support',
       description:
         'Our best in class customer service team is here to help you. We want you to enjoy your travels and avoid the stress of getting a visa!',
@@ -31,7 +31,7 @@ const WhyTrustMigraHub = () => {
   return (
     <div className="py-10">
       <div className="text-center mb-10">
-      <h2 className="text-center text-2xl font-medium tracking-wider capitalize text-CGBlue  md:text-3xl">Why Trust MigraHub</h2>
+      <h2 className="text-center text-5xl font-semibold tracking-wider capitalize text-Indigo mt-8">Why Trust MigraHub</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6 lg:px-20">
         {features.map((feature, index) => (
