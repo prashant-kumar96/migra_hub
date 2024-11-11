@@ -104,7 +104,7 @@ const Testimonials = () => {
       <div className="container px-4 mx-auto">
         <div className="grid grid-cols-12 gap-6 items-center justify-between mb-6 md:mb-12">
           <div className="col-span-12 md:col-span-6 lg:col-span-4">
-            <h2 className="text-5xl font-semibold tracking-wider capitalize text-Indigo">
+            <h2 className="text-4xl font-semibold tracking-wider capitalize text-Indigo">
               See what our customers are saying
             </h2>
           </div>
