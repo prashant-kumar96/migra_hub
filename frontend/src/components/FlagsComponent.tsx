@@ -13,11 +13,12 @@ const FlagsComponent = () => {
   return (
     <>
       <div className="bg-FloralWhite">
-        <p className="text-4xl mt-8 font-greycliff text-CGBlue tracking-wide text-center mb-8 ">
+        <p className="text-4xl mt-8  font-semibold tracking-wider capitalize text-Indigo mb-8 font-greycliff text-center  ">
           {" "}
           Traverse Dream Destination
           {/* Traverse To Your Dream Destination */}
         </p>
+       
         <div className="flex  flex-wrap gap-6 sm:justify-center md:justify-center ">
           {countriesData.map((country, index) => (
             <div
@@ -35,7 +36,7 @@ const FlagsComponent = () => {
               </div>
               <div className="p-4">
                 <a href="#">
-                  <h5 className="text-2xl font-medium tracking-wider text-CGBlue">
+                  <h5 className="text-2xl font-medium tracking-wider text-Indigo">
                     {country.name}
                   </h5>
                 </a>
