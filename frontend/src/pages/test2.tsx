@@ -1,99 +1,78 @@
-import React from 'react';
+import VisaRequirements from "@/components/countries/visaRequirements";
+import React from "react";
 
-const features = [
-  {
-    id: 1,
-    title: "The deep ocean",
-    description:
-      "A flower in my garden, a mystery in my panties. Heart attack never stopped old Big Bear. I didn't even know we were calling him Big Bear. We never had the chance to.",
-    link: "/",
-  },
-  {
-    id: 2,
-    title: "When has justice",
-    description:
-      "Rough pomfret lemon shark plownose chimaera southern sandfish kokanee northern sea robin Antarctic cod. Yellow-and-black triplefin gulper South American Lungfish mahi-mahi, butterflyfish glass catfish soapfish ling gray mullet!",
-    link: "/",
-  },
-  {
-    id: 3,
-    title: "Organically grow",
-    description:
-      "A slice of heaven. O for awesome, this chocka full cuzzie is as rip-off as a cracker. Meanwhile, in behind the bicycle shed, Hercules Morse, as big as a horse and Mrs Falani were up to no good with a bunch of crook pikelets.",
-    link: "/",
-  },
-  {
-    id: 4,
-    title: "A slice of heaven",
-    description:
-      "Disrupt inspire and think tank, social entrepreneur but preliminary thinking think tank compelling. Inspiring, invest synergy capacity building, white paper; silo, unprecedented challenge B-corp problem-solvers.",
-    link: "/",
-  },
-];
+const DrinksSection = () => {
+  const data = [
+    {
+      title: "Wines",
+      image:
+        "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      bg: "bg-gray-50",
+      span: "col-span-2 sm:col-span-1 md:col-span-2 row-span-12",
+      rounded: "rounded-l-3xl",
+    },
+    {
+      // title: "Gin",
+      image:
+        "https://img.freepik.com/free-photo/beautiful-shot-boats-parked-near-coal-harbour-vancouver_181624-42637.jpg?t=st=1731407632~exp=1731411232~hmac=f7f05211c1b134867cde8e5a990e41833397c02ea23b884f6cf1bc970b58f2c3&w=1060",
+      bg: "bg-stone-50",
+      span: "col-span-2 sm:col-span-1 md:col-span-2 row-span-6",
+      
+    },
+    {
+      // title: "Whiskey",
+      image:
+        "https://img.freepik.com/free-photo/ottawa-parliament-hill-building_649448-3712.jpg?t=st=1731407748~exp=1731411348~hmac=85a680ebcca1c81d857c842cfafd4e0e12bc18406433c579a2ba1d32a074bd3e&w=360",
+      bg: "bg-stone-50",
+      span: "col-span-1 row-span-12",
+      rounded: "rounded-r-3xl",
+    },
+    {
+      // title: "Vodka",
+      image:
+        "https://img.freepik.com/free-photo/toronto-skyline-from-park_649448-3488.jpg?t=st=1731407672~exp=1731411272~hmac=5951f24cec46f2701409d781707480abcfba41c5847094e5a38c1c49329aecdf&w=1060",
+      bg: "bg-stone-50",
+      span: "col-span-1 row-span-6",
+    },
+    {
+      // title: "Brandy",
+      image:
+        "https://img.freepik.com/free-photo/vancouver-harbor-view-with-urban-apartment-buildings-bay-boat-canada_649448-2638.jpg?t=st=1731407847~exp=1731411447~hmac=938d15ed25792c046aa7a41884efed7d787d328e6693fdbc478777c3022ba7c1&w=1380",
+      bg: "bg-sky-50",
+      span: "col-span-2 sm:col-span-1 md:col-span-1 row-span-6",
+    },
+  ];
 
-const FeatureSection = () => {
   return (
-    <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
-      <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
-        <div>
-          <p className="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
-            Brand new
-          </p>
-        </div>
-        <h2 className="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
-          <span className="relative inline-block">
-            <svg
-              viewBox="0 0 52 24"
-              fill="currentColor"
-              className="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
+    <section >
+      <div className="py-4 px-2 mx-auto max-w-screen-xl sm:py-4 lg:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-1.5 h-full">
+          {data.map((item, index) => (
+            <div
+              key={index}
+              className={`${item.span} ${item.bg} h-full md:h-full flex flex-col`}
             >
-              <defs>
-                <pattern id="pattern-circle" x="0" y="0" width=".135" height=".30">
-                  <circle cx="1" cy="1" r=".7" />
-                </pattern>
-              </defs>
-              <rect fill="url(#pattern-circle)" width="52" height="24" />
-            </svg>
-            <span className="relative">The</span>
-          </span>{' '}
-          quick, brown fox jumps over a lazy dog
-        </h2>
-        <p className="text-base text-gray-700 md:text-lg">
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque rem aperiam, eaque ipsa quae.
-        </p>
-      </div>
-      <div className="grid gap-8 row-gap-10 lg:grid-cols-2">
-        {features.map((feature) => (
-          <div key={feature.id} className="max-w-md sm:mx-auto sm:text-center">
-            <div className="flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-indigo-50 sm:mx-auto sm:w-24 sm:h-24">
-              <svg
-                className="w-12 h-12 text-deep-purple-accent-400 sm:w-16 sm:h-16"
-                stroke="currentColor"
-                viewBox="0 0 52 52"
+              <a
+                href="#"
+                className={`group relative flex flex-col overflow-hidden ${item.rounded} shadow shadow-2xl px-4 pb-4 pt-40 flex-grow`}
               >
-                <polygon
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  fill="none"
-                  points="29 13 14 29 25 29 23 39 38 23 27 23"
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                 />
-              </svg>
+                <div className="absolute inset-0 bg-gradient-to-b from-gray-900/25 to-gray-900/5"></div>
+                <h3 className="z-10 text-3xl font-extrabold tracking-wide text-white absolute left-0 bottom-0 p-4 xs:text-xl md:text-3xl">
+                  {item.title}
+                </h3>
+              </a>
             </div>
-            <h6 className="mb-3 text-xl font-bold leading-5">{feature.title}</h6>
-            <p className="mb-3 text-sm text-gray-900">{feature.description}</p>
-            <a
-              href={feature.link}
-              aria-label=""
-              className="inline-flex items-center font-semibold transition-colors duration-200 text-deep-purple-accent-400 hover:text-deep-purple-800"
-            >
-              Learn more
-            </a>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+      <VisaRequirements/>
+    </section>
   );
 };
 
-export default FeatureSection;
+export default DrinksSection;
