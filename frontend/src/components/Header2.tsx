@@ -35,7 +35,7 @@ function Header2() {
 
   // Menu items array
   const menuItems = [
-    { label: "Home", href: "#" },
+    { label: "Home", href: "/" },
     { label: "About", href: "#" },
     { label: "Services", href: "#" },
     { label: "Contact", href: "#" },
