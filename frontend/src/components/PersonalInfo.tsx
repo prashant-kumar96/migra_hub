@@ -251,7 +251,7 @@ const PersonalInfo = () => {
             validation={{
               required: "Postal/Zip Code is required",
               pattern: {
-                value: /^\d{5,6}(-\d{4})?$/, // Matches 5 digits or 5-4 digit zip codes
+                value: /^\d{5,6}$/, // Matches 5 digits or 5-4 digit zip codes
                 message:
                   "Zip code must be 5 or 6 digits or 5+4 format (e.g., 12345 or 12345-6789)",
               },
