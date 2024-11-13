@@ -1,7 +1,5 @@
-work on getting the data from the index page and steps modal.
-
-Where will you apply for your visa
-we should not go to next page until a country is selected
+current task work on saving the personal Information
+work on adding validation on all the personal information properties
 
 work on vinod sir 32 pearls enhancements
 
@@ -13,7 +11,7 @@ work on beatifying the leftMenuBar
 
 work on left menu bar responsiveness
 
-work on saving the personal Info data to the database by making personal Info data
+work on saving the personal Info data to the database by making personal Info data model
 
 work on facebook login
 
@@ -44,3 +42,6 @@ Completed on date - 08/11/2024 (Prashant)
 list of questions to ask from jimmy sir
 1- how much do we need to pay for the stripe payment
 2-
+
+Date 11/11/2024 (Prashant)
+1 - work on getting the data from the index page and steps modal and display it in the dashboard page

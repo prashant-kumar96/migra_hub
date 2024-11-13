@@ -32,6 +32,7 @@ const ProfilePage = () => {
   return (
     <div className="w-5/6">
       <div className="px-24 py-20">
+        <h1 className="text-4xl mb-2">Personal Information</h1>
         <PersonalInfo />
       </div>
     </div>

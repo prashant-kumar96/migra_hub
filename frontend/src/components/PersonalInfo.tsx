@@ -154,6 +154,11 @@ const PersonalInfo = () => {
             toUpperCase={true}
             validation={{
               required: "Passport Number is required",
+              pattern: {
+                value: /^[A-Z0-9]{6,9}$/,
+                message:
+                  "Passport number must be 6-9 alphanumeric characters and last digit should be number",
+              },
             }}
             errors={errors.passport_number}
           />
@@ -245,6 +250,11 @@ const PersonalInfo = () => {
             placeholder=""
             validation={{
               required: "Postal/Zip Code is required",
+              pattern: {
+                value: /^\d{5,6}$/, // Matches 5 digits or 5-4 digit zip codes
+                message:
+                  "Zip code must be 5 or 6 digits or 5+4 format (e.g., 12345 or 12345-6789)",
+              },
             }}
             errors={errors.zipCode}
           />
@@ -372,7 +382,7 @@ const PersonalInfo = () => {
               </label>
             </div>
             {errors.gender && (
-              <p className="text-red-500 text-xs mt-2">
+              <p className="text-red-500 text-sm mt-2">
                 {errors.gender.message}
               </p>
             )}
