@@ -1,4 +1,7 @@
+import FAQ from "@/components/countries/faq";
+import VisaRejectionReasons from "@/components/countries/rejectionReasons";
 import VisaRequirements from "@/components/countries/visaRequirements";
+import VerticalTimeline from "@/components/countries/visaTimeline";
 import React from "react";
 
 const DrinksSection = () => {
@@ -70,7 +73,10 @@ const DrinksSection = () => {
           ))}
         </div>
       </div>
-      <VisaRequirements/>
+      {/* <VisaRequirements/> */}
+      {/* <VerticalTimeline/>
+      <VisaRejectionReasons/> */}
+      <FAQ/>
     </section>
   );
 };
