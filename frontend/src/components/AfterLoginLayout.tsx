@@ -4,6 +4,7 @@ import { me } from "@/api/auth";
 import { useRouter } from "next/router";
 import Header2 from "./Header2";
 import Sidebar from "./LeftSideBar";
+import Link from "next/link";
 
 const AfterLoginLayout = (WrappedComponent: any) => {
   return function (props: any) {
@@ -29,7 +30,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
       <>
         <Header2 />
         <div className="flex w-full min-h-[calc(100vh-72px)] w-[100vw]">
-          <div className="flex w-full">
+          <div className="flex w-full bg-white">
             {/* Sidebar for larger screens */}
             <aside
               className={`fixed inset-y-0 top-[73px] left-0 w-64 p-4 transition-transform duration-300 transform bg-white dark:bg-gray-800 shadow-lg ${
@@ -37,30 +38,30 @@ const AfterLoginLayout = (WrappedComponent: any) => {
               } md:translate-x-0`}
             >
               <nav className="space-y-4">
-                <a
-                  href="#"
+                <Link
+                  href="/dashboard"
                   className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                 >
                   Home
-                </a>
-                <a
+                </Link>
+                <Link
+                  href="/profilepage"
+                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                >
+                  Profile
+                </Link>
+                <Link
+                  href="/documentupload"
+                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                >
+                  My application
+                </Link>
+                <Link
                   href="#"
                   className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                 >
-                  About
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                >
-                  Services
-                </a>
-                <a
-                  href="#"
-                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                >
-                  Contact
-                </a>
+                  Payment
+                </Link>
               </nav>
             </aside>
 

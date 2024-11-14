@@ -1,5 +1,5 @@
 // PersonalInfo.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form"; // Import the reusable Input component
 import Input from "@/utils/InputComponent";
 //import css module
@@ -12,7 +12,13 @@ import {
 import ReactFlagsSelect from "react-flags-select";
 import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
-
+import moment from "moment";
+import { getPersonalData, savePersonalData } from "@/api/personalData";
+import { meDataAtom } from "@/store/meDataAtom";
+import { useAtom } from "jotai";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
 const options = [
   { code: "en", label: "English" },
   { code: "es", label: "Spanish" },
@@ -33,6 +39,10 @@ const PersonalInfo = () => {
     .getData()
     .map((c) => c.value);
 
+  const router = useRouter();
+  const [medata] = useAtom(meDataAtom);
+
+  console.log("medata", medata);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
     useState(countriesCodes);
   const [citizenshipCountry, setCitizenShipCountry] = useState<string>("");
@@ -41,24 +51,134 @@ const PersonalInfo = () => {
   const [error, setError] = useState({
     citizenshipCountryError: "",
     firstLanguageError: "",
+    currentCountryError: "",
+    stateError: "",
+    cityError: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [addressData, setAddressData] = useState({
+    country: "",
+    state: "",
+    city: "",
   });
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
-  const onSubmit = (data: any) => {
+
+  const handleCountrySelectChange = (e: any) => {
+    console.log("countrySelect", e);
+    setCountryid(e.id);
+    setAddressData({ ...addressData, country: e.name });
+    setError((prev) => ({
+      ...prev,
+      citizenshipCountryError: "",
+    }));
+  };
+
+  const handleStateSelectChange = (e: any) => {
+    console.log("countrySelect", e);
+    setstateid(e.id);
+    setAddressData({ ...addressData, state: e.name });
+    setError((prev) => ({
+      ...prev,
+      stateError: "",
+    }));
+  };
+
+  const handleCitySelectChange = (e: any) => {
+    console.log("countrySelect", e);
+    setAddressData({ ...addressData, city: e.name });
+    setError((prev) => ({
+      ...prev,
+      cityError: "",
+    }));
+  };
+
+  const onSubmit = async (data: any) => {
     if (!citizenshipCountry) {
       setError((prev) => ({
         ...prev,
         citizenshipCountryError: "Please select a citizenship country",
       }));
+      return;
     }
+    if (!addressData.country) {
+      setError((prev) => ({
+        ...prev,
+        currentCountryError: "Please select a country",
+      }));
+      return;
+    } else {
+      setError((prev) => ({
+        ...prev,
+        currentCountryError: "",
+      }));
+    }
+
+    if (!addressData?.state) {
+      setError((prev) => ({
+        ...prev,
+        stateError: "Please select a state",
+      }));
+      return;
+    } else {
+      setError((prev) => ({
+        ...prev,
+        stateError: "",
+      }));
+    }
+
+    if (!addressData.city) {
+      setError((prev) => ({
+        ...prev,
+        cityError: "Please select a city",
+      }));
+      return;
+    }
+
     if (!firstLanguage) {
       setError((prev) => ({
         ...prev,
         firstLanguageError: "Please select a First Language",
       }));
     } else {
-      console.log(data);
-      console.log(citizenshipCountry);
+      // console.log(data);
+      // console.log("firstLanguage", firstLanguage);
+      // console.log("citizenshipCountry", citizenshipCountry);
+      // console.log("addressData", addressData);
+      // setError((prev) => ({
+      //   ...prev,
+      //   firstLanguageError: "",
+      //   cityError: "",
+      //   stateError: "",
+      //   currentCountryError: "",
+      //   citizenshipCountryError: "",
+      // }));
+      const newdata = {
+        ...data,
+        firstLanguage,
+        citizenshipCountry,
+        addressData,
+        userId: medata?._id,
+      };
+
+      console.log("newData", newdata);
+
+      setLoading(true);
+
+      const result = await savePersonalData(newdata);
+      console.log("result loginUser@@@@@@@", result);
+      if (result?.status === 200) {
+        toast(result?.data?.message);
+        // Navigate to dashboard
+        // console.log("we are here");
+        // localStorage.setItem("token", result?.data?.token);
+        router.push("/documentupload");
+        setLoading(false);
+      } else {
+        console.log("result@@@", result);
+        setLoading(false);
+      }
     }
   };
 
@@ -67,7 +187,10 @@ const PersonalInfo = () => {
       ...prev,
       citizenshipCountryError: "",
     }));
-    setCitizenShipCountry(countryCode);
+    const tempCountry: any = countryList()
+      .getData()
+      .find((country) => country.value === countryCode);
+    setCitizenShipCountry(tempCountry);
   };
 
   const handleChange = (event: any) => {
@@ -78,6 +201,27 @@ const PersonalInfo = () => {
     setFirstLanguage(event.label);
   };
 
+  const getPersonalInfofunction = async () => {
+    const result = await getPersonalData(medata?._id);
+    console.log("result loginUser@@@@@@@", result);
+    if (result?.status === 200) {
+      toast(result?.data?.message);
+      // Navigate to dashboard
+      // console.log("we are here");
+      // localStorage.setItem("token", result?.data?.token);
+      router.push("/documentupload");
+      setLoading(false);
+    } else {
+      console.log("result@@@", result);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // getPersonalInfofunction();
+  }, []);
+
+  console.log("moment", moment().format("YYYY-MM-DD"));
   return (
     <div className="border-2 p-8 ">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -154,11 +298,15 @@ const PersonalInfo = () => {
             toUpperCase={true}
             validation={{
               required: "Passport Number is required",
-              pattern: {
-                value: /^[A-Z0-9]{6,9}$/,
-                message:
-                  "Passport number must be 6-9 alphanumeric characters and last digit should be number",
+              minLength: {
+                value: 3,
+                message: "Name must be at least 3 characters long",
               },
+              // pattern: {
+              //   value: /^[A-Z0-9]{6,9}$/,
+              //   message:
+              //     "Passport number must be 6-9 alphanumeric characters and last digit should be number",
+              // },
             }}
             errors={errors.passport_number}
           />
@@ -170,7 +318,7 @@ const PersonalInfo = () => {
               Country of Citizenship
             </label>
             <ReactFlagsSelect
-              selected={citizenshipCountry}
+              selected={citizenshipCountry.value}
               onSelect={handleSelectcountryOfCitizenship}
               className="w-full  border shadow-md border-gray-200 rounded-lg text-gray-800"
               countries={citizenshipCountryCodes} // You can replace this with a more comprehensive list or dynamic data
@@ -188,6 +336,7 @@ const PersonalInfo = () => {
             type="date"
             register={register}
             placeholder=""
+            minDate={moment().format("YYYY-MM-DD")}
             validation={{
               required: "Passport Expiry Date is required",
             }}
@@ -202,12 +351,14 @@ const PersonalInfo = () => {
             </label>
             <CountrySelect
               className="block mb-2 text-base font-medium text-gray-700"
-              onChange={(e) => {
-                console.log(e);
-                setCountryid(e.id);
-              }}
+              onChange={handleCountrySelectChange}
               placeHolder="Select Country"
             />
+            {error.currentCountryError && (
+              <p className="text-red-500 text-xs font-bold mt-1">
+                {error.currentCountryError}
+              </p>
+            )}
           </div>
           <div className="text-gray-900">
             <label
@@ -219,12 +370,14 @@ const PersonalInfo = () => {
             <StateSelect
               countryid={countryid}
               className="block mb-2 text-base font-medium text-gray-700"
-              onChange={(e) => {
-                console.log(e);
-                setstateid(e.id);
-              }}
+              onChange={handleStateSelectChange}
               placeHolder="Select State"
             />
+            {error.stateError && (
+              <p className="text-red-500 text-xs font-bold mt-1">
+                {error.stateError}
+              </p>
+            )}
           </div>
           <div className="text-gray-900">
             <label
@@ -236,11 +389,14 @@ const PersonalInfo = () => {
             <CitySelect
               countryid={countryid}
               stateid={stateid}
-              onChange={(e) => {
-                console.log("city", e);
-              }}
+              onChange={handleCitySelectChange}
               placeHolder="Select City"
             />
+            {error.cityError && (
+              <p className="text-red-500 text-xs font-bold mt-1">
+                {error.cityError}
+              </p>
+            )}
           </div>
           <Input
             label="Postal/Zip Code"
@@ -266,6 +422,10 @@ const PersonalInfo = () => {
             placeholder=""
             validation={{
               required: "Email is required",
+              pattern: {
+                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                message: "Please enter email in the correct format",
+              },
             }}
             errors={errors.email}
           />
@@ -284,7 +444,7 @@ const PersonalInfo = () => {
 
         <Input
           label="Address"
-          id="Address"
+          id="addressLine"
           type="text"
           register={register}
           placeholder=""
@@ -408,6 +568,8 @@ const PersonalInfo = () => {
             .
           </label>
         </div>
+
+        <ToastContainer />
 
         <button
           type="submit"

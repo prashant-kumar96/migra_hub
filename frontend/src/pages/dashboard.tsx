@@ -1,6 +1,8 @@
 import { me } from "@/api/auth";
 import { getSingleVisaData } from "@/api/visaData";
 import AfterLoginLayout from "@/components/AfterLoginLayout";
+import { meDataAtom } from "@/store/meDataAtom";
+import { useAtom } from "jotai";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { RiSlowDownFill } from "react-icons/ri";
@@ -9,9 +11,12 @@ import countryList from "react-select-country-list";
 
 const Dashboard = () => {
   const [visaData, setVisaData] = useState("");
+  const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const getmedata = async () => {
     const result = await me();
-    console.log("result getmedata", result?.data?.user.visaDataId);
+    console.log("result getmedata", result?.data);
+    setSharedMedata(result?.data?.user);
+
     const resultVisaData = await getSingleVisaData(
       result?.data?.user.visaDataId
     );
@@ -19,6 +24,8 @@ const Dashboard = () => {
     console.log("resultVisaData", resultVisaData);
     setVisaData(resultVisaData?.data?.data);
   };
+
+  console.log("sharedMedata", sharedMedata);
 
   console.log("getVisaData", visaData);
 
@@ -76,7 +83,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="flex w-full justify-center items-center flex-col ">
+    <div className="flex w-full justify-around items-center flex-wrap-reverse gap-8">
       {/* <div className="mb-10">
         <table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 w-[calc(100vw-270px)] overflow-x-auto">
           <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
@@ -104,7 +111,7 @@ const Dashboard = () => {
         </table>
       </div> */}
 
-      <div className="grid grid-cols-3 gap-12">
+      {/* <div className="grid grid-cols-3 gap-12">
         {boxes.map((box, index) => (
           <div
             key={index}
@@ -116,6 +123,18 @@ const Dashboard = () => {
             <div className="text-base font-medium text-center">{box.title}</div>
           </div>
         ))}
+      </div> */}
+
+      <div className="max-w-lg  p-4 bg-gray-100 rounded-lg shadow">
+        <h2 className="text-xl font-semibold mb-4">User Details</h2>
+        <ul className="space-y-2">
+          {boxes.map((box, index) => (
+            <li className="flex justify-between border-b pb-2 gap-5">
+              <span className="font-medium text-gray-700">{box.title}</span>
+              <span className="text-gray-900"> {box.value}</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 text-center justify-center mt-8">
