@@ -38,10 +38,9 @@ function Header2() {
   }, []);
 
   const menuItems = [
-    { label: "Home", href: "#" },
-    { label: "About", href: "#" },
-    { label: "Services", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "Visitor Journey", href: "#" },
+    { label: "Partner", href: "#" },
+    { label: "News", href: "#" },
     { label: "Help", href: "/help" },
   ];
 
@@ -62,7 +61,7 @@ function Header2() {
             <a
               key={item.label}
               href={item.href}
-              className="text-white  hover:text-blue-500  items-center flex"
+              className="text-white  hover:text-blue-500  items-center flex whitespace-nowrap"
             >
               {item.label}
             </a>
