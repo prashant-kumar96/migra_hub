@@ -203,13 +203,14 @@ const PersonalInfo = () => {
 
   const getPersonalInfofunction = async () => {
     const result = await getPersonalData(medata?._id);
-    console.log("result loginUser@@@@@@@", result);
+    console.log("getPersonalData", result);
     if (result?.status === 200) {
       toast(result?.data?.message);
+      
       // Navigate to dashboard
       // console.log("we are here");
       // localStorage.setItem("token", result?.data?.token);
-      router.push("/documentupload");
+      // router.push("/documentupload");
       setLoading(false);
     } else {
       console.log("result@@@", result);
@@ -218,7 +219,7 @@ const PersonalInfo = () => {
   };
 
   useEffect(() => {
-    // getPersonalInfofunction();
+    getPersonalInfofunction();
   }, []);
 
   console.log("moment", moment().format("YYYY-MM-DD"));
