@@ -13,7 +13,7 @@ const Footer = () => {
                   MigraHub
                 </span>
               </a>
-              <p className="py-2 text-sm text-gray-100 dark:text-gray-300 lg:max-w-xs">
+              <p className="py-2 text-lg text-gray-100 dark:text-gray-300 lg:max-w-xs">
                 Trusted in more than 100 countries & 5 million customers. Have
                 any query?
               </p>
@@ -26,11 +26,11 @@ const Footer = () => {
             </div>
 
             <div className="lg:mx-auto text-left">
-              <h4 className="text-lg font-medium mb-7 text-gray-100 dark:text-gray-100">
-                Pagedone
+              <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
+             Company
               </h4>
-              <ul className="text-sm space-y-6 transition-all duration-500">
-                {["Home", "About", "Pricing", "Features"].map((item) => (
+              <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
+                {["Home", "Partners", "Contact", "Vistor Journey","Newsroom", "Help"].map((item) => (
                   <li key={item}>
                     <a
                       href="#"
@@ -44,15 +44,17 @@ const Footer = () => {
             </div>
 
             <div className="lg:mx-auto text-left">
-              <h4 className="text-lg font-medium mb-7 text-gray-100 dark:text-gray-100">
-                Products
+              <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
+               Countries
               </h4>
-              <ul className="text-sm space-y-6 transition-all duration-500">
+              <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
                 {[
-                  "Figma UI System",
-                  "Icons Assets",
-                  "Responsive Blocks",
-                  "Components Library",
+                  "Canada",
+                  "Australia",
+                  "New Zealand",
+                  "Europe",
+                  "USA",
+                  "UK"
                 ].map((item) => (
                   <li key={item}>
                     <a
@@ -67,10 +69,10 @@ const Footer = () => {
             </div>
 
             <div className="lg:mx-auto text-left">
-              <h4 className="text-lg font-medium mb-7 text-gray-100 dark:text-gray-100">
+              <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
                 Resources
               </h4>
-              <ul className="text-sm space-y-6 transition-all duration-500">
+              <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
                 {["FAQs", "Quick Start", "Documentation", "User Guide"].map(
                   (item) => (
                     <li key={item}>
@@ -87,10 +89,10 @@ const Footer = () => {
             </div>
 
             <div className="lg:mx-auto text-left">
-              <h4 className="text-lg font-medium mb-7 text-gray-100 dark:text-gray-100">
+              <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
                 Blogs
               </h4>
-              <ul className="text-sm space-y-6 transition-all duration-500">
+              <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
                 {["News", "Tips & Tricks", "New Updates", "Events"].map(
                   (item) => (
                     <li key={item}>
@@ -109,7 +111,7 @@ const Footer = () => {
 
           <div className="py-7 border-t border-gray-200">
             <div className="flex items-center justify-center flex-col lg:justify-between lg:flex-row">
-              <span className="text-sm text-white ">
+              <span className="text-lg text-white ">
                 ©<a href="https://pagedone.io/">MigraHub</a> 2024, All rights
                 reserved.
               </span>

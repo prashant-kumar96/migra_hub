@@ -41,8 +41,8 @@ const Contact = () => {
                 {office.city}
               </h3>
               <div className="flex items-start">
-                <FaBuilding className="w-5 h-5 text-gray-700 mt-1 mr-2" />
-                <p className="text-gray-600">{office.address}</p>
+                <FaBuilding className="w-6 h-6 text-gray-700 mt-1 mr-2" />
+                <p className="text-DarkGray text-lg">{office.address}</p>
               </div>
             </div>
           ))}
@@ -53,11 +53,11 @@ const Contact = () => {
           <h2 className="text-2xl font-bold text-Indigo  mb-4">
             Have a question?
           </h2>
-          <p className="text-gray-600">
+          <p className="text-DarkGray text-lg">
             You can message us on:{" "}
             <a
-              href="mailto:support@atlys.com"
-              className="text-blue-600 underline hover:text-blue-800"
+              href="mailto:support@migrahub.com"
+              className="text-blue-600 text-lg  underline hover:text-blue-800"
             >
               support@migrahub.com
             </a>
