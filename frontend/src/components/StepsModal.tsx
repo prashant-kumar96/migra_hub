@@ -63,11 +63,15 @@ const StepsModal: React.FC<Props> = ({
 
   const handleNextButtonClick = () => {
     if (step === 1) {
-      if (!data.whereWillYouApplyForYourVisa) {
-        showError("Please select where you will apply for your visa");
-        return;
-      } else {
+      if (data?.areYouApplyingFromPassportCountry === true) {
         showError("");
+      } else {
+        if (!data.whereWillYouApplyForYourVisa) {
+          showError("Please select where you will apply for your visa");
+          return;
+        } else {
+          showError("");
+        }
       }
     }
     if (step === 4) {
