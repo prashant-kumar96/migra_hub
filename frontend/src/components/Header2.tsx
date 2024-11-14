@@ -41,7 +41,7 @@ function Header2() {
     { label: "Home", href: "/" },
     { label: "About", href: "#" },
     { label: "Services", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "Contact", href: "/contact" },
     { label: "Help", href: "/help" },
   ];
 
