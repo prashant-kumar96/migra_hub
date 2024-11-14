@@ -8,6 +8,7 @@ interface props {
   errors: any;
   id: string;
   toUpperCase?: boolean;
+  minDate?: any;
 }
 const Input: React.FC<props> = ({
   label,
@@ -18,6 +19,7 @@ const Input: React.FC<props> = ({
   errors,
   id,
   toUpperCase,
+  minDate,
 }) => {
   return (
     <div className="mb-4">
@@ -35,6 +37,8 @@ const Input: React.FC<props> = ({
           toUpperCase ? "uppercase" : ""
         }`}
         placeholder={placeholder}
+        min={minDate}
+        autocomplete="off"
       />
       {errors && (
         <p className="text-red-500 text-xs font-bold mt-1">{errors.message}</p>

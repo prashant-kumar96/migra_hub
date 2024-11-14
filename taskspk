@@ -1,17 +1,18 @@
-current task work on saving the personal Information
+work on fetching the personal data if it exists already
+
+work on document upload api
+
+work on creatin the payment page with stripe payment gateway
+
+work on the authentication of the migrahub login
+
 work on adding validation on all the personal information properties
 
-work on vinod sir 32 pearls enhancements
+work on vinod sir 32 enhancements
 
 work on adding a stripe payment to the payment page
 
-work on beautifying the header
-
-work on beatifying the leftMenuBar
-
 work on left menu bar responsiveness
-
-work on saving the personal Info data to the database by making personal Info data model
 
 work on facebook login
 
@@ -45,3 +46,12 @@ list of questions to ask from jimmy sir
 
 Date 11/11/2024 (Prashant)
 1 - work on getting the data from the index page and steps modal and display it in the dashboard page
+
+Date 12/11/2024 (Prashant)
+1- worked on meeting and gathering info for further progress
+
+Date 13/11/2024 (Prashant)
+
+1- worked on saving the personal Information
+2- work on displaying the visa data information in the list view format
+3- work on saving the personal Info data to the database by making personal Info data model

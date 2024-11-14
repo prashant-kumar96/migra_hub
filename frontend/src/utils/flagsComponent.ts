@@ -5,4 +5,10 @@ const countriesData = [
   { name: "Australia", flag: "australia-flag" },
   { name: "India", flag: "indian-flag" },
 ];
+
+const information = {
+  "canada":{
+    "first":"Dataasasasd"
+  }
+}
 export { countriesData };
