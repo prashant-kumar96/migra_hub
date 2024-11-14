@@ -1,3 +1,4 @@
+// ./src/Header.js
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -5,8 +6,11 @@ import React, { useEffect, useState } from "react";
 
 function Header2() {
   const [menuOpen, setMenuOpen] = useState(false);
+
   const [token, setToken] = useState("");
   const { data: session } = useSession();
+  console.log("session", session);
+
   const router = useRouter();
 
   const handleLogin = () => {
@@ -33,7 +37,6 @@ function Header2() {
     }
   }, []);
 
-  // Menu items array
   const menuItems = [
     { label: "Home", href: "/" },
     { label: "About", href: "#" },
@@ -43,14 +46,14 @@ function Header2() {
   ];
 
   return (
-    <header className="bg-white dark:bg-gray-900 shadow-md">
+    <header className="bg-Indigo border-gray-200 shadow-md">
       <div className="container mx-auto flex items-center justify-between p-4">
         {/* Logo or Brand */}
         <Link
           href="/"
-          className="ml-12 md:ml-0 text-2xl font-bold text-gray-900 dark:text-white"
+          className="ml-12 font-greycliff text-2xl font-extrabold text-white"
         >
-          Migrahub
+          MigraHub
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -59,11 +62,12 @@ function Header2() {
             <a
               key={item.label}
               href={item.href}
-              className="text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 items-center flex"
+              className="text-white  hover:text-blue-500  items-center flex"
             >
               {item.label}
             </a>
           ))}
+
           {session || token ? (
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded-md w-full hover:bg-blue-600"
@@ -86,7 +90,7 @@ function Header2() {
         <div className="md:hidden">
           <button
             onClick={toggleMenu}
-            className="text-gray-900 dark:text-gray-300 focus:outline-none"
+            className="text-white  focus:outline-none"
           >
             <svg
               className="w-6 h-6"
@@ -115,11 +119,12 @@ function Header2() {
             <a
               key={item.label}
               href={item.href}
-              className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 mb-2"
+              className="block text-white  hover:text-blue-500  mb-2"
             >
               {item.label}
             </a>
           ))}
+
           {session || token ? (
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded-md w-full hover:bg-blue-600"
