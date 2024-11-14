@@ -1,4 +1,4 @@
-import { countriesData } from "@/utils/flagsComponent";
+import { countriesData } from "@/utils/CountriesData";
 import Image from "next/image";
 import React, { useState } from "react";
 import StepsModal from "./StepsModal";
@@ -46,6 +46,7 @@ const FlagsComponent = () => {
                   <Image
                     className="rounded-t-xl"
                     src={`/assets/countryImgs/${country.name}.png`}
+                    // src={`/assets/countryImgs/${country.name}.${country.imageType === 'jpeg' ? 'jpeg' : 'png'}`} 
                     alt={country.name}
                     width={750}
                     height={300}
@@ -53,7 +54,7 @@ const FlagsComponent = () => {
                 </div>
                 <div className="p-4">
                   <a href="#">
-                    <h5 className="text-2xl font-medium tracking-wider text-Indigo">
+                    <h5 className="text-2xl font-medium tracking-wider text-Indigo whitespace-nowrap">
                       {country.name}
                     </h5>
                   </a>
@@ -72,7 +73,7 @@ const FlagsComponent = () => {
                     </button>
 
                     {/* Tooltip */}
-                    <span className="absolute bottom-full w-fit left-1/2 transform -translate-x-1/2 mb-2 hidden px-2 py-1 text-[12px] text-white bg-DarkGray tracking-wide font-sans rounded-lg group-hover:block">
+                    <span className="absolute bottom-full w-fit left-1/2 transform -translate-x-1/2 mb-2 hidden px-3 py-2 text-[13px] text-FloralWhite bg-DarkGray tracking-wider whitespace-nowrap font-sans rounded-lg group-hover:block">
                       Apply visa for {country.name}
                     </span>
                   </div>
