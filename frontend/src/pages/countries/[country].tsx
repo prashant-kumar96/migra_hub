@@ -1,0 +1,29 @@
+import CountriesGrid from "@/components/countries/countriesGrid";
+import { countriesData } from "@/utils/CountriesData";
+import Image from "next/image";
+export async function getStaticPaths() {
+  const paths = countriesData.map((country) => ({
+    params: { country: country.name.toLowerCase() }, // Ensure lowercase for URLs
+  }));
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }) {
+  const countryData = countriesData.find(
+    (country) => country.name.toLowerCase() === params.country
+  );
+
+  return { props: { countryData } };
+}
+
+const CountryPage = ({ countryData }) => {
+  if (!countryData) return <p>Country data not found</p>;
+
+  return (
+    <div className="p-6">
+      <CountriesGrid />
+    </div>
+  );
+};
+
+export default CountryPage;
