@@ -1,4 +1,4 @@
-import { countriesData } from "@/utils/flagsComponent";
+import { countriesData } from "@/utils/CountriesData";
 import Image from "next/image";
 import React, { useState } from "react";
 import StepsModal from "./StepsModal";
@@ -17,7 +17,7 @@ const FlagsComponent = () => {
   const settings = {
     dots: false,
     infinite: true,
-    speed: 400,
+    speed: 300,
     slidesToShow: 5,
     slidesToScroll: 1,
     draggable: true,
@@ -31,8 +31,8 @@ const FlagsComponent = () => {
 
   return (
     <>
-      <div className="bg-FloralWhite">
-        <p className="text-4xl mt-8 font-semibold tracking-wider capitalize text-Indigo mb-8 font-greycliff text-center">
+      <div className="">
+        <p className="text-4xl mt-8 font-semibold tracking-wider capitalize text-Indigo font-greycliff text-center">
           Traverse Dream Destination
         </p>
 
@@ -40,12 +40,13 @@ const FlagsComponent = () => {
         <Slider {...settings} className="custom-slider">
           {countriesData.map((country, index) => (
             // Wrapper div for spacing
-            <div key={index} style={{ padding: "0 10px" }}>
-              <div className="relative flex flex-col rounded-xl gap-x-8 Nbg-white bg-clip-border text-DarkGray shadow-xl p-2">
+            <div key={index} className="px-2 py-12">
+              <div className="relative flex flex-col rounded-xl gap-x-8 bg-white bg-clip-border text-DarkGray shadow-xl p-2">
                 <div className="relative">
                   <Image
                     className="rounded-t-xl"
                     src={`/assets/countryImgs/${country.name}.png`}
+                    // src={`/assets/countryImgs/${country.name}.${country.imageType === 'jpeg' ? 'jpeg' : 'png'}`} 
                     alt={country.name}
                     width={750}
                     height={300}
@@ -53,7 +54,7 @@ const FlagsComponent = () => {
                 </div>
                 <div className="p-4">
                   <a href="#">
-                    <h5 className="text-2xl font-medium tracking-wider text-Indigo">
+                    <h5 className="text-2xl font-medium tracking-wider text-Indigo whitespace-nowrap">
                       {country.name}
                     </h5>
                   </a>
@@ -72,7 +73,7 @@ const FlagsComponent = () => {
                     </button>
 
                     {/* Tooltip */}
-                    <span className="absolute bottom-full w-fit left-1/2 transform -translate-x-1/2 mb-2 hidden px-2 py-1 text-[12px] text-white bg-DarkGray tracking-wide font-sans rounded-lg group-hover:block">
+                    <span className="absolute bottom-full w-fit left-1/2 transform -translate-x-1/2 mb-2 hidden px-3 py-2 text-[13px] text-FloralWhite bg-DarkGray tracking-wider whitespace-nowrap font-sans rounded-lg group-hover:block">
                       Apply visa for {country.name}
                     </span>
                   </div>
