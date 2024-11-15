@@ -205,12 +205,12 @@ const PersonalInfo = () => {
     const result = await getPersonalData(medata?._id);
     console.log("getPersonalData", result);
     if (result?.status === 200) {
-      toast(result?.data?.message);
-      
+      // toast(result?.data?.message);
+      alert("Personal Data is Already filled");
       // Navigate to dashboard
       // console.log("we are here");
       // localStorage.setItem("token", result?.data?.token);
-      // router.push("/documentupload");
+      router.push("/documentupload");
       setLoading(false);
     } else {
       console.log("result@@@", result);
