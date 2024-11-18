@@ -1,3 +1,4 @@
+import Concierge from "@/components/countries/concierge";
 import FAQ from "@/components/countries/faq";
 import VisaRejectionReasons from "@/components/countries/rejectionReasons";
 import VisaTimeline from "@/components/countries/visaTimeline";
@@ -8,7 +9,8 @@ const test2 = () => {
     <div>
       {/* <FAQ/> */}
       {/* <VisaRejectionReasons/> */}
-      <VisaTimeline />
+      {/* <VisaTimeline /> */}
+      <Concierge/>
     </div>
   );
 };
