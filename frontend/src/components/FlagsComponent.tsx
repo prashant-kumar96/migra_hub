@@ -6,6 +6,7 @@ import { FaPlaneDeparture } from "react-icons/fa6";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import {useRouter} from "next/router";
 
 const FlagsComponent = () => {
   const [showStepsModal, setShouldShowStepsModal] = useState(false);
@@ -29,6 +30,15 @@ const FlagsComponent = () => {
     ],
   };
 
+  const router = useRouter();
+  const handleCountryClick = (countryName,id) => {
+    const formattedName = countryName.toLowerCase();
+    router.push(`/countries/${formattedName}?id=${id}`);
+  };
+
+  function formatCountryName(countryName) {
+    return countryName.replace(/-/g, " "); 
+  }
   return (
     <>
       <div className="">
@@ -53,15 +63,15 @@ const FlagsComponent = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <a href="#">
-                    <h5 className="text-2xl font-medium tracking-wider text-Indigo whitespace-nowrap">
-                      {country.name}
+                  <button   onClick={() => handleCountryClick(country.name, country.id)}>
+                    <h5 className="text-2xl font-medium tracking-wider text-Indigo capitalize whitespace-nowrap">
+                    {formatCountryName(country.name)}
                     </h5>
-                  </a>
+                  </button>
 
                   <div className="relative group">
                     <button
-                      onClick={handleReadMore}
+                      // onClick={handleReadMore}
                       className="inline-flex items-center text-sm font-medium text-center rounded-lg"
                     >
                       <span>
