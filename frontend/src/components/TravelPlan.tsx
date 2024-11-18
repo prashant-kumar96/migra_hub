@@ -7,7 +7,7 @@ const Banner = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
-  console.log(countryList());
+  // console.log(countryList());
   const countriesCodes = countryList()
     .getData()
     .map((c) => c.value);
