@@ -1,6 +1,7 @@
 import Concierge from "@/components/countries/concierge";
 import CountriesGrid from "@/components/countries/countriesGrid";
 import VisaRejectionReasons from "@/components/countries/rejectionReasons";
+import VisaInfo from "@/components/countries/visaInfo";
 import VisaTimeline from "@/components/countries/visaTimeline";
 import { countriesData } from "@/utils/CountriesData";
 export async function getStaticPaths() {
@@ -24,6 +25,7 @@ const CountryPage = ({ countryData }) => {
   return (
     <div className="p-6">
       <CountriesGrid />
+      <VisaInfo/>
       <VisaTimeline/>
       <Concierge/>
       <VisaRejectionReasons/>
