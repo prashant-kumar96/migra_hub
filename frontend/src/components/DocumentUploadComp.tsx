@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
+import PassportUpload from "./PassportUpload";
 
 const DocumentUploadComp = () => {
-    
   const [documents, setDocuments] = useState({
     passport: null,
     visaApplication: null,
@@ -58,19 +58,13 @@ const DocumentUploadComp = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-8 bg-white rounded shadow-lg max-w-lg w-full">
+      <div className="p-8 bg-white rounded shadow-lg w-full">
         <h2 className="text-2xl font-bold mb-4">Upload Visa Documents</h2>
         {message && <p className="mb-4 text-green-500">{message}</p>}
         <form onSubmit={handleUpload} className="space-y-4">
           {/* Individual file inputs for each document */}
           <div>
-            <label className="block mb-1 font-semibold">Passport</label>
-            <input
-              type="file"
-              name="passport"
-              onChange={handleFileChange}
-              className="w-full px-3 py-2 border rounded"
-            />
+            <PassportUpload />
           </div>
           {/* <div>
             <label className="block mb-1 font-semibold">
@@ -93,9 +87,7 @@ const DocumentUploadComp = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 font-semibold">
-              Proof of Financial Support
-            </label>
+            <label className="block mb-1 font-semibold">Proof of Funds</label>
             <input
               type="file"
               name="financialProof"
@@ -125,7 +117,7 @@ const DocumentUploadComp = () => {
           </div> */}
           <div>
             <label className="block mb-1 font-semibold">
-              Proof of Employment/Enrollment
+              Proof of ties to home country
             </label>
             <input
               type="file"

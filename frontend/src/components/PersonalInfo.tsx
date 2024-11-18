@@ -203,9 +203,10 @@ const PersonalInfo = () => {
 
   const getPersonalInfofunction = async () => {
     const result = await getPersonalData(medata?._id);
-    console.log("result loginUser@@@@@@@", result);
+    console.log("getPersonalData", result);
     if (result?.status === 200) {
-      toast(result?.data?.message);
+      // toast(result?.data?.message);
+      alert("Personal Data is Already filled");
       // Navigate to dashboard
       // console.log("we are here");
       // localStorage.setItem("token", result?.data?.token);
@@ -218,7 +219,7 @@ const PersonalInfo = () => {
   };
 
   useEffect(() => {
-    // getPersonalInfofunction();
+    getPersonalInfofunction();
   }, []);
 
   console.log("moment", moment().format("YYYY-MM-DD"));
