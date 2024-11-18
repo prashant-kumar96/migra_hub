@@ -1,7 +1,8 @@
+import Concierge from "@/components/countries/concierge";
 import CountriesGrid from "@/components/countries/countriesGrid";
 import VisaRejectionReasons from "@/components/countries/rejectionReasons";
+import VisaTimeline from "@/components/countries/visaTimeline";
 import { countriesData } from "@/utils/CountriesData";
-import Image from "next/image";
 export async function getStaticPaths() {
   const paths = countriesData.map((country) => ({
     params: { country: country.name.toLowerCase() }, // Ensure lowercase for URLs
@@ -23,7 +24,10 @@ const CountryPage = ({ countryData }) => {
   return (
     <div className="p-6">
       <CountriesGrid />
+      <VisaTimeline/>
+      <Concierge/>
       <VisaRejectionReasons/>
+      
     </div>
   );
 };
