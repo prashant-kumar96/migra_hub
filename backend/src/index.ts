@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import authRoutes from "./routes/authRoutes.js";
 import visaDataRoutes from "./routes/visaDataRoutes.js";
 import personalDataRoutes from "./routes/personalDataRoutes.js";
+import documentRoutes from "./routes/documentRoutes.js";
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/user.js";
@@ -33,6 +34,7 @@ connectWithMongoose(); // Mongoose connection
 app.use("/api/auth", authRoutes);
 app.use("/api/visaData", visaDataRoutes);
 app.use("/api/personalData", personalDataRoutes);
+app.use("/api/document", documentRoutes);
 const client = new MongoClient(uri);
 app.get("/users", async () => {
   await client.connect();
