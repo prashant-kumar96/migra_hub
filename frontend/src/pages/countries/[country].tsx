@@ -1,4 +1,5 @@
 import CountriesGrid from "@/components/countries/countriesGrid";
+import VisaRejectionReasons from "@/components/countries/rejectionReasons";
 import { countriesData } from "@/utils/CountriesData";
 import Image from "next/image";
 export async function getStaticPaths() {
@@ -22,6 +23,7 @@ const CountryPage = ({ countryData }) => {
   return (
     <div className="p-6">
       <CountriesGrid />
+      <VisaRejectionReasons/>
     </div>
   );
 };
