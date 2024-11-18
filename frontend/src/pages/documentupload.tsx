@@ -1,14 +1,7 @@
 import AfterLoginLayout from "@/components/AfterLoginLayout";
 import React, { useState } from "react";
-import {
-  CitySelect,
-  CountrySelect,
-  StateSelect,
-} from "react-country-state-city";
-import ReactFlagsSelect from "react-flags-select";
 import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
-import PersonalInfo from "@/components/PersonalInfo";
 import DocumentUploadComp from "@/components/DocumentUploadComp";
 
 const DocumentUpload = () => {
