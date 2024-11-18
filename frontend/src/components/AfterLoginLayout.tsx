@@ -57,7 +57,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                   My application
                 </Link>
                 <Link
-                  href="#"
+                  href="/payment"
                   className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                 >
                   Payment
