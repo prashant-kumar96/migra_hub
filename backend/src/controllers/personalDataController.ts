@@ -15,3 +15,17 @@ export const savePersonalData = async (req: Request, res: Response) => {
     res.status(400).json({ message: err });
   }
 };
+
+export const getSinglePersonalData = async (req: Request, res: Response) => {
+  try {
+    const userId = req.query?.userId;
+    const result = await PersonalData.findOne({ userId: userId });
+    console.log("findSinglePersonalData result", result);
+
+    if (result)
+      res.status(200).json({ message: "Personal Data fetched successfully" });
+  } catch (err) {
+    console.log("ERROr=.>", err);
+    res.status(400).json({ message: err });
+  }
+};
