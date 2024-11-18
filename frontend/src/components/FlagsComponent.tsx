@@ -31,9 +31,9 @@ const FlagsComponent = () => {
   };
 
   const router = useRouter();
-  const handleCountryClick = (countryName) => {
+  const handleCountryClick = (countryName,id) => {
     const formattedName = countryName.toLowerCase();
-    router.push(`/countries/${formattedName}`);
+    router.push(`/countries/${formattedName}?id=${id}`);
   };
 
   function formatCountryName(countryName) {
@@ -63,7 +63,7 @@ const FlagsComponent = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <button   onClick={() => handleCountryClick(country.name)}>
+                  <button   onClick={() => handleCountryClick(country.name, country.id)}>
                     <h5 className="text-2xl font-medium tracking-wider text-Indigo capitalize whitespace-nowrap">
                     {formatCountryName(country.name)}
                     </h5>
@@ -71,7 +71,7 @@ const FlagsComponent = () => {
 
                   <div className="relative group">
                     <button
-                      onClick={handleReadMore}
+                      // onClick={handleReadMore}
                       className="inline-flex items-center text-sm font-medium text-center rounded-lg"
                     >
                       <span>

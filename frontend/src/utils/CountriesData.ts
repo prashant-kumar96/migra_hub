@@ -9,7 +9,9 @@ const countriesData = [
       "/assets/countryImgs/images/canada1.jpg",
       "/assets/countryImgs/images/canada2.jpg",
       "/assets/countryImgs/images/canada3.jpg",
-      "/assets/countryImgs/images/canada4.jpg"
+      "/assets/countryImgs/images/canada4.jpg",
+      "/assets/countryImgs/images/canada5.jpg",
+
     ]
   },
   { 
@@ -22,7 +24,9 @@ const countriesData = [
       "/assets/countryImgs/images/uk1.jpg",
       "/assets/countryImgs/images/uk2.jpg",
       "/assets/countryImgs/images/uk3.jpg",
-      "/assets/countryImgs/images/uk4.jpg"
+      "/assets/countryImgs/images/uk4.jpg",
+      "/assets/countryImgs/images/uk5.jpg",
+
     ]
   },
   { 
@@ -35,7 +39,9 @@ const countriesData = [
       "/assets/countryImgs/images/usa1.jpg",
       "/assets/countryImgs/images/usa2.jpg",
       "/assets/countryImgs/images/usa3.jpg",
-      "/assets/countryImgs/images/usa4.jpg"
+      "/assets/countryImgs/images/usa4.jpg",
+      "/assets/countryImgs/images/usa5.jpg",
+      
     ]
   },
   { 
@@ -48,7 +54,9 @@ const countriesData = [
       "/assets/countryImgs/images/australia1.jpg",
       "/assets/countryImgs/images/australia2.jpg",
       "/assets/countryImgs/images/australia3.jpg",
-      "/assets/countryImgs/images/australia4.jpg"
+      "/assets/countryImgs/images/australia4.jpg",
+      "/assets/countryImgs/images/australia5.jpg",
+
     ]
   },
   { 
@@ -61,7 +69,9 @@ const countriesData = [
       "/assets/countryImgs/images/nz1.jpg",
       "/assets/countryImgs/images/nz2.jpg",
       "/assets/countryImgs/images/nz3.jpg",
-      "/assets/countryImgs/images/nz4.jpg"
+      "/assets/countryImgs/images/nz4.jpg",
+      "/assets/countryImgs/images/nz5.jpg",
+
     ]
   },
   { 
@@ -74,7 +84,9 @@ const countriesData = [
       "/assets/countryImgs/images/europe1.jpg",
       "/assets/countryImgs/images/europe2.jpg",
       "/assets/countryImgs/images/europe3.jpg",
-      "/assets/countryImgs/images/europe4.jpg"
+      "/assets/countryImgs/images/europe4.jpg",
+      "/assets/countryImgs/images/europe5.jpg",
+
     ]
   },
 ];
