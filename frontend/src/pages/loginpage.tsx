@@ -77,7 +77,10 @@ const LoginPage = () => {
           // Navigate to dashboard
           console.log("we are here");
           localStorage.setItem("token", result?.data?.token);
-          router.push("/dashboard");
+          4;
+          if (result?.data?.user?.role === "SA") {
+            router.push("/adminDashboard");
+          } else router.push("/dashboard");
           setLoading(false);
         } else {
           console.log("result@@@", result);

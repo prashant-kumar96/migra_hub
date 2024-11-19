@@ -1,5 +1,11 @@
 work on fetching the personal data if it exists already
 
+show number of case manager and number of users in admin dashboard page
+
+Scroller should come on modal but not on right side of page
+
+work on stepper
+
 work on document upload api
 
 work on creatin the payment page with stripe payment gateway
@@ -7,8 +13,6 @@ work on creatin the payment page with stripe payment gateway
 work on the authentication of the migrahub login
 
 work on adding validation on all the personal information properties
-
-work on vinod sir 32 enhancements
 
 work on adding a stripe payment to the payment page
 

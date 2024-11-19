@@ -5,10 +5,12 @@ import { useRouter } from "next/router";
 import Header2 from "./Header2";
 import Sidebar from "./LeftSideBar";
 import Link from "next/link";
+import Stepper from "./Stepper";
 
 const AfterLoginLayout = (WrappedComponent: any) => {
   return function (props: any) {
     const [isOpen, setIsOpen] = useState(false);
+    const [role, setRole] = useState();
 
     console.log("isHeaderOpen", isOpen);
     const toggleSidebar = () => {
@@ -18,6 +20,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
     const meData = async () => {
       const medata = await me();
       console.log("medata", medata);
+      setRole(medata?.data?.user?.role);
     };
 
     useEffect(() => {
@@ -37,32 +40,59 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                 isOpen ? "translate-x-0" : "-translate-x-full"
               } md:translate-x-0`}
             >
-              <nav className="space-y-4">
-                <Link
-                  href="/dashboard"
-                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/profilepage"
-                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                >
-                  Profile
-                </Link>
-                <Link
-                  href="/documentupload"
-                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                >
-                  My application
-                </Link>
-                <Link
-                  href="/payment"
-                  className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
-                >
-                  Payment
-                </Link>
-              </nav>
+              {role === "User" && (
+                <nav className="space-y-4">
+                  <Link
+                    href="/dashboard"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/profilepage"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    href="/documentupload"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    My application
+                  </Link>
+                  <Link
+                    href="/payment"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    Payment
+                  </Link>
+
+                  <Link
+                    href="/payment"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    Payment
+                  </Link>
+                </nav>
+              )}
+
+              {role === "SA" && (
+                <nav className="space-y-4">
+                  <Link
+                    href="/adminDashboard"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    Home
+                  </Link>
+
+                  <Link
+                    href="/caseManagerPage"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    Case Manager
+                  </Link>
+                </nav>
+              )}
             </aside>
 
             {/* Solid Overlay for mobile view */}
@@ -117,6 +147,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
             <main
               className={`flex-1 p-8  transition-all duration-300 bg-gray-100 dark:bg-gray-900 ml-0 md:ml-64`}
             >
+              {/* <Stepper /> */}
               <WrappedComponent {...props} extraProp="I'm an extra prop!" />
             </main>
 

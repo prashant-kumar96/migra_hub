@@ -38,9 +38,9 @@ function Header2() {
   }, []);
 
   const menuItems = [
-    { label: "Visitor Journey", href: "#" },
-    { label: "Partner", href: "#" },
-    { label: "News", href: "#" },
+    { label: "Visitor Journey", href: "/" },
+    { label: "Partner", href: "/" },
+    { label: "News", href: "/newsPage" },
     { label: "Help", href: "/help" },
   ];
 

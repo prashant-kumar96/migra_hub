@@ -10,8 +10,10 @@ export interface IUser extends Document {
   profile_pic: {};
   contact: String;
   visaDataId: ObjectId;
+  stripePaymentSessionId: String;
+  isStripePaymentDone: Boolean;
 }
-const roleEnum = ["USER", "SA", "COUNSELLOR"];
+const roleEnum = ["USER", "SA", "CASE_MANAGER"];
 const userSchema: Schema<IUser> = new Schema({
   name: { type: String, required: [true, "Name is required"] },
   email: {
@@ -42,6 +44,8 @@ const userSchema: Schema<IUser> = new Schema({
   updatedAt: { type: Date, default: Date.now },
   profile_pic: { type: {} },
   contact: { type: String },
+  stripePaymentSessionId: { type: String },
+  isStripePaymentDone: { type: Boolean },
 });
 
 const User = mongoose.model<IUser>("User", userSchema);
