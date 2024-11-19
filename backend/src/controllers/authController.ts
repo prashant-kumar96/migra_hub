@@ -34,7 +34,7 @@ async function register(req: any, res: any) {
   console.log("req body", req.body);
   // return;
   const { email, password, name, role, data } = req.body;
-  if (Object.keys(data).length === 0) {
+  if (!data) {
     res.status(400).json({
       message:
         "Please fill all the steps from the index page before registering",
@@ -164,6 +164,81 @@ async function changePassword(req: any, res: any) {
   }
 }
 
+async function getUsersWhoHaveDonePayment(req: any, res: any) {
+  try {
+    // Assuming the token payload contains the user ID
+    const user = await User.find({ isStripePaymentDone: true }).select(
+      "-password"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({
+      message: "Users fetched successfully",
+      user: user,
+    });
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function getCaseManagers(req: any, res: any) {
+  try {
+    // Assuming the token payload contains the user ID
+    const user = await User.find({ role: "CASE_MANAGER" }).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "Case Managers not found" });
+    }
+    res.json({
+      message: "Case Managers fetched successfully",
+      user: user,
+    });
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function createCaseManager(req: any, res: any) {
+  console.log("req body", req.body);
+  // return;
+  const { email, password, name, role } = req.body;
+
+  console.log("/register is run");
+  try {
+    const existingUser = await User.findOne({ email: email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Case Manager already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+      email,
+      password: hashedPassword,
+      role,
+      name,
+    });
+
+    const result = await user.save();
+    console.log(result, "result");
+
+    res.status(200).json({
+      user: {
+        email: user.email,
+        id: user._id,
+        message: "Case Manager Created successfully",
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ message: "Internal server error", error });
+  }
+}
+
 async function me(req: any, res: any) {
   const decoded = req.user;
   console.log(decoded, "decodedd");
@@ -184,4 +259,14 @@ async function me(req: any, res: any) {
   }
 }
 
-export { login, register, deleteUser, editUser, changePassword, me };
+export {
+  login,
+  register,
+  deleteUser,
+  editUser,
+  changePassword,
+  me,
+  getUsersWhoHaveDonePayment,
+  createCaseManager,
+  getCaseManagers,
+};
