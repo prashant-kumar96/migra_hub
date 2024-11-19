@@ -3,7 +3,7 @@ import ReactFlagsSelect from "react-flags-select";
 import StepsModal from "./StepsModal";
 import countryList from "react-select-country-list";
 
-const Banner = () => {
+const TravelPlan = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
@@ -209,4 +209,4 @@ const Banner = () => {
   );
 };
 
-export default Banner;
+export default TravelPlan;

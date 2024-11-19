@@ -1,24 +1,43 @@
 import React from "react";
-import ProgressPie from "./progressPie";
-
+import { BsReceiptCutoff } from "react-icons/bs";
+import { TbPhotoSensor2 } from "react-icons/tb";
+import { BiScan } from "react-icons/bi";
+import { GrAtm } from "react-icons/gr";
+import { FaThumbsUp } from "react-icons/fa";
+import { countriesData } from "@/utils/CountriesData";
+import { useRouter } from "next/router";
 const VisaRequirements = () => {
+  const router = useRouter();
+  const { country } = router.query;
+  const selectedCountry = countriesData.find(
+    (item) => item.name.toLowerCase() === country?.toLowerCase()
+  );
+  const items = [
+    { name: "Passport", icon: <BiScan size={24} /> },
+    { name: "Photo", icon: <TbPhotoSensor2 size={24} /> },
+    { name: "Bank Statement", icon: <GrAtm size={24} /> },
+    { name: "Income Tax Return (ITR)", icon: < BsReceiptCutoff size={22} /> },
+  ];
   return (
-    <section className="bg-white py-6 px-4 max-w-4xl mx-auto">
+    <section className="py-8 px-4 mx-auto max-w-screen-xl">
       {/* Heading */}
-      <h2 className="text-2xl font-bold mb-4">Canada Visa Requirements</h2>
-
+      <h2 className="text-3xl text-Indigo font-bold mb-1 capitalize">
+        {selectedCountry
+          ? `${selectedCountry.name.replace(/-/g, " ")} Visa requirements`
+          : "visa requirements"}
+      </h2>
+      <div className="border-b-2 border-CGBlue w-24 mb-6"></div>
       {/* Requirements Buttons */}
-      <div className="flex flex-wrap gap-3 mb-6">
-        {["Passport", "Photo", "Bank Statement", "Income Tax Return (ITR)"].map(
-          (item, index) => (
-            <button
-              key={index}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg text-sm font-medium hover:bg-gray-200"
-            >
-              <span className="text-gray-700">{item}</span>
-            </button>
-          )
-        )}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {items.map((item, index) => (
+          <button
+            key={index}
+            className={`flex items-center gap-2 p-2  bg-[#E6F3F5] rounded-lg text-[17px] tracking-wide font-medium `}
+          >
+            <span className="text-Indigo mr-1">{item.icon}</span>
+            <span className="text-Indigo tracking-wide">{item.name}</span>
+          </button>
+        ))}
       </div>
 
       {/* Ease of Applying and Upload Time */}
@@ -26,7 +45,7 @@ const VisaRequirements = () => {
         {/* Ease of Applying */}
         <div className="bg-gray-50 rounded-lg p-4 shadow-sm flex flex-col items-center text-center">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xl">👍</span>
+            <span className="text-xl"><FaThumbsUp color="blue"/></span>
             <span className="text-sm font-medium text-gray-700">
               Ease of Applying
             </span>
@@ -59,7 +78,8 @@ const VisaRequirements = () => {
             </div>
           </div>
           <p className="text-sm mt-2 text-gray-700">
-            6080 users+ found uploading documents as <span className="font-semibold">very easy</span>
+            6080 users+ found uploading documents as{" "}
+            <span className="font-semibold">very easy</span>
           </p>
         </div>
 
@@ -98,7 +118,8 @@ const VisaRequirements = () => {
             </div>
           </div>
           <p className="text-sm mt-2 text-gray-700">
-            6080 users+ average docs upload time is <span className="font-semibold">02:24 seconds</span>
+            6080 users+ average docs upload time is{" "}
+            <span className="font-semibold">02:24 seconds</span>
           </p>
         </div>
       </div>

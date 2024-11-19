@@ -1,11 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GoShieldCheck } from "react-icons/go";
 import { FaRegClock } from "react-icons/fa";
 import ReactFlagsSelect from "react-flags-select";
 import countryList from "react-select-country-list";
 import StepsModal from "@/components/StepsModal";
+import { countriesData } from "@/utils/CountriesData";
+import { useRouter } from "next/router";
+import { IoLogoWhatsapp } from "react-icons/io";
+const Travel = () => {
+  const router = useRouter();
+  const { country } = router.query;
+  const selectedCountry = countriesData.find(
+    (item) => item.name.toLowerCase() === country?.toLowerCase()
+  );
+  useEffect(() => {
+    if (selectedCountry) {
+      setDestinationCountry({
+        value: selectedCountry?.code,
+        label: selectedCountry?.name,
+      });
+    }
+  }, [selectedCountry]);
 
-const test2 = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
@@ -38,17 +54,15 @@ const test2 = () => {
     }
   };
 
-  const onSelectDestinationCountry = (code: string) => {
-    setError((prev) => ({ ...prev, destinationCountryError: "" }));
-    const tempCountry: any = countryList()
-      .getData()
-      .find((country) => country.value === code);
-    setDestinationCountry(tempCountry);
-    let temp = [...countriesCodes];
-    const index = citizenshipCountryCodes.indexOf(code);
-    if (index > -1) {
-      temp.splice(index, 1);
-      setCitizenshipCountryCodes(temp);
+  const onSelectDestinationCountry = (countryCode) => {
+    const selectedDestination = countriesData.find(
+      (item) => item.code === countryCode
+    );
+    if (selectedDestination) {
+      setDestinationCountry({
+        value: selectedDestination.code,
+        label: selectedDestination.name,
+      });
     }
   };
   const handleStartjourney = () => {
@@ -93,21 +107,21 @@ const test2 = () => {
 
         <div className="p-3">
           <div className="w-full lg:max-w-xl p-6 space-y-8 sm:p-4 ">
-            <h2 className="text-2xl font-bold text-gray-900 ">
-              From which country are you starting and going to which country
+            <h2 className="text-2xl font-bold text-Indigo ">
+              Jobs fill your pocket, but adventures fill your soul.
             </h2>
             <div className="mt-8 space-y-6">
               <div>
                 <label
                   htmlFor="countries"
-                  className="block mb-2 text-sm font-medium text-gray-900 "
+                  className="block mb-2 font-medium text-Indigo  text-[19px] tracking-wide"
                 >
                   Citizenship From
                 </label>
                 <ReactFlagsSelect
                   selected={citizenshipCountry.value}
                   onSelect={onSelectCitizenShipCountry}
-                  className="w-full px-3  border shadow-md border-gray-200 rounded-lg text-gray-800"
+                  className="w-full px-3  border shadow-md border-gray-200 rounded-lg text-Indigo"
                   countries={citizenshipCountryCodes}
                   searchable
                 />
@@ -119,14 +133,14 @@ const test2 = () => {
               <div>
                 <label
                   htmlFor="countries"
-                  className="block mb-2 text-sm font-medium text-gray-900 "
+                  className="block mb-2  font-medium text-Indigo  text-[19px]"
                 >
-                  Destination to
+                  Destination To
                 </label>
                 <ReactFlagsSelect
-                  selected={destinationCountry.value}
-                  onSelect={onSelectDestinationCountry}
-                  className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
+                  selected={destinationCountry?.value}
+                  onSelect={() => console.log(destinationCountry?.value)}
+                  className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-Indigo"
                   countries={destinationCountryCodes}
                   searchable
                   // disabled={isFixed}
@@ -137,7 +151,7 @@ const test2 = () => {
               </div>
 
               <button
-                className="w-full bg-yellow-400 text-white py-3 rounded-lg font-medium hover:bg-yellow-500"
+                className="w-fit bg-Indigo text-FloralWhite px-[78px] py-2 whitespace-nowrap tracking-wider rounded-lg font-thin capitalize  hover:bg-Indigo"
                 onClick={handleStartjourney}
               >
                 Start your journey
@@ -156,10 +170,23 @@ const test2 = () => {
           />
         )}
       </div>
-      <div className="relative flex w-[360px] flex-col p-6 rounded-xl bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border shadow-md mt-3 ml-8">
-        <div className="flex flex-col items-start">
-          <div className="inline-block justify-start size-8 rounded-full ring ring-FloralWhite p-4 ">
-            <FaRegClock size={24} />
+      <div className="inline-flex w-[360px] items-center justify-center p-2 rounded-xl bg-transparent text-FloralWhite shadow-lg shadow-blue-gray-500/40 shadow-md mt-3 ml-8 space-x-3">
+        <span className="text-[18px] text-Indigo">Get in Touch: </span>
+        <IoLogoWhatsapp className="text-[#33CC66]" size={30} />
+        <span className="text-Indigo text-[18px]">*********9</span>
+      </div>
+
+      <div className="relative flex w-[360px] flex-col p-4 rounded-xl bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border shadow-md mt-3 ml-8">
+        <div className="inline-flex items-start">
+          <div className="ml-3 ">
+            <span className="text-lg leading-1 font-semibold tracking-wide mb-1">
+              On Time Guarantee
+            </span>
+            <br />
+            <span className="tracking-wide text-justify">
+              Pay our service fee only when we deliver your visa appointment on
+              time.
+            </span>
           </div>
         </div>
       </div>
@@ -167,4 +194,4 @@ const test2 = () => {
   );
 };
 
-export default test2;
+export default Travel;
