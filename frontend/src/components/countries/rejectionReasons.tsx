@@ -44,6 +44,7 @@ const VisaRejectionReasons = () => {
        <h2 className="text-3xl text-Indigo font-bold mb-1">
         {selectedCountry ? `${selectedCountry.name.replace(/-/g, " ")} Visa Rejection Reasons` : 'Visa Rejection Reasons'}
       </h2>
+      <div className="border-b-2 border-CGBlue w-24 mb-6"></div>
       <p className="text-[19px] tracking-wide text-Gray mb-6">
         Factors that can get your visa rejected
       </p>

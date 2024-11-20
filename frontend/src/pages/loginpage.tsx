@@ -120,7 +120,7 @@ const LoginPage = () => {
   }, [router]);
 
   return (
-    <div className="bg-gray-50 flex items-center justify-center rounded-lg shadow dark:bg-gray-700 mb-2">
+    <div className="flex items-center justify-center  mb-2">
       <div className="bg-white shadow-md rounded-lg pt-10 my-10">
         <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
           Sign Up With

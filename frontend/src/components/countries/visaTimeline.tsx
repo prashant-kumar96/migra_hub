@@ -77,7 +77,7 @@ const VisaTimeline = () => {
       {/* <div className="py-10 mx-auto max-w-screen-xl"> */}
         <div className="flex flex-col justify-start divide-y divide-red-200 [&>*]:py-12 md:[&>*]:py-16">
           <div className="w-full max-w-3xl">
-            <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent md:after:block sm:before:block before:hidden">
+            <div className="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent md:after:block sm:before:block before:hidden">
               <h2 className="text-3xl text-Indigo font-bold mb-1 capitalize">
                 {selectedCountry
                   ? `How ${selectedCountry.name.replace(
@@ -86,6 +86,7 @@ const VisaTimeline = () => {
                     )} Visa process works`
                   : "how Visa process works"}
               </h2>
+              <div className="border-b-2 border-CGBlue w-24 mb-6 "></div>
               {timelineData.map((item, index) => (
                 <div
                   key={index}
