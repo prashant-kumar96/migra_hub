@@ -1,10 +1,12 @@
 import Concierge from "@/components/countries/concierge";
 import CountriesGrid from "@/components/countries/countriesGrid";
+import Navbar from "@/components/countries/navbar";
 import VisaRejectionReasons from "@/components/countries/rejectionReasons";
 import Travel from "@/components/countries/travel";
 import VisaInfo from "@/components/countries/visaInfo";
 import VisaRequirements from "@/components/countries/visaRequirements";
 import VisaTimeline from "@/components/countries/visaTimeline";
+import Footer from "@/components/Footer";
 import { countriesData } from "@/utils/CountriesData";
 
 export async function getStaticPaths() {
@@ -26,7 +28,10 @@ const CountryPage = ({ countryData }) => {
   if (!countryData) return <p>Country data not found</p>;
 
   return (
-    <div className="p-6 flex flex-col items-center">
+    <>
+     <Navbar/>
+      <div className="p-6 flex flex-col items-center">
+     
       {/* Centered CountriesGrid */}
       <div className="mb-8 w-full max-w-screen-2xl">
         <CountriesGrid />
@@ -49,6 +54,9 @@ const CountryPage = ({ countryData }) => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
+  
   );
 };
 

@@ -93,7 +93,7 @@ const Travel = () => {
   return (
     <>
       <div className="relative flex w-[360px] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md mt-10 ml-8">
-        <div className="relative mx-4 -mt-6 h-14 overflow-hidden rounded-xl bg-[#CDE6EC] bg-clip-border text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
+        <div className="relative mx-4 -mt-6 h-14 overflow-hidden rounded-xl bg-[#CDE6EC] bg-clip-border text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
           <div className="flex items-center justify-center m-4 gap-2">
             <GoShieldCheck size={28} className="mb-1" />
             <span className="text-[19px] text-FloralWhite font-greycliff tracking-wide">
@@ -151,7 +151,7 @@ const Travel = () => {
               </div>
 
               <button
-                className="w-fit bg-Indigo text-FloralWhite px-[78px] py-2 whitespace-nowrap tracking-wider rounded-lg font-thin capitalize  hover:bg-Indigo"
+                className="w-fit bg-yellow-500 text-FloralWhite text-[18px] text-Indigo hover:text-FloralWhite  px-[64px] py-2 whitespace-nowrap tracking-wider rounded-lg font-semibold capitalize  hover:bg-Indigo"
                 onClick={handleStartjourney}
               >
                 Start your journey

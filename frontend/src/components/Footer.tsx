@@ -1,43 +1,51 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Footer = () => {
   return (
     <>
-      <footer className="w-full bg-Indigo">
+      <footer className="w-full shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-8 py-10 max-sm:max-w-sm max-sm:mx-auto gap-y-8">
             <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0 text-center lg:text-left">
-              <a href="/" className="flex justify-center lg:justify-start">
+              <Link href="/" className="flex justify-center lg:justify-start">
                 <span className="text-4xl font-greycliff font-extrabold tracking-tight text-gray-100 dark:text-gray-100">
                   MigraHub
                 </span>
-              </a>
+              </Link>
               <p className="py-2 text-lg text-gray-100 dark:text-gray-300 lg:max-w-xs">
                 Trusted in more than 100 countries & 5 million customers. Have
                 any query?
               </p>
-              <a
+              <Link
                 href="#"
-                className="py-1 px-5 h-9 block w-fit bg-transparent border-2 border-gray-100 dark:border-gray-100 rounded-full shadow-sm text-[17px] text-gray-100 dark:text-gray-100 transition-all duration-500 hover:bg-gray-800 hover:text-white dark:hover:bg-gray-100 dark:hover:text-gray-900 mx-auto lg:mx-0"
+                className="py-1 px-5 h-9 block w-fit bg-transparent border-2 border-gray-100 dark:border-gray-100 rounded-full shadow-sm text-[17px] text-gray-100 dark:text-gray-100 transition-all duration-500 hover:bg-gray-800 hover:text-Indigo dark:hover:bg-gray-100 dark:hover:text-gray-900 mx-auto lg:mx-0"
               >
                 Contact us
-              </a>
+              </Link>
             </div>
 
             <div className="lg:mx-auto text-left">
               <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
-             Company
+                Company
               </h4>
               <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
-                {["Home", "Partners", "Contact", "Vistor Journey","Newsroom", "Help"].map((item) => (
+                {[
+                  "Home",
+                  "Partners",
+                  "Contact",
+                  "Vistor Journey",
+                  "Newsroom",
+                  "Help",
+                ].map((item) => (
                   <li key={item}>
-                    <a
+                    <Link
                       href="#"
                       className="text-gray-100 dark:text-gray-300 hover:underline"
                     >
                       {item}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -45,7 +53,7 @@ const Footer = () => {
 
             <div className="lg:mx-auto text-left">
               <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
-               Countries
+                Countries
               </h4>
               <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
                 {[
@@ -54,15 +62,15 @@ const Footer = () => {
                   "New Zealand",
                   "Europe",
                   "USA",
-                  "UK"
+                  "UK",
                 ].map((item) => (
                   <li key={item}>
-                    <a
+                    <Link
                       href="#"
                       className="text-gray-100 dark:text-gray-300 hover:underline"
                     >
                       {item}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -76,12 +84,12 @@ const Footer = () => {
                 {["FAQs", "Quick Start", "Documentation", "User Guide"].map(
                   (item) => (
                     <li key={item}>
-                      <a
+                      <Link
                         href="#"
                         className="text-gray-100 dark:text-gray-300 hover:underline"
                       >
                         {item}
-                      </a>
+                      </Link>
                     </li>
                   )
                 )}
@@ -96,12 +104,12 @@ const Footer = () => {
                 {["News", "Tips & Tricks", "New Updates", "Events"].map(
                   (item) => (
                     <li key={item}>
-                      <a
+                      <Link
                         href="#"
                         className="text-gray-100 dark:text-gray-300 hover:underline"
                       >
                         {item}
-                      </a>
+                      </Link>
                     </li>
                   )
                 )}
@@ -111,16 +119,20 @@ const Footer = () => {
 
           <div className="py-7 border-t border-gray-200">
             <div className="flex items-center justify-center flex-col lg:justify-between lg:flex-row">
-              <span className="text-lg text-white ">
-                ©<a href="https://pagedone.io/">MigraHub</a> 2024, All rights
-                reserved.
+              <span className="text-lg text-FloralWhite ">
+                ©
+                <Link href="https://pagedone.io/" className="ml-2">
+                  MigraHub
+                </Link>{" "}
+                2024, All rights reserved.
               </span>
               <div className="flex mt-4 space-x-4 sm:justify-center lg:mt-0 ">
-                <a
+                {/* <Link
                   href="javascript:;"
                   className="w-9 h-9 rounded-full bg-FloralWhite flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
                 >
                   <svg
+                    className="w-[1.25rem] h-[1.125rem] text-Indigo"
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
                     height="20"
@@ -135,13 +147,13 @@ const Footer = () => {
                       />
                     </g>
                   </svg>
-                </a>
-                <a
+                </Link> */}
+                <Link
                   href="javascript:;"
                   className="w-9 h-9 rounded-full bg-FloralWhite flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
                 >
                   <svg
-                    className="w-[1.25rem] h-[1.125rem] text-white"
+                    className="w-[1.25rem] h-[1.125rem] text-Indigo"
                     viewBox="0 0 15 15"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -151,13 +163,13 @@ const Footer = () => {
                       fill="currentColor"
                     />
                   </svg>
-                </a>
-                <a
+                </Link>
+                <Link
                   href="javascript:;"
                   className="w-9 h-9 rounded-full bg-FloralWhite flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
                 >
                   <svg
-                    className="w-[1rem] h-[1rem] text-white"
+                    className="w-[1rem] h-[1rem] text-Indigo"
                     viewBox="0 0 13 12"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -167,13 +179,13 @@ const Footer = () => {
                       fill="currentColor"
                     />
                   </svg>
-                </a>
-                <a
+                </Link>
+                <Link
                   href="javascript:;"
-                  className="w-9 h-9 rounded-full bg-FloralWhite flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
+                  className="w-9 h-9 rounded-full bg-FloralWhite  flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
                 >
                   <svg
-                    className="w-[1.25rem] h-[0.875rem] text-white"
+                    className="w-[1.25rem] h-[0.875rem] text-Indigo"
                     viewBox="0 0 16 12"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -185,7 +197,7 @@ const Footer = () => {
                       fill="currentColor"
                     />
                   </svg>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
