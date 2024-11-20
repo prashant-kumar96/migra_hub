@@ -46,11 +46,11 @@ const App = () => {
         <div className="w-1/4 bg-gray-200 overflow-y-auto">
           <LeftMenu newsList={newsList} setSelectedNews={setSelectedNews} />
         </div>
-        <div className="w-1/2 bg-white overflow-y-auto">
+        <div className="w-1/2 bg-white overflow-y-hidden">
           <MiddleContent selectedNews={selectedNews || newsList[0]} />
         </div>
-        <div className="w-1/4 bg-gray-100 overflow-y-auto">
-          <RightMenu newsList={newsList} />
+        <div className="w-1/4 bg-gray-100 overflow-y-hidden">
+          <RightMenu newsList={newsList} setSelectedNews={setSelectedNews} />
         </div>
       </div>
     </>

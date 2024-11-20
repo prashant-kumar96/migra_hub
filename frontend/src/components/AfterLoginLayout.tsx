@@ -91,6 +91,13 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                   >
                     Case Manager
                   </Link>
+
+                  <Link
+                    href="/usersList"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    User List
+                  </Link>
                 </nav>
               )}
             </aside>
