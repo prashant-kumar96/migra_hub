@@ -10,4 +10,5 @@ router.get(
   verifyToken,
   getAssignedUsersToCaseManager
 );
+
 export default router;
