@@ -5,7 +5,9 @@ import { getAssignedUsersToCaseManager } from "@/api/caseManager";
 import { useRouter } from "next/router";
 
 const CaseManagerDashboard = () => {
-    const router = useRouter()
+//  getting user id
+const router = useRouter();
+
   const [usersData, setUsersData] = useState([]);
   const getAssignedUsersToCaseManagerfunction = async () => {
     const medata = await me();
@@ -24,14 +26,13 @@ const CaseManagerDashboard = () => {
     getAssignedUsersToCaseManagerfunction();
   }, []);
 
-
-  const handleView = (userId) =>{
-    router.push({
-        pathname: "/user-details",
-        state: { userId },
-      });
-    
-  }
+  const handleView = (userId) => {
+    router.push(`/user/${userId}`);
+    // router.push({
+    //   pathname: "/user",
+    //   state: { userId },
+    // });
+  };
   return (
     <div>
       {" "}
@@ -55,25 +56,27 @@ const CaseManagerDashboard = () => {
             </th>
           </tr>
         </thead>
-        {/* <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-200">
           {usersData?.map((user, index) => (
             <tr>
-              <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{user?.name}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{user?.email}</td>
               <td className="px-6 py-4 whitespace-nowrap">User</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                  {user.isStripePaymentDone ? "Yes" : "No"}
+                  {user?.isStripePaymentDone ? "Yes" : "No"}
                 </span>
               </td>
 
-              <td className="px-6 py-4 whitespace-nowrap cursor-pointer" onClick={()=>handleView(user?._id)}}>
+              <td
+                className="px-6 py-4 whitespace-nowrap cursor-pointer"
+                onClick={() => handleView(user?._id)}
+              >
                 View
               </td>
             </tr>
           ))}
-        //   <tr></tr>
-        </tbody> */}
+        </tbody>
       </table>
     </div>
   );

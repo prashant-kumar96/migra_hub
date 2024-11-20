@@ -13,6 +13,7 @@ import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/user.js";
 import Stripe from "stripe";
+import serveStaticFiles from "./staticfiles";
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ if (!uri) {
 }
 
 const app: Express = express();
-
+serveStaticFiles(app);
 app.use(cors());
 app.use(bodyParser.json());
 

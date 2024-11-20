@@ -16,3 +16,11 @@ export const getAssignedUsersToCaseManager = async (data) => {
   );
   return result;
 };
+
+export const getAllDetailsOfUser = async (userId) => {
+  console.log("daaatat assignCaseManagerToUser", userId);
+  const result = await axiosInstance.get(
+    `/caseManager/getAllDetailsOfUser?userId=${userId}`
+  );
+  return result;
+};
