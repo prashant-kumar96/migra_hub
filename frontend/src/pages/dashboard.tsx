@@ -1,156 +1,119 @@
+import React, { useEffect, useState } from "react";
+import AfterLoginLayout from "@/components/AfterLoginLayout";
 import { me } from "@/api/auth";
 import { getSingleVisaData } from "@/api/visaData";
-import AfterLoginLayout from "@/components/AfterLoginLayout";
-import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
+import { meDataAtom } from "@/store/meDataAtom";
+import { TfiControlForward } from "react-icons/tfi";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import { RiSlowDownFill } from "react-icons/ri";
-import { TbHelpHexagon } from "react-icons/tb";
-import countryList from "react-select-country-list";
-
 const Dashboard = () => {
   const [visaData, setVisaData] = useState("");
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
-  const getmedata = async () => {
-    const result = await me();
-    console.log("result getmedata", result?.data);
-    setSharedMedata(result?.data?.user);
-
-    const resultVisaData = await getSingleVisaData(
-      result?.data?.user.visaDataId
-    );
-
-    console.log("resultVisaData", resultVisaData);
-    setVisaData(resultVisaData?.data?.data);
-  };
-
-  console.log("sharedMedata", sharedMedata);
-
-  console.log("getVisaData", visaData);
+  const [selectedValue, setSelectedValue] = useState(""); // State for selected breadcrumb value
 
   useEffect(() => {
+    const getmedata = async () => {
+      const result = await me();
+      setSharedMedata(result?.data?.user);
+      const resultVisaData = await getSingleVisaData(result?.data?.user.visaDataId);
+      setVisaData(resultVisaData?.data?.data);
+    };
+
     getmedata();
   }, []);
 
-  function splitCamelCaseToTitleCase(str) {
-    // Add space before uppercase letters, except at the start, and convert to title case
+  const splitCamelCaseToTitleCase = (str) => {
     return str
-      .replace(/([a-z])([A-Z])/g, "$1 $2") // Insert space before uppercase letters
-      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2") // Handle consecutive uppercase letters
-      .split(" ") // Split into words
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize each word
-      .join(" "); // Join back to a single string
-  }
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
 
-  const boxes = [
+  const breadcrumbs = [
     {
       title: splitCamelCaseToTitleCase("ApplyingFromPassportCountry"),
-      value: visaData.areYouApplyingFromPassportCountry ? "YES" : "NO",
+      value: visaData?.areYouApplyingFromPassportCountry ? "YES" : "NO",
     },
     {
       title: splitCamelCaseToTitleCase("citizenshipCountry"),
-      value: visaData?.citizenshipCountry?.label,
+      value: visaData?.citizenshipCountry?.label || "N/A",
     },
     {
       title: splitCamelCaseToTitleCase("deniedVisaToUs"),
-      value: visaData.deniedVisaToUs ? "YES" : "NO",
+      value: visaData?.deniedVisaToUs ? "YES" : "NO",
     },
     {
       title: splitCamelCaseToTitleCase("destinationCountry"),
-      value: visaData?.destinationCountry?.label,
+      value: visaData?.destinationCountry?.label || "N/A",
     },
     {
       title: splitCamelCaseToTitleCase("haveSpouseOrProperty"),
-      value: visaData.haveSpouseOrProperty ? "YES" : "NO",
+      value: visaData?.haveSpouseOrProperty ? "YES" : "NO",
     },
     {
       title: splitCamelCaseToTitleCase("passportCountry"),
-      value: visaData?.passportCountry?.label,
+      value: visaData?.passportCountry?.label || "N/A",
     },
     {
-      title: splitCamelCaseToTitleCase(
-        "travelledInternationallyAndReturnedHome"
-      ),
-      value: visaData.travelledInternationallyAndReturnedHome ? "YES" : "NO",
+      title: splitCamelCaseToTitleCase("travelledInternationallyAndReturnedHome"),
+      value: visaData?.travelledInternationallyAndReturnedHome ? "YES" : "NO",
     },
     {
       title: splitCamelCaseToTitleCase("whereWillYouApplyForYourVisa"),
-      value: visaData?.whereWillYouApplyForYourVisa?.label
-        ? visaData.whereWillYouApplyForYourVisa.label
-        : "-  ",
+      value: visaData?.whereWillYouApplyForYourVisa?.label || "-",
     },
   ];
 
+  const handleBreadcrumbClick = (value) => {
+    setSelectedValue(value); // Update the state with the clicked breadcrumb's value
+  };
+
   return (
-    <div className="flex w-full justify-around items-center flex-wrap-reverse gap-8">
-      {/* <div className="mb-10">
-        <table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 w-[calc(100vw-270px)] overflow-x-auto">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-800 dark:text-gray-300">
-            <tr>
-              {Object.keys(visaData).map((thh, index) => (
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left font-medium"
-                  key={index}
-                >
-                  {camelToSnake(thh)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
-              {Object.values(visaData).map((thh, index) => (
-                <td scope="col" className="px-6 py-3 text-left" key={index}>
-                  {thh ? (thh == true ? "true" : thh) : "-"}
-                </td>
-              ))}
-            </tr>
-          </tbody>
-        </table>
-      </div> */}
-
-      {/* <div className="grid grid-cols-3 gap-12">
-        {boxes.map((box, index) => (
-          <div
-            key={index}
-            className="w-52 aspect-square p-4 rounded-lg bg-gradient-to-r from-[#4c51bf] to-[#6875f5] text-white flex flex-col items-center justify-around space-y-4"
-          >
-            <div className="text-2xl font-bold mb-2 uppercase text-center">
-              {box.value}
-            </div>
-            <div className="text-base font-medium text-center">{box.title}</div>
-          </div>
+    <div className="flex flex-col justify-center items-center space-y-4 p-4">
+      {/* Breadcrumbs */}
+      <nav className="flex flex-wrap items-center justify-center text-sm ">
+        {breadcrumbs.map((box, index) => (
+          <React.Fragment key={index}>
+            {index > 0 && (
+              <span className="mx-2 font-bold"> <TfiControlForward className="font-bold text-Gray"  size={16} /></span>
+            )}
+            <button
+              onClick={() => handleBreadcrumbClick(box.value)}
+              className="text-DarkGray tracking-wider hover:underline  hover: underline-offset-4 hover:text-indigo-400 focus:outline-none"
+            >
+              {box.title}
+            </button>
+          </React.Fragment>
         ))}
-      </div> */}
+      </nav>
 
-      <div className="max-w-lg  p-4 bg-gray-100 rounded-lg shadow">
-        <h2 className="text-xl font-semibold mb-4">User Details</h2>
-        <ul className="space-y-2">
-          {boxes.map((box, index) => (
-            <li className="flex justify-between border-b pb-2 gap-5">
-              <span className="font-medium text-gray-700">{box.title}</span>
-              <span className="text-gray-900"> {box.value}</span>
-            </li>
-          ))}
-        </ul>
+      {/* Display selected value */}
+      <div className="max-w-md p-4 bg-transparent rounded-xl shadow text-center justify-center mt-8">
+        {selectedValue ? (
+          <p className="text-base font-medium text-Indigo">
+            Selected Value: <span className="text-indigo-400">{selectedValue}</span>
+          </p>
+        ) : (
+          <p className="text-gray-500">Click a breadcrumb to view its value</p>
+        )}
       </div>
-
-      <div className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 text-center justify-center mt-8">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
+      <div className="max-w-md p-6 bg-transparent rounded-xl shadow text-center justify-center mt-12">
+        <h5 className="mb-2 text-2xl font-bold tracking-tight text-Indigo text-center">
           Travel Visa Denial Risk
         </h5>
 
         <div className="flex items-center gap-2 justify-center">
-          <RiSlowDownFill className="text-green-500" /> Low
+          <RiSlowDownFill className="text-green-500 text-center" size={24}/> Low
         </div>
-        <h2 className="mb-3 font-normal text-gray-700 dark:text-gray-400 text-2xl text-center">
+        <h2 className="mb-3 font-normal text-LightGray italic text-xl text-center">
           But our service gets your risk even lower
         </h2>
         <Link
           href="/profilepage"
-          className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="inline-flex items-center tracking-widest px-3 py-2 text-sm font-medium text-center text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]"
         >
           Complete Profile
           <svg
