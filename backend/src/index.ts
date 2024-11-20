@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js";
 import visaDataRoutes from "./routes/visaDataRoutes.js";
 import personalDataRoutes from "./routes/personalDataRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
+import caseManagerRoutes from "./routes/caseManagerRoutes.js";
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/user.js";
@@ -101,6 +102,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/visaData", visaDataRoutes);
 app.use("/api/personalData", personalDataRoutes);
 app.use("/api/document", documentRoutes);
+app.use("/api/caseManager", caseManagerRoutes);
 
 const client = new MongoClient(uri);
 app.get("/users", async () => {

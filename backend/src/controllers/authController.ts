@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "../models/user.js";
 import VisaData from "../models/visadata.js";
+import ObjectId from "mongoose";
 
 async function login(req: any, res: any) {
   console.log("login is run");
@@ -167,9 +168,40 @@ async function changePassword(req: any, res: any) {
 async function getUsersWhoHaveDonePayment(req: any, res: any) {
   try {
     // Assuming the token payload contains the user ID
-    const user = await User.find({ isStripePaymentDone: true }).select(
-      "-password"
-    );
+    const user = await User.find({ isStripePaymentDone: true })
+      .select("-password")
+      .populate("assignedCaseManagerId");
+
+    console.log("user", user);
+
+    // const caseManagerData = await User.findById({
+    //   _id: user[0].assignedCaseManagerId,
+    // });
+
+    // console.log("caseManagerData", caseManagerData);
+    // const user = await User.aggregate([
+    //   {
+    //     $match: {
+    //       isStripePaymentDone: true,
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "User",
+    //       localField: "assignedCaseManagerId",
+    //       foreignField: "_id",
+    //       as: "caseManagerData",
+    //     },
+    //   },
+    //   {
+    //     $match: {
+    //       _id: Mongoose0.Types.ObjectId("yourOriginalDocumentId"), // Filter for the specific original document
+    //     },
+    //   },
+    // ]);
+
+    // console.log("user getUsersWhoHaveDonePayment", user);
+    // return;
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

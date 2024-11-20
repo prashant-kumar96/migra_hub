@@ -11,6 +11,8 @@ const Checkrole = () => {
       router.push("/adminDashboard");
     } else if (result?.data?.user?.role === "USER") {
       router.push("/dashboard");
+    } else if (result?.data?.user?.role === "CASE_MANAGER") {
+      router.push("/caseManagerDashboard");
     }
   };
 

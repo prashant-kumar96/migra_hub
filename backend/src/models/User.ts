@@ -12,6 +12,7 @@ export interface IUser extends Document {
   visaDataId: ObjectId;
   stripePaymentSessionId: String;
   isStripePaymentDone: Boolean;
+  assignedCaseManagerId: ObjectId;
 }
 const roleEnum = ["USER", "SA", "CASE_MANAGER"];
 const userSchema: Schema<IUser> = new Schema({
@@ -46,6 +47,7 @@ const userSchema: Schema<IUser> = new Schema({
   contact: { type: String },
   stripePaymentSessionId: { type: String },
   isStripePaymentDone: { type: Boolean },
+  assignedCaseManagerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
 const User = mongoose.model<IUser>("User", userSchema);
