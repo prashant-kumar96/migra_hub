@@ -29,6 +29,7 @@ const upload = multer({
     // Accept file types: jpg, jpeg, png
     if (
       file.mimetype === "image/jpeg" ||
+      file.mimetype === "image/jpg" ||
       file.mimetype === "image/png" ||
       file.mimetype === "/pdf/"
     ) {

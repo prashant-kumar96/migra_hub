@@ -166,7 +166,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
             <main
               className={`flex-1 p-8  transition-all duration-300 bg-FloralWhite ml-0 md:ml-64`}
             >
-              <Stepper />
+              {role === "USER" && <Stepper />}
               <WrappedComponent {...props} extraProp="I'm an extra prop!" />
             </main>
 

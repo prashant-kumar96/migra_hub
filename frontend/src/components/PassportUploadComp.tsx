@@ -24,6 +24,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   // Upload selected files to the backend
   const handleUpload = async () => {
+    console.log("handleUpload is run");
     const formData = new FormData();
     uploadedImages.forEach((file) => {
       formData.append("images", file);
