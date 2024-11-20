@@ -53,8 +53,8 @@ function ShapeOne() {
   return (
     <svg
       className="absolute bottom-0 left-0 -z-[1]"
-      width="404"
-      height="572"
+      width="299"
+      height="672"
       viewBox="0 0 404 572"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

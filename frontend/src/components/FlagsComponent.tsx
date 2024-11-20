@@ -41,7 +41,7 @@ const FlagsComponent = () => {
   }
   return (
     <>
-      <div className="">
+      <div className="overflow-hidden">
         <p className="text-4xl mt-8 font-semibold tracking-wider capitalize text-Indigo font-greycliff text-center">
           Traverse Dream Destination
         </p>
