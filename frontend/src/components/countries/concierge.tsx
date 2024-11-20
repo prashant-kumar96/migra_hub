@@ -10,6 +10,7 @@ const Concierge = () => {
         <h2 className="text-3xl text-Indigo font-bold mb-1">
           Meet Your Concierge
         </h2>
+        <div className="border-b-2 border-CGBlue w-24 mb-6"></div>
         {/* avatar */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
           {/* Avatar */}
