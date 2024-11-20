@@ -80,6 +80,9 @@ const LoginPage = () => {
           4;
           if (result?.data?.user?.role === "SA") {
             router.push("/adminDashboard");
+          }
+          if (result?.data?.user?.role === "CASE_MANAGER") {
+            router.push("/caseManagerDashboard");
           } else router.push("/dashboard");
           setLoading(false);
         } else {
@@ -202,15 +205,15 @@ const LoginPage = () => {
                 type={isPasswordTypePassword ? "password" : "text"}
                 {...register("password", {
                   required: "password is required",
-                  pattern: {
-                    value:
-                      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-                    message:
-                      "Please must contain at least 8 characters, one lowercase, One uppercase, One number",
-                  },
+                  // pattern: {
+                  //   value:
+                  //     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
+                  //   message:
+                  //     "Please must contain at least 8 characters, one lowercase, One uppercase, One number",
+                  // },
                   minLength: {
-                    value: 8,
-                    message: "Password must be atleast 8 characters ",
+                    value: 6,
+                    message: "Password must be atleast 6 characters ",
                   },
                   maxLength: {
                     value: 20,

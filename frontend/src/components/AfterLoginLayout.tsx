@@ -20,6 +20,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
     const meData = async () => {
       const medata = await me();
       console.log("medata", medata);
+      console.log("role is ", medata?.data?.user?.role);
       setRole(medata?.data?.user?.role);
     };
 
@@ -40,7 +41,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                 isOpen ? "translate-x-0" : "-translate-x-full"
               } md:translate-x-0`}
             >
-              {role === "User" && (
+              {role === "USER" && (
                 <nav className="space-y-4">
                   <Link
                     href="/dashboard"
@@ -66,12 +67,16 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                   >
                     Payment
                   </Link>
+                </nav>
+              )}
 
+              {role === "CASE_MANAGER" && (
+                <nav className="space-y-4">
                   <Link
-                    href="/payment"
+                    href="/caseManagerDashboard"
                     className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                   >
-                    Payment
+                    View Assigned Users
                   </Link>
                 </nav>
               )}
@@ -97,6 +102,13 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                     className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                   >
                     User List
+                  </Link>
+
+                  <Link
+                    href="/assignCaseManager"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                  >
+                    Assign Case Manager
                   </Link>
                 </nav>
               )}
