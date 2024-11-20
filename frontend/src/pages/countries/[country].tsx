@@ -6,6 +6,7 @@ import Travel from "@/components/countries/travel";
 import VisaInfo from "@/components/countries/visaInfo";
 import VisaRequirements from "@/components/countries/visaRequirements";
 import VisaTimeline from "@/components/countries/visaTimeline";
+import Footer from "@/components/Footer";
 import { countriesData } from "@/utils/CountriesData";
 
 export async function getStaticPaths() {
@@ -53,6 +54,7 @@ const CountryPage = ({ countryData }) => {
         </div>
       </div>
     </div>
+    <Footer/>
     </>
   
   );
