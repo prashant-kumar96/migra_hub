@@ -1,5 +1,6 @@
 import Concierge from "@/components/countries/concierge";
 import CountriesGrid from "@/components/countries/countriesGrid";
+import Navbar from "@/components/countries/navbar";
 import VisaRejectionReasons from "@/components/countries/rejectionReasons";
 import Travel from "@/components/countries/travel";
 import VisaInfo from "@/components/countries/visaInfo";
@@ -26,7 +27,10 @@ const CountryPage = ({ countryData }) => {
   if (!countryData) return <p>Country data not found</p>;
 
   return (
-    <div className="p-6 flex flex-col items-center">
+    <>
+     <Navbar/>
+      <div className="p-6 flex flex-col items-center">
+     
       {/* Centered CountriesGrid */}
       <div className="mb-8 w-full max-w-screen-2xl">
         <CountriesGrid />
@@ -49,6 +53,8 @@ const CountryPage = ({ countryData }) => {
         </div>
       </div>
     </div>
+    </>
+  
   );
 };
 
