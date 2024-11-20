@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Header from "./Header";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Header2 from "./Header2";
+import Header2 from "./Header";
 
 const BeforeLoginLayout = (WrappedComponent: any) => {
   return function (props: any) {

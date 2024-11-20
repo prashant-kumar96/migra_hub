@@ -19,7 +19,7 @@ const Footer = () => {
                 any query?
               </p>
               <Link
-                href="#"
+                href="/contact"
                 className="py-1 px-5 h-9 block w-fit bg-transparent border-2 border-gray-100 dark:border-gray-100 rounded-full shadow-sm text-[17px] text-gray-100 dark:text-gray-100 transition-all duration-500 hover:bg-gray-800 hover:text-Indigo dark:hover:bg-gray-100 dark:hover:text-gray-900 mx-auto lg:mx-0"
               >
                 Contact us

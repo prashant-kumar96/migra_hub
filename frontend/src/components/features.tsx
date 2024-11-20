@@ -93,7 +93,7 @@ const Features = () => {
               Procedural Steps
             </p>
           </div>
-          <h2 className="max-w-lg mb-6 text-5xl font-semibold tracking-wider  text-Indigo sm:text-4xl md:mx-auto">
+          <h2 className="max-w-lg mb-6 text-5xl font-semibold tracking-wider  text-Indigo sm:text-3xl md:mx-auto">
             <span className="relative inline-block">
               <svg
                 viewBox="0 0 52 24"
@@ -117,7 +117,7 @@ const Features = () => {
             </span>{" "}
             Streamlined Approach to your Visa Journey
           </h2>
-          <p className="text-base text-gray-700 md:text-lg">
+          <p className="text-base text-gray-700 md:text-lg ">
             With Migrahub’s knowledgeable team and client-centered approach,
             applicants can confidently navigate complex visa procedures and
             achieve their goals with ease.

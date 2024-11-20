@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import LeftMenuBar from "./LeftMenuBar";
 import { me } from "@/api/auth";
 import { useRouter } from "next/router";
-import Header2 from "./Header2";
+import Header2 from "./Header";
 import Sidebar from "./LeftSideBar";
 import Link from "next/link";
 import Stepper from "./Stepper";
@@ -45,25 +45,25 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                 <nav className="space-y-4">
                   <Link
                     href="/dashboard"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     Home
                   </Link>
                   <Link
                     href="/profilepage"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     Profile
                   </Link>
                   <Link
                     href="/documentupload"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     My application
                   </Link>
                   <Link
                     href="/payment"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     Payment
                   </Link>
@@ -74,7 +74,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                 <nav className="space-y-4">
                   <Link
                     href="/caseManagerDashboard"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     View Assigned Users
                   </Link>
@@ -85,28 +85,28 @@ const AfterLoginLayout = (WrappedComponent: any) => {
                 <nav className="space-y-4">
                   <Link
                     href="/adminDashboard"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     Home
                   </Link>
 
                   <Link
                     href="/caseManagerPage"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     Case Manager
                   </Link>
 
                   <Link
                     href="/usersList"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     User List
                   </Link>
 
                   <Link
                     href="/assignCaseManager"
-                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
+                    className="block text-gray-900 dark:text-gray-300 hover:text-blue-500 "
                   >
                     Assign Case Manager
                   </Link>
@@ -117,7 +117,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
             {/* Solid Overlay for mobile view */}
             {isOpen && (
               <div
-                className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
+                className="fixed inset-0  bg-opacity-50 z-10 md:hidden"
                 onClick={toggleSidebar}
               ></div>
             )}
@@ -126,7 +126,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
             <div className="md:hidden z-20 absolute top-0">
               <button
                 onClick={toggleSidebar}
-                className="p-2 m-4 text-gray-900 dark:text-gray-300 focus:outline-none"
+                className="p-2 m-4 text-gray-900 focus:outline-none"
               >
                 {isOpen ? (
                   // Left arrow icon
@@ -164,7 +164,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
               </button>
             </div>
             <main
-              className={`flex-1 p-8  transition-all duration-300 bg-gray-100 dark:bg-gray-900 ml-0 md:ml-64`}
+              className={`flex-1 p-8  transition-all duration-300 bg-FloralWhite ml-0 md:ml-64`}
             >
               {/* <Stepper /> */}
               <WrappedComponent {...props} extraProp="I'm an extra prop!" />

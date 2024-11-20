@@ -24,7 +24,7 @@
 /* Define your custom color scheme */
 :root {
   --background: #FBF8F2;
-  --foreground: #171717;
+  --foreground: #FBF8F2;
 }
 
 @media (prefers-color-scheme: dark) {

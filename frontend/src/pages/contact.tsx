@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer";
-import Header2 from "@/components/Header2";
+import Header2 from "@/components/Header";
 import React from "react";
 import { FaBuilding } from "react-icons/fa";
 
