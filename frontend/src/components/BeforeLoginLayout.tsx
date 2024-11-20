@@ -10,7 +10,9 @@ const BeforeLoginLayout = (WrappedComponent: any) => {
     const { data: session } = useSession();
     useEffect(() => {
       if (localStorage.getItem("token") || session) {
-        router.push("/dashboard");
+        console.log();
+        // router.push("/dashboard");
+        router.push("/checkRole");
       }
     }, []);
 
