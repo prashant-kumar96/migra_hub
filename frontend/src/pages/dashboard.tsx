@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import AfterLoginLayout from "@/components/AfterLoginLayout";
 import { me } from "@/api/auth";
 import { getSingleVisaData } from "@/api/visaData";
 import { useAtom } from "jotai";
@@ -7,6 +6,7 @@ import { meDataAtom } from "@/store/meDataAtom";
 import { TfiControlForward } from "react-icons/tfi";
 import Link from "next/link";
 import { RiSlowDownFill } from "react-icons/ri";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 const Dashboard = () => {
   const [visaData, setVisaData] = useState("");
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);

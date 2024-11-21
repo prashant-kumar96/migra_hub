@@ -1,15 +1,15 @@
-import AfterLoginLayout from "@/components/AfterLoginLayout";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import React from "react";
 
 const AdminDashboard = () => {
   return (
     <div>
-      <div class="grid grid-cols-1 gap-4 px-4 mt-8 sm:grid-cols-4 sm:px-8">
-        <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
-          <div class="p-4 bg-green-400">
+      <div className="grid grid-cols-1 gap-4 px-4 mt-8 sm:grid-cols-4 sm:px-8">
+        <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+          <div className="p-4 bg-green-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-12 w-12 text-white"
+              className="h-12 w-12 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -22,16 +22,16 @@ const AdminDashboard = () => {
               ></path>
             </svg>
           </div>
-          <div class="px-4 text-gray-700">
-            <h3 class="text-sm tracking-wider">Total Member</h3>
-            <p class="text-3xl">12,768</p>
+          <div className="px-4 text-gray-700">
+            <h3 className="text-sm tracking-wider">Total Member</h3>
+            <p className="text-3xl">12,768</p>
           </div>
         </div>
-        <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
-          <div class="p-4 bg-blue-400">
+        <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+          <div className="p-4 bg-blue-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-12 w-12 text-white"
+              className="h-12 w-12 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -44,16 +44,16 @@ const AdminDashboard = () => {
               ></path>
             </svg>
           </div>
-          <div class="px-4 text-gray-700">
-            <h3 class="text-sm tracking-wider">Total Post</h3>
-            <p class="text-3xl">39,265</p>
+          <div className="px-4 text-gray-700">
+            <h3 className="text-sm tracking-wider">Total Post</h3>
+            <p className="text-3xl">39,265</p>
           </div>
         </div>
-        <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
-          <div class="p-4 bg-indigo-400">
+        <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+          <div className="p-4 bg-indigo-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-12 w-12 text-white"
+              className="h-12 w-12 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -66,16 +66,16 @@ const AdminDashboard = () => {
               ></path>
             </svg>
           </div>
-          <div class="px-4 text-gray-700">
-            <h3 class="text-sm tracking-wider">Total Comment</h3>
-            <p class="text-3xl">142,334</p>
+          <div className="px-4 text-gray-700">
+            <h3 className="text-sm tracking-wider">Total Comment</h3>
+            <p className="text-3xl">142,334</p>
           </div>
         </div>
-        <div class="flex items-center bg-white border rounded-sm overflow-hidden shadow">
-          <div class="p-4 bg-red-400">
+        <div className="flex items-center bg-white border rounded-sm overflow-hidden shadow">
+          <div className="p-4 bg-red-400">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-12 w-12 text-white"
+              className="h-12 w-12 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -88,9 +88,9 @@ const AdminDashboard = () => {
               ></path>
             </svg>
           </div>
-          <div class="px-4 text-gray-700">
-            <h3 class="text-sm tracking-wider">Server Load</h3>
-            <p class="text-3xl">34.12%</p>
+          <div className="px-4 text-gray-700">
+            <h3 className="text-sm tracking-wider">Server Load</h3>
+            <p className="text-3xl">34.12%</p>
           </div>
         </div>
       </div>

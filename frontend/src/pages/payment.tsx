@@ -1,5 +1,5 @@
 import CheckoutForm from "@/components/CheckoutFormComponent";
-import AfterLoginLayout from "@/components/AfterLoginLayout";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 
 const Home = () => {
   const items = [
