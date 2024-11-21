@@ -19,6 +19,7 @@ import { useAtom } from "jotai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
+import Loader from "./loaders/loader";
 const options = [
   { code: "en", label: "English" },
   { code: "es", label: "Spanish" },
@@ -39,6 +40,7 @@ const PersonalInfo = () => {
     .getData()
     .map((c) => c.value);
 
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [medata] = useAtom(meDataAtom);
 
@@ -56,7 +58,6 @@ const PersonalInfo = () => {
     cityError: "",
   });
 
-  const [loading, setLoading] = useState(false);
   const [addressData, setAddressData] = useState({
     country: "",
     state: "",
@@ -154,6 +155,8 @@ const PersonalInfo = () => {
       //   currentCountryError: "",
       //   citizenshipCountryError: "",
       // }));
+
+      setLoading(true);
       const newdata = {
         ...data,
         firstLanguage,
@@ -498,7 +501,7 @@ const PersonalInfo = () => {
             </div>
 
             {errors.marital_status && (
-              <p className="text-red-500 text-sm mt-2">
+              <p className="text-red-500 text-xs font-bold mt-1">
                 {errors.marital_status.message}
               </p>
             )}
@@ -543,7 +546,7 @@ const PersonalInfo = () => {
               </label>
             </div>
             {errors.gender && (
-              <p className="text-red-500 text-sm mt-2">
+              <p className="text-red-500 text-xs font-bold mt-1">
                 {errors.gender.message}
               </p>
             )}
@@ -574,9 +577,10 @@ const PersonalInfo = () => {
 
         <button
           type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 rounded-lg w-full sm:w-auto px-5 py-2.5"
+          className="text-gray-700  focus:ring-4 rounded-lg w-full sm:w-auto px-5 py-2.5 flex gap-2 items-center border-2"
         >
           Submit
+          {!loading && <Loader />}
         </button>
       </form>
     </div>
