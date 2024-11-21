@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
 import { me } from "@/api/auth";
-import AfterLoginLayout from "@/components/AfterLoginLayout";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 
 const Success = () => {
   const router = useRouter();

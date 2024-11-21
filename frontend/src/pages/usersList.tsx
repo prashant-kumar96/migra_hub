@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AfterLoginLayout from "../components/AfterLoginLayout";
+import AfterLoginLayout from "../components/afterLoginLayout/AfterLoginLayout";
 import { getAllUsersWhoHaveDonePayment } from "@/api/auth";
 
 const UsersList = () => {

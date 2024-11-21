@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import AfterLoginLayout from "@/components/AfterLoginLayout";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import { getAllDetailsOfUser } from "@/api/caseManager";
 import UserDetails from "@/components/UserDetails";
 

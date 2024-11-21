@@ -1,5 +1,5 @@
 import AdditionalDocuments from "@/components/AdditionalDocuments";
-import AfterLoginLayout from "@/components/AfterLoginLayout";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import PassportUploadComp from "@/components/PassportUploadComp";
 import ProofOfFundsComp from "@/components/ProofOfFundsComp";
 import ProofOfTiesComp from "@/components/ProofOfTies";

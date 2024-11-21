@@ -1,5 +1,5 @@
 import { loginUser, registerUser } from "@/api/auth";
-import AfterLoginLayout from "@/components/AfterLoginLayout";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import BeforeLoginLayout from "@/components/BeforeLoginLayout";
 import FaceBookLoginButton from "@/components/FacebookLoginButton";
 import GoogleLoginButton from "@/components/loginButton";

@@ -1,4 +1,4 @@
-import AfterLoginLayout from "@/components/AfterLoginLayout";
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import React, { useState } from "react";
 import {
   CitySelect,
