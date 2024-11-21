@@ -1,6 +1,6 @@
 import React from "react";
 
-const test3 = () => {
+const ButtonLoader = () => {
   return (
     <div>
       <button
@@ -31,4 +31,4 @@ const test3 = () => {
   );
 };
 
-export default test3;
+export default ButtonLoader;
