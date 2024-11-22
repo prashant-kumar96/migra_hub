@@ -19,7 +19,7 @@ import { useAtom } from "jotai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
-import Loader from "./loaders/loader";
+import ButtonLoader from "./loaders/buttonLoader";
 const options = [
   { code: "en", label: "English" },
   { code: "es", label: "Spanish" },
@@ -577,10 +577,10 @@ const PersonalInfo = () => {
 
         <button
           type="submit"
-          className="text-gray-700  focus:ring-4 rounded-lg w-full sm:w-auto px-5 py-2.5 flex gap-2 items-center border-2"
+          className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 flex items-center gap-2"
         >
           Submit
-          {!loading && <Loader />}
+          {loading && <ButtonLoader />}
         </button>
       </form>
     </div>

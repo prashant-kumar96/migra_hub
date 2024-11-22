@@ -3,7 +3,6 @@ import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import BeforeLoginLayout from "@/components/BeforeLoginLayout";
 import FaceBookLoginButton from "@/components/FacebookLoginButton";
 import GoogleLoginButton from "@/components/loginButton";
-import ButtonLoader from "@/utils/buttonLoader";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useRouter } from "next/router";
