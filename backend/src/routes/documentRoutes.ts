@@ -12,6 +12,7 @@ import {
 } from "../controllers/documentController.js";
 const router = express.Router();
 import multer from "multer";
+import path from "path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,22 +23,37 @@ const storage = multer.diskStorage({
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|gif|pdf/;
+  const mimeType = allowedTypes.test(file.mimetype);
+  const extName = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+
+  if (mimeType && extName) {
+    return cb(null, true);
+  } else {
+    cb(new Error("Only images and PDFs are allowed!"));
+  }
+};
+
 const upload = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 * 100 }, // Limit file size to 5MB
-  fileFilter: function (req, file, cb: any) {
-    // Accept file types: jpg, jpeg, png
-    if (
-      file.mimetype === "image/jpeg" ||
-      file.mimetype === "image/jpg" ||
-      file.mimetype === "image/png" ||
-      file.mimetype === "/pdf/"
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Unsupported file format"), false);
-    }
-  },
+  fileFilter: fileFilter,
+  // function (req, file, cb: any) {
+  //   // Accept file types: jpg, jpeg, png
+  //   if (
+  //     file.mimetype === "image/jpeg" ||
+  //     file.mimetype === "image/jpg" ||
+  //     file.mimetype === "image/png" ||
+  //     file.mimetype === "/pdf"
+  //   ) {
+  //     cb(null, true);
+  //   } else {
+  //     cb(new Error("Unsupported file format"), false);
+  //   }
+  // },
 });
 
 router.post(

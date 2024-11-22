@@ -131,7 +131,7 @@ const TravelPlan = () => {
                 <ReactFlagsSelect
                   selected={citizenshipCountry.value}
                   onSelect={onSelectCitizenShipCountry}
-                  className="w-full px-3  border shadow-md border-gray-200 rounded-lg text-gray-800"
+                  className="w-full px-3 dark:bg-white border shadow-md border-gray-200 rounded-lg text-gray-800"
                   countries={citizenshipCountryCodes}
                   searchable
                   /*showSelectedLabel={showSelectedLabel}
@@ -160,7 +160,7 @@ const TravelPlan = () => {
                 <ReactFlagsSelect
                   selected={destinationCountry.value}
                   onSelect={onSelectDestinationCountry}
-                  className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
+                  className="w-full px-3 border dark:bg-white shadow-md border-gray-200 rounded-lg text-gray-800"
                   countries={destinationCountryCodes}
                   searchable
                   /*showSelectedLabel={showSelectedLabel}

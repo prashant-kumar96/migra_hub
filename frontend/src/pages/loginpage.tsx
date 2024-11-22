@@ -13,6 +13,7 @@ import { IoPersonSharp } from "react-icons/io5";
 import { MdEmail } from "react-icons/md";
 import { useAtom } from "jotai";
 import { visaDataAtom } from "@/store/visaDataAtom";
+import ButtonLoader from "@/components/loaders/buttonLoader";
 const LoginPage = () => {
   const router = useRouter();
   console.log(router.query);

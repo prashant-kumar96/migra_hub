@@ -64,7 +64,7 @@ const UploadModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-md w-96">
-        <h2 className="text-xl font-bold mb-4">
+        <h2 className="text-xl font-bold mb-4 dark:text-gray-700">
           Upload Proof of Ties to Home Country
         </h2>
 
@@ -72,9 +72,9 @@ const UploadModal = ({ isOpen, onClose }) => {
         <input
           type="file"
           multiple
-          accept="image/*"
+          accept="image/jpeg,image/gif,image/png,application/pdf"
           onChange={handleFileChange}
-          className="mb-4"
+          className="mb-4 dark:text-gray-700"
         />
 
         {/* Preview Selected Files */}
@@ -175,7 +175,7 @@ const ProofOfTiesComp = () => {
       ) : (
         <button
           onClick={() => setModalOpen(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded "
         >
           Upload Proof of Ties to Home Country
         </button>

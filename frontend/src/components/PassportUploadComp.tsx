@@ -68,16 +68,18 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-md w-96">
-        <h2 className="text-xl font-bold mb-4">Upload Passport Images</h2>
+      <div className="bg-white p-6 rounded-md w-96 w-fit">
+        <h2 className="text-xl font-bold mb-4 dark:text-gray-700">
+          Upload Passport Images
+        </h2>
 
         {/* File Input */}
         <input
           type="file"
           multiple
-          accept="image/*"
+          accept="image/jpeg,image/gif,image/png,application/pdf"
           onChange={handleFileChange}
-          className="mb-4"
+          className="mb-4 dark:text-gray-700 "
         />
 
         {/* Preview Selected Files */}
@@ -91,6 +93,7 @@ const UploadModal = ({ isOpen, onClose }) => {
                 {/* <CrossIcon /> */}
               </div>
               <Image
+                className="m-auto"
                 src={URL.createObjectURL(image)}
                 alt={`upload-${index}`}
                 width={300}

@@ -61,7 +61,7 @@ const PassportUpload = () => {
     <div className="passport-upload-container p-4 max-w-md mx-auto bg-white rounded-lg shadow-md">
       <button
         onClick={openModal}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-blue-500 text-white px-4 py-2 rounded dark:text-gray-800"
       >
         Upload Passport Images
       </button>
