@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  checkifPaymentIsDone,
   createCaseManager,
   getCaseManagers,
   getUsersWhoHaveDonePayment,
@@ -22,6 +23,7 @@ router.get(
 );
 
 router.get("/getCaseManagers", verifyToken, getCaseManagers);
+router.get("/checkifPaymentIsDone", verifyToken, checkifPaymentIsDone);
 
 router.post("/createCaseManager", verifyToken, createCaseManager);
 

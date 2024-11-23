@@ -25,7 +25,7 @@ const AfterLoginLayout = (WrappedComponent: any) => {
     }, []);
     return (
       <>
-        {/* <Header2 /> */}
+        <Header2 />
 
         <div className="flex w-full min-h-screen">
           <div className="flex w-full ">

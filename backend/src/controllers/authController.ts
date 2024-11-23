@@ -291,6 +291,28 @@ async function me(req: any, res: any) {
   }
 }
 
+async function checkifPaymentIsDone(req: any, res: any) {
+  try {
+    // Assuming the token payload contains the user ID
+    const user = await User.findOne({ _id: req.query?.userId }).select(
+      "-password"
+    );
+    if (user?.isStripePaymentDone === true) {
+      res.status(200).json({
+        message: "Stripe payment done",
+        status: true,
+      });
+    } else {
+      return res
+        .status(404)
+        .json({ message: "Stripe payment Not done", status: false });
+    }
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 export {
   login,
   register,
@@ -301,4 +323,5 @@ export {
   getUsersWhoHaveDonePayment,
   createCaseManager,
   getCaseManagers,
+  checkifPaymentIsDone,
 };
