@@ -1,6 +1,8 @@
 import { createCaseManager } from "@/api/auth";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { FaUserTie } from "react-icons/fa";
+import Button from "./ui/buttons/CreateButton";
 
 const CreateCaseManager = ({ isModalOpen, setIsModalOpen }) => {
   const {
@@ -23,12 +25,11 @@ const CreateCaseManager = ({ isModalOpen, setIsModalOpen }) => {
   return (
     <div className="p-4">
       {/* Button to open the modal */}
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+      <Button
+        Icon={FaUserTie}
+        text="Create Case Manager"
         onClick={() => setIsModalOpen(true)}
-      >
-        Create Case Manager
-      </button>
+      />
 
       {/* Modal */}
       {isModalOpen && (
