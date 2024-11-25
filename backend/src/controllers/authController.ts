@@ -293,6 +293,7 @@ async function me(req: any, res: any) {
 
 async function checkifPaymentIsDone(req: any, res: any) {
   try {
+    console.log("Checking if payment is done is run");
     // Assuming the token payload contains the user ID
     const user = await User.findOne({ _id: req.query?.userId }).select(
       "-password"

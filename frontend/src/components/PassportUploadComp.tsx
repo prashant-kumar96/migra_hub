@@ -47,8 +47,9 @@ const UploadModal = ({ isOpen, onClose }) => {
         setSelectedFiles([]);
         setPreviewImages([]);
         onClose();
-        fetchUploadedFiles();
+        // fetchUploadedFiles();
       } else {
+        console.log(response);
         alert("Failed to upload images.");
       }
     } catch (error) {

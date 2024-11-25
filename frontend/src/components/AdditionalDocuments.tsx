@@ -47,6 +47,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         onClose();
         // fetchUploadedFiles();
       } else {
+        console.log("response", response);
         alert("Failed to upload images.");
       }
     } catch (error) {
@@ -81,7 +82,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         />
 
         {/* Preview Selected Files */}
-        <div className="">
+        <div className="max-h-96 overflow-auto">
           {uploadedImages.map((image, index) => (
             <div key={index} className="mb-4 border relative">
               <div
