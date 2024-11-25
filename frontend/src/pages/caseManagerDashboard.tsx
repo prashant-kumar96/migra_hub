@@ -5,8 +5,8 @@ import { getAssignedUsersToCaseManager } from "@/api/caseManager";
 import { useRouter } from "next/router";
 
 const CaseManagerDashboard = () => {
-//  getting user id
-const router = useRouter();
+  //  getting user id
+  const router = useRouter();
 
   const [usersData, setUsersData] = useState([]);
   const getAssignedUsersToCaseManagerfunction = async () => {
@@ -36,7 +36,7 @@ const router = useRouter();
   return (
     <div>
       {" "}
-      <table className="min-w-full divide-y divide-gray-200">
+      <table className="min-w-full divide-y divide-gray-200 text-gray-700">
         <thead>
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">

@@ -8,15 +8,15 @@ const AfterLoginLayout = (WrappedComponent: any) => {
     const [isOpen, setIsOpen] = useState(false);
     const [role, setRole] = useState();
 
-    console.log("isHeaderOpen", isOpen);
+    // console.log("isHeaderOpen", isOpen);
     const toggleSidebar = () => {
       setIsOpen(!isOpen);
     };
 
     const meData = async () => {
       const medata = await me();
-      console.log("medata", medata);
-      console.log("role is ", medata?.data?.user?.role);
+      // console.log("medata", medata);
+      // console.log("role is ", medata?.data?.user?.role);
       setRole(medata?.data?.user?.role);
     };
 

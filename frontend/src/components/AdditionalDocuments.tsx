@@ -47,6 +47,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         onClose();
         // fetchUploadedFiles();
       } else {
+        console.log("response", response);
         alert("Failed to upload images.");
       }
     } catch (error) {
@@ -67,19 +68,21 @@ const UploadModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-md w-96">
-        <h2 className="text-xl font-bold mb-4">Upload Additional Documents</h2>
+        <h2 className="text-xl font-bold mb-4 dark:text-gray-700">
+          Upload Additional Documents
+        </h2>
 
         {/* File Input */}
         <input
           type="file"
           multiple
-          accept="image/*"
+          accept="image/jpeg,image/gif,image/png,application/pdf"
           onChange={handleFileChange}
-          className="mb-4"
+          className="mb-4 dark:text-gray-700"
         />
 
         {/* Preview Selected Files */}
-        <div className="">
+        <div className="max-h-96 overflow-auto">
           {uploadedImages.map((image, index) => (
             <div key={index} className="mb-4 border relative">
               <div

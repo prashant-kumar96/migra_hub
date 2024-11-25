@@ -4,6 +4,8 @@ import Passport from "../models/userDocument.js";
 export const uploadPassportImages = async (req: Request, res: Response) => {
   // console.log("req.files", req.files);
   // console.log("req.body", req.body);
+
+  console.log("this is run");
   try {
     const fileUrls = req.files.map((file) => ({
       url: `http://localhost:5000/uploads/${file.filename}`,

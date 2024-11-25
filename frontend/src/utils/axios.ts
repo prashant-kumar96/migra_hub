@@ -17,8 +17,8 @@ axiosInstance.interceptors.request.use(
     config.headers["Expires"] = "0";
     config.headers["Surrogate-Control"] = "no-store";
     const token = localStorage.getItem("token");
-    console.log("token", token);
-    console.log(typeof token);
+    // console.log("token", token);
+    // console.log(typeof token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -31,7 +31,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log(response, "reeponse");
+    // console.log(response, "reeponse");
     return response;
   },
   (error) => {

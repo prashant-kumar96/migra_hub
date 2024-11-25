@@ -3,7 +3,6 @@ import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import BeforeLoginLayout from "@/components/BeforeLoginLayout";
 import FaceBookLoginButton from "@/components/FacebookLoginButton";
 import GoogleLoginButton from "@/components/loginButton";
-import ButtonLoader from "@/utils/buttonLoader";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -14,6 +13,7 @@ import { IoPersonSharp } from "react-icons/io5";
 import { MdEmail } from "react-icons/md";
 import { useAtom } from "jotai";
 import { visaDataAtom } from "@/store/visaDataAtom";
+import ButtonLoader from "@/components/loaders/buttonLoader";
 const LoginPage = () => {
   const router = useRouter();
   console.log(router.query);
@@ -246,7 +246,7 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 rounded-md"
+              className="w-full bg-indigo-600 text-white py-2 rounded-md flex gap-2 justify-center items-center"
             >
               {isSignUpShowing ? "Sign Up" : "Login"}{" "}
               {loading && <ButtonLoader />}

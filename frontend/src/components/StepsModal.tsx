@@ -187,7 +187,7 @@ const StepsModal: React.FC<Props> = ({
                   <ReactFlagsSelect
                     selected={passportCountry.value}
                     onSelect={handleSelectPassportCountry}
-                    className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
+                    className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
                     countries={countryCodes}
                     searchable
                     /*showSelectedLabel={showSelectedLabel}
@@ -279,7 +279,7 @@ const StepsModal: React.FC<Props> = ({
                       <ReactFlagsSelect
                         selected={data.whereWillYouApplyForYourVisa.value}
                         onSelect={handleSelectFromWhichCountry}
-                        className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800"
+                        className="w-full px-3 border shadow-md dark:bg-white border-gray-200 rounded-lg text-gray-800"
                         countries={countryCodes?.filter(
                           (c) => c !== citizenshipCountry
                         )}

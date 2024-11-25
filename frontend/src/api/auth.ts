@@ -30,6 +30,13 @@ const getAllUsersWhoHaveDonePayment = async () => {
   return result;
 };
 
+const checkifPaymentIsDone = async (userId) => {
+  const result = await axiosInstance.get(
+    `/auth/checkifPaymentIsDone?userId=${userId}`
+  );
+  return result;
+};
+
 export {
   registerUser,
   loginUser,
@@ -37,4 +44,5 @@ export {
   getAllUsersWhoHaveDonePayment,
   createCaseManager,
   getCaseManagers,
+  checkifPaymentIsDone,
 };

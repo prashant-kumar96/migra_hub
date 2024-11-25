@@ -12,14 +12,15 @@ const Dashboard = () => {
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [selectedValue, setSelectedValue] = useState(""); // State for selected breadcrumb value
 
+  const getmedata = async () => {
+    const result = await me();
+    setSharedMedata(result?.data?.user);
+    const resultVisaData = await getSingleVisaData(
+      result?.data?.user.visaDataId
+    );
+    setVisaData(resultVisaData?.data?.data);
+  };
   useEffect(() => {
-    const getmedata = async () => {
-      const result = await me();
-      setSharedMedata(result?.data?.user);
-      const resultVisaData = await getSingleVisaData(result?.data?.user.visaDataId);
-      setVisaData(resultVisaData?.data?.data);
-    };
-
     getmedata();
   }, []);
 
@@ -58,7 +59,9 @@ const Dashboard = () => {
       value: visaData?.passportCountry?.label || "N/A",
     },
     {
-      title: splitCamelCaseToTitleCase("travelledInternationallyAndReturnedHome"),
+      title: splitCamelCaseToTitleCase(
+        "travelledInternationallyAndReturnedHome"
+      ),
       value: visaData?.travelledInternationallyAndReturnedHome ? "YES" : "NO",
     },
     {
@@ -78,7 +81,10 @@ const Dashboard = () => {
         {breadcrumbs.map((box, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
-              <span className="mx-2 font-bold"> <TfiControlForward className="font-bold text-Gray"  size={16} /></span>
+              <span className="mx-2 font-bold">
+                {" "}
+                <TfiControlForward className="font-bold text-Gray" size={16} />
+              </span>
             )}
             <button
               onClick={() => handleBreadcrumbClick(box.value)}
@@ -94,7 +100,8 @@ const Dashboard = () => {
       <div className="max-w-md p-4 bg-transparent rounded-xl shadow text-center justify-center mt-8">
         {selectedValue ? (
           <p className="text-base font-medium text-Indigo">
-            Selected Value: <span className="text-indigo-400">{selectedValue}</span>
+            Selected Value:{" "}
+            <span className="text-indigo-400">{selectedValue}</span>
           </p>
         ) : (
           <p className="text-gray-500">Click a breadcrumb to view its value</p>
@@ -106,7 +113,8 @@ const Dashboard = () => {
         </h5>
 
         <div className="flex items-center gap-2 justify-center">
-          <RiSlowDownFill className="text-green-500 text-center" size={24}/> Low
+          <RiSlowDownFill className="text-green-500 text-center" size={24} />{" "}
+          Low
         </div>
         <h2 className="mb-3 font-normal text-LightGray italic text-xl text-center">
           But our service gets your risk even lower
