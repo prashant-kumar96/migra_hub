@@ -19,17 +19,20 @@ const CaseManagerPage = () => {
       const formattedData =
         result?.data?.user?.map((user) => ({
           ...user,
-          name: user.name
-            ? user.name.charAt(0).toUpperCase() +
-              user.name.slice(1).toLowerCase()
-            : <NATag/>,
-            role: user.role ? (
-              <Role
-                text={user.role.replace(/[^a-zA-Z0-9 ]/g, " ").toLowerCase()}
-                
-              />
-            ) : (
-              <NATag />)
+          name: user.name ? (
+            user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase()
+          ) : (
+            <NATag />
+          ),
+          role: user.role ? (
+            <Role
+              text={user.role.replace(/[^a-zA-Z0-9 ]/g, " ").toLowerCase()}
+              bgClass="bg-indigo-100"
+              textColor="text-indigo-600"
+            />
+          ) : (
+            <NATag />
+          ),
         })) || [];
 
       setCaseManagersList(formattedData);
@@ -50,7 +53,9 @@ const CaseManagerPage = () => {
         setIsModalOpen={setIsModalOpen}
         isModalOpen={isModalOpen}
       />
-      <Table data={caseManagersList} headers={headers} />
+      <div className="relative overflow-auto ">
+        <Table data={caseManagersList} headers={headers} />
+      </div>
     </div>
   );
 };
