@@ -246,7 +246,7 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 rounded-md flex gap-2 justify-center align-center"
+              className="w-full bg-indigo-600 text-white py-2 rounded-md flex gap-2 justify-center items-center"
             >
               {isSignUpShowing ? "Sign Up" : "Login"}{" "}
               {loading && <ButtonLoader />}

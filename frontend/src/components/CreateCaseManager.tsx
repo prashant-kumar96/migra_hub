@@ -33,9 +33,11 @@ const CreateCaseManager = ({ isModalOpen, setIsModalOpen }) => {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-50 z-10 text-gray-700">
           <div className="bg-white p-6 rounded shadow-lg w-96">
-            <h2 className="text-lg font-bold mb-4">Create Case Manager</h2>
+            <h2 className="text-lg font-bold mb-4 text-gray-700 ">
+              Create Case Manager
+            </h2>
 
             {/* Form */}
             <form onSubmit={handleSubmit(onSubmit)}>

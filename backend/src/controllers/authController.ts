@@ -305,7 +305,7 @@ async function checkifPaymentIsDone(req: any, res: any) {
       });
     } else {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Stripe payment Not done", status: false });
     }
   } catch (error) {

@@ -6,7 +6,6 @@ import UserDetails from "@/components/UserDetails";
 
 const User = () => {
   const router = useRouter();
-  const { id } = router.query;
   const [data1, setData1] = useState();
   const getAllDetailsOfUserfunction = async (userId) => {
     const userDetails = await getAllDetailsOfUser(userId);
@@ -15,13 +14,15 @@ const User = () => {
   };
 
   useEffect(() => {
-    getAllDetailsOfUserfunction(id);
-  }, [id]);
+    if (router.query.id) getAllDetailsOfUserfunction(router.query.id);
+  }, [router.query.id]);
 
   return (
-    <div>
-      <h1>User Details</h1>
-      <p>User ID: {id}</p>
+    <div className="text-gray-700">
+      <div className="p-4">
+        <h1>User Details</h1>
+        <p>User ID: {router.query.id}</p>
+      </div>
       {data1 && <UserDetails data={data1} />}
     </div>
   );

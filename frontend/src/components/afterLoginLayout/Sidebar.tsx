@@ -48,11 +48,11 @@ const sidebarData = [
         icon: <MdDashboardCustomize size={28} />,
         href: "/caseManagerDashboard",
       },
-      {
-        name: "Assigned Users",
-        icon: <ImUsers size={28} />,
-        href: "/assignedUsers",
-      },
+      // {
+      //   name: "Assigned Users",
+      //   icon: <ImUsers size={28} />,
+      //   href: "/assignedUsers",
+      // },
     ],
   },
   {
@@ -69,6 +69,11 @@ const sidebarData = [
         href: "/caseManagerPage",
       },
       { name: "User", icon: <ImUser size={28} />, href: "/usersList" },
+      {
+        name: "Assign Case Manager",
+        icon: <ImUser size={28} />,
+        href: "/assignCaseManager",
+      },
     ],
   },
 ];
@@ -144,16 +149,16 @@ const Sidebar = () => {
               // small screen logo
               <Image
                 src="/logo/onlyM.png"
-                width={230} 
-                height={60} 
+                width={230}
+                height={60}
                 alt="Small Logo"
               />
             ) : (
               // large screen logo
               <Image
                 src="/logo/MigraHub.png"
-                width={230} 
-                height={60} 
+                width={230}
+                height={60}
                 alt="Large Logo"
               />
             )}

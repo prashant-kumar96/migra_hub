@@ -1,10 +1,13 @@
 import { loadStripe } from "@stripe/stripe-js";
+import { useState } from "react";
+import ButtonLoader from "./loaders/buttonLoader";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function CheckoutForm({ items }) {
-  
+  const [loading, setLoading] = useState(false);
   const handleCheckout = async () => {
+    setLoading(true);
     const stripe = await stripePromise;
 
     const response = await fetch(
@@ -29,9 +32,9 @@ export default function CheckoutForm({ items }) {
   return (
     <button
       onClick={handleCheckout}
-      className="bg-blue-500 text-white px-4 py-2 rounded"
+      className="bg-blue-500 text-white px-4 py-2 rounded flex items-center justify-center gap-2"
     >
-      Checkout
+      Checkout {loading && <ButtonLoader />}
     </button>
   );
 }

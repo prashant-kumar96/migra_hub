@@ -51,7 +51,7 @@ const UsersList = () => {
     <div>
       User List
       <div>
-        <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200 text-gray-700">
           <thead>
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -84,13 +84,14 @@ const UsersList = () => {
                 </td>
                 {user.assignedCaseManagerId ? (
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {user.assignedCaseManagerId?.name}
+                    Assigned to: {user.assignedCaseManagerId?.name}
                   </td>
                 ) : (
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
                       value={selectedOption}
                       onChange={(e) => handleSelectChange(e, user._id)}
+                      className="border-2 p-2"
                     >
                       {caseManagersList?.map((manager, index) => (
                         <option value={manager._id}>{manager.name}</option>

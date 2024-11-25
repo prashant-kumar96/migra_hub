@@ -3,13 +3,13 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { RiUserSharedFill ,  RiUserReceivedFill } from "react-icons/ri";
+import { RiUserSharedFill, RiUserReceivedFill } from "react-icons/ri";
 function Header2() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [token, setToken] = useState("");
   const { data: session } = useSession();
-  console.log("session", session);
+  // console.log("session", session);
 
   const router = useRouter();
 
@@ -71,10 +71,10 @@ function Header2() {
 
           {session || token ? (
             <button
-             className="bg-FloralWhite text-Indigo p-1 rounded-md w-full hover:bg-Indigo hover:text-FloralWhite"
+              className="bg-FloralWhite text-Indigo p-1 rounded-md w-full hover:bg-Indigo hover:text-FloralWhite"
               onClick={handleSignout}
             >
-          < RiUserReceivedFill/>
+              <RiUserReceivedFill />
             </button>
           ) : (
             <a
@@ -82,7 +82,7 @@ function Header2() {
               onClick={handleLogin}
               className="bg-FloralWhite text-Indigo p-1 rounded-md w-full hover:bg-Indigo hover:text-FloralWhite"
             >
-             <RiUserSharedFill size={20} />
+              <RiUserSharedFill size={20} />
             </a>
           )}
         </nav>
