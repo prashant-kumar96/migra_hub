@@ -1,10 +1,10 @@
 import React from "react";
 
-const Role = ({ text}) => {
+const Role = ({ text, bgClass, textColor}) => {
   return (
     <button
       type="button"
-      className={`px-3 py-1 rounded-lg font-medium bg-indigo-100 text-indigo-600`}
+      className={`px-2 tracking-wider whitespace-nowrap py-1 rounded-xl font-medium ${bgClass} ${textColor}`}
       disabled
     >
       {text}

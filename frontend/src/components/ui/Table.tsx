@@ -11,12 +11,12 @@ const Table = ({ headers, data }) => {
   }
 
   return (
-    <div className="relative overflow-x-auto rounded-2xl p-4">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-2xl mx-4">
       <table className="w-full text-left rtl:text-right text-DarkGray">
-        <thead className=" font-semibold font-greycliff text-FloralWhite uppercase bg-gradient-to-r from-[#333366] to-[#2C415A]">
+        <thead className="font-semibold font-greycliff text-FloralWhite uppercase bg-gradient-to-r from-[#333366] to-[#2C415A]">
           <tr>
             {headers.map((header, index) => (
-              <th key={index} className="px-6 py-3">
+              <th key={index} className="px-4 py-2">
                 <span className="text-[19px]">{header}</span>
               </th>
             ))}
@@ -26,10 +26,10 @@ const Table = ({ headers, data }) => {
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              className="odd:bg-white even:bg-gray-50 border-b hover:bg-gray-100 transition-colors duration-200"
+              className="odd:bg-white even:bg-gray-100 border-b hover:bg-gray-200 transition-colors duration-200"
             >
               {headers.map((header, colIndex) => (
-                <td key={colIndex} className="px-6 py-4">
+                <td key={colIndex} className="px-3 py-1">
                   {header === "Action" ? (
                     <a
                       href="#"
