@@ -5,6 +5,7 @@ import { useAtom } from "jotai";
 import { getSinglePassportData } from "@/api/document";
 import ButtonLoader from "./loaders/buttonLoader";
 import CrossIcon from "@/utils/crossIcon";
+import DocModal from "./DocModal";
 // import CrossIcon from "@/utils/elements/icons/cross-icon";
 
 const UploadModal = ({ isOpen, onClose }) => {
@@ -144,6 +145,8 @@ const UploadModal = ({ isOpen, onClose }) => {
 
 const PassportUploadComp = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isdocModalOpen, setisDocModalOpen] = useState(false);
+  const [docData, setDocData] = useState();
   const [loading, setLoading] = useState();
   const [isPassportPreviouslyUploaded, setPassportPreviouslyUploaded] =
     useState(false);
@@ -156,9 +159,13 @@ const PassportUploadComp = () => {
       const response = await getSinglePassportData(medata?._id);
       if (response) {
         console.log("response fetchUploadedPassport", response);
+        console.log("response", response?.data?.result?.passportImages);
         // const data = await response.json();
+
+        // setisDocModalOpen(true);
         if (response?.data?.status === true) {
           setPassportPreviouslyUploaded(true);
+          setDocData(response?.data?.result?.passportImages);
         }
         // setUploadedFiles(data);
       } else {
@@ -171,7 +178,7 @@ const PassportUploadComp = () => {
 
   useEffect(() => {
     fetchUploadedPassport();
-  });
+  }, []);
   return (
     <div className="p-6">
       {isPassportPreviouslyUploaded ? (
@@ -193,6 +200,12 @@ const PassportUploadComp = () => {
           <span className="text-green-800 font-medium">
             Passport already uploaded
           </span>
+          <p
+            className="ps-4 text-gray-900"
+            onClick={() => setisDocModalOpen(true)}
+          >
+            View
+          </p>
         </div>
       ) : (
         <button
@@ -203,6 +216,9 @@ const PassportUploadComp = () => {
         </button>
       )}
       <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      {isdocModalOpen && (
+        <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
+      )}
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { useAtom } from "jotai";
 import { getSingleProofOfTiesData } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
 import ButtonLoader from "./loaders/buttonLoader";
+import DocModal from "./DocModal";
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -139,6 +140,8 @@ const ProofOfTiesComp = () => {
     isProofOfTiesCompPreviouslyUploaded,
     setProofOfTiesCompPreviouslyUploaded,
   ] = useState(false);
+  const [isdocModalOpen, setisDocModalOpen] = useState(false);
+  const [docData, setDocData] = useState();
   const [medata] = useAtom(meDataAtom);
   const [loading, setLoading] = useState(false);
   const fetchUploadedProofOfTies = async () => {
@@ -150,6 +153,7 @@ const ProofOfTiesComp = () => {
         // const data = await response.json();
         if (response.data?.status === true) {
           setProofOfTiesCompPreviouslyUploaded(true);
+          setDocData(response?.data?.result?.proofOfTiesImages);
         }
         // setUploadedFiles(data);
       } else {
@@ -162,7 +166,7 @@ const ProofOfTiesComp = () => {
 
   useEffect(() => {
     fetchUploadedProofOfTies();
-  });
+  }, []);
   return (
     <div className="p-6">
       {isProofOfTiesCompPreviouslyUploaded ? (
@@ -184,6 +188,12 @@ const ProofOfTiesComp = () => {
           <span className="text-green-800 font-medium">
             Proof of Ties To home country already uploaded
           </span>
+          <p
+            className="ps-4 text-gray-900"
+            onClick={() => setisDocModalOpen(true)}
+          >
+            View
+          </p>
         </div>
       ) : (
         <button
@@ -194,6 +204,9 @@ const ProofOfTiesComp = () => {
         </button>
       )}
       <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      {isdocModalOpen && (
+        <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
+      )}
     </div>
   );
 };

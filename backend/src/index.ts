@@ -26,16 +26,8 @@ if (!uri) {
 const app: Express = express();
 serveStaticFiles(app);
 
-// app.use(cors());
-// app.use(cors());
+app.use(cors());
 
-app.use(
-  cors({
-    origin: "http://localhost:3000", // Replace with your frontend's origin
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
-  })
-);
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 3000;
@@ -72,6 +64,10 @@ app.post("/create-checkout-session", async (req, res) => {
 });
 
 app.get("/get-pdf-url", (req, res) => {
+  // res.setHeader(
+  //   "Access-Control-Allow-Origin",
+  //   "https://localhost:3000/testPdf"
+  // );
   res
     .status(200)
     .send({ url: "uploads/1732266753541-Scope of Work MigraHub __ LVPL.pdf" });

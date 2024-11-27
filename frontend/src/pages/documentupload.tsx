@@ -32,6 +32,7 @@ const DocumentUpload = () => {
               <th scope="col" className="px-6 py-3">
                 Button
               </th>
+              <th></th>
             </tr>
           </thead>
           <tbody>

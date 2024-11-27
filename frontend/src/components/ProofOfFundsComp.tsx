@@ -8,6 +8,7 @@ import {
 } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
 import ButtonLoader from "./loaders/buttonLoader";
+import DocModal from "./DocModal";
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -144,6 +145,9 @@ const ProofOfFundsComp = () => {
     isProofOfFundsCompPreviouslyUploaded,
     setProofOfFundsCompPreviouslyUploaded,
   ] = useState(false);
+  const [isdocModalOpen, setisDocModalOpen] = useState(false);
+  const [docData, setDocData] = useState();
+
   const [medata] = useAtom(meDataAtom);
   const fetchUploadedProofOfFunds = async () => {
     try {
@@ -154,6 +158,7 @@ const ProofOfFundsComp = () => {
         // const data = await response.json();
         if (response.data?.status === true) {
           setProofOfFundsCompPreviouslyUploaded(true);
+          setDocData(response?.data?.result?.proofOfFundsImages);
         }
         // setUploadedFiles(data);
       } else {
@@ -166,7 +171,7 @@ const ProofOfFundsComp = () => {
 
   useEffect(() => {
     fetchUploadedProofOfFunds();
-  });
+  }, []);
   return (
     <div className="p-6">
       {isProofOfFundsCompPreviouslyUploaded ? (
@@ -188,6 +193,12 @@ const ProofOfFundsComp = () => {
           <span className="text-green-800 font-medium">
             Proof of Funds already uploaded
           </span>
+          <p
+            className="ps-4 text-gray-900"
+            onClick={() => setisDocModalOpen(true)}
+          >
+            View
+          </p>
         </div>
       ) : (
         <button
@@ -198,6 +209,9 @@ const ProofOfFundsComp = () => {
         </button>
       )}
       <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      {isdocModalOpen && (
+        <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
+      )}
     </div>
   );
 };

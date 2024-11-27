@@ -8,6 +8,7 @@ import {
 } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
 import ButtonLoader from "./loaders/buttonLoader";
+import DocModal from "./DocModal";
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -139,7 +140,8 @@ const UploadModal = ({ isOpen, onClose }) => {
 
 const AdditionalDocuments = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-
+  const [isdocModalOpen, setisDocModalOpen] = useState(false);
+  const [docData, setDocData] = useState();
   const [
     areAdditionalDocumentsPreviouslyUploaded,
     setAreAdditionalDocumentsPreviouslyUploaded,
@@ -155,6 +157,7 @@ const AdditionalDocuments = () => {
         // const data = await response.json();
         if (response.data?.status === true) {
           setAreAdditionalDocumentsPreviouslyUploaded(true);
+          setDocData(response?.data?.result?.additionalDocuments);
         }
         // setUploadedFiles(data);
       } else {
@@ -167,7 +170,7 @@ const AdditionalDocuments = () => {
 
   useEffect(() => {
     fetchUploadedProofOfTies();
-  });
+  }, []);
   return (
     <div className="p-6">
       {areAdditionalDocumentsPreviouslyUploaded ? (
@@ -189,6 +192,12 @@ const AdditionalDocuments = () => {
           <span className="text-green-800 font-medium">
             Additional Documents already uploaded
           </span>
+          <p
+            className="ps-4 text-gray-900"
+            onClick={() => setisDocModalOpen(true)}
+          >
+            View
+          </p>
         </div>
       ) : (
         <button
@@ -199,6 +208,9 @@ const AdditionalDocuments = () => {
         </button>
       )}
       <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      {isdocModalOpen && (
+        <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
+      )}
     </div>
   );
 };
