@@ -1,5 +1,4 @@
 import UserDocument from "../models/userDocument.js";
-import Passport from "../models/userDocument.js";
 
 export const uploadPassportImages = async (req: Request, res: Response) => {
   // console.log("req.files", req.files);
@@ -141,15 +140,24 @@ export const getSinglePassportData = async (req: Request, res: Response) => {
   try {
     // console.log("getSinglePassportData is run");
     const userId = req.query?.userId;
-    const result = await Passport.findOne({ userId: userId });
-    // console.log("find getSinglePassportData result", result);
+    const result = await UserDocument.findOne({
+      userId: userId,
+      passportImages: { $exists: true, $ne: [] },
+    });
+    console.log("find getSinglePassportData result", result);
 
     if (result?.passportImages.length > 0) {
-      res
-        .status(200)
-        .json({ message: "Passport Data fetched successfully", result });
+      res.status(200).json({
+        message: "Passport Data fetched successfully",
+        result,
+        status: true,
+      });
     } else {
-      res.status(404).json({ message: "Passport Data Does Not Exist", result });
+      res.status(200).json({
+        message: "Passport Data Does Not Exist",
+        result,
+        status: false,
+      });
     }
   } catch (err) {
     console.log("ERROr=.>", err);
@@ -163,12 +171,24 @@ export const getSingleProofOfFundsData = async (
 ) => {
   try {
     const userId = req?.query?.userId;
-    const result = await UserDocument.findOne({ userId: userId });
+    const result = await UserDocument.findOne({
+      userId: userId,
+      proofOfFundsImages: { $exists: true, $ne: [] },
+    });
     // console.log("find getSinglePassportData result", result);
-    if (result?.proofOfFundsImages?.length > 0)
-      res
-        .status(200)
-        .json({ message: "Proof Of Funds Data fetched successfully", result });
+    if (result?.proofOfFundsImages?.length > 0) {
+      res.status(200).json({
+        message: "Proof Of Funds Data fetched successfully",
+        result,
+        status: true,
+      });
+    } else {
+      res.status(200).json({
+        message: "Proof Of Funds Data Does Not Exist",
+        result,
+        status: false,
+      });
+    }
   } catch (err) {
     console.log("ERROr=.>", err);
     res.status(400).json({ message: err });
@@ -179,13 +199,24 @@ export const getSingleProofOfTiesData = async (req: Request, res: Response) => {
   try {
     // console.log("getSingleProofOfTiesData is run");
     const userId = req?.query?.userId;
-    const result = await UserDocument.findOne({ userId: userId });
+    const result = await UserDocument.findOne({
+      userId: userId,
+      proofOfTiesImages: { $exists: true, $ne: [] },
+    });
     // console.log("find getSinglePassportData result", result);
-    if (result?.proofOfTiesImages?.length > 0)
+    if (result?.proofOfTiesImages?.length > 0) {
       res.status(200).json({
         message: "Proof Of Ties to country Data fetched successfully",
         result,
+        status: true,
       });
+    } else {
+      res.status(200).json({
+        message: "Proof Of Ties to country Data Does Not Exist",
+        result,
+        status: false,
+      });
+    }
   } catch (err) {
     console.log("ERROr=.>", err);
     res.status(400).json({ message: err });
@@ -196,17 +227,22 @@ export const getAdditionalDocuments = async (req: Request, res: Response) => {
   try {
     console.log("getAdditionalDocuments is run");
     const userId = req?.query?.userId;
-    const result = await UserDocument.findOne({ userId: userId });
+    const result = await UserDocument.findOne({
+      userId: userId,
+      additionalDocuments: { $exists: true, $ne: [] },
+    });
     // console.log("find getSinglePassportData result", result);
     if (result?.additionalDocuments?.length > 0) {
       res.status(200).json({
         message: "Additional Documents Data fetched successfully",
         result,
+        status: true,
       });
     } else {
-      res.status(404).json({
+      res.status(200).json({
         message: "Additional Documents Not Found",
         // result,
+        status: false,
       });
     }
   } catch (err) {
@@ -214,3 +250,71 @@ export const getAdditionalDocuments = async (req: Request, res: Response) => {
     res.status(400).json({ message: err });
   }
 };
+
+export const checkWhetherDocumentsAreUploadedBeforePayment = async (
+  req,
+  res
+) => {
+  try {
+    const userId = req.query?.userId;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const userDocumentResult = await UserDocument.findOne({
+      userId: userId,
+      proofOfFundsImages: { $exists: true, $ne: [] }, // Ensures field exists and is not empty
+      proofOfTiesImages: { $exists: true, $ne: [] },
+      passportImages: { $exists: true, $ne: [] },
+      additionalDocuments: { $exists: true, $ne: [] },
+    });
+
+    if (userDocumentResult) {
+      res.status(200).json({
+        message:
+          "All documents fetched successfully. Please continue with payment.",
+        status: true,
+      });
+    } else {
+      res.status(200).json({
+        message: "Please upload the passport and other required data.",
+        status: false,
+      });
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    res
+      .status(500)
+      .json({ message: "An error occurred while processing the request." });
+  }
+};
+
+// export const checkWhetherDocumentsAreUploadedBeforePayment = async () => {
+//   try {
+//     const userId = req.query?.userId;
+//     const userDocumentResult = await UserDocument.findOne({
+//       userId: userId,
+//       proofOfFundsImages: 1,
+//       proofOfTiesImages: 1,
+//       passportImages: 1,
+//       additionalDocuments: 1,
+//     });
+
+//     // console.log("find getSinglePassportData result", result);
+
+//     if (userDocumentResult.length > 0) {
+//       res.status(200).json({
+//         message:
+//           "All Documents fetched successfully. Please continue with Payment",
+//       });
+//     } else {
+//       res.status(200).json({
+//         message: "Please Upload the Passport and other Data if not Uploaded",
+//       });
+//     }
+//   } catch (err) {
+//     console.log("ERROr=.>", err);
+//     res.status(400).json({ message: err });
+//   }
+// };

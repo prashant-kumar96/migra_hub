@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import AfterLoginLayout from "../components/afterLoginLayout/AfterLoginLayout";
-import { getAllUsersWhoHaveDonePayment } from "@/api/auth";
+
 import NATag from "@/components/ui/tags/NATag";
 import Role from "@/components/ui/tags/Role";
 import Table from "@/components/ui/Table";
+import { getAllUsers } from "@/api/auth";
 
 const UsersList = () => {
   const [usersData, setUsersData] = useState();
   const headers = ["Name", "Email", "Role", "Payment"];
 
-  const getAllUsersWhoHaveDonePaymentFunction = async () => {
+  const getAllUsersfunction = async () => {
     try {
-      const result = await getAllUsersWhoHaveDonePayment();
-      console.log("result getAllUsersWhoHaveDonePaymentFunction", result);
+      const result = await getAllUsers();
+      console.log("result getAllUsers", result);
       const formattedData =
         result?.data?.user?.map((user) => ({
           ...user,
@@ -39,7 +40,7 @@ const UsersList = () => {
   };
 
   useEffect(() => {
-    getAllUsersWhoHaveDonePaymentFunction();
+    getAllUsersfunction();
   }, []);
 
   return (

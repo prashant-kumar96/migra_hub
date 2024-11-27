@@ -20,6 +20,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import ButtonLoader from "./loaders/buttonLoader";
+import { me } from "@/api/auth";
 const options = [
   { code: "en", label: "English" },
   { code: "es", label: "Spanish" },
@@ -42,7 +43,7 @@ const PersonalInfo = () => {
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [medata] = useAtom(meDataAtom);
+  const [medata, setMeData] = useAtom(meDataAtom);
 
   console.log("medata", medata);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
@@ -205,11 +206,14 @@ const PersonalInfo = () => {
   };
 
   const getPersonalInfofunction = async () => {
-    const result = await getPersonalData(medata?._id);
+    const medata = await me();
+
+    const result = await getPersonalData(medata?.data?.user?._id);
+    setMeData(medata?.data?.user);
     console.log("getPersonalData", result);
-    if (result?.status === 200) {
+    if (result?.data?.status === true) {
       // toast(result?.data?.message);
-      alert("Personal Data is Already filled");
+      alert("Personal Data is Already filled. Please Upload your Documents");
       // Navigate to dashboard
       // console.log("we are here");
       // localStorage.setItem("token", result?.data?.token);

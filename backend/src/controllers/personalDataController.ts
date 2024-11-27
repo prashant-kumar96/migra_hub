@@ -23,7 +23,15 @@ export const getSinglePersonalData = async (req: Request, res: Response) => {
     console.log("findSinglePersonalData result", result);
 
     if (result)
-      res.status(200).json({ message: "Personal Data fetched successfully" });
+      res
+        .status(200)
+        .json({ message: "Personal Data fetched successfully", status: true });
+    else {
+      res.status(200).json({
+        message: "No personal data exist for this user",
+        status: false,
+      });
+    }
   } catch (err) {
     console.log("ERROr=.>", err);
     res.status(400).json({ message: err });

@@ -114,7 +114,7 @@ const Sidebar = () => {
     if (localStorage.getItem("token")) {
       meData();
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {

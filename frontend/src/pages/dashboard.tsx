@@ -107,7 +107,7 @@ const Dashboard = () => {
           <p className="text-gray-500">Click a breadcrumb to view its value</p>
         )}
       </div>
-      <div className="max-w-md p-6 bg-transparent rounded-xl shadow text-center justify-center mt-12">
+      <div className="max-w-md p-6 bg-transparent rounded-xl shadow text-center justify-center mt-12 bg-white ">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-Indigo text-center">
           Travel Visa Denial Risk
         </h5>

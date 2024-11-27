@@ -27,3 +27,11 @@ export const getAdditionalDocuments = async (userId: {}) => {
   );
   return result;
 };
+
+export const checkWhetherDocumentsAreUploadedBeforePayment =
+  async (userId: {}) => {
+    const result = await axiosInstance.get(
+      `/document/checkWhetherDocumentsAreUploadedBeforePayment?userId=${userId}`
+    );
+    return result;
+  };

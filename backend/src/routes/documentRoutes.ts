@@ -1,6 +1,7 @@
 import express from "express";
 import verifyToken from "../middleware/authenticate.js";
 import {
+  checkWhetherDocumentsAreUploadedBeforePayment,
   getAdditionalDocuments,
   getSinglePassportData,
   getSingleProofOfFundsData,
@@ -90,5 +91,10 @@ router.get(
 router.get("/getSingleProofOfTiesData", verifyToken, getSingleProofOfTiesData);
 
 router.get("/getAdditionalDocuments", verifyToken, getAdditionalDocuments);
+router.get(
+  "/checkWhetherDocumentsAreUploadedBeforePayment",
+  verifyToken,
+  checkWhetherDocumentsAreUploadedBeforePayment
+);
 
 export default router;

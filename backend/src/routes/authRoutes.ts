@@ -2,6 +2,7 @@ import express from "express";
 import {
   checkifPaymentIsDone,
   createCaseManager,
+  getAllUsers,
   getCaseManagers,
   getUsersWhoHaveDonePayment,
   login,
@@ -24,6 +25,7 @@ router.get(
 
 router.get("/getCaseManagers", verifyToken, getCaseManagers);
 router.get("/checkifPaymentIsDone", verifyToken, checkifPaymentIsDone);
+router.get("/getAllUsers", verifyToken, getAllUsers);
 
 router.post("/createCaseManager", verifyToken, createCaseManager);
 

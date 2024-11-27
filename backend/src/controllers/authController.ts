@@ -168,40 +168,11 @@ async function changePassword(req: any, res: any) {
 async function getUsersWhoHaveDonePayment(req: any, res: any) {
   try {
     // Assuming the token payload contains the user ID
-    const user = await User.find({ isStripePaymentDone: true })
+    const user = await User.find({ role: "USER", isStripePaymentDone: true })
       .select("-password")
       .populate("assignedCaseManagerId");
 
     console.log("user", user);
-
-    // const caseManagerData = await User.findById({
-    //   _id: user[0].assignedCaseManagerId,
-    // });
-
-    // console.log("caseManagerData", caseManagerData);
-    // const user = await User.aggregate([
-    //   {
-    //     $match: {
-    //       isStripePaymentDone: true,
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: "User",
-    //       localField: "assignedCaseManagerId",
-    //       foreignField: "_id",
-    //       as: "caseManagerData",
-    //     },
-    //   },
-    //   {
-    //     $match: {
-    //       _id: Mongoose0.Types.ObjectId("yourOriginalDocumentId"), // Filter for the specific original document
-    //     },
-    //   },
-    // ]);
-
-    // console.log("user getUsersWhoHaveDonePayment", user);
-    // return;
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -209,6 +180,25 @@ async function getUsersWhoHaveDonePayment(req: any, res: any) {
     res.json({
       message: "Users fetched successfully",
       user: user,
+    });
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function getAllUsers(req: any, res: any) {
+  try {
+    // Assuming the token payload contains the user ID
+    const usersList = await User.find({ role: "USER" }).select("-password");
+
+    if (!usersList) {
+      return res.status(404).json({ message: "User not found", status: false });
+    }
+    res.json({
+      message: "Users fetched successfully",
+      user: usersList,
+      status: true,
     });
   } catch (error) {
     console.error("Error fetching user details:", error);
@@ -325,4 +315,5 @@ export {
   createCaseManager,
   getCaseManagers,
   checkifPaymentIsDone,
+  getAllUsers,
 };

@@ -1,12 +1,16 @@
 import { checkifPaymentIsDone, me } from "@/api/auth";
+import { checkWhetherDocumentsAreUploadedBeforePayment } from "@/api/document";
+import { getPersonalData } from "@/api/personalData";
 import CheckoutForm from "@/components/CheckoutFormComponent";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import { meDataAtom } from "@/store/meDataAtom";
 import axiosInstance from "@/utils/axios";
 import { useAtom } from "jotai";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const Home = () => {
+  const router = useRouter();
   const items = [
     { name: "Product 1", price: 2000, quantity: 1 },
     { name: "Product 2", price: 1500, quantity: 2 },
@@ -28,6 +32,32 @@ const Home = () => {
     console.log("result", result1?.data?.status);
     setIsStripePaymentDone(result1?.data?.status);
   };
+
+  const getPersonalInfofunction = async () => {
+    const medata = await me();
+    const result = await getPersonalData(medata?.data?.user?._id);
+    console.log("getPersonalData", result);
+    if (result?.data?.status === true) {
+      const result1 = await checkWhetherDocumentsAreUploadedBeforePayment(
+        medata?.data?.user?._id
+      );
+
+      console.log("result1", result1);
+      if (result1?.data?.status === false) {
+        alert("Please Upload all the documents first");
+        router.push("/documentupload");
+      }
+      return;
+    } else {
+      alert("Please fill the personal Data first");
+      router.push("/profilepage");
+      console.log("result@@@", result);
+    }
+  };
+
+  useEffect(() => {
+    getPersonalInfofunction();
+  }, []);
 
   useEffect(() => {
     getmedata();

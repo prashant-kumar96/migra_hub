@@ -7,11 +7,13 @@ import {
   getSingleProofOfTiesData,
 } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
+import ButtonLoader from "./loaders/buttonLoader";
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [medata] = useAtom(meDataAtom);
+  const [loading, setLoading] = useState(false);
 
   console.log("selectedFiles", selectedFiles);
   // Fetch uploaded files when modal opens
@@ -24,6 +26,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   // Upload selected files to the backend
   const handleUpload = async () => {
+    setLoading(true);
     const formData = new FormData();
     uploadedImages.forEach((file) => {
       formData.append("images", file);
@@ -45,12 +48,15 @@ const UploadModal = ({ isOpen, onClose }) => {
         alert("Images uploaded successfully!");
         setSelectedFiles([]);
         onClose();
+        setLoading(false);
         // fetchUploadedFiles();
       } else {
+        setLoading(false);
         console.log("response", response);
         alert("Failed to upload images.");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error uploading images:", error);
       alert("An error occurred while uploading.");
     }
@@ -66,7 +72,7 @@ const UploadModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 text-gray-700">
       <div className="bg-white p-6 rounded-md w-96">
         <h2 className="text-xl font-bold mb-4 dark:text-gray-700">
           Upload Additional Documents
@@ -91,12 +97,16 @@ const UploadModal = ({ isOpen, onClose }) => {
               >
                 <CrossIcon />
               </div>
-              <Image
-                src={URL.createObjectURL(image)}
-                alt={`upload-${index}`}
-                width={300}
-                height={300}
-              />
+              {image.type === "application/pdf" ? (
+                <p className="p-2">{image.name}</p>
+              ) : (
+                <Image
+                  src={URL.createObjectURL(image)}
+                  alt={`upload-${index}`}
+                  width={300}
+                  height={300}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -114,9 +124,11 @@ const UploadModal = ({ isOpen, onClose }) => {
           {uploadedImages.length > 0 && (
             <button
               onClick={handleUpload}
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+              disabled={loading}
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-center flex gap-2 items-center"
             >
               Upload
+              {loading && <ButtonLoader />}
             </button>
           )}
         </div>
@@ -141,7 +153,7 @@ const AdditionalDocuments = () => {
       if (response) {
         console.log("response getAdditionalDocuments", response);
         // const data = await response.json();
-        if (response.status === 200) {
+        if (response.data?.status === true) {
           setAreAdditionalDocumentsPreviouslyUploaded(true);
         }
         // setUploadedFiles(data);
@@ -159,7 +171,7 @@ const AdditionalDocuments = () => {
   return (
     <div className="p-6">
       {areAdditionalDocumentsPreviouslyUploaded ? (
-        <div className="flex items-center justify-center p-4 bg-green-100 border border-green-300 rounded-md shadow-md">
+        <div className="flex items-center justify-center p-4 bg-green-100 border border-green-300 rounded-md shadow-md w-fit">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 text-green-600 mr-2"
@@ -183,7 +195,7 @@ const AdditionalDocuments = () => {
           onClick={() => setModalOpen(true)}
           className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
         >
-          Upload Additional Documents
+          Upload
         </button>
       )}
       <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />

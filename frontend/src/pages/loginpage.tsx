@@ -247,8 +247,10 @@ const LoginPage = () => {
             <button
               type="submit"
               className="w-full bg-indigo-600 text-white py-2 rounded-md flex gap-2 justify-center items-center"
+              disabled={loading}
             >
-              {isSignUpShowing ? "Sign Up" : "Login"}{" "}
+              {
+              isSignUpShowing ? "Sign Up" : "Login"}{" "}
               {loading && <ButtonLoader />}
             </button>
             <div className="text-gray-900 mt-10">

@@ -3,6 +3,8 @@ import Image from "next/image";
 import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
 import { getSinglePassportData } from "@/api/document";
+import ButtonLoader from "./loaders/buttonLoader";
+import CrossIcon from "@/utils/crossIcon";
 // import CrossIcon from "@/utils/elements/icons/cross-icon";
 
 const UploadModal = ({ isOpen, onClose }) => {
@@ -11,6 +13,8 @@ const UploadModal = ({ isOpen, onClose }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [medata] = useAtom(meDataAtom);
 
+  const [loading, setLoading] = useState(false);
+
   // console.log("medata@@@@", medata);
   const [uploadedImages, setUploadedImages] = useState([]);
   console.log("selectedFiles", selectedFiles);
@@ -18,6 +22,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   // Handle file selection and preview generation
   const handleFileChange = (e) => {
+    console.log("fiel selecefted", event.target.files);
     const files = Array.from(event.target.files);
     setUploadedImages([...uploadedImages, ...files]);
   };
@@ -25,6 +30,7 @@ const UploadModal = ({ isOpen, onClose }) => {
   // Upload selected files to the backend
   const handleUpload = async () => {
     console.log("handleUpload is run");
+    setLoading(true);
     const formData = new FormData();
     uploadedImages.forEach((file) => {
       formData.append("images", file);
@@ -47,12 +53,15 @@ const UploadModal = ({ isOpen, onClose }) => {
         setSelectedFiles([]);
         setPreviewImages([]);
         onClose();
+        setLoading(false);
         // fetchUploadedFiles();
       } else {
+        setLoading(false);
         console.log(response);
         alert("Failed to upload images.");
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error uploading images:", error);
       alert("An error occurred while uploading.");
     }
@@ -68,7 +77,7 @@ const UploadModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 text-gray-700">
       <div className="bg-white p-6 rounded-md w-96 w-fit">
         <h2 className="text-xl font-bold mb-4 dark:text-gray-700">
           Upload Passport Images
@@ -91,15 +100,18 @@ const UploadModal = ({ isOpen, onClose }) => {
                 className="absolute right-0 cursor-pointer"
                 onClick={() => handleRemoveImage(index)}
               >
-                {/* <CrossIcon /> */}
+                <CrossIcon />
               </div>
-              <Image
-                className="m-auto"
-                src={URL.createObjectURL(image)}
-                alt={`upload-${index}`}
-                width={300}
-                height={300}
-              />
+              {image.type === "application/pdf" ? (
+                <p className="p-2">{image.name}</p>
+              ) : (
+                <Image
+                  src={URL.createObjectURL(image)}
+                  alt={`upload-${index}`}
+                  width={300}
+                  height={300}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -117,9 +129,11 @@ const UploadModal = ({ isOpen, onClose }) => {
           {uploadedImages.length > 0 && (
             <button
               onClick={handleUpload}
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+              disabled={loading}
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded text-center flex gap-2 items-center"
             >
               Upload
+              {loading && <ButtonLoader />}
             </button>
           )}
         </div>
@@ -130,7 +144,7 @@ const UploadModal = ({ isOpen, onClose }) => {
 
 const PassportUploadComp = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-
+  const [loading, setLoading] = useState();
   const [isPassportPreviouslyUploaded, setPassportPreviouslyUploaded] =
     useState(false);
 
@@ -143,7 +157,7 @@ const PassportUploadComp = () => {
       if (response) {
         console.log("response fetchUploadedPassport", response);
         // const data = await response.json();
-        if (response.status === 200) {
+        if (response?.data?.status === true) {
           setPassportPreviouslyUploaded(true);
         }
         // setUploadedFiles(data);
@@ -161,7 +175,7 @@ const PassportUploadComp = () => {
   return (
     <div className="p-6">
       {isPassportPreviouslyUploaded ? (
-        <div className="flex items-center justify-center p-4 bg-green-100 border border-green-300 rounded-md shadow-md">
+        <div className="flex items-center justify-center p-4 bg-green-100 border border-green-300 rounded-md shadow-md w-fit">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6 text-green-600 mr-2"
@@ -185,7 +199,7 @@ const PassportUploadComp = () => {
           onClick={() => setModalOpen(true)}
           className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
         >
-          Upload passport
+          Upload
         </button>
       )}
       <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
