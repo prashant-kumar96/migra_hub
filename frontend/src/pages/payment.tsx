@@ -68,7 +68,7 @@ const Home = () => {
       <h1>Visa Payment</h1>
       {isStripePaymentDone ? (
         <p className="bg-green-500 text-white text-xl w-fit py-2 px-4 rounded ps-2">
-          Stripe payment is Already done
+          Payment is Already Done 
         </p>
       ) : (
         <CheckoutForm items={items} />

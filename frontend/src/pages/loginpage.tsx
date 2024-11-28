@@ -14,6 +14,7 @@ import { MdEmail } from "react-icons/md";
 import { useAtom } from "jotai";
 import { visaDataAtom } from "@/store/visaDataAtom";
 import ButtonLoader from "@/components/loaders/buttonLoader";
+import { GiConsoleController } from "react-icons/gi";
 const LoginPage = () => {
   const router = useRouter();
   console.log(router.query);
@@ -77,13 +78,14 @@ const LoginPage = () => {
           // Navigate to dashboard
           console.log("we are here");
           localStorage.setItem("token", result?.data?.token);
-          4;
+          console.log("Role", result?.data?.user?.role);
           if (result?.data?.user?.role === "SA") {
             router.push("/adminDashboard");
           }
           if (result?.data?.user?.role === "CASE_MANAGER") {
             router.push("/caseManagerDashboard");
-          } else router.push("/dashboard");
+          }
+          if (result?.data?.user?.role === "USER") router.push("/dashboard");
           setLoading(false);
         } else {
           console.log("result@@@", result);
@@ -249,8 +251,7 @@ const LoginPage = () => {
               className="w-full bg-indigo-600 text-white py-2 rounded-md flex gap-2 justify-center items-center"
               disabled={loading}
             >
-              {
-              isSignUpShowing ? "Sign Up" : "Login"}{" "}
+              {isSignUpShowing ? "Sign Up" : "Login"}{" "}
               {loading && <ButtonLoader />}
             </button>
             <div className="text-gray-900 mt-10">

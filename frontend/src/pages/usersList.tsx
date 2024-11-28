@@ -5,10 +5,15 @@ import NATag from "@/components/ui/tags/NATag";
 import Role from "@/components/ui/tags/Role";
 import Table from "@/components/ui/Table";
 import { getAllUsers } from "@/api/auth";
+import { useRouter } from "next/router";
 
 const UsersList = () => {
   const [usersData, setUsersData] = useState();
-  const headers = ["Name", "Email", "Role", "Payment"];
+  const headers = ["Name", "Email", "Role", "Payment", "View"];
+  const router = useRouter();
+  const handleView = (userId) => {
+    router.push(`/user/${userId}`);
+  };
 
   const getAllUsersfunction = async () => {
     try {
@@ -21,6 +26,14 @@ const UsersList = () => {
             user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase()
           ) : (
             <NATag />
+          ),
+          view: (
+            <button
+              className="cursor-pointer"
+              onClick={() => handleView(user._id)}
+            >
+              View
+            </button>
           ),
           role: user.role ? (
             <Role
