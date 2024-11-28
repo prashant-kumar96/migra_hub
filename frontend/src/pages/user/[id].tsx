@@ -19,10 +19,10 @@ const User = () => {
 
   return (
     <div className="text-gray-700">
-      <div className="p-4">
+      {/* <div className="p-4">
         <h1>User Details</h1>
         <p>User ID: {router.query.id}</p>
-      </div>
+      </div> */}
       {data1 && <UserDetails data={data1} />}
     </div>
   );

@@ -10,7 +10,7 @@ import CrossIcon from "@/utils/crossIcon";
 import ButtonLoader from "./loaders/buttonLoader";
 import DocModal from "./DocModal";
 
-const UploadModal = ({ isOpen, onClose }) => {
+const UploadModal = ({ isOpen, onClose, setText }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [medata] = useAtom(meDataAtom);
@@ -50,6 +50,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         setSelectedFiles([]);
         onClose();
         setLoading(false);
+        setText("Uploaded");
         // fetchUploadedFiles();
       } else {
         setLoading(false);
@@ -147,7 +148,9 @@ const AdditionalDocuments = () => {
     setAreAdditionalDocumentsPreviouslyUploaded,
   ] = useState(false);
 
+  const [text, setText] = useState("");
   const [medata] = useAtom(meDataAtom);
+
   const fetchUploadedProofOfTies = async () => {
     try {
       console.log("fetchUploadedProofOfFunds");
@@ -170,7 +173,8 @@ const AdditionalDocuments = () => {
 
   useEffect(() => {
     fetchUploadedProofOfTies();
-  }, []);
+    setText("");
+  }, [text]);
   return (
     <div className="p-6">
       {areAdditionalDocumentsPreviouslyUploaded ? (
@@ -193,7 +197,7 @@ const AdditionalDocuments = () => {
             Additional Documents already uploaded
           </span>
           <p
-            className="ps-4 text-gray-900"
+            className="ps-4 text-gray-900 cursor-pointer"
             onClick={() => setisDocModalOpen(true)}
           >
             View
@@ -207,7 +211,11 @@ const AdditionalDocuments = () => {
           Upload
         </button>
       )}
-      <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <UploadModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        setText={setText}
+      />
       {isdocModalOpen && (
         <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
       )}

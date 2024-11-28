@@ -7,7 +7,7 @@ import CrossIcon from "@/utils/crossIcon";
 import ButtonLoader from "./loaders/buttonLoader";
 import DocModal from "./DocModal";
 
-const UploadModal = ({ isOpen, onClose }) => {
+const UploadModal = ({ isOpen, onClose, setText}) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [medata] = useAtom(meDataAtom);
@@ -45,6 +45,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       if (response.ok) {
         alert("Images uploaded successfully!");
         setSelectedFiles([]);
+        setText("Uploadeds")
         onClose();
         // fetchUploadedFiles();\
         setLoading(false);
@@ -144,6 +145,7 @@ const ProofOfTiesComp = () => {
   const [docData, setDocData] = useState();
   const [medata] = useAtom(meDataAtom);
   const [loading, setLoading] = useState(false);
+  const [text, setText] = useState("");
   const fetchUploadedProofOfTies = async () => {
     try {
       console.log("fetchUploadedProofOfFunds");
@@ -166,7 +168,8 @@ const ProofOfTiesComp = () => {
 
   useEffect(() => {
     fetchUploadedProofOfTies();
-  }, []);
+    setText("");
+  }, [text]);
   return (
     <div className="p-6">
       {isProofOfTiesCompPreviouslyUploaded ? (
@@ -189,7 +192,7 @@ const ProofOfTiesComp = () => {
             Proof of Ties To home country already uploaded
           </span>
           <p
-            className="ps-4 text-gray-900"
+            className="ps-4 text-gray-900 cursor-pointer"
             onClick={() => setisDocModalOpen(true)}
           >
             View
@@ -203,7 +206,7 @@ const ProofOfTiesComp = () => {
           Upload
         </button>
       )}
-      <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} setText={setText}/>
       {isdocModalOpen && (
         <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
       )}

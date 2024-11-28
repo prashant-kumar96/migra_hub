@@ -10,7 +10,7 @@ import CrossIcon from "@/utils/crossIcon";
 import ButtonLoader from "./loaders/buttonLoader";
 import DocModal from "./DocModal";
 
-const UploadModal = ({ isOpen, onClose }) => {
+const UploadModal = ({ isOpen, onClose, setText }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [medata] = useAtom(meDataAtom);
@@ -50,6 +50,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         alert("Images uploaded successfully!");
         setSelectedFiles([]);
         setLoading(false);
+        setText("Uploaded");
         onClose();
         // fetchUploadedFiles();
       } else {
@@ -147,6 +148,7 @@ const ProofOfFundsComp = () => {
   ] = useState(false);
   const [isdocModalOpen, setisDocModalOpen] = useState(false);
   const [docData, setDocData] = useState();
+  const [text, setText] = useState("");
 
   const [medata] = useAtom(meDataAtom);
   const fetchUploadedProofOfFunds = async () => {
@@ -171,7 +173,8 @@ const ProofOfFundsComp = () => {
 
   useEffect(() => {
     fetchUploadedProofOfFunds();
-  }, []);
+    setText("");
+  }, [text]);
   return (
     <div className="p-6">
       {isProofOfFundsCompPreviouslyUploaded ? (
@@ -194,7 +197,7 @@ const ProofOfFundsComp = () => {
             Proof of Funds already uploaded
           </span>
           <p
-            className="ps-4 text-gray-900"
+            className="ps-4 text-gray-900 cursor-pointer"
             onClick={() => setisDocModalOpen(true)}
           >
             View
@@ -208,7 +211,11 @@ const ProofOfFundsComp = () => {
           Upload
         </button>
       )}
-      <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <UploadModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        setText={setText}
+      />
       {isdocModalOpen && (
         <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
       )}

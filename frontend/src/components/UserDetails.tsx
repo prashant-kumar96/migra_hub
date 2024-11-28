@@ -78,7 +78,9 @@ const UserDetails = ({ data }) => {
             <strong className="font-medium">
               Where Will You Apply for Your Visa:
             </strong>{" "}
-            {JSON.stringify(user?.visaDataId.whereWillYouApplyForYourVisa)}
+            {JSON.stringify(
+              user?.visaDataId.whereWillYouApplyForYourVisa.label
+            )}
           </p>
         </div>
       </section>
@@ -147,65 +149,128 @@ const UserDetails = ({ data }) => {
             {/* Passport Images */}
             <div>
               <p className="font-medium text-gray-700 mb-2">Passport Images:</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {doc?.passportImages?.map((data, idx) => (
-                  <img
-                    key={idx}
-                    className="w-full h-auto rounded-md shadow-md"
-                    src={`${backendUrl}${data?.path}`}
-                    alt={`Passport image ${idx + 1}`}
-                  />
+              <div className="">
+                {doc?.passportImages?.map((doc, idx) => (
+                  <div className="w-full h-screen">
+                    {doc.mimetype === "application/pdf" ? (
+                      <object
+                        data={`${backendUrl}${doc?.path}`}
+                        type="application/pdf"
+                        width="100%"
+                        height="100%"
+                      >
+                        <p>
+                          Alternative text - include a link{" "}
+                          <a href={`${backendUrl}${doc?.path}`}>to the PDF!</a>
+                        </p>
+                      </object>
+                    ) : (
+                      <img
+                        key={idx}
+                        className="w-full h-auto rounded-md shadow-md pt-10"
+                        src={`${backendUrl}${doc?.path}`}
+                        alt={`Passport image ${idx + 1}`}
+                      />
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* Proof of Funds Images */}
-            <div>
+            <div className="w-full h-full border-t-2 pt-6 border-gray-900">
               <p className="font-medium text-gray-700 mb-2">
                 Proof of Funds Images:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {doc?.proofOfFundsImages?.map((data, idx) => (
-                  <img
-                    key={idx}
-                    className="w-full h-auto rounded-md shadow-md"
-                    src={`${backendUrl}${data?.path}`}
-                    alt={`Proof of Funds image ${idx + 1}`}
-                  />
-                ))}
-              </div>
+
+              {doc?.proofOfFundsImages?.map((doc, idx) => (
+                <div className="w-full h-screen">
+                  {doc.mimetype === "application/pdf" ? (
+                    <object
+                      data={`${backendUrl}${doc?.path}`}
+                      type="application/pdf"
+                      width="100%"
+                      height="100%"
+                    >
+                      <p>
+                        Alternative text - include a link{" "}
+                        <a href={`${backendUrl}${doc?.path}`}>to the PDF!</a>
+                      </p>
+                    </object>
+                  ) : (
+                    <img
+                      key={idx}
+                      className="w-full h-auto rounded-md shadow-md pt-10"
+                      src={`${backendUrl}${doc?.path}`}
+                      alt={`Passport image ${idx + 1}`}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
 
             {/* Proof of Ties Images */}
             <div>
-              <p className="font-medium text-gray-700 mb-2">
+              <p className="font-medium text-gray-700 mb-2 border-t-2 pt-6 border-gray-900">
                 Proof of Ties Images:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {doc?.proofOfTiesImages?.map((data, idx) => (
-                  <img
-                    key={idx}
-                    className="w-full h-auto rounded-md shadow-md"
-                    src={`${backendUrl}${data?.path}`}
-                    alt={`Proof of Ties image ${idx + 1}`}
-                  />
+              <div className="h-full w-full">
+                {doc?.proofOfTiesImages?.map((doc, idx) => (
+                  <div className="w-full h-screen mt-4">
+                    {doc.mimetype === "application/pdf" ? (
+                      <object
+                        data={`${backendUrl}${doc?.path}`}
+                        type="application/pdf"
+                        width="100%"
+                        height="100%"
+                      >
+                        <p>
+                          Alternative text - include a link{" "}
+                          <a href={`${backendUrl}${doc?.path}`}>to the PDF!</a>
+                        </p>
+                      </object>
+                    ) : (
+                      <img
+                        key={idx}
+                        className="w-full h-auto rounded-md shadow-md pt-10"
+                        src={`${backendUrl}${doc?.path}`}
+                        alt={`Passport image ${idx + 1}`}
+                      />
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* Additional Documents */}
             <div>
-              <p className="font-medium text-gray-700 mb-2">
+              <p className="font-medium text-gray-700 mb-2 border-t-2 pt-6 border-gray-900">
                 Additional Documents:
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {doc?.additionalDocuments?.map((data, idx) => (
-                  <img
-                    key={idx}
-                    className="w-full h-auto rounded-md shadow-md"
-                    src={`${backendUrl}${data?.path}`}
-                    alt={`Additional Document image ${idx + 1}`}
-                  />
+              <div className="">
+                {doc?.additionalDocuments?.map((doc, idx) => (
+                  <div className="w-full h-screen">
+                    {doc.mimetype === "application/pdf" ? (
+                      <object
+                        data={`${backendUrl}${doc?.path}`}
+                        type="application/pdf"
+                        width="100%"
+                        height="100%"
+                      >
+                        <p>
+                          Alternative text - include a link{" "}
+                          <a href={`${backendUrl}${doc?.path}`}>to the PDF!</a>
+                        </p>
+                      </object>
+                    ) : (
+                      <img
+                        key={idx}
+                        className="w-full h-auto rounded-md shadow-md pt-10"
+                        src={`${backendUrl}${doc?.path}`}
+                        alt={`Passport image ${idx + 1}`}
+                      />
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

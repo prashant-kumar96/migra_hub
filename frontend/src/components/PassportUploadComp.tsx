@@ -8,7 +8,7 @@ import CrossIcon from "@/utils/crossIcon";
 import DocModal from "./DocModal";
 // import CrossIcon from "@/utils/elements/icons/cross-icon";
 
-const UploadModal = ({ isOpen, onClose }) => {
+const UploadModal = ({ isOpen, onClose, setText }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -53,6 +53,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         alert("Images uploaded successfully!");
         setSelectedFiles([]);
         setPreviewImages([]);
+        setText("uploaded");
         onClose();
         setLoading(false);
         // fetchUploadedFiles();
@@ -151,6 +152,8 @@ const PassportUploadComp = () => {
   const [isPassportPreviouslyUploaded, setPassportPreviouslyUploaded] =
     useState(false);
 
+  const [text, setText] = useState("");
+
   const [medata] = useAtom(meDataAtom);
 
   const fetchUploadedPassport = async () => {
@@ -178,7 +181,9 @@ const PassportUploadComp = () => {
 
   useEffect(() => {
     fetchUploadedPassport();
-  }, []);
+    setText("");
+  }, [text]);
+
   return (
     <div className="p-6">
       {isPassportPreviouslyUploaded ? (
@@ -201,7 +206,7 @@ const PassportUploadComp = () => {
             Passport already uploaded
           </span>
           <p
-            className="ps-4 text-gray-900"
+            className="ps-4 text-gray-900 cursor-pointer"
             onClick={() => setisDocModalOpen(true)}
           >
             View
@@ -215,7 +220,11 @@ const PassportUploadComp = () => {
           Upload
         </button>
       )}
-      <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <UploadModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        setText={setText}
+      />
       {isdocModalOpen && (
         <DocModal docData={docData} setisDocModalOpen={setisDocModalOpen} />
       )}
