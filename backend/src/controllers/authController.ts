@@ -38,7 +38,7 @@ async function register(req: any, res: any) {
   if (!data) {
     res.status(400).json({
       message:
-        "Please fill all the steps from the index page before registering",
+        "Please fill all the steps from the Home page before registering",
       extraInfo: "Info Incomplete",
     });
   } else {

@@ -241,7 +241,7 @@ const LoginPage = () => {
                   type="submit"
                   className="w-full bg-yellow-600 text-white py-2 rounded-md px-4 text-sm"
                 >
-                  Go to steps page
+                  Go to Home page
                 </Link>
               </div>
             )}

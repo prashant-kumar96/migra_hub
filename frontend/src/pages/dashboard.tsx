@@ -7,10 +7,14 @@ import { TfiControlForward } from "react-icons/tfi";
 import Link from "next/link";
 import { RiSlowDownFill } from "react-icons/ri";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
+import { useSession } from "next-auth/react";
+
 const Dashboard = () => {
   const [visaData, setVisaData] = useState("");
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [selectedValue, setSelectedValue] = useState(""); // State for selected breadcrumb value
+  const { data: session } = useSession();
+  console.log("data", session);
 
   const getmedata = async () => {
     const result = await me();
@@ -18,8 +22,15 @@ const Dashboard = () => {
     const resultVisaData = await getSingleVisaData(
       result?.data?.user.visaDataId
     );
+    console.log("resultVisaData", resultVisaData);
     setVisaData(resultVisaData?.data?.data);
+
+    localStorage.setItem(
+      "citizenShipCountry",
+      JSON.stringify(resultVisaData?.data?.data?.citizenshipCountry)
+    );
   };
+
   useEffect(() => {
     getmedata();
   }, []);

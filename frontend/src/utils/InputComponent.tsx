@@ -23,17 +23,14 @@ const Input: React.FC<props> = ({
 }) => {
   return (
     <div className="mb-4">
-      <label
-        htmlFor={id}
-        className="block mb-2 text-base font-medium text-gray-700"
-      >
+      <label htmlFor={id} className="mb-2 dark:text-gray-300">
         {label}
       </label>
       <input
         type={type}
         id={id}
         {...register(id, validation)}
-        className={`w-full px-3 py-2 border shadow-md border-gray-200 rounded-lg text-gray-800 ${
+        className={`mt-2 p-3 w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800 ${
           toUpperCase ? "uppercase" : ""
         }`}
         placeholder={placeholder}

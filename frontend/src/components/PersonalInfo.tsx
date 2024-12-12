@@ -59,6 +59,15 @@ const PersonalInfo = () => {
     cityError: "",
   });
 
+  useEffect(() => {
+    if (localStorage.getItem("citizenShipCountry")) {
+      console.log(localStorage.getItem("citizenShipCountry"));
+      setCitizenShipCountry(
+        JSON.parse(localStorage.getItem("citizenShipCountry"))
+      );
+    }
+  }, []);
+
   const [addressData, setAddressData] = useState({
     country: "",
     state: "",
@@ -231,9 +240,15 @@ const PersonalInfo = () => {
 
   console.log("moment", moment().format("YYYY-MM-DD"));
   return (
-    <div className="border-2 p-8 ">
+    <div className=" p-8 ">
+      <h1 className="lg:text-3xl md:text-2xl sm:text-xl xs:text-xl font-serif font-extrabold mb-2 dark:text-white">
+        Profile
+      </h1>
+      <h2 className="text-grey text-sm mb-4 dark:text-gray-400">
+        Create Profile
+      </h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-6 mb-6 md:grid-cols-2  ">
+        <div className="grid gap-2 gap-x-6 mb-6 md:grid-cols-2  ">
           <Input
             label="First Name"
             type="text"
@@ -282,21 +297,6 @@ const PersonalInfo = () => {
           }}
           errors={errors.first_language}
         /> */}
-          <div>
-            <label className="block mb-2 text-base font-medium text-gray-700">
-              First Language
-            </label>
-            <Select
-              options={options}
-              className={`w-full shadow-md rounded-lg text-gray-800`}
-              onChange={handleChange}
-            />{" "}
-            {error.firstLanguageError && (
-              <p className="text-red-500 text-xs font-bold mt-1">
-                {error.firstLanguageError}
-              </p>
-            )}
-          </div>
           <Input
             label="Passport Number"
             id="passport_number"
@@ -318,26 +318,6 @@ const PersonalInfo = () => {
             }}
             errors={errors.passport_number}
           />
-          <div className="mb-4">
-            <label
-              htmlFor="citizenship"
-              className="block mb-2 text-base font-medium text-gray-700"
-            >
-              Country of Citizenship
-            </label>
-            <ReactFlagsSelect
-              selected={citizenshipCountry.value}
-              onSelect={handleSelectcountryOfCitizenship}
-              className="w-full  border shadow-md border-gray-200 rounded-lg text-gray-800"
-              countries={citizenshipCountryCodes} // You can replace this with a more comprehensive list or dynamic data
-              searchable
-            />
-            {error.citizenshipCountryError && (
-              <p className="text-red-500 text-xs font-bold mt-1">
-                {error.citizenshipCountryError}
-              </p>
-            )}
-          </div>
           <Input
             label="Passport Expiry Date"
             id="passport_expiry"
@@ -350,6 +330,98 @@ const PersonalInfo = () => {
             }}
             errors={errors.passport_expiry}
           />
+          <Input
+            label="Postal/Zip Code"
+            id="zipCode"
+            type="number"
+            register={register}
+            placeholder=""
+            validation={{
+              required: "Postal/Zip Code is required",
+              pattern: {
+                value: /^\d{5,6}$/, // Matches 5 digits or 5-4 digit zip codes
+                message:
+                  "Zip code must be 5 or 6 digits or 5+4 format (e.g., 12345 or 12345-6789)",
+              },
+            }}
+            errors={errors.zipCode}
+          />
+          <Input
+            label="Email"
+            id="email"
+            type="email"
+            register={register}
+            placeholder=""
+            validation={{
+              required: "Email is required",
+              pattern: {
+                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                message: "Please enter email in the correct format",
+              },
+            }}
+            errors={errors.email}
+          />
+          <Input
+            label=" Phone Number"
+            id="phoneNumber"
+            type="number"
+            register={register}
+            placeholder=""
+            validation={{
+              required: "Phone Number is required",
+            }}
+            errors={errors.phoneNumber}
+          />{" "}
+          <div>
+            <label className="block mb-2 text-base font-medium text-gray-700">
+              First Language
+            </label>
+            <Select
+              options={options}
+              className="w-full text-grey border-2 rounded-lg  dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800"
+              onChange={handleChange}
+            />{" "}
+            {error.firstLanguageError && (
+              <p className="text-red-500 text-xs font-bold mt-1">
+                {error.firstLanguageError}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <Input
+          label="Address"
+          id="addressLine"
+          type="text"
+          register={register}
+          placeholder=""
+          validation={{
+            required: "Address is required",
+          }}
+          errors={errors.Address}
+        />
+        <div className="grid gap-2 gap-x-6 mb-6 md:grid-cols-2  ">
+          <div className="mb-4">
+            <label
+              htmlFor="citizenship"
+              className="block mb-2 text-base font-medium text-gray-700"
+            >
+              Country of Citizenship
+            </label>
+            <ReactFlagsSelect
+              selected={citizenshipCountry.value}
+              onSelect={handleSelectcountryOfCitizenship}
+              className="mt-2 p-[8px] w-full border-2 rounded-lg dark:text-gray-200 dark:border-gray-600 dark:bg-gray-800 bg-white"
+              countries={citizenshipCountryCodes} // You can replace this with a more comprehensive list or dynamic data
+              searchable
+            />
+            {error.citizenshipCountryError && (
+              <p className="text-red-500 text-xs font-bold mt-1">
+                {error.citizenshipCountryError}
+              </p>
+            )}
+          </div>
+
           <div className="text-gray-900">
             <label
               htmlFor="first_name"
@@ -358,7 +430,7 @@ const PersonalInfo = () => {
               Current Country
             </label>
             <CountrySelect
-              className="block mb-2 text-base font-medium text-gray-700"
+              className="block mb-2 text-base font-medium text-gray-700 bg-white"
               onChange={handleCountrySelectChange}
               placeHolder="Select Country"
             />
@@ -406,63 +478,8 @@ const PersonalInfo = () => {
               </p>
             )}
           </div>
-          <Input
-            label="Postal/Zip Code"
-            id="zipCode"
-            type="number"
-            register={register}
-            placeholder=""
-            validation={{
-              required: "Postal/Zip Code is required",
-              pattern: {
-                value: /^\d{5,6}$/, // Matches 5 digits or 5-4 digit zip codes
-                message:
-                  "Zip code must be 5 or 6 digits or 5+4 format (e.g., 12345 or 12345-6789)",
-              },
-            }}
-            errors={errors.zipCode}
-          />
-          <Input
-            label="Email"
-            id="email"
-            type="email"
-            register={register}
-            placeholder=""
-            validation={{
-              required: "Email is required",
-              pattern: {
-                value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                message: "Please enter email in the correct format",
-              },
-            }}
-            errors={errors.email}
-          />
-          <Input
-            label=" Phone Number"
-            id="phoneNumber"
-            type="number"
-            register={register}
-            placeholder=""
-            validation={{
-              required: "Phone Number is required",
-            }}
-            errors={errors.phoneNumber}
-          />{" "}
         </div>
-
-        <Input
-          label="Address"
-          id="addressLine"
-          type="text"
-          register={register}
-          placeholder=""
-          validation={{
-            required: "Address is required",
-          }}
-          errors={errors.Address}
-        />
-
-        <div className="flex space-between w-full">
+        <div className="grid gap-2 gap-x-6 mb-6 md:grid-cols-2">
           <div className="mb-6 w-1/2">
             <label className="block mb-2 text-base font-medium text-gray-700">
               Marital Status

@@ -23,14 +23,14 @@
 
 /* Define your custom color scheme */
 :root {
-  --background: #FBF8F2;
-  --foreground: #FBF8F2;
+  --background: #fbf8f2;
+  --foreground: #fbf8f2;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #FBF8F2;
-    --foreground: #FBF8F2;
+    --background: #fbf8f2;
+    --foreground: #fbf8f2;
   }
 }
 
@@ -73,4 +73,25 @@ body {
   100% {
     stroke-dasharray: 0, 580, 0, 0, 0, 0, 0, 0, 0;
   }
+}
+
+.css-13cymwt-control,
+.css-t3ipsp-control {
+  padding: 5px;
+}
+.stdropdown-input stsearch-box {
+  padding: 0 !important;
+}
+
+.stsearch-box {
+  padding: 0 !important;
+  background: "white";
+}
+
+.stsearch-box input {
+  padding: 13px !important;
+}
+
+.stdropdown-container {
+  background: white;
 }

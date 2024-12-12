@@ -14,6 +14,10 @@ import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/user.js";
 import Stripe from "stripe";
 import serveStaticFiles from "./staticfiles";
+import passport from "passport";
+import session from "express-session";
+import { OAuth2Client } from "google-auth-library";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 dotenv.config();
 
@@ -27,8 +31,86 @@ const app: Express = express();
 serveStaticFiles(app);
 
 app.use(cors());
-
 app.use(bodyParser.json());
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:5000/auth/google/callback",
+    },
+    (accessToken, refreshToken, profile, done) => {
+      // Handle the Google user profile here
+      return done(null, profile);
+    }
+  )
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+app.get(
+  "/auth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    res.redirect("http://localhost:3000/dashboard"); // Or wherever you'd like to redirect
+  }
+);
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+app.post("/auth/google/callback", async (req, res) => {
+  console.log("req.body", req.body);
+  const { token } = req.body;
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: "YOUR_GOOGLE_CLIENT_ID",
+    });
+
+    const payload = ticket.getPayload();
+    const userId = payload.sub;
+
+    // Handle user data (e.g., store in session or database)
+    req.session.user = payload;
+
+    res.json({ message: "User authenticated successfully", user: payload });
+  } catch (error) {
+    console.error("Error verifying Google token", error);
+    res.status(400).json({ error: "Invalid token" });
+  }
+});
+
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    res.redirect("/");
+  });
+});
 
 const port = process.env.PORT || 3000;
 
@@ -117,9 +199,9 @@ app.use("/api/personalData", personalDataRoutes);
 app.use("/api/document", documentRoutes);
 app.use("/api/caseManager", caseManagerRoutes);
 
-const client = new MongoClient(uri);
+const mgclient = new MongoClient(uri);
 app.get("/users", async () => {
-  await client.connect();
+  await mgclient.connect();
   console.log("tjsi is run");
   const result = await User.find({});
   console.log("result", result);
