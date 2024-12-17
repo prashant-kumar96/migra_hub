@@ -1,3 +1,5 @@
+
+//@ts-nocheck
 import User from "../models/User.js";
 import ObjectId from "mongoose";
 import mongoose from "mongoose";

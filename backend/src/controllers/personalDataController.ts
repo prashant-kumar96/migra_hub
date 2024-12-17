@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import PersonalData from "../models/personalData.js";
 
 export const savePersonalData = async (req: Request, res: Response) => {

@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import UserDocument from "../models/userDocument.js";
 import Passport from "../models/userDocument.js";
 

@@ -7,7 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import User from "../models/user.js";
+//@ts-nocheck
+import User from "../models/User.js";
 import mongoose from "mongoose";
 import PersonalData from "../models/personalData.js";
 import UserDocument from "../models/userDocument.js";

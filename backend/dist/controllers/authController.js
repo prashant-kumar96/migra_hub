@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import User from "../models/user.js";
+import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function* () {

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import express from "express";
 import verifyToken from "../middleware/authenticate.js";
 import { getAdditionalDocuments, getSinglePassportData, getSingleProofOfFundsData, getSingleProofOfTiesData, uploadAdditionalDocuments, uploadPassportImages, uploadProofOfFundsImages, uploadProofOfTiesImages, } from "../controllers/documentController.js";

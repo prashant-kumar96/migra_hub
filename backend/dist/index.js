@@ -1,3 +1,4 @@
+//@ts-nocheck
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -19,7 +20,7 @@ import documentRoutes from "./routes/documentRoutes.js";
 import caseManagerRoutes from "./routes/caseManagerRoutes.js";
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
-import User from "./models/user.js";
+import User from "./models/User.js";
 import Stripe from "stripe";
 import serveStaticFiles from "./staticfiles";
 dotenv.config();

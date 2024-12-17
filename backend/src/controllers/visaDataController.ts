@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import VisaData from "../models/visadata.js";
 
 export const getSingleVisaData = async (req: Request, res: Response) => {

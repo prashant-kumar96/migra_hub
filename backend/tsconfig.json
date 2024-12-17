@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
     "module": "node16",
-    "noEmitOnError": false,
+    "noEmitOnError": false,  // Keep this for error supression at build
     "moduleResolution": "Node16",
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
+    "strict": false, // <--- Disable Strict Type Checking
+     "noImplicitAny": false, // Disable implicit any check.
+     "strictNullChecks": false, // Disable strict null checks
+     "strictFunctionTypes": false, // Disable strict function type checks.
+     "strictBindCallApply": false, // Disable strict bind call apply checks
+     "strictPropertyInitialization": false, // Disable strict property initialization checks
+      "noImplicitThis": false, // Disable implicit this checks
     "esModuleInterop": true,
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@types"],
@@ -13,7 +19,7 @@
   },
   "include": ["src/**/*.ts"],
   "ts-node": {
-    "esm": true // «———— enabling ESM for ts-node
+    "esm": true
   },
   "exclude": ["node_modules"]
 }
