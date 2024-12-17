@@ -2,7 +2,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import User from "../models/user.js";
+import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
 import ObjectId from "mongoose";
 

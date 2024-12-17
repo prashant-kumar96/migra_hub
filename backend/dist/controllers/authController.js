@@ -43,8 +43,9 @@ function register(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const JWT_SECRET = process.env.JWT_SECRET;
         console.log("req body", req.body);
-        const { email, password, name, role, stepsData } = req.body;
-        if (Object.keys(stepsData).length === 0) {
+        // return;
+        const { email, password, name, role, data } = req.body;
+        if (!data) {
             res.status(400).json({
                 message: "Please fill all the steps from the index page before registering",
                 extraInfo: "Info Incomplete",
@@ -57,7 +58,7 @@ function register(req, res) {
                 if (existingUser) {
                     return res.status(400).json({ message: "User already exists" });
                 }
-                const visadata = new VisaData(stepsData);
+                const visadata = new VisaData(data);
                 const resultVisadata = yield visadata.save();
                 console.log("resultVisaData", resultVisadata);
                 const hashedPassword = yield bcrypt.hash(password, 10);
@@ -176,6 +177,108 @@ function changePassword(req, res) {
         }
     });
 }
+function getUsersWhoHaveDonePayment(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // Assuming the token payload contains the user ID
+            const user = yield User.find({ isStripePaymentDone: true })
+                .select("-password")
+                .populate("assignedCaseManagerId");
+            console.log("user", user);
+            // const caseManagerData = await User.findById({
+            //   _id: user[0].assignedCaseManagerId,
+            // });
+            // console.log("caseManagerData", caseManagerData);
+            // const user = await User.aggregate([
+            //   {
+            //     $match: {
+            //       isStripePaymentDone: true,
+            //     },
+            //   },
+            //   {
+            //     $lookup: {
+            //       from: "User",
+            //       localField: "assignedCaseManagerId",
+            //       foreignField: "_id",
+            //       as: "caseManagerData",
+            //     },
+            //   },
+            //   {
+            //     $match: {
+            //       _id: Mongoose0.Types.ObjectId("yourOriginalDocumentId"), // Filter for the specific original document
+            //     },
+            //   },
+            // ]);
+            // console.log("user getUsersWhoHaveDonePayment", user);
+            // return;
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            res.json({
+                message: "Users fetched successfully",
+                user: user,
+            });
+        }
+        catch (error) {
+            console.error("Error fetching user details:", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
+}
+function getCaseManagers(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            // Assuming the token payload contains the user ID
+            const user = yield User.find({ role: "CASE_MANAGER" }).select("-password");
+            if (!user) {
+                return res.status(404).json({ message: "Case Managers not found" });
+            }
+            res.json({
+                message: "Case Managers fetched successfully",
+                user: user,
+            });
+        }
+        catch (error) {
+            console.error("Error fetching user details:", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
+}
+function createCaseManager(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("req body", req.body);
+        // return;
+        const { email, password, name, role } = req.body;
+        console.log("/register is run");
+        try {
+            const existingUser = yield User.findOne({ email: email });
+            if (existingUser) {
+                return res.status(400).json({ message: "Case Manager already exists" });
+            }
+            const hashedPassword = yield bcrypt.hash(password, 10);
+            const user = new User({
+                email,
+                password: hashedPassword,
+                role,
+                name,
+            });
+            const result = yield user.save();
+            console.log(result, "result");
+            res.status(200).json({
+                user: {
+                    email: user.email,
+                    id: user._id,
+                    message: "Case Manager Created successfully",
+                    role: user.role,
+                },
+            });
+        }
+        catch (error) {
+            console.log("Error", error);
+            res.status(500).json({ message: "Internal server error", error });
+        }
+    });
+}
 function me(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const decoded = req.user;
@@ -197,4 +300,29 @@ function me(req, res) {
         }
     });
 }
-export { login, register, deleteUser, editUser, changePassword, me };
+function checkifPaymentIsDone(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        try {
+            console.log("Checking if payment is done is run");
+            // Assuming the token payload contains the user ID
+            const user = yield User.findOne({ _id: (_a = req.query) === null || _a === void 0 ? void 0 : _a.userId }).select("-password");
+            if ((user === null || user === void 0 ? void 0 : user.isStripePaymentDone) === true) {
+                res.status(200).json({
+                    message: "Stripe payment done",
+                    status: true,
+                });
+            }
+            else {
+                return res
+                    .status(200)
+                    .json({ message: "Stripe payment Not done", status: false });
+            }
+        }
+        catch (error) {
+            console.error("Error fetching user details:", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
+}
+export { login, register, deleteUser, editUser, changePassword, me, getUsersWhoHaveDonePayment, createCaseManager, getCaseManagers, checkifPaymentIsDone, };

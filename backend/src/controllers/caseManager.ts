@@ -1,4 +1,4 @@
-import User from "../models/user.js";
+import User from "../models/User.js";
 import ObjectId from "mongoose";
 import mongoose from "mongoose";
 import VisaData from "../models/visadata.js";
