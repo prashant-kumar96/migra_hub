@@ -1,5 +1,6 @@
-import AfterLoginLayout from "./success";
-const Cancel = () => {
+import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
+
+ const Cancel = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-red-50">
       <div className="text-center">

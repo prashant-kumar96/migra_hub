@@ -1,44 +1,47 @@
-import React, { useEffect, useState } from "react";
+// components/AfterLoginLayout.tsx
+import React, { useEffect, useState, ComponentType } from "react";
 import { me } from "@/api/auth";
 import Header2 from "../Header";
 import Sidebar from "./Sidebar";
 
-const AfterLoginLayout = (WrappedComponent: any) => {
-  return function (props: any) {
+// Accept a ComponentType as input
+const AfterLoginLayout = <P extends {}>(WrappedComponent: ComponentType<P>) => {
+  // Return a new functional component that can accept props
+  return (props: P) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [role, setRole] = useState();
+    const [role, setRole] = useState<string | undefined>();
 
-    // console.log("isHeaderOpen", isOpen);
     const toggleSidebar = () => {
-      setIsOpen(!isOpen);
+        setIsOpen(!isOpen);
     };
 
     const meData = async () => {
-      const medata = await me();
-      // console.log("medata", medata);
-      // console.log("role is ", medata?.data?.user?.role);
-      setRole(medata?.data?.user?.role);
+      try {
+        if(localStorage.getItem("token")){
+            const medata = await me();
+          setRole(medata?.data?.user?.role);
+        }
+      } catch (error) {
+           console.error("Error while fetching user data", error)
+      }
     };
 
     useEffect(() => {
-      if (localStorage.getItem("token")) meData();
+      meData();
     }, []);
+
     return (
       <>
-        {/* <Header2 /> */}
-
-        <div className="flex w-full min-h-screen">
-          <div className="flex w-full ">
-            <Sidebar />
-
-            <main
-              className={`flex-1  transition-all duration-300 bg-FloralWhite ml-0 `}
-            >
-              {/* <Stepper /> */}
-              <WrappedComponent {...props} extraProp="I'm an extra prop!" />
-            </main>
+          <div className="flex w-full min-h-screen">
+              <div className="flex w-full ">
+                    <Sidebar />
+                    <main
+                         className={`flex-1  transition-all duration-300 bg-FloralWhite ml-0 `}
+                     >
+                    <WrappedComponent {...props} />
+                  </main>
+                </div>
           </div>
-        </div>
       </>
     );
   };
