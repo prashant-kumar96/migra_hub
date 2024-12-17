@@ -1,4 +1,4 @@
-import Table from "@/components/ui/table";
+// import Table from "@/components/ui/table";
 import React from "react";
 
 
@@ -37,7 +37,9 @@ const ProductTable = () => {
     },
   ];
 
-  return <Table headers={headers} data={data} />;
+  return 
+  ''
+  // <Table headers={headers} data={data} />;
 };
 
 export default ProductTable;
