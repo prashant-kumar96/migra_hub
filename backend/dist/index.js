@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 // src/index.ts
 import express from "express";
 import dotenv from "dotenv";
+import path from "path";
 import cors from "cors";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/authRoutes.js";
@@ -22,12 +23,15 @@ import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/User.js";
 import Stripe from "stripe";
-import serveStaticFiles from "./staticfiles";
 dotenv.config();
 const uri = process.env.MONGODB_URI;
 if (!uri) {
     throw new Error("MongoDB connection string (MONGODB_URI) is not defined");
 }
+const serveStaticFiles = (app) => {
+    // This serves static files from the '/uploads' directory
+    app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+};
 const app = express();
 serveStaticFiles(app);
 app.use(cors());

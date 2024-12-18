@@ -4,6 +4,7 @@
 
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
+import path from "path";
 
 import mongoose from "mongoose";
 import cors from "cors";
@@ -26,6 +27,12 @@ const uri = process.env.MONGODB_URI;
 if (!uri) {
   throw new Error("MongoDB connection string (MONGODB_URI) is not defined");
 }
+
+const serveStaticFiles = (app) => {
+  // This serves static files from the '/uploads' directory
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+};
+
 
 const app: Express = express();
 serveStaticFiles(app);

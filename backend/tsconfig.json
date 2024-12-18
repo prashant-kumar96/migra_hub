@@ -17,7 +17,7 @@
     "typeRoots": ["./node_modules/@types"],
     "target": "es6"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/staticfiles/**/*"],
   "ts-node": {
     "esm": true
   },
