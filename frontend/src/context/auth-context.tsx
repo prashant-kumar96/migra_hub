@@ -8,6 +8,7 @@ import React, {
   import { useRouter } from 'next/navigation';
    import { useSearchParams } from 'next/navigation';
 import { me } from '@/api/auth';
+
   
   interface AuthContextProps {
     user: any | null;
@@ -53,7 +54,7 @@ import { me } from '@/api/auth';
                   logout();
                   return;
               }
-                  setUser(response.data.user);
+                  setUser(response.user);
               } catch (err){
                    console.error("Error fetching user: ", err)
                    logout()
