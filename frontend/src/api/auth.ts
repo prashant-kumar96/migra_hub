@@ -20,6 +20,11 @@ const loginUser = async (data) => {
   return result;
 };
 
+const googleLogin = async (data) => {
+  const result  = await axiosInstance.post('/auth/google-login', data);
+  return result;
+}
+
 const me = async () => {
   const result = await axiosInstance.get("/auth/me");
   return result;
@@ -39,6 +44,7 @@ const checkifPaymentIsDone = async (userId) => {
 
 export {
   registerUser,
+  googleLogin,
   loginUser,
   me,
   getAllUsersWhoHaveDonePayment,

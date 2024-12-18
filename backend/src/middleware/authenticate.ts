@@ -13,7 +13,7 @@ const verifyToken = (req: any, res: any, next: any) => {
 
   if (!token) {
     console.log("Token is required");
-    return res.status(401).json({ message: "Token is required" });
+    return res.status(200).json({ message: "Token is required", status: false });
   }
 
   try {

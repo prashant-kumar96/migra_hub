@@ -61,7 +61,7 @@ const Stepper = () => {
         <div className="absolute left-0 top-2/4 h-0.5 w-full -translate-y-2/4 bg-gray-900 transition-all duration-500"></div>
 
         {/* Map through steps array */}
-        {steps.map((step, index) => (
+        {steps?.map((step, index) => (
           <div
             key={step.id}
             onClick={() => handleStepClick(step)}

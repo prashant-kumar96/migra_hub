@@ -119,6 +119,8 @@ const LoginPage = () => {
     setStepsData(router?.query ? router?.query : "");
   }, [router]);
 
+   
+
   return (
     <div className="flex items-center justify-center  mb-2">
       <div className="bg-white shadow-md rounded-lg pt-10 my-10">
@@ -129,7 +131,7 @@ const LoginPage = () => {
         <div className="flex gap-5  px-8 my-8 justify-around">
           <GoogleLoginButton />
 
-          <FaceBookLoginButton />
+          {/* <FaceBookLoginButton /> */}
           {/* <button
             onClick={() => {}}
             className="flex items-center justify-center text-blue-600 py-4 mb-4  w-1/2 shadow-md border border-gray-200"

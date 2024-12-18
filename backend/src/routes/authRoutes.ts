@@ -4,6 +4,7 @@ import {
   createCaseManager,
   getCaseManagers,
   getUsersWhoHaveDonePayment,
+  googleLogin,
   login,
   me,
   register,
@@ -15,6 +16,8 @@ const router = express.Router();
 router.post("/register", register);
 
 router.post("/login", login);
+
+router.post('/google-login',googleLogin);
 
 router.get(
   "/getusersWhoHaveDonePayment",

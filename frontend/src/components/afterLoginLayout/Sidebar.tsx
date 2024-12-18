@@ -196,7 +196,7 @@ const Sidebar = () => {
               onClick={handleSignout}
             >
               <RiUserReceivedFill size={20} />
-              <span className="ml-3 hidden sm:block uppercase leading-snug tracking-widest">
+              <span onClick={()=>handleSignout} className="ml-3 hidden sm:block uppercase leading-snug tracking-widest">
                 Sign Out
               </span>
             </button>

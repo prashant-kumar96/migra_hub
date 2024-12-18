@@ -7,22 +7,49 @@ import { TfiControlForward } from "react-icons/tfi";
 import Link from "next/link";
 import { RiSlowDownFill } from "react-icons/ri";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
+import Loader from "@/components/loaders/loader";
+import Stepper from "@/components/Stepper";
+
+
 const Dashboard = () => {
+
   const [visaData, setVisaData] = useState("");
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [selectedValue, setSelectedValue] = useState(""); // State for selected breadcrumb value
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  const fetchData = async () => {
+    try {
+      setLoading(true); // Set loading to true before fetching data
+         // Using setRole in the correct scope
+      const setRole = (role: any) => {
+            console.log("Setting Role", role)
+            setSharedMedata((prevState: any)=> ({...prevState, role}));
+       }
 
-  const getmedata = async () => {
-    const result = await me();
-    setSharedMedata(result?.data?.user);
-    const resultVisaData = await getSingleVisaData(
-      result?.data?.user.visaDataId
-    );
-    setVisaData(resultVisaData?.data?.data);
-  };
+      await meData(setRole); // Wait for meData to complete
+
+       // Check if sharedMedata is still null
+      if (!sharedMedata) {
+        setLoading(false); // Clear loading state
+        return; // Stop data fetching
+        }
+      const resultVisaData = await getSingleVisaData(sharedMedata?.visaDataId);
+         setVisaData(resultVisaData?.data?.data);
+
+     }catch(err) {
+         console.error("Error during data fetching", err)
+    } finally {
+       setLoading(false) // Clear loading state
+     }
+    };
+
   useEffect(() => {
-    getmedata();
-  }, []);
+    fetchData();
+  }, []); // Only runs on initial render
+
+
+  return loading && <Loader/> 
 
   const splitCamelCaseToTitleCase = (str) => {
     return str
@@ -33,7 +60,7 @@ const Dashboard = () => {
       .join(" ");
   };
 
-  const breadcrumbs = [
+  const breadcrumbs = [ 
     {
       title: splitCamelCaseToTitleCase("ApplyingFromPassportCountry"),
       value: visaData?.areYouApplyingFromPassportCountry ? "YES" : "NO",
@@ -74,11 +101,13 @@ const Dashboard = () => {
     setSelectedValue(value); // Update the state with the clicked breadcrumb's value
   };
 
+// return 'ss'
+
   return (
     <div className="flex flex-col justify-center items-center space-y-4 p-4">
       {/* Breadcrumbs */}
       <nav className="flex flex-wrap items-center justify-center text-sm ">
-        {breadcrumbs.map((box, index) => (
+        {breadcrumbs ? breadcrumbs.map((box, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
               <span className="mx-2 font-bold">
@@ -93,8 +122,12 @@ const Dashboard = () => {
               {box.title}
             </button>
           </React.Fragment>
-        ))}
+        )) : 
+        <Stepper/>
+        }
       </nav>
+
+      <Stepper/>
 
       {/* Display selected value */}
       <div className="max-w-md p-4 bg-transparent rounded-xl shadow text-center justify-center mt-8">

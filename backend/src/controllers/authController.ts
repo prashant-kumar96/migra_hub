@@ -5,6 +5,9 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
 import ObjectId from "mongoose";
+import axios from 'axios';
+
+
 
 async function login(req: any, res: any) {
   console.log("login is run");
@@ -77,6 +80,60 @@ async function register(req: any, res: any) {
       console.log("Error", error);
       res.status(500).json({ message: "Internal server error", error });
     }
+  }
+}
+
+// google login
+async function googleLogin(req: any, res: any) {
+  try {
+      const { accessToken, email, name, googleId } = req.body;
+
+      if (!accessToken || !email || !name || !googleId) {
+          return res.status(400).json({ message: 'Missing required fields' });
+      }
+      // Verify the Google access token
+        const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
+        try{
+           const googleRes = await axios.get(googleApiUrl);
+           if(googleRes.data.email!==email) {
+               return res.status(401).json({ message: 'Invalid Google token' });
+           }
+        }
+        catch(err){
+          console.log(err,"google error")
+          return res.status(401).json({ message: 'Invalid Google token' });
+
+        }
+
+
+  
+    let user = await User.findOne({ email: email });
+    console.log('google user',user)
+    if (!user) {
+        // User doesn't exist, create a new user
+        user = new User({
+            email: email,
+            name: name,
+            googleId: googleId,
+            // set a default password or don't set one
+        });
+      await user.save();
+    }
+
+      // Generate JWT for your application
+    const token = jwt.sign({ id: user._id },  process.env.JWT_SECRET, { expiresIn: "1d" });
+      res.status(200).json({
+          token,
+          user: {
+              username: user.name,
+              id: user._id,
+              role: user.role, // Assuming you might store roles 
+          },
+      });
+
+  } catch (error) {
+      console.log('Error during Google login', error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -271,24 +328,32 @@ async function createCaseManager(req: any, res: any) {
   }
 }
 
-async function me(req: any, res: any) {
-  const decoded = req.user;
-  console.log(decoded, "decodedd");
+async function me(req: Request, res: Response) {
   try {
-    const userId = decoded.id; // Assuming the token payload contains the user ID
-    const user = await User.findById(userId).select("-password");
+      console.log(req.user, "req.user");
+  const decoded = req.user;
+  if (!decoded || !decoded.id) {
+    console.warn("Unauthorized: No valid user in request.");
+    return res.status(200).json({ status: false, message: "Unauthorized: No valid user in request." , user: null });
+  }
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.json({
+  const userId = decoded.id;
+  const user = await User.findById(userId).select("-password");
+
+  if (!user) {
+      console.warn(`User not found for ID: ${userId}`)
+      return res.status(200).json({ status: false, message: "User not found", user: null });
+  }
+
+  res.status(200).json({
+      status: true,
       message: "User details fetched successfully",
       user: user,
-    });
-  } catch (error) {
+  });
+} catch (error: any) {
     console.error("Error fetching user details:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
+    res.status(500).json({ status: false, message: "Internal server error", user: null });
+}
 }
 
 async function checkifPaymentIsDone(req: any, res: any) {
@@ -316,6 +381,7 @@ async function checkifPaymentIsDone(req: any, res: any) {
 
 export {
   login,
+  googleLogin,
   register,
   deleteUser,
   editUser,
