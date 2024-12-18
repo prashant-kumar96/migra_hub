@@ -8,7 +8,6 @@ import Link from "next/link";
 import { RiSlowDownFill } from "react-icons/ri";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import Loader from "@/components/loaders/loader";
-import Stepper from "@/components/Stepper";
 
 
 const Dashboard = () => {
@@ -60,7 +59,7 @@ const Dashboard = () => {
       .join(" ");
   };
 
-  const breadcrumbs = [ 
+  const breadcrumbs = [
     {
       title: splitCamelCaseToTitleCase("ApplyingFromPassportCountry"),
       value: visaData?.areYouApplyingFromPassportCountry ? "YES" : "NO",
@@ -101,13 +100,11 @@ const Dashboard = () => {
     setSelectedValue(value); // Update the state with the clicked breadcrumb's value
   };
 
-// return 'ss'
-
   return (
     <div className="flex flex-col justify-center items-center space-y-4 p-4">
       {/* Breadcrumbs */}
       <nav className="flex flex-wrap items-center justify-center text-sm ">
-        {breadcrumbs ? breadcrumbs.map((box, index) => (
+        {breadcrumbs.map((box, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
               <span className="mx-2 font-bold">
@@ -122,12 +119,8 @@ const Dashboard = () => {
               {box.title}
             </button>
           </React.Fragment>
-        )) : 
-        <Stepper/>
-        }
+        ))}
       </nav>
-
-      <Stepper/>
 
       {/* Display selected value */}
       <div className="max-w-md p-4 bg-transparent rounded-xl shadow text-center justify-center mt-8">
