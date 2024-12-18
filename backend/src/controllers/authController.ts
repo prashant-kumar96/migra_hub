@@ -108,6 +108,7 @@ async function googleLogin(req: any, res: any) {
 
   
     let user = await User.findOne({ email: email });
+    
     console.log('google user',user)
     if (!user) {
         // User doesn't exist, create a new user

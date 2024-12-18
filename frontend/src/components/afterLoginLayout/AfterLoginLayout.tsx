@@ -4,6 +4,9 @@ import { me } from "@/api/auth";
 import Header2 from "../Header";
 import Sidebar from "./Sidebar";
 import { useRouter } from "next/router";
+import Stepper from "../Stepper";
+import Dashboard from "@/pages/dashboard";
+
 
 // Accept a ComponentType as input
 const AfterLoginLayout = <P extends {}>(WrappedComponent: ComponentType<P>) => {
@@ -72,9 +75,10 @@ const AfterLoginLayout = <P extends {}>(WrappedComponent: ComponentType<P>) => {
                 <div className="flex w-full ">
                     <Sidebar />
                     <main
-                        className={`flex-1  transition-all duration-300 bg-FloralWhite ml-0 `}
+                        className={`flex-2  transition-all duration-300 ml-0 `}
                     >
                         <WrappedComponent {...props} />
+                        {/* <Stepper/> */}
                     </main>
                 </div>
             </div>

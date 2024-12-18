@@ -8,34 +8,39 @@ import Link from "next/link";
 import { RiSlowDownFill } from "react-icons/ri";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import Loader from "@/components/loaders/loader";
+import Stepper from "@/components/Stepper";
+import { useAuth } from "@/context/auth-context";
 
 
 const Dashboard = () => {
-
+ 
   const [visaData, setVisaData] = useState("");
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [selectedValue, setSelectedValue] = useState(""); // State for selected breadcrumb value
   const [loading, setLoading] = useState<boolean>(true);
-  
-  const fetchData = async () => {
+  console.log('loading',loading);
+  const { user, isLoading } = useAuth();
+
+  const fetchData = async () => { 
     try {
       setLoading(true); // Set loading to true before fetching data
          // Using setRole in the correct scope
-      const setRole = (role: any) => {
-            console.log("Setting Role", role)
-            setSharedMedata((prevState: any)=> ({...prevState, role}));
-       }
+    //   const setRole = (user: any) => {
+    //         console.log("Setting user", user)
+    //         setSharedMedata(user);
+    //    }
 
-      await meData(setRole); // Wait for meData to complete
-
+    //   const meData = await me(); // Wait for meData to complete
+    //   console.log('me data',meData?.data)
+    //   setRole(meData?.data?.user)
        // Check if sharedMedata is still null
-      if (!sharedMedata) {
+      if (!user) {
         setLoading(false); // Clear loading state
         return; // Stop data fetching
         }
-      const resultVisaData = await getSingleVisaData(sharedMedata?.visaDataId);
-         setVisaData(resultVisaData?.data?.data);
-
+      const resultVisaData = await getSingleVisaData(user?.visaDataId);
+      setVisaData(resultVisaData?.data?.data);
+      console.log('set data',user);
      }catch(err) {
          console.error("Error during data fetching", err)
     } finally {
@@ -43,12 +48,17 @@ const Dashboard = () => {
      }
     };
 
-  useEffect(() => {
+
+    console.log('set shared data',sharedMedata)
+
+
+   useEffect(() => {
     fetchData();
   }, []); // Only runs on initial render
 
 
-  return loading && <Loader/> 
+ 
+  console.log('loading',loading)
 
   const splitCamelCaseToTitleCase = (str) => {
     return str
@@ -99,7 +109,7 @@ const Dashboard = () => {
   const handleBreadcrumbClick = (value) => {
     setSelectedValue(value); // Update the state with the clicked breadcrumb's value
   };
-
+// return <Stepper/>
   return (
     <div className="flex flex-col justify-center items-center space-y-4 p-4">
       {/* Breadcrumbs */}
@@ -121,6 +131,7 @@ const Dashboard = () => {
           </React.Fragment>
         ))}
       </nav>
+      {/* <Stepper/> */}
 
       {/* Display selected value */}
       <div className="max-w-md p-4 bg-transparent rounded-xl shadow text-center justify-center mt-8">

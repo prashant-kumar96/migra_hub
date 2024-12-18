@@ -9,11 +9,14 @@ import ReactFlagsSelect from "react-flags-select";
 import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
 import PersonalInfo from "@/components/PersonalInfo";
+import { useAuth } from "@/context/auth-context";
 
 const ProfilePage = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
+  const { user, isLoading } = useAuth();
+  console.log('user auth',user)
   const countryCodes = countryList()
     .getData()
     .map((country) => country.value);

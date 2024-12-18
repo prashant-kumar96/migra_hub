@@ -11,7 +11,7 @@ const LeftMenuBar = () => {
             <Link href="#">Home</Link>
           </li>
           <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-            <Link href="/profilepage">Profile</Link>
+            <Link href="/profile">Profile</Link>
           </li>
           <li className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
             <Link href="#">My Application</Link>

@@ -20,6 +20,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import ButtonLoader from "./loaders/buttonLoader";
+import { useAuth } from "@/context/auth-context";
 const options = [
   { code: "en", label: "English" },
   { code: "es", label: "Spanish" },
@@ -42,14 +43,18 @@ const PersonalInfo = () => {
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [medata] = useAtom(meDataAtom);
+  const [sharedMedata] = useAtom(meDataAtom);
+  const { user, isLoading } = useAuth();
 
-  console.log("medata", medata);
+  console.log('me data',sharedMedata);
+
+  console.log("sharedMedata", sharedMedata);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
     useState(countriesCodes);
   const [citizenshipCountry, setCitizenShipCountry] = useState<string>("");
   // const [citizenshipCountryError, setCitizenshipCountryError] = useState("");
   const [firstLanguage, setFirstLanguage] = useState<string>("");
+  
   const [error, setError] = useState({
     citizenshipCountryError: "",
     firstLanguageError: "",
@@ -162,7 +167,7 @@ const PersonalInfo = () => {
         firstLanguage,
         citizenshipCountry,
         addressData,
-        userId: medata?._id,
+        userId: sharedMedata?._id,
       };
 
       console.log("newData", newdata);
@@ -205,7 +210,7 @@ const PersonalInfo = () => {
   };
 
   const getPersonalInfofunction = async () => {
-    const result = await getPersonalData(medata?._id);
+    const result = await getPersonalData(user?._id);
     console.log("getPersonalData", result);
     if (result?.status === 200) {
       // toast(result?.data?.message);

@@ -18,7 +18,10 @@ export const savePersonalData = async (req: Request, res: Response) => {
   }
 };
 
+
+
 export const getSinglePersonalData = async (req: Request, res: Response) => {
+  console.log('single visa data request', req?.query)
   try {
     const userId = req.query?.userId;
     const result = await PersonalData.findOne({ userId: userId });

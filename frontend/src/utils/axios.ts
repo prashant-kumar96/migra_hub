@@ -35,7 +35,7 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log("error1212", error);
+    console.log("error", error.message);
     if (error.response.status === 401) {
       console.log(error.response.data.message, "response");
       if (error.response.data.message === "Invalid or expired token") {

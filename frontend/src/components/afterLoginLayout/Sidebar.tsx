@@ -26,17 +26,17 @@ const sidebarData = [
       {
         name: "Profile",
         icon: <RiMapPinUserFill size={28} />,
-        href: "/profilepage",
+        href: "/dashboard/profile",
       },
       {
         name: "Application",
         icon: <VscServerProcess size={28} />,
-        href: "/documentupload",
+        href: "/dashboard/documentupload",
       },
       {
         name: "Payment",
         icon: <RiSecurePaymentFill size={28} />,
-        href: "/payment",
+        href: "/dashboard/payment",
       },
     ],
   },
@@ -106,7 +106,7 @@ const Sidebar = () => {
     } else {
       localStorage.removeItem("token");
       setToken("");
-      router.push("/");
+      router.push("/loginpage");
     }
   };
 

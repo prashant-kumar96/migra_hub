@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { AuthProvider } from "@/context/auth-context";
 
 // Define the ErrorBoundary component
 interface ErrorBoundaryProps {
@@ -78,7 +79,9 @@ export default function App({
       </Head> */}
       <ErrorBoundary>
         <SessionProvider session={session}>
+        <AuthProvider>
           <Component {...pageProps} />
+          </AuthProvider>
         </SessionProvider>
       </ErrorBoundary>
     </>
