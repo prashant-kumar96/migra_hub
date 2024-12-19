@@ -1,8 +1,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { countriesData } from "@/utils/CountriesData";
+import { userInfo } from "os";
+import { useRouter } from "next/router";
 
 const Footer = () => {
+  const router = useRouter();
+  console.log('countries', countriesData)
+  const handleCountryClick = (countryName,id) => {
+    const formattedName = countryName.toLowerCase();
+    router.push(`/countries/${formattedName}?id=${id}`);
+  };
+
+
+   // Define the list of countries to display
+   const visibleCountries = ['Canada', 'Australia', 'New-Zealand', 'Europe', 'United-states', 'United-Kingdom'];
+
+   // Map visibleCountries to countriesData or add custom labels like 'Europe'
+   const filteredCountries = visibleCountries.map((name) => {
+     const match = countriesData.find((item) => 
+       item.name.toLowerCase() === name.toLowerCase()
+     );
+     return match || { id: name, name }; // Add custom entries if not in countriesData
+   });
+  // return ''
   return (
     <>
       <footer className="w-full shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
@@ -49,6 +71,8 @@ const Footer = () => {
                   </li>
                 ))}
               </ul>
+               
+
             </div>
 
             <div className="lg:mx-auto text-left">
@@ -56,21 +80,14 @@ const Footer = () => {
                 Countries
               </h4>
               <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
-                {[
-                  "Canada",
-                  "Australia",
-                  "New Zealand",
-                  "Europe",
-                  "USA",
-                  "UK",
-                ].map((item) => (
-                  <li key={item}>
-                    <Link
-                      href="#"
-                      className="text-gray-100 dark:text-gray-300 hover:underline"
+                {filteredCountries.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      onClick={() => handleCountryClick(item.name, item.id)}
+                      className="text-gray-100 dark:text-gray-300 hover:underline cursor-pointer"
                     >
-                      {item}
-                    </Link>
+                      {item.name}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -105,7 +122,7 @@ const Footer = () => {
                   (item) => (
                     <li key={item}>
                       <Link
-                        href="#"
+                        href={item == 'news' ? '/newspage' : `#`}
                         className="text-gray-100 dark:text-gray-300 hover:underline"
                       >
                         {item}
