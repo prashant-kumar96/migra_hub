@@ -29,7 +29,7 @@ router.get("/getCaseManagers", verifyToken, getCaseManagers);
 router.get("/checkifPaymentIsDone", verifyToken, checkifPaymentIsDone);
 
 router.post("/createCaseManager", verifyToken, createCaseManager);
-
+//@ts-ignore
 router.get("/me", verifyToken, me);
 
 export default router;

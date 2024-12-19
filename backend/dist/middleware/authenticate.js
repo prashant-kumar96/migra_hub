@@ -11,7 +11,7 @@ const verifyToken = (req, res, next) => {
     const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
     if (!token) {
         console.log("Token is required");
-        return res.status(401).json({ message: "Token is required" });
+        return res.status(200).json({ message: "Token is required", status: false });
     }
     try {
         const decoded = jwt.verify(token, JWT_SECRET);

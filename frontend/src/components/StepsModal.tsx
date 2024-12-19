@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import countryList from "react-select-country-list";
 import { visaDataAtom } from "@/store/visaDataAtom";
 import { useAtom } from "jotai";
+import { useAuth } from "@/context/auth-context";
 
 interface Props {
   setShouldStartjourneyShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,6 +40,7 @@ const StepsModal: React.FC<Props> = ({
   const [error, showError] = useState("");
   console.log("citizenshipCountry@@", citizenshipCountry);
   console.log("destinationCountry@@", destinationCountry);
+  const {user} = useAuth()
   const [passportCountry, setPassportCountry] =
     useState<string>(citizenshipCountry);
   const [progressBarpercentage, setProgressBarPercentage] = useState(10);
@@ -74,17 +76,21 @@ const StepsModal: React.FC<Props> = ({
         }
       }
     }
+
+    
     if (step === 4) {
       // router.push("/loginpage");
       setSharedState(data);
-      router.push("/loginpage");
+      // !user && router.push("/loginpage");
     } else if (progressBarpercentage != 100) {
       setProgressBarPercentage((prev) => prev + 10);
       setStep((prev) => prev + 1);
     }
   };
 
+
   console.log("progressBarpercentage", progressBarpercentage);
+
   const handleBackButtonClick = () => {
     if (progressBarpercentage > 10) {
       setProgressBarPercentage((prev) => prev - 10);

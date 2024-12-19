@@ -26,6 +26,7 @@ export const savePersonalData = (req, res) => __awaiter(void 0, void 0, void 0, 
 });
 export const getSinglePersonalData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
+    console.log('single visa data request', req === null || req === void 0 ? void 0 : req.query);
     try {
         const userId = (_a = req.query) === null || _a === void 0 ? void 0 : _a.userId;
         const result = yield PersonalData.findOne({ userId: userId });

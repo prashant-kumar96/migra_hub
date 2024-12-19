@@ -329,12 +329,17 @@ async function createCaseManager(req: any, res: any) {
   }
 }
 
+
+//@ts-ignore
 async function me(req: Request, res: Response) {
   try {
+    //@ts-ignore
       console.log(req.user, "req.user");
+      //@ts-ignore
   const decoded = req.user;
   if (!decoded || !decoded.id) {
     console.warn("Unauthorized: No valid user in request.");
+    //@ts-ignore
     return res.status(200).json({ status: false, message: "Unauthorized: No valid user in request." , user: null });
   }
 
@@ -343,9 +348,10 @@ async function me(req: Request, res: Response) {
 
   if (!user) {
       console.warn(`User not found for ID: ${userId}`)
+      //@ts-ignore
       return res.status(200).json({ status: false, message: "User not found", user: null });
   }
-
+//@ts-ignore
   res.status(200).json({
       status: true,
       message: "User details fetched successfully",
@@ -353,6 +359,7 @@ async function me(req: Request, res: Response) {
   });
 } catch (error: any) {
     console.error("Error fetching user details:", error);
+    //@ts-ignore
     res.status(500).json({ status: false, message: "Internal server error", user: null });
 }
 }

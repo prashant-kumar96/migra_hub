@@ -13,7 +13,7 @@ export const getSingleVisaData = async (req: Request, res: Response) => {
       console.warn("Warning: visaDataId is missing from query parameters.");
         return res.status(200).json({ data: null, message: "Visa data id not provided." });
       }
-
+//@ts-ignore
     if (!mongoose.Types.ObjectId.isValid(visaDataId)) {
         console.warn(`Warning: visaDataId is an invalid format: ${visaDataId}`);
       return res.status(200).json({ data: null, message: "Visa data id is not a valid ObjectId." });
@@ -26,7 +26,7 @@ export const getSingleVisaData = async (req: Request, res: Response) => {
          console.warn(`Visa data not found for id: ${visaDataId}`);
       return res.status(200).json({ data: null, message: "Visa data not found." });
     }
-
+//@ts-ignore
     const { _id, createdAt, updatedAt, __v, ...rest } = result.toObject();
     console.log("rest", rest);
 

@@ -1,4 +1,3 @@
-//@ts-nocheck
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-// src/index.ts
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -28,12 +26,9 @@ const uri = process.env.MONGODB_URI;
 if (!uri) {
     throw new Error("MongoDB connection string (MONGODB_URI) is not defined");
 }
-const serveStaticFiles = (app) => {
-    // This serves static files from the '/uploads' directory
-    app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
-};
 const app = express();
-serveStaticFiles(app);
+// Serve static files
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(cors());
 app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
@@ -99,14 +94,154 @@ app.use("/api/personalData", personalDataRoutes);
 app.use("/api/document", documentRoutes);
 app.use("/api/caseManager", caseManagerRoutes);
 const client = new MongoClient(uri);
-app.get("/users", () => __awaiter(void 0, void 0, void 0, function* () {
-    yield client.connect();
-    console.log("tjsi is run");
-    const result = yield User.find({});
-    console.log("result", result);
+app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield client.connect();
+        console.log("tjsi is run");
+        const result = yield User.find({});
+        console.log("result", result);
+        // Construct a more styled HTML response
+        const htmlResponse = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>MigraHub Users</title>
+            <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+            <style>
+                body {
+                    font-family: 'Roboto', sans-serif;
+                    background-color: #f9f9f9;
+                    color: #333;
+                    margin: 0;
+                    padding: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                h1 {
+                    color: #007bff;
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                 .user-card-container {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 20px; /* Spacing between cards */
+                  }
+                  .user-card {
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                    width: 300px; /* Fixed card width */
+                    display: flex;
+                    flex-direction: column;
+                   
+                  }
+                .user-card h2{
+                    margin-bottom: 15px;
+                    color:#333;
+                    font-weight: 600;
+                  }
+                  .user-card h4 {
+                     margin-bottom: 10px;
+                     color: #555;
+                  }
+
+                
+                .footer {
+                    margin-top: 30px;
+                    text-align: center;
+                    font-size: 0.9em;
+                    color: #777;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>MigraHub Users</h1>
+            <div class="user-card-container">
+            ${result
+            .map((user) => `
+                     <div class="user-card">
+                        <h2>${user.name}</h2>
+                        <h4>Email: ${user.email}</h4>
+                        <h4>ID: ${user._id}</h4>
+                        <!-- Add more user details here -->
+                     </div>
+                   `)
+            .join("")}
+             </div>
+            <div class="footer">
+                <p>© ${new Date().getFullYear()} MigraHub API</p>
+            </div>
+        </body>
+        </html>
+    `;
+        res.status(200).send(htmlResponse);
+    }
+    catch (error) {
+        console.error("Error fetching users:", error);
+        res.status(500).send("<h1>Error Fetching Users</h1>");
+    }
 }));
 app.get("/", (req, res) => {
-    res.send("my dserver + your server Server");
+    res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MigraHub API</title>
+         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+             body {
+                font-family: 'Roboto', sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background-color: #f4f4f4;
+            }
+            .container {
+                background-color: white;
+                padding: 40px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                 text-align: center;
+            }
+             h1{
+                color: #007bff;
+                margin-bottom: 20px;
+
+             }
+             p {
+                 font-size: 1.1em;
+                 color: #555;
+             }
+
+             .footer{
+                 margin-top: 30px;
+                text-align: center;
+                font-size: 0.9em;
+                color: #777;
+             }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Welcome to MigraHub API</h1>
+            <p>This API provides services for user authentication, visa data management, document handling, and more.</p>
+            <div class="footer">
+                <p>© ${new Date().getFullYear()} MigraHub API</p>
+            </div>
+            </div>
+    </body>
+    </html>
+  `);
 });
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

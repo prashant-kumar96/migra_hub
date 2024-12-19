@@ -14,6 +14,8 @@ import { MdEmail } from "react-icons/md";
 import { useAtom } from "jotai";
 import { visaDataAtom } from "@/store/visaDataAtom";
 import ButtonLoader from "@/components/loaders/buttonLoader";
+
+
 const LoginPage = () => {
   const router = useRouter();
   console.log(router.query);
@@ -50,7 +52,7 @@ const LoginPage = () => {
     setError,
   } = useForm({});
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:any) => {
     setLoading(true);
     console.log(data);
     const newData = { ...data, role: "USER", data: sharedState };

@@ -10,16 +10,22 @@ import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import Loader from "@/components/loaders/loader";
 import Stepper from "@/components/Stepper";
 import { useAuth } from "@/context/auth-context";
+import TravelPlan from "@/components/TravelPlan";
+import { visaDataAtom } from "@/store/visaDataAtom";
 
 
 const Dashboard = () => {
  
   const [visaData, setVisaData] = useState("");
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
+  const [sharedState, setSharedState] = useAtom(visaDataAtom);
+
   const [selectedValue, setSelectedValue] = useState(""); // State for selected breadcrumb value
   const [loading, setLoading] = useState<boolean>(true);
   console.log('loading',loading);
   const { user, isLoading } = useAuth();
+
+  console.log('visa data',sharedState)
 
   const fetchData = async () => { 
     try {
@@ -109,12 +115,14 @@ const Dashboard = () => {
   const handleBreadcrumbClick = (value) => {
     setSelectedValue(value); // Update the state with the clicked breadcrumb's value
   };
-// return <Stepper/>
+
+   // return <Stepper/>
+
   return (
     <div className="flex flex-col justify-center items-center space-y-4 p-4">
       {/* Breadcrumbs */}
       <nav className="flex flex-wrap items-center justify-center text-sm ">
-        {breadcrumbs.map((box, index) => (
+        {visaData ? breadcrumbs.map((box, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
               <span className="mx-2 font-bold">
@@ -129,11 +137,14 @@ const Dashboard = () => {
               {box.title}
             </button>
           </React.Fragment>
-        ))}
+        )) : 
+        <TravelPlan/>
+        }
       </nav>
       {/* <Stepper/> */}
 
       {/* Display selected value */}
+      { visaData ? 
       <div className="max-w-md p-4 bg-transparent rounded-xl shadow text-center justify-center mt-8">
         {selectedValue ? (
           <p className="text-base font-medium text-Indigo">
@@ -144,7 +155,9 @@ const Dashboard = () => {
           <p className="text-gray-500">Click a breadcrumb to view its value</p>
         )}
       </div>
-      <div className="max-w-md p-6 bg-transparent rounded-xl shadow text-center justify-center mt-12">
+       : ''
+      }
+      {visaData ? <div className="max-w-md p-6 bg-transparent rounded-xl shadow text-center justify-center mt-12">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-Indigo text-center">
           Travel Visa Denial Risk
         </h5>
@@ -178,6 +191,7 @@ const Dashboard = () => {
           </svg>
         </Link>
       </div>
+       : ''}
     </div>
   );
 };
