@@ -102,7 +102,10 @@ const Sidebar = () => {
 
   const handleSignout = () => {
     if (session) {
+      localStorage.removeItem("token");
+      setToken("");
       signOut();
+      router.push("/loginpage");
     } else {
       localStorage.removeItem("token");
       setToken("");
