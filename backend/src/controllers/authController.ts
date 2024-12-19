@@ -86,55 +86,55 @@ async function register(req: any, res: any) {
 // google login
 async function googleLogin(req: any, res: any) {
   try {
-      const { accessToken, email, name, googleId } = req.body;
+    const { accessToken, email, name, googleId } = req.body;
 
-      if (!accessToken || !email || !name || !googleId) {
-          return res.status(400).json({ message: 'Missing required fields' });
+    if (!accessToken || !email || !name || !googleId) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    // Verify the Google access token
+    const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
+    try {
+      const googleRes = await axios.get(googleApiUrl);
+      if (googleRes.data.email !== email) {
+        return res.status(401).json({ message: 'Invalid Google token' });
       }
-      // Verify the Google access token
-        const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
-        try{
-           const googleRes = await axios.get(googleApiUrl);
-           if(googleRes.data.email!==email) {
-               return res.status(401).json({ message: 'Invalid Google token' });
-           }
-        }
-        catch(err){
-          console.log(err,"google error")
-          return res.status(401).json({ message: 'Invalid Google token' });
-
-        }
+    }
+    catch (err) {
+      console.log(err, "google error")
+      return res.status(401).json({ message: 'Invalid Google token' });
+    }
 
 
-  
     let user = await User.findOne({ email: email });
+
+    console.log('google user', user)
     
-    console.log('google user',user)
     if (!user) {
         // User doesn't exist, create a new user
-        user = new User({
+        const newUser = new User({
             email: email,
             name: name,
             googleId: googleId,
-            // set a default password or don't set one
         });
-      await user.save();
+       user = await newUser.save();
     }
+    // if user exists then no need to create user again
 
-      // Generate JWT for your application
-    const token = jwt.sign({ id: user._id },  process.env.JWT_SECRET, { expiresIn: "1d" });
-      res.status(200).json({
-          token,
-          user: {
-              username: user.name,
-              id: user._id,
-              role: user.role, // Assuming you might store roles 
-          },
-      });
+    // Generate JWT for your application
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: "1d" });
+    res.status(200).json({
+      token,
+      user: {
+        username: user.name,
+        id: user._id,
+        role: user.role, // Assuming you might store roles
+      },
+    });
 
   } catch (error) {
-      console.log('Error during Google login', error);
-      res.status(500).json({ message: 'Internal server error' });
+    console.log('Error during Google login', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
