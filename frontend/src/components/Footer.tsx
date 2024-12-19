@@ -63,7 +63,15 @@ const Footer = () => {
                 ].map((item) => (
                   <li key={item}>
                     <Link
-                      href="#"
+                      href={
+                        item === 'Newsroom' 
+                          ? '/newsPage' 
+                          : item === 'Contact' 
+                          ? '/contact' 
+                          : item == 'Help' 
+                          ? '/help'
+                          : '#'
+                      }
                       className="text-gray-100 dark:text-gray-300 hover:underline"
                     >
                       {item}
@@ -122,7 +130,7 @@ const Footer = () => {
                   (item) => (
                     <li key={item}>
                       <Link
-                        href={item == 'news' ? '/newspage' : `#`}
+                        href={item == 'News' ? 'newsPage' : `#`}
                         className="text-gray-100 dark:text-gray-300 hover:underline"
                       >
                         {item}
