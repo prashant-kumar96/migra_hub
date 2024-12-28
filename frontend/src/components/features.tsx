@@ -87,7 +87,7 @@ const Features = () => {
   return (
     <section className="overflow-hidden py-8 sm:py-16">
       <div className=" max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
+        {/* <div className="max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-12">
           <div>
             <p className="inline-block p-2 mb-4 text-xs  font-semibold tracking-wider bg-indigo-200 text-Indigo tracking-wider text-teal-900 uppercase rounded-full bg-teal-accent-400">
               Procedural Steps
@@ -122,7 +122,7 @@ const Features = () => {
             applicants can confidently navigate complex visa procedures and
             achieve their goals with ease.
           </p>
-        </div>
+        </div> */}
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pr-8 lg:pt-4">
             <div className="lg:max-w-lg">
