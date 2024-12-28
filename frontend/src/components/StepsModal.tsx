@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactFlagsSelect from "react-flags-select";
 import ProgressBar from "./ProgressBar";
 import { PiHeadsetFill } from "react-icons/pi";
@@ -32,6 +32,7 @@ const StepsModal: React.FC<Props> = ({
   countryCodes,
   destinationCountry,
 }) => {
+  console.log(':: props',citizenshipCountry,destinationCountry)
   const handleCloseModal = () => {
     setShouldStartjourneyShow(false);
   };
@@ -111,6 +112,10 @@ const StepsModal: React.FC<Props> = ({
     }
   };
 
+  useEffect(()=>{
+    handleSelectPassportCountry(citizenshipCountry)
+  },[countryCodes])
+
   const handleYes = (name: string) => {
     setData({
       ...data,
@@ -179,6 +184,7 @@ const StepsModal: React.FC<Props> = ({
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
+            <span className="p-6 font-bold text-4xl mx-auto flex justify-center text-white">Risk Assessment</span>
 
             <div className="m-4 p-4 md:m-5 md:p-5 space-y-4 bg-white rounded text-gray-900">
               <ProgressBar progressBarpercentage={progressBarpercentage} />
@@ -197,15 +203,15 @@ const StepsModal: React.FC<Props> = ({
                     countries={countryCodes}
                     searchable
                     /*showSelectedLabel={showSelectedLabel}
-        selectedSize={selectedSize}
-        showOptionLabel={showOptionLabel}
-        optionsSize={optionsSize}
-        placeholder={placeholder}
-        searchable={searchable}
-        searchPlaceholder={searchPlaceholder}
-        alignOptionsToRight={alignOptionsToRight}
-        fullWidth={fullWidth}
-        disabled={disabled} */
+                    selectedSize={selectedSize}
+                    showOptionLabel={showOptionLabel}
+                    optionsSize={optionsSize}
+                    placeholder={placeholder}
+                    searchable={searchable}
+                    searchPlaceholder={searchPlaceholder}
+                    alignOptionsToRight={alignOptionsToRight}
+                    fullWidth={fullWidth}
+                    disabled={disabled} */
                   />
                 </div>
 
