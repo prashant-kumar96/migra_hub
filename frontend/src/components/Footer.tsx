@@ -121,7 +121,7 @@ const Footer = () => {
               </ul>
             </div>
 
-            <div className="lg:mx-auto text-left">
+            {/* <div className="lg:mx-auto text-left">
               <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
                 Blogs
               </h4>
@@ -139,7 +139,7 @@ const Footer = () => {
                   )
                 )}
               </ul>
-            </div>
+            </div> */}
           </div>
 
           <div className="py-7 border-t border-gray-200">
