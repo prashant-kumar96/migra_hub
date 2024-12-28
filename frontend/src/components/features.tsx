@@ -62,8 +62,8 @@ const features = [
     ),
   },
   {
-    title: "Real time updates",
-    description: "Get realtime status updates as we will keep you informed.",
+    title: "Real-Time updates",
+    description: "Stay informed with real-time status updates, ensuring you’re always up to date on your application progress.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
