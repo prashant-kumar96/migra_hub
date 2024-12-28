@@ -1,4 +1,4 @@
-import { loginUser, registerUser } from "@/api/auth";
+import { googleLogin, loginUser, registerUser } from "@/api/auth";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import BeforeLoginLayout from "@/components/BeforeLoginLayout";
 import FaceBookLoginButton from "@/components/FacebookLoginButton";
@@ -15,6 +15,7 @@ import { useAtom } from "jotai";
 import { visaDataAtom } from "@/store/visaDataAtom";
 import ButtonLoader from "@/components/loaders/buttonLoader";
 import Loader from "@/components/loaders/loader";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 
 const LoginPage = () => {
@@ -24,16 +25,51 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [googleLoading,setGoogleLoading] = useState(false)
   const [formData, setFormData] = useState({
+    
     firstName: "",
     email: "",
     password: "",
   });
+  const { data: session, status } = useSession();  // Move session to parent component
 
   const [showIndexPage, setShowIndexPage] = useState(false);
 
   const [stepsData, setStepsData] = useState<any>();
 
   const [isPasswordTypePassword, setIsPasswordTypePassword] = useState(true);
+  
+
+  useEffect(() => {
+    if (status === 'authenticated' && !googleLoading) {
+      handleGoogleLogin();
+    }
+  }, [status]);
+
+  const handleGoogleLogin = async () => {
+    if (!session) return;
+    
+    setGoogleLoading(true);  // Set loading once and don't change until redirect
+    
+    try {
+      const response = await googleLogin({
+        accessToken: session?.accessToken,
+        email: session?.user?.email,
+        name: session?.user?.name,
+        googleId: session?.user?.googleId,
+      });
+
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        router.push('/dashboard');
+        // Don't set loading to false since we're redirecting
+      }
+    } catch (err) {
+      console.log(err, "error during backend google login");
+      setGoogleLoading(false);  // Only set to false on error
+    }
+  };
+   
   
   const handleChange = (e) => {
     setFormData({
@@ -126,23 +162,34 @@ const LoginPage = () => {
 
  
    console.log('google loading',googleLoading)
+ 
 
-
+  if (googleLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader/>
+      </div>
+    );
+  }
 
    return (
     <div className="flex items-center justify-center  mb-2">
-      {googleLoading ? (
+      {/* {googleLoading ? (
           <div className="flex items-center justify-center">
             <Loader />
           </div>
-        ) :(
+        ) :( */}
          <div className="bg-white shadow-md rounded-lg pt-10 my-10">
           <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
             Sign Up With
           </h1>
 
           <div className="flex gap-5  px-8 my-8 justify-around">
-          <GoogleLoginButton setGoogleLoading={setGoogleLoading} googleLoading={googleLoading} />
+          <GoogleLoginButton 
+            onSignIn={() => signIn("google")}
+            onSignOut={() => signOut()}
+            session={session}
+          />
           </div>
 
           <hr />
@@ -268,7 +315,7 @@ const LoginPage = () => {
             </p>
           </div>
         </div>
-      )}
+      
     </div>
   );
 };
