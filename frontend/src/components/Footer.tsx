@@ -55,7 +55,7 @@ const Footer = () => {
               <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
                 {[
                   "Home",
-                  "Partners",
+                  // "Partners",
                   "Contact",
                   "Vistor Journey",
                   "Newsroom",
