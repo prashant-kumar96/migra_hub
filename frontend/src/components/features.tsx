@@ -5,7 +5,7 @@ const features = [
   {
     title: "Risk Assessment",
     description:
-      "Answer a few simple questions and our team will asses your risk of travel visa denial. This will help us create a tailored plan for your specific situation, so you can file the strongest application possible.",
+      "Answer a few straightforward questions, and our team will evaluate your risk of a travel visa denial. This allows us to develop a customized plan tailored to your situation, ensuring you submit the strongest application possible.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
