@@ -132,10 +132,10 @@ const Features = () => {
               <p className="mt-2 text-2xl font-bold tracking-tight text-DarkGray sm:text-3xl">
                 An Eastiest Way to Travel Abroad
               </p>
-              <p className="mt-6 text-lg leading-8 text-gray-600">
+              {/* <p className="mt-6 text-lg leading-8 text-gray-600">
                 We've built an API that allows you to scale your podcast
                 production workflow.
-              </p>
+              </p> */}
               <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-DarkGray text-justify lg:max-w-none">
                 {features.map((feature, index) => (
                   <div key={index} className="relative pl-9">
