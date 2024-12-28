@@ -43,7 +43,7 @@ const features = [
   {
     title: "Application Process",
     description:
-      "While you relax, Our team of experts will strengthen your application and file it.",
+      "Sit back and relax while our team of experts enhances your application and submits it on your behalf.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
