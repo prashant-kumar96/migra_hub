@@ -7,14 +7,22 @@ const TravelPlan = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
+  const [filteredDestinationCountries, setFilteredDestinationCountries] = useState([])
   // console.log(countryList());
-  const countriesCodes = countryList()
+  const fromCountriesCodes = countryList()
     .getData()
     .map((c) => c.value);
+
+    const destinationCountriesCodes = countryList()
+    .getData()
+    .filter(c => c.value === "US" || c.value === "CA")
+    .map(c => c.value);
+
+
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
-    useState(countriesCodes);
+    useState(fromCountriesCodes);
   const [destinationCountryCodes, setDestinationCountryCodes] =
-    useState(countriesCodes);
+    useState(destinationCountriesCodes);
   const [error, setError] = useState({
     citizenshipCountryError: "",
     destinationCountryError: "",
@@ -41,13 +49,24 @@ const TravelPlan = () => {
       setDestinationCountryCodes(temp);
     }
   };
-
   const onSelectDestinationCountry = (code: string) => {
+    // Only allow US and Canada
+    if (code !== "US" && code !== "CA") {
+      setError((prev) => ({ 
+        ...prev, 
+        destinationCountryError: "Please select either USA or Canada as destination" 
+      }));
+      return;
+    }
+  
     setError((prev) => ({ ...prev, destinationCountryError: "" }));
+    
     const tempCountry: any = countryList()
       .getData()
       .find((country) => country.value === code);
+      
     setDestinationCountry(tempCountry);
+    
     let temp = [...countriesCodes];
     const index = citizenshipCountryCodes.indexOf(code);
     if (index > -1) {
@@ -82,6 +101,16 @@ const TravelPlan = () => {
     }
   };
   console.log("citizenshipCountry", citizenshipCountry);
+
+  const filterDestinationCountries = () => {
+    const filteredCountries = countryList()
+      .getData()
+      .filter((country) => country.value === "US" || country.value === "CA");
+    
+    setFilteredDestinationCountries(filteredCountries);
+  }
+
+  console.log('filterDestinationCountries',destinationCountry)
 
   return (
     <section className="bg-Indigo ">
