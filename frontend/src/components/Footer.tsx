@@ -106,7 +106,7 @@ const Footer = () => {
                 Resources
               </h4>
               <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
-                {["FAQs", "Quick Start", "Documentation", "User Guide"].map(
+                {["Privacy Policy", "Terms of Use", "Contact Us",].map(
                   (item) => (
                     <li key={item}>
                       <Link
