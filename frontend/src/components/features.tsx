@@ -23,7 +23,7 @@ const features = [
   {
     title: "Onboarding",
     description:
-      "Onboard to MigraHub, we will assign case manager who will help you through out the visa process and beyond.",
+      "Onboard to MigraHub, where we’ll assign you a dedicated case manager to guide you through the visa process and beyond.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
