@@ -15,7 +15,7 @@ const Footer = () => {
 
 
    // Define the list of countries to display
-   const visibleCountries = ['Canada', 'Australia', 'New-Zealand', 'Europe', 'United-states', 'United-Kingdom'];
+   const visibleCountries = ['Canada', 'United-states'];
 
    // Map visibleCountries to countriesData or add custom labels like 'Europe'
    const filteredCountries = visibleCountries.map((name) => {
