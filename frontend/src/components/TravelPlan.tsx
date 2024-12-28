@@ -94,6 +94,7 @@ const TravelPlan = () => {
   console.log("error", error);
 
   const onSelectCitizenShipCountry = (code: string) => {
+      console.log(':: code',code)
       setCitizenshipCountry(code);
       setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
       
@@ -104,6 +105,7 @@ const TravelPlan = () => {
         setDestinationOptions(temp);
       }
   };
+
   const onSelectDestinationCountry = (code: string) => {
       // Only allow US and Canada
       if (code !== "US" && code !== "CA") {

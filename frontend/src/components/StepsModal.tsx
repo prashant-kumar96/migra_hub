@@ -15,6 +15,7 @@ import { visaDataAtom } from "@/store/visaDataAtom";
 import { useAtom } from "jotai";
 import { useAuth } from "@/context/auth-context";
 
+
 interface Props {
   setShouldStartjourneyShow: React.Dispatch<React.SetStateAction<boolean>>;
   citizenshipCountry: string;
@@ -63,6 +64,15 @@ const StepsModal: React.FC<Props> = ({
   });
 
   console.log("step", step);
+
+  const getCountryNameByCode = (code) => {
+    if (!code) return null; // Handle cases where code is not provided
+    
+    const countries = countryList().getData();
+    const country = countries.find(c => c.value === code);
+  
+    return country ? country.label : null; // Return country name or null if not found
+  };
 
   const handleNextButtonClick = () => {
     if (step === 1) {
@@ -189,8 +199,8 @@ const StepsModal: React.FC<Props> = ({
             <div className="m-4 p-4 md:m-5 md:p-5 space-y-4 bg-white rounded text-gray-900">
               <ProgressBar progressBarpercentage={progressBarpercentage} />
               <h2 className="leading-relaxed text-gray-900 dark:text-gray-900 text-4xl text-center py-8">
-                {ModalData[step].question}{" "}
-                {(step === 1 || step === 2) && citizenshipCountry.label}
+                {ModalData[step].question} {' '}
+                {(step === 1 || step === 2) && getCountryNameByCode(citizenshipCountry)}
               </h2>
             </div>
             {step === 0 && (
@@ -215,7 +225,7 @@ const StepsModal: React.FC<Props> = ({
                   />
                 </div>
 
-                {/* <div className="bg-gray-600 m-4">
+                <div className="bg-gray-600 m-4">
                   {showRiskDecreased && (
                     <div className="p-4 md:p-5 space-y-4">
                       <Checkbox
@@ -227,7 +237,7 @@ const StepsModal: React.FC<Props> = ({
                       <p className="text-sm">{ModalData[step].secondLine}</p>
                     </div>
                   )}
-                </div> */}
+                </div>
               </>
             )}
 
@@ -250,7 +260,7 @@ const StepsModal: React.FC<Props> = ({
                       checked={data.areYouApplyingFromPassportCountry}
                     />
                   </div>
-                  {/* {data.areYouApplyingFromIndia && (
+                  {data.areYouApplyingFromIndia && (
                     <div className="p-4 md:p-5 space-y-4 bg-gray-600">
                       <Checkbox
                         text="Risk Decreased"
@@ -261,7 +271,7 @@ const StepsModal: React.FC<Props> = ({
 
                       <p className="text-sm">{ModalData[step].secondLine}</p>
                     </div>
-                  )} */}
+                  )}
                 </div>
 
                 <div

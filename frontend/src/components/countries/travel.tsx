@@ -7,6 +7,8 @@ import StepsModal from "@/components/StepsModal";
 import { countriesData } from "@/utils/CountriesData";
 import { useRouter } from "next/router";
 import { IoLogoWhatsapp } from "react-icons/io";
+
+
 const Travel = () => {
   const router = useRouter();
   const { country } = router.query;
