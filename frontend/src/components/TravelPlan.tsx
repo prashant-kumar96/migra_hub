@@ -9,7 +9,7 @@ const TravelPlan = () => {
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
   const [filteredDestinationCountries, setFilteredDestinationCountries] = useState([])
   // console.log(countryList());
-  const fromCountriesCodes = countryList()
+  const citizenshipCountriesCodes = countryList()
     .getData()
     .map((c) => c.value);
 
@@ -20,7 +20,7 @@ const TravelPlan = () => {
 
 
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
-    useState(fromCountriesCodes);
+    useState(citizenshipCountriesCodes);
   const [destinationCountryCodes, setDestinationCountryCodes] =
     useState(destinationCountriesCodes);
   const [error, setError] = useState({
@@ -42,7 +42,7 @@ const TravelPlan = () => {
 
     setCitizenshipCountry(tempCountry);
     setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
-    let temp = [...countriesCodes];
+    let temp = [...citizenshipCountriesCodes];
     const index = destinationCountryCodes.indexOf(code);
     if (index > -1) {
       temp.splice(index, 1);
@@ -67,7 +67,7 @@ const TravelPlan = () => {
       
     setDestinationCountry(tempCountry);
     
-    let temp = [...countriesCodes];
+    let temp = [...destinationCountriesCodes];
     const index = citizenshipCountryCodes.indexOf(code);
     if (index > -1) {
       temp.splice(index, 1);
@@ -230,7 +230,7 @@ const TravelPlan = () => {
           citizenshipCountry={citizenshipCountry}
           setCitizenshipCountry={setCitizenshipCountry}
           onSelectCitizenShipCountry={onSelectCitizenShipCountry}
-          countryCodes={countriesCodes}
+          countryCodes={citizenshipCountriesCodes}
           destinationCountry={destinationCountry}
         />
       )}
