@@ -41,3 +41,47 @@ export const getSingleVisaData = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+
+export const addVisaData = async (req: Request, res: Response) => {
+  try {
+    const visaData = new VisaData(req.body);
+    const resultVisaData = await visaData.save();
+    console.log("resultVisaData", resultVisaData);
+    res.status(201).json({
+      message: "Visa data created successfully",
+      visaDataId: resultVisaData._id,
+    });
+  } catch (error) {
+    console.error("Error creating visa data:", error);
+    res.status(500).json({ message: "Failed to create visa data", error });
+  }
+};
+
+
+
+export const updateVisaData = async (req: Request, res: Response) => {
+  const { visaDataId, ...updateData } = req.body;
+
+    if (!visaDataId) {
+        return res.status(400).json({ message: "Visa data ID is required." });
+      }
+      try {
+          const updatedVisaData = await VisaData.findByIdAndUpdate(
+            visaDataId,
+            updateData,
+            { new: true }
+          );
+          if (!updatedVisaData) {
+            return res.status(404).json({ message: "Visa data not found" });
+          }
+          res.status(200).json({
+            message: "Visa data updated successfully",
+            updatedVisaData,
+          });
+        } catch (error) {
+          console.error("Error updating visa data:", error);
+          res.status(500).json({ message: "Failed to update visa data", error });
+        }
+};

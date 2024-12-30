@@ -14,6 +14,7 @@ import countryList from "react-select-country-list";
 import { visaDataAtom } from "@/store/visaDataAtom";
 import { useAtom } from "jotai";
 import { useAuth } from "@/context/auth-context";
+import Loader from "./loaders/loader";
 
 
 interface Props {
@@ -40,6 +41,7 @@ const StepsModal: React.FC<Props> = ({
   const router = useRouter();
   const [sharedState, setSharedState] = useAtom(visaDataAtom);
   const [error, showError] = useState("");
+  const [redirection, setRedirection] = useState(false)
   console.log("citizenshipCountry@@", citizenshipCountry);
   console.log("destinationCountry@@", destinationCountry);
   const {user} = useAuth()
@@ -92,14 +94,21 @@ const StepsModal: React.FC<Props> = ({
 
     
     if (step === 4) {
-      // router.push("/loginpage");
       setSharedState(data);
-      // !user && router.push("/loginpage");
-    } else if (progressBarpercentage != 100) {
+      setRedirection(true);
+    
+      // Add a small delay to allow the loader to render
+      setTimeout(() => {
+        if (!user) {
+          router.push("/loginpage");
+        }
+      }, 500); // Adjust the delay as needed
+    } else if (progressBarpercentage !== 100) {
       setProgressBarPercentage((prev) => prev + 10);
       setStep((prev) => prev + 1);
     }
-  };
+  }
+    
 
 
   console.log("progressBarpercentage", progressBarpercentage);
@@ -161,15 +170,22 @@ const StepsModal: React.FC<Props> = ({
     return country.label;
   };
 
+  
+
+
   return (
     <div>
-      <div
+       <div
         id="default-modal"
         tabIndex={-1}
         aria-hidden="true"
         className="justify-center flex bg-[#80808085] overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
       >
         <div className="relative p-4 w-full max-w-2xl max-h-full">
+        { redirection ? 
+
+            <div className='h-screen flex justify-center '><Loader /></div> 
+            :
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <button
@@ -309,15 +325,15 @@ const StepsModal: React.FC<Props> = ({
                         )}
                         searchable
                         /*showSelectedLabel={showSelectedLabel}
-        selectedSize={selectedSize}
-        showOptionLabel={showOptionLabel}
-        optionsSize={optionsSize}
-        placeholder={placeholder}
-        searchable={searchable}
-        searchPlaceholder={searchPlaceholder}
-        alignOptionsToRight={alignOptionsToRight}
-        fullWidth={fullWidth}
-        disabled={disabled} */
+                      selectedSize={selectedSize}
+                      showOptionLabel={showOptionLabel}
+                      optionsSize={optionsSize}
+                      placeholder={placeholder}
+                      searchable={searchable}
+                      searchPlaceholder={searchPlaceholder}
+                      alignOptionsToRight={alignOptionsToRight}
+                      fullWidth={fullWidth}
+                      disabled={disabled} */
                       />
                       {/* <div className="p-4 md:p-5 space-y-4 bg-gray-600">
                         <Checkbox
@@ -647,8 +663,10 @@ const StepsModal: React.FC<Props> = ({
               </button>
             </div>
           </div>
+        }
         </div>
       </div>
+    
     </div>
   );
 };
