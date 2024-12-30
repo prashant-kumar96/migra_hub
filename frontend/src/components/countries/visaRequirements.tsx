@@ -6,6 +6,10 @@ import { GrAtm } from "react-icons/gr";
 import { FaThumbsUp } from "react-icons/fa";
 import { countriesData } from "@/utils/CountriesData";
 import { useRouter } from "next/router";
+import { SlEnvolopeLetter } from "react-icons/sl";
+import { BsEnvelopeAt } from "react-icons/bs";
+import { TfiEnvelope } from "react-icons/tfi";
+import { BiUserPin } from "react-icons/bi";
 const VisaRequirements = () => {
   const router = useRouter();
   const { country } = router.query;
@@ -13,13 +17,18 @@ const VisaRequirements = () => {
     (item) => item.name.toLowerCase() === country?.toLowerCase()
   );
   const items = [
-    { name: "Passport", icon: <BiScan size={24} /> },
-    { name: "Photo", icon: <TbPhotoSensor2 size={24} /> },
-    { name: "Bank Statement", icon: <GrAtm size={24} /> },
-    { name: "Income Tax Return (ITR)", icon: < BsReceiptCutoff size={22} /> },
+    { name: "Passport", icon: <BiScan size={20} /> },
+    { name: "Photo", icon: <TbPhotoSensor2 size={20} /> },
+    { name: "Bank Statement", icon: <GrAtm size={20} /> },
+    { name: "Income Tax Return (ITR)", icon: < BsReceiptCutoff size={20} /> },
+    { name: "Itinerary & Cover Letter", icon: <SlEnvolopeLetter size={20} /> },
+    { name: "Invitation Letter", icon: <BsEnvelopeAt size={20} /> },
+    { name: "Sponsorship Letter", icon: <TfiEnvelope size={20} /> },
+    { name: "Occupation Status", icon: < BiUserPin  size={20} /> },
+    // { name: "Income Tax Return (ITR)", icon: < BsReceiptCutoff size={20} /> },
   ];
   return (
-    <section className="py-8 px-4 mx-auto max-w-screen-xl">
+    <section className="py-8 px-6 mx-auto max-w-screen-xl">
       {/* Heading */}
       <h2 className="text-3xl text-Indigo font-bold mb-1 capitalize">
         {selectedCountry
@@ -32,7 +41,7 @@ const VisaRequirements = () => {
         {items.map((item, index) => (
           <button
             key={index}
-            className={`flex items-center gap-2 p-2  bg-[#E6F3F5] rounded-lg text-[17px] tracking-wide font-medium `}
+            className={`flex items-center gap-2 p-1.5  bg-[#E6F3F5] rounded-lg text-[15px] tracking-wide font-medium `}
           >
             <span className="text-Indigo mr-1">{item.icon}</span>
             <span className="text-Indigo tracking-wide">{item.name}</span>

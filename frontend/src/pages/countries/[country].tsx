@@ -8,6 +8,7 @@ import VisaRequirements from "@/components/countries/visaRequirements";
 import VisaTimeline from "@/components/countries/visaTimeline";
 import Footer from "@/components/Footer";
 import { countriesData } from "@/utils/CountriesData";
+import VisaItinerary from "@/components/countries/visaItinerary";
 
 export async function getStaticPaths() {
   const paths = countriesData.map((country) => ({
@@ -43,6 +44,7 @@ const CountryPage = ({ countryData }) => {
         <div className="md:col-span-2">
           <VisaInfo />
           <VisaRequirements />
+          <VisaItinerary />
           <VisaTimeline />
           <Concierge />
           <VisaRejectionReasons />
