@@ -25,6 +25,8 @@ const Dashboard = () => {
   console.log('loading',loading);
   const { user, isLoading } = useAuth();
 
+  console.log(';; user',user);
+ 
   console.log('visa data',sharedState)
 
   const fetchData = async () => { 
@@ -116,13 +118,15 @@ const Dashboard = () => {
     setSelectedValue(value); // Update the state with the clicked breadcrumb's value
   };
 
+ 
+
    // return <Stepper/>
 
   return (
     <div className="flex flex-col justify-center items-center space-y-4 p-4">
       {/* Breadcrumbs */}
       <nav className="flex flex-wrap items-center justify-center text-sm ">
-        {visaData ? breadcrumbs.map((box, index) => (
+        {(visaData || user?.visaDataId ) ? breadcrumbs.map((box, index) => (
           <React.Fragment key={index}>
             {index > 0 && (
               <span className="mx-2 font-bold">

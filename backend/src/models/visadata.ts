@@ -19,26 +19,26 @@ const visaDataSchema: Schema<IVisaData> = new Schema({
   },
   citizenshipCountry: {
     type: {},
-    required: [true, "Citizenship Country is required"],
+    required: [false, "Citizenship Country is required"],
   },
   deniedVisaToUs: {
     type: Boolean,
-    required: [true, "Denied Visa To Us is required"],
+    required: [false, "Denied Visa To Us is required"],
   },
   destinationCountry: {
     type: {},
-    required: [true, "Destination Country is required"],
+    required: [false, "Destination Country is required"],
   },
   haveSpouseOrProperty: {
     type: String,
-    required: [true, "Have Spouse Or Property is required"],
+    required: [false, "Have Spouse Or Property is required"],
   },
   passportCountry: {
     type: {},
   },
   travelledInternationallyAndReturnedHome: {
     type: String,
-    required: [true, "Travelled Internationally And Returned Home is required"],
+    required: [false, "Travelled Internationally And Returned Home is required"],
   },
   whereWillYouApplyForYourVisa: {
     type: {},
