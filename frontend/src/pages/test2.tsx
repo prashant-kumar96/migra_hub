@@ -1,44 +1,83 @@
-import React from "react";
+import React from 'react';
+import { MdDescription } from 'react-icons/md';
+import { countriesData } from "@/utils/CountriesData";
 
-const Card = () => {
-  // Data array for the cards
-  const cardData = [
-    { date: "Today", month: "October 22", title: "Card 1", description: "This is the first card." },
-    { date: "Tomorrow", month: "October 23", title: "Card 2", description: "This is the second card." },
-    { date: "Yesterday", month: "October 21", title: "Card 3", description: "This is the third card." },
-    { date: "Friday", month: "October 20", title: "Card 4", description: "This is the fourth card." },
-    { date: "Saturday", month: "October 19", title: "Card 5", description: "This is the fifth card." },
-    { date: "Sunday", month: "October 18", title: "Card 6", description: "This is the sixth card." },
+function VisaItinerary({ country }) {
+  const itineraryData = [
+    {
+      id: 1,
+      heading: "Essential for Approval",
+      description: "Demonstrates your visit's purpose and ensures plans are legitimate and well-organized."
+    },
+    {
+      id: 2,
+      heading: "Shows Financial Readiness",
+      description: "Demonstrates your visit's purpose and ensures plans are legitimate and well-organized."
+    },
+    {
+      id: 3,
+      heading: "Proves Ties to Home",
+      description: "Demonstrates your visit's purpose and ensures plans are legitimate and well-organized."
+    },
+    {
+      id: 4,
+      heading: "Ensures Consistency",
+      description: "Aligns details across your application, avoiding discrepancies."
+    },
+    {
+      id: 5,
+      heading: "Supports Security Checks",
+      description: "Highlights safe and appropriate travel plans."
+    },
+    {
+      id: 6,
+      heading: "Simplifies Review",
+      description: "Organizes required documents, making the application easier to process."
+    },
+    {
+      id: 7,
+      heading: "Builds Credibility",
+      description: "Positions you as a responsible and prepared traveler."
+    },
   ];
 
-  return (
-    <div className="m-10 items-center flex flex-col md:flex-row md:flex-wrap justify-center gap-6">
-      {cardData.map((card, index) => (
-        <div
-          key={index}
-          className="w-64 mb-10 transition duration-500 ease-in-out transform bg-white rounded-lg hover:scale-105 cursor-pointer border flex flex-col justify-center items-center text-center p-6"
-        >
-          <div className="text-md font-bold flex flex-col text-gray-900">
-            <span className="uppercase">{card.date}</span>
-            <span className="font-normal text-gray-700 text-sm">{card.month}</span>
-          </div>
-          <div className="w-32 h-32 flex items-center justify-center">
-            <svg
-              width="95"
-              height="72"
-              viewBox="0 0 95 72"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="47.5" cy="36" r="35" fill="#F8C442" />
-            </svg>
-          </div>
-          <h2 className="mt-4 font-bold text-gray-900">{card.title}</h2>
-          <p className="text-sm text-gray-600">{card.description}</p>
-        </div>
-      ))}
-    </div>
+  const selectedCountry = countriesData.find(
+    (item) => item.name.toLowerCase() === country?.toLowerCase()
   );
-};
 
-export default Card;
+  return (
+    <>
+      <section className="py-8 px-6 mx-auto max-w-screen-xl">
+        <h2 className="text-3xl text-Indigo font-bold mb-1 capitalize">
+          {selectedCountry
+            ? `${selectedCountry.name.replace(/-/g, " ")} Visa requirements`
+            : "Visa requirements"}
+        </h2>
+        <div className="mb-4 text-lg text-gray-700">
+          MigraHub helps you create a professional, visa-compliant travel itinerary tailored to your application.
+          We ensure it aligns with your travel purpose, meets all requirements, and strengthens your case.
+          Let us handle the details, so you can focus on your trip.
+        </div>
+        <div className="mb-6 text-xl font-semibold text-gray-900">
+          Why you need a Travel Itinerary?
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {itineraryData.map((item) => (
+            <div
+              key={item.id}
+              className="p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+            >
+              <div className="flex items-center mb-2">
+                <MdDescription className="text-Indigo text-xl mr-2" />
+                <h3 className="text-lg font-medium text-gray-800">{item.heading}</h3>
+              </div>
+              <p className="text-gray-500">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
+export default VisaItinerary;
