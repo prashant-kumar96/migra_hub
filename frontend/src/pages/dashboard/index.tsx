@@ -66,7 +66,6 @@ const Dashboard = () => {
   }, []); // Only runs on initial render
 
 
- 
   console.log('loading',loading)
 
   const splitCamelCaseToTitleCase = (str) => {
@@ -77,6 +76,7 @@ const Dashboard = () => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ");
   };
+
 
   const breadcrumbs = [
     {
@@ -111,7 +111,7 @@ const Dashboard = () => {
     },
     {
       title: splitCamelCaseToTitleCase("whereWillYouApplyForYourVisa"),
-      value: visaData?.whereWillYouApplyForYourVisa || "-",
+      value: visaData?.whereWillYouApplyForYourVisa?.label || "-",
     },
   ];
 

@@ -87,7 +87,8 @@ async function register(req: any, res: any) {
 async function googleLogin(req: any, res: any) {
   try {
     const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
-    console.log('risk assessment::',riskAssessmentData)
+    console.log("risk assessment::", riskAssessmentData);
+
     if (!accessToken || !email || !name || !googleId) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -110,12 +111,18 @@ async function googleLogin(req: any, res: any) {
     let visaDataId = null; // Initialize visaDataId
 
     if (riskAssessmentData) {
-    // If riskAssessmentData exists create visa data
-      const visaData = new VisaData(riskAssessmentData);
-      const resultVisadata = await visaData.save();
-        visaDataId = resultVisadata._id; // Update the visaDataId with newly generated ID
-      console.log("resultVisaData", resultVisadata);
+      // If riskAssessmentData exists, check if visaDataId already exists
+        if(user && user.visaDataId) {
+            visaDataId = user.visaDataId
+        } else {
+           const visaData = new VisaData(riskAssessmentData);
+            const resultVisadata = await visaData.save();
+            visaDataId = resultVisadata._id;
+            console.log("resultVisaData", resultVisadata);
+        }
+
     }
+
 
     if (!user) {
       // User doesn't exist, create a new user
@@ -123,18 +130,17 @@ async function googleLogin(req: any, res: any) {
         email: email,
         name: name,
         googleId: googleId,
-        visaDataId: visaDataId || null,  // Link to VisaData if exists
+        visaDataId: visaDataId || null, // Link to VisaData if exists
       });
       user = await newUser.save();
     }
-     // if user exists and visa data also exists
-      else {
-           // Check if visa data is already associated, if not associate the new one
-        if (riskAssessmentData && !user.visaDataId) {
+     // if user exists then associate only if visaDataId does not exist
+    else if (riskAssessmentData && !user.visaDataId) {
             user.visaDataId = visaDataId;
            await user.save();
-        }
       }
+
+
     // Generate JWT for your application
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
       expiresIn: "1d",

@@ -65,7 +65,7 @@ const StepsModal: React.FC<Props> = ({
     destinationCountry,
     passportCountry,
     areYouApplyingFromPassportCountry: false,
-    whereWillYouApplyForYourVisa: selectedCitizenshipcountry.label,
+    whereWillYouApplyForYourVisa: selectedCitizenshipcountry,
     haveSpouseOrProperty: false,
     travelledInternationallyAndReturnedHome: false,
     deniedVisaToUs: false,

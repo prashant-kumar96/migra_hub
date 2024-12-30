@@ -18,86 +18,67 @@ import Loader from "@/components/loaders/loader";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 
+
 const LoginPage = () => {
   const router = useRouter();
-  console.log(router.query);
   const [sharedState] = useAtom(visaDataAtom);
   const [loading, setLoading] = useState(false);
-  const [googleLoading,setGoogleLoading] = useState(false);
-
-  // const [assessmentData, setAssessmentData] = useState([])
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [formData, setFormData] = useState({
-    
     firstName: "",
     email: "",
     password: "",
   });
-  const { data: session, status } = useSession();  // Move session to parent component
-
+  const { data: session, status } = useSession();
   const [showIndexPage, setShowIndexPage] = useState(false);
-
   const [stepsData, setStepsData] = useState<any>();
-
   const [isPasswordTypePassword, setIsPasswordTypePassword] = useState(true);
-  
-  // useEffect(()=>{
-  //   const assessmentData = JSON.parse(localStorage.getItem('assessmentData'));
-  //   console.log(';; assessment data',assessmentData)
-  //   if(assessmentData){
-  //     setAssessmentData(assessmentData);
-  //     }
-  // },[])
+  const [isGoogleLoginComplete, setIsGoogleLoginComplete] = useState(false); // New flag
+  const [isSignUpShowing, setIsSignUpFormShowing] = useState(true);
 
   useEffect(() => {
-    if (status === 'authenticated' && !googleLoading) {
+    if (status === "authenticated" && !googleLoading && !isGoogleLoginComplete) {
       handleGoogleLogin();
     }
-  }, [status]);
+  }, [status, googleLoading, isGoogleLoginComplete]);
 
   const handleGoogleLogin = async () => {
     if (!session) return;
 
+    const assessmentData = JSON.parse(localStorage.getItem("assessmentData") || "null");
 
-    const assessmentData = JSON.parse(localStorage.getItem('assessmentData'));
-    // console.log(';; assessment data',assessmentData)
-    // if(assessmentData){
-    //   setAssessmentData(assessmentData);
-    //   }
-    
-    setGoogleLoading(true);  // Set loading once and don't change until redirect
-    
+    setGoogleLoading(true);
+
     try {
       const response = await googleLogin({
         accessToken: session?.accessToken,
         email: session?.user?.email,
         name: session?.user?.name,
         googleId: session?.user?.googleId,
-        riskAssessmentData: assessmentData
+        riskAssessmentData: assessmentData,
       });
 
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        router.push('/dashboard');
-        // Don't set loading to false since we're redirecting
+        setIsGoogleLoginComplete(true); // Set flag after successful login
+        router.push("/dashboard");
       }
     } catch (err) {
       console.log(err, "error during backend google login");
-      setGoogleLoading(false);  // Only set to false on error
+      setGoogleLoading(false);
     }
   };
-   
-  
-  const handleChange = (e) => {
+
+  const handleChange = (e: any) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleEmailSignup = async (e) => {
+  const handleEmailSignup = async (e: any) => {
     e.preventDefault();
-    // Add logic for your custom sign-up logic using email/password
     console.log("Sign up with:", formData);
   };
 
@@ -108,7 +89,7 @@ const LoginPage = () => {
     setError,
   } = useForm({});
 
-  const onSubmit = async (data:any) => {
+  const onSubmit = async (data: any) => {
     setLoading(true);
     console.log(data);
     const newData = { ...data, role: "USER", data: sharedState };
@@ -119,8 +100,6 @@ const LoginPage = () => {
         const result = await registerUser(newData);
         console.log("result registerUser ", result);
         if (result?.status === 200) {
-          // Navigate to dashboard
-          console.log("we are here");
           localStorage.setItem("token", result?.data?.token);
           setLoading(false);
           router.push("/dashboard");
@@ -132,10 +111,7 @@ const LoginPage = () => {
         const result = await loginUser(data);
         console.log("result loginUser@@@@@@@", result);
         if (result?.status === 200) {
-          // Navigate to dashboard
-          console.log("we are here");
           localStorage.setItem("token", result?.data?.token);
-          4;
           if (result?.data?.user?.role === "SA") {
             router.push("/adminDashboard");
           }
@@ -168,7 +144,6 @@ const LoginPage = () => {
     setIsPasswordTypePassword(!isPasswordTypePassword);
   };
 
-  const [isSignUpShowing, setIsSignUpFormShowing] = useState(true);
   const handleLoginFormShow = () => {
     setIsSignUpFormShowing((prev) => !prev);
   };
@@ -177,17 +152,14 @@ const LoginPage = () => {
     setStepsData(router?.query ? router?.query : "");
   }, [router]);
 
- 
-   console.log('google loading',googleLoading)
- 
-
   if (googleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader/>
+        <Loader />
       </div>
     );
   }
+
 
    return (
     <div className="flex items-center justify-center  mb-2">

@@ -2,7 +2,8 @@ import VisaData from "../models/visadata.js";
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 
-export const getSingleVisaData = async (req: Request, res: Response) => {
+
+export const getSingleVisaData = async (req: Request, res: Response) => { 
   try {
     console.log("getSingleVisaData is run");
     console.log("req.query", req.query);
