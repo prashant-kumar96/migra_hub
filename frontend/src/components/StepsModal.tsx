@@ -63,6 +63,8 @@ const StepsModal: React.FC<Props> = ({
     deniedVisaToUs: false,
   });
 
+  console.log('visa data',data)
+
   console.log("step", step);
 
   const getCountryNameByCode = (code) => {
