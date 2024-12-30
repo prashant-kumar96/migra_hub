@@ -70,7 +70,7 @@ const VisaInfo = () => {
           </div>
           <div>
             <h3 className="text-[19px] font-semibold text-DarkGray tracking-wide">Entry</h3>
-            <p className="text-base font-medium text-Gray tracking-wide">
+            <p className="text-base font-medium text-Gray tracking-wide whitespace-nowrap">
               {selectedCountry?.entry}
             </p>
           </div>

@@ -1,3 +1,5 @@
+import { RiGovernmentFill } from "react-icons/ri";
+
 const countriesData = [
   {
     id: 1,
@@ -7,7 +9,7 @@ const countriesData = [
     visaType: "Sticker",
     stayLength: "180 Days",
     visaValidity: "10 years", //10 years
-    entry: "Multiple",
+    entry: "Multiple, Single",
     capital: "Ottawa",
     region: "North America",
     currency: "$ Canadian Dollar(CAD)",
@@ -23,6 +25,8 @@ const countriesData = [
       "/assets/countryImgs/images/canada4.jpg",
       "/assets/countryImgs/images/canada5.jpg",
     ],
+    migrahubFee: "$145",
+    governmentfee: "$100",
   },
   {
     id: 2,
@@ -73,6 +77,8 @@ const countriesData = [
       "/assets/countryImgs/images/usa4.jpg",
       "/assets/countryImgs/images/usa5.jpg",
     ],
+    migrahubFee: "$145",
+    governmentfee: "$185",
   },
   {
     id: 4,

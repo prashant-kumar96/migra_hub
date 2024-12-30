@@ -7,7 +7,7 @@ import StepsModal from "@/components/StepsModal";
 import { countriesData } from "@/utils/CountriesData";
 import { useRouter } from "next/router";
 import { IoLogoWhatsapp } from "react-icons/io";
-
+import { RiGovernmentLine } from "react-icons/ri";
 
 const Travel = () => {
   const router = useRouter();
@@ -109,19 +109,42 @@ const Travel = () => {
 
         <div className="p-3">
           <div className="w-full lg:max-w-xl p-6 space-y-8 sm:p-4 ">
-            <h2 className="text-2xl font-bold text-Indigo ">
+            {/* <h2 className="text-2xl font-bold text-Indigo ">
               Jobs fill your pocket, but adventures fill your soul.
-            </h2>
+            </h2> */}
+            <div>
+              <ul className="list-none text-[17px] text-Indigo space-y-2">
+                <li className="relative group flex justify-between items-center tracking-wide">
+                  MigraHub's Fee
+                  <span className="inline-flex space-x-6 items-end justify-end">
+                    {selectedCountry?.migrahubFee}
+                  </span>
+                  <div className="absolute left-4 bottom-full mb-2 w-max px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                     MigraHub's Fee
+                  </div>
+                </li>
+                <li className="relative group flex justify-between items-center tracking-wide">
+                  Government's Fee
+                  <span className="inline-flex space-x-6 items-end justify-end">
+                    {selectedCountry?.governmentfee}
+                  </span>
+                  <div className=" inline-flex items-center absolute left-2 top-full mb-2 w-max px-3 py-1 text-sm whitespace-nowrap text-white bg-black rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                    Subjected to change by Government<RiGovernmentLine className="ml-2 text-lg" />
+                  </div>
+                </li>
+              </ul>
+            </div>
+
             <div className="mt-8 space-y-6">
               <div>
                 <label
                   htmlFor="countries"
-                  className="block mb-2 font-medium text-Indigo  text-[19px] tracking-wide"
+                  className="block mb-2 font-medium text-Indigo  text-[17px] tracking-wide"
                 >
                   Citizenship From
                 </label>
                 <ReactFlagsSelect
-                  selected={citizenshipCountry.value}
+                  selected={citizenshipCountry?.value}
                   onSelect={onSelectCitizenShipCountry}
                   className="w-full px-3  border shadow-md border-gray-200 rounded-lg text-Indigo"
                   countries={citizenshipCountryCodes}
@@ -135,7 +158,7 @@ const Travel = () => {
               <div>
                 <label
                   htmlFor="countries"
-                  className="block mb-2  font-medium text-Indigo  text-[19px]"
+                  className="block mb-2  font-medium text-Indigo  text-[17px]"
                 >
                   Destination To
                 </label>
@@ -145,7 +168,7 @@ const Travel = () => {
                   className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-Indigo"
                   countries={destinationCountryCodes}
                   searchable
-                  // disabled={isFixed}
+                // disabled={isFixed}
                 />
                 <p className="text-red-500 text-sm">
                   {error.destinationCountryError}
