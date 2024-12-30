@@ -54,12 +54,18 @@ const StepsModal: React.FC<Props> = ({
     citizenshipCountry == "IN" ? true : false
   );
 
+  const selectedCitizenshipcountry =  countryList()
+  .getData()
+  .find((country) => country.value === citizenshipCountry);
+
+  console.log(';; default citizenshipCountry',selectedCitizenshipcountry)
+
   const [data, setData] = useState({
     citizenshipCountry,
     destinationCountry,
     passportCountry,
     areYouApplyingFromPassportCountry: false,
-    whereWillYouApplyForYourVisa: "",
+    whereWillYouApplyForYourVisa: selectedCitizenshipcountry.label,
     haveSpouseOrProperty: false,
     travelledInternationallyAndReturnedHome: false,
     deniedVisaToUs: false,
@@ -95,6 +101,7 @@ const StepsModal: React.FC<Props> = ({
     
     if (step === 4) {
       setSharedState(data);
+      localStorage.setItem('assessmentData',JSON.stringify(data)  )
       setRedirection(true);
     
       // Add a small delay to allow the loader to render
@@ -120,7 +127,7 @@ const StepsModal: React.FC<Props> = ({
     }
   };
 
-  const handleSelectPassportCountry = (code: string) => {
+  const handleSelectPassportCountry = (code ) => {
     // onSelectCitizenShipCountry(code);
     const tempCountry: any = countryList()
       .getData()
@@ -153,15 +160,22 @@ const StepsModal: React.FC<Props> = ({
     });
   };
 
-  const handleSelectFromWhichCountry = (code: string) => {
+
+  const handleSelectFromWhichCountry = (code=citizenshipCountry) => {
+    console.log(';; code',code);
+    console.log(';; citizenshipCountry',citizenshipCountry)
     const tempCountry: any = countryList()
       .getData()
       .find((country) => country.value === code);
     setData({
       ...data,
-      whereWillYouApplyForYourVisa: tempCountry,
+      whereWillYouApplyForYourVisa: tempCountry.label,
     });
+    console.log(';; temp country',tempCountry)
   };
+  
+
+  console.log(';; citizenshipCountry',citizenshipCountry)
 
   const showFullCountryName = (code: string) => {
     let country: any = countryList()

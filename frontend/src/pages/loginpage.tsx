@@ -23,7 +23,9 @@ const LoginPage = () => {
   console.log(router.query);
   const [sharedState] = useAtom(visaDataAtom);
   const [loading, setLoading] = useState(false);
-  const [googleLoading,setGoogleLoading] = useState(false)
+  const [googleLoading,setGoogleLoading] = useState(false);
+
+  // const [assessmentData, setAssessmentData] = useState([])
   const [formData, setFormData] = useState({
     
     firstName: "",
@@ -38,6 +40,13 @@ const LoginPage = () => {
 
   const [isPasswordTypePassword, setIsPasswordTypePassword] = useState(true);
   
+  // useEffect(()=>{
+  //   const assessmentData = JSON.parse(localStorage.getItem('assessmentData'));
+  //   console.log(';; assessment data',assessmentData)
+  //   if(assessmentData){
+  //     setAssessmentData(assessmentData);
+  //     }
+  // },[])
 
   useEffect(() => {
     if (status === 'authenticated' && !googleLoading) {
@@ -47,6 +56,13 @@ const LoginPage = () => {
 
   const handleGoogleLogin = async () => {
     if (!session) return;
+
+
+    const assessmentData = JSON.parse(localStorage.getItem('assessmentData'));
+    // console.log(';; assessment data',assessmentData)
+    // if(assessmentData){
+    //   setAssessmentData(assessmentData);
+    //   }
     
     setGoogleLoading(true);  // Set loading once and don't change until redirect
     
@@ -56,6 +72,7 @@ const LoginPage = () => {
         email: session?.user?.email,
         name: session?.user?.name,
         googleId: session?.user?.googleId,
+        riskAssessmentData: assessmentData
       });
 
       if (response.status === 200) {

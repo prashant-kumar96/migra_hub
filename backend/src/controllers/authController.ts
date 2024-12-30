@@ -86,10 +86,10 @@ async function register(req: any, res: any) {
 // google login
 async function googleLogin(req: any, res: any) {
   try {
-    const { accessToken, email, name, googleId } = req.body;
-
+    const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
+    console.log('risk assessment::',riskAssessmentData)
     if (!accessToken || !email || !name || !googleId) {
-      return res.status(400).json({ message: 'Missing required fields' });
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
     // Verify the Google access token
@@ -97,32 +97,48 @@ async function googleLogin(req: any, res: any) {
     try {
       const googleRes = await axios.get(googleApiUrl);
       if (googleRes.data.email !== email) {
-        return res.status(401).json({ message: 'Invalid Google token' });
+        return res.status(401).json({ message: "Invalid Google token" });
       }
+    } catch (err) {
+      console.log(err, "google error");
+      return res.status(401).json({ message: "Invalid Google token" });
     }
-    catch (err) {
-      console.log(err, "google error")
-      return res.status(401).json({ message: 'Invalid Google token' });
-    }
-
 
     let user = await User.findOne({ email: email });
 
-    console.log('google user', user)
-    
-    if (!user) {
-        // User doesn't exist, create a new user
-        const newUser = new User({
-            email: email,
-            name: name,
-            googleId: googleId,
-        });
-       user = await newUser.save();
-    }
-    // if user exists then no need to create user again
+    console.log("google user", user);
+    let visaDataId = null; // Initialize visaDataId
 
+    if (riskAssessmentData) {
+    // If riskAssessmentData exists create visa data
+      const visaData = new VisaData(riskAssessmentData);
+      const resultVisadata = await visaData.save();
+        visaDataId = resultVisadata._id; // Update the visaDataId with newly generated ID
+      console.log("resultVisaData", resultVisadata);
+    }
+
+    if (!user) {
+      // User doesn't exist, create a new user
+      const newUser = new User({
+        email: email,
+        name: name,
+        googleId: googleId,
+        visaDataId: visaDataId || null,  // Link to VisaData if exists
+      });
+      user = await newUser.save();
+    }
+     // if user exists and visa data also exists
+      else {
+           // Check if visa data is already associated, if not associate the new one
+        if (riskAssessmentData && !user.visaDataId) {
+            user.visaDataId = visaDataId;
+           await user.save();
+        }
+      }
     // Generate JWT for your application
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: "1d" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: "1d",
+    });
     res.status(200).json({
       token,
       user: {
@@ -131,13 +147,13 @@ async function googleLogin(req: any, res: any) {
         role: user.role, // Assuming you might store roles
       },
     });
-
   } catch (error) {
-    console.log('Error during Google login', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.log("Error during Google login", error);
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
+  
 const isValidObjectId = (id: any) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
