@@ -210,7 +210,7 @@ const PersonalInfo = () => {
   };
 
   const getPersonalInfofunction = async () => {
-    const result = await getPersonalData(user?._id);
+    const result = await getPersonalData(user?.user?._id);
     console.log("getPersonalData", result);
     if (result?.status === 200) {
       // toast(result?.data?.message);

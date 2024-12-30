@@ -132,7 +132,7 @@ const StepsModal: React.FC<Props> = ({
     const tempCountry: any = countryList()
       .getData()
       .find((country) => country.value === code);
-    setPassportCountry(tempCountry);
+    setPassportCountry(tempCountry);  
     if (code === "IN") {
       setShowRiskDecreased(true);
     } else {

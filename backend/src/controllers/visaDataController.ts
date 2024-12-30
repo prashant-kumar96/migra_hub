@@ -30,12 +30,12 @@ export const getSingleVisaData = async (req: Request, res: Response) => {
     const { _id, createdAt, updatedAt, __v, ...rest } = result.toObject();
     console.log("rest", rest);
 
-    res.status(200).json({ data: rest, message: "Visa data found." });
+    res.status(200).json({ data: rest, status : true, message: "Visa data found." });
 
   } catch (err: any) {
         console.error("Error in getSingleVisaData:", err);
          if (err instanceof mongoose.Error.CastError) {
-        return res.status(200).json({ data: null, message: `Invalid visaDataId, should be a valid MongoDB ObjectId: ${err.message}`});
+        return res.status(200).json({ data: null, status: false, message: `Invalid visaDataId, should be a valid MongoDB ObjectId: ${err.message}`});
         }
 
     res.status(500).json({ message: "Internal server error" });

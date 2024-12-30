@@ -46,8 +46,9 @@ const Dashboard = () => {
         setLoading(false); // Clear loading state
         return; // Stop data fetching
         }
-      const resultVisaData = await getSingleVisaData(user?.visaDataId);
-      setVisaData(resultVisaData?.data?.data);
+      const resultVisaData = await getSingleVisaData(user?.user?.visaDataId);
+      console.log(';; resultVisaData',resultVisaData)
+      setVisaData(resultVisaData?.data);
       console.log('set data',user);
      }catch(err) {
          console.error("Error during data fetching", err)
@@ -110,7 +111,7 @@ const Dashboard = () => {
     },
     {
       title: splitCamelCaseToTitleCase("whereWillYouApplyForYourVisa"),
-      value: visaData?.whereWillYouApplyForYourVisa?.label || "-",
+      value: visaData?.whereWillYouApplyForYourVisa || "-",
     },
   ];
 
