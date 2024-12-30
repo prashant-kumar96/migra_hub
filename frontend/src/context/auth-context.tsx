@@ -49,12 +49,13 @@ import { me } from '@/api/auth';
           setIsLoading(true);
           try{
               const response = await me();
+              console.log(';; current user',response)
               if(!response || !response.status) {
                   console.warn("Error logging in user")
                   logout();
                   return;
               }
-                  setUser(response.user);
+                  setUser(response.data);
               } catch (err){
                    console.error("Error fetching user: ", err)
                    logout()
