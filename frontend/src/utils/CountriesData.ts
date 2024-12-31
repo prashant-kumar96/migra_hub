@@ -8,7 +8,7 @@ const countriesData = [
     code: "CA",
     visaType: "Sticker",
     stayLength: "180 Days",
-    visaValidity: "10 years", //10 years
+    visaValidity: "10 years",
     entry: "Multiple, Single",
     capital: "Ottawa",
     region: "North America",
@@ -27,7 +27,52 @@ const countriesData = [
     ],
     migrahubFee: "$145",
     governmentfee: "$100",
+    faq: [
+      {
+        faqButton: "General Information",
+        faqHeading: "Frequently Asked Questions about Canadian Visa",
+        questions: [
+          {
+            q: "What is the validity of a Canadian visa?",
+            a: "The validity of a Canadian visa is typically 10 years, or until the expiration of your passport, whichever comes first."
+          },
+          {
+            q: "How many entries are allowed on a Canadian visa?",
+            a: "Canadian visas can be issued for single or multiple entries depending on the type of visa and purpose of travel."
+          }
+        ]
+      },
+      {
+        faqButton: "Application Process",
+        faqHeading: "Steps to Apply for a Canadian Visa",
+        questions: [
+          {
+            q: "What documents are required for a Canadian visa application?",
+            a: "Required documents include a valid passport, completed application form, proof of funds, travel itinerary, and invitation letter (if applicable)."
+          },
+          {
+            q: "How long does it take to process a Canadian visa?",
+            a: "The processing time for a Canadian visa varies but typically takes between 2-4 weeks."
+          }
+        ]
+      },
+      {
+        faqButton: "Visa Fees",
+        faqHeading: "Information about Canadian Visa Fees",
+        questions: [
+          {
+            q: "What is the fee for a Canadian tourist visa?",
+            a: "The fee for a Canadian tourist visa is $100, with an additional service fee charged by MigraHub of $145."
+          },
+          {
+            q: "Are there any additional costs involved?",
+            a: "Additional costs may include biometrics, courier services, or expedited processing fees."
+          }
+        ]
+      }
+    ]
   },
+
   {
     id: 2,
     name: "United-Kingdom",
@@ -118,7 +163,7 @@ const countriesData = [
     region: "Southwestern Pacific Ocean",
     currency: "$ New Zealand dollar (NZD) ",
     population: "52.2 lakhs (2023)",
-    officialLanguages: ["English", "Maori", "New Zealand Sign Language" ],
+    officialLanguages: ["English", "Maori", "New Zealand Sign Language"],
     dialingCode: "+64",
     gdp: "25,346.57 crores USD (2023)",
     video: "/assets/countryImgs/videos/nz.mp4",
@@ -143,7 +188,7 @@ const countriesData = [
     region: "Schengen Area",
     currency: "€ Euro",
     population: "5.88 crores (2023)",
-    officialLanguages: ["English", "Italian" ],
+    officialLanguages: ["English", "Italian"],
     dialingCode: "+39",
     gdp: "2.25 lakh crores USD (2023)",
     video: "/assets/countryImgs/videos/italy.mp4",
@@ -168,7 +213,7 @@ const countriesData = [
     region: "Schengen Area",
     currency: "Ft Forint (HUF)",
     population: "95.9 lakhs (2023)",
-    officialLanguages: ["Hungarian" ],
+    officialLanguages: ["Hungarian"],
     dialingCode: "+36",
     gdp: "21,238.89 crores USD (2023)",
     video: "/assets/countryImgs/videos/hungary.mp4",
@@ -193,7 +238,7 @@ const countriesData = [
     region: "Schengen Area",
     currency: "€ Euro",
     population: " 8.45 crores (2023)",
-    officialLanguages: ["German" ],
+    officialLanguages: ["German"],
     dialingCode: "+49",
     gdp: "4.46 lakh crores USD (2023)",
     video: "/assets/countryImgs/videos/germany.mp4",

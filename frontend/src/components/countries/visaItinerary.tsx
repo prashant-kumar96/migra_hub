@@ -77,18 +77,18 @@ function VisaItinerary() {
                         </div>
                     ))}
                 </div>
-                <h2 className="text-3xl text-Indigo font-bold mb-1 mt-6 capitalize">
+                <h2 className="text-3xl text-Indigo font-bold mb-1 mt-8 capitalize">
                     {selectedCountry
                         ? `${selectedCountry.name.replace(/-/g, " ")} Visa Insurance`
                         : "Visa Insurance"}
                 </h2>
-                <div className="border-b-2 border-CGBlue w-24 mb-6"></div>
+                <div className="border-b-2 border-CGBlue w-24 mb-4"></div>
                 <div className="mb-6 text-[19px] font-semibold text-gray-900">
                     Don't let unexpected medical emergencies derail your {selectedCountry?.name} trip.
                 </div>
                 <div className="text-[17px] text-gray-700 text-justify">
                     Visitor visa insurance provides essential coverage for unforeseen medical expenses,
-                     ensuring peace of mind during your travels.
+                    ensuring peace of mind during your travels.
                 </div>
             </section>
         </>

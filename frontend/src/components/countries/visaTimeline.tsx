@@ -73,9 +73,9 @@ const VisaTimeline = () => {
   }, [activeStep]);
 
   return (
-    <section className="py-4 px-2 mx-auto max-w-screen-xl sm:py-6 lg:px-6 ">
+    <section className="py-3 px-2 mx-auto max-w-screen-xl sm:py-6 lg:px-6 ">
       {/* <div className="py-10 mx-auto max-w-screen-xl"> */}
-        <div className="flex flex-col justify-start divide-y divide-red-200 [&>*]:py-12 md:[&>*]:py-16">
+        <div className="flex flex-col justify-start divide-y divide-red-200 [&>*]:py-12 md:[&>*]:py-12">
           <div className="w-full max-w-3xl">
             <div className="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent md:after:block sm:before:block before:hidden">
               <h2 className="text-3xl text-Indigo font-bold mb-1 capitalize">

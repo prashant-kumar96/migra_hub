@@ -1,163 +1,106 @@
-import React, { useState } from "react";
-import { RiInformationFill } from "react-icons/ri";
-import { TfiTarget } from "react-icons/tfi";
-import { GiProcessor, GiTakeMyMoney, GiEntryDoor } from "react-icons/gi";
-import { PiFootprintsFill } from "react-icons/pi";
-import { TbHomeShare } from "react-icons/tb";
-import { SiGitextensions } from "react-icons/si";
+import { useRouter } from "next/router";
+import React, { useState, useRef } from "react";
+import { countriesData } from "@/utils/CountriesData";
+import { FaPlus } from "react-icons/fa";
+import { FaMinus } from "react-icons/fa";
 
-const FAQ = () => {
-  // Data array for buttons
-  const buttons = [
-    {
-      id: 1,
-      title: "general information",
-      Icon: RiInformationFill,
-      extraClasses: "rounded",
-      content: "Here is the general information about the topic...",
-      questions: [
-        { q: "What is general information?", a: "General information provides an overview of the topic." },
-        { q: "Why is this important?", a: "It helps users get started." },
-      ],
-    },
-    {
-      id: 2,
-      title: "eligibility & requirements",
-      Icon: TfiTarget,
-      extraClasses: "rounded",
-      content: "Eligibility criteria and requirements details.",
-      questions: [
-        { q: "Who is eligible?", a: "Those who meet the criteria specified in the guidelines." },
-        { q: "What documents are needed?", a: "Identity proof, address proof, etc." },
-      ],
-    },
-    {
-      id: 3,
-      title: "application process",
-      Icon: GiProcessor,
-      extraClasses: "rounded",
-      content: "Step-by-step application process explained.",
-      questions: [
-        { q: "How to apply?", a: "Follow the steps outlined in the application guide." },
-        { q: "What is the timeline?", a: "Usually takes 2-3 weeks for processing." },
-      ],
-    },
-    {
-      id: 4,
-      title: "status tracking",
-      Icon: PiFootprintsFill,
-      extraClasses: "rounded",
-      content: "Track the status of your application here.",
-      questions: [
-        { q: "How to track my status?", a: "Use the online tracker available on the portal." },
-        { q: "What if there's a delay?", a: "Contact support for further assistance." },
-      ],
-    },
-    {
-      id: 5,
-      title: "refunds",
-      Icon: GiTakeMyMoney,
-      extraClasses: "rounded",
-      content: "Refund policy and how to request refunds.",
-      questions: [
-        { q: "Am I eligible for a refund?", a: "Eligibility depends on the policy terms." },
-        { q: "How long does it take?", a: "Refunds are processed within 7-10 business days." },
-      ],
-    },
-    {
-      id: 6,
-      title: "rejections & reapplications",
-      Icon: TbHomeShare,
-      extraClasses: "rounded",
-      content: "Details about rejections and the reapplication process.",
-      questions: [
-        { q: "Why was my application rejected?", a: "Check the rejection reason in the email notification." },
-        { q: "Can I reapply?", a: "Yes, after addressing the rejection reasons." },
-      ],
-    },
-    {
-      id: 7,
-      title: "entry & exit regulations",
-      Icon: GiEntryDoor,
-      extraClasses: "rounded",
-      content: "Learn about entry and exit regulations.",
-      questions: [
-        { q: "What are the entry regulations?", a: "Specific rules for entering the country/region." },
-        { q: "What about exit rules?", a: "Exit procedures vary depending on the location." },
-      ],
-    },
-    {
-        id: 8,
-        title: "visa extension & overstays",
-        Icon: SiGitextensions ,
-        extraClasses: "rounded",
-        content: "Learn about entry and exit regulations.",
-        questions: [
-          { q: "What are the entry regulations?", a: "Specific rules for entering the country/region." },
-          { q: "What about exit rules?", a: "Exit procedures vary depending on the location." },
-        ],
-      },
-  ];
+const FAQSection = () => {
+  const [openAccordion, setOpenAccordion] = useState(null);
+  const accordionRefs = useRef([]);
+  const router = useRouter();
+  const { country } = router.query;
 
-  const [activeButton, setActiveButton] = useState(1);
-  const [openQuestions, setOpenQuestions] = useState({});
+  // Find the selected country's data based on the route's query parameter
+  const selectedCountry = countriesData.find(
+    (item) => item.name.toLowerCase() === country?.toLowerCase()
+  );
 
-  const toggleQuestion = (index) => {
-    setOpenQuestions((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
+  // If no country is found, display a fallback message
+  if (!selectedCountry) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-6">Country Not Found</h2>
+        <p className="text-gray-700">Please select a valid country.</p>
+      </div>
+    );
+  }
+
+  const handleAccordionToggle = (index) => {
+    setOpenAccordion(openAccordion === index ? null : index);
   };
 
-  const activeContent = buttons.find((btn) => btn.id === activeButton);
+  const handleButtonClick = (index) => {
+    setOpenAccordion(index);
+    accordionRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
-    <div className="flex flex-col items-center mx-auto mt-6">
-      {/* Buttons */}
-      <div className="grid grid-cols-4  gap-4 justify-start mb-4">
-        {buttons.map((button) => (
+    <section className="py-3 px-2 mx-auto max-w-screen-xl sm:py-6 lg:px-6">
+      <h2 className="text-3xl text-Indigo font-bold mb-1 capitalize">
+        Frequently Asked Questions
+      </h2>
+      <div className="border-b-2 border-CGBlue w-24 mb-6 "></div>
+
+      {/* FAQ Buttons */}
+      <div className="flex flex-wrap gap-4 mb-8">
+        {selectedCountry.faq.map((faqItem, index) => (
           <button
-            key={button.id}
-            type="button"
-            onClick={() => setActiveButton(button.id)}
-            className={`inline-flex items-center px-4 py-2 text-lg text-center  font-medium text-Indigo bg-transparent border border-Indigo ${button.extraClasses} hover:text-FloralWhite hover:bg-Indigo focus:z-10 focus:ring-2 focus:ring-Indigo focus:bg-Indigo focus:text-FloralWhite focus:border-FloralWhite ${
-              activeButton === button.id ? "font-bold" : ""
+            key={index}
+            onClick={() => handleButtonClick(index)}
+            className={`px-4 py-2 font-medium rounded transition ${
+              openAccordion === index
+                ? " text-Indigo bg-transparent border border-Indigo hover:text-FloralWhite hover:bg-Indigo focus:z-10 focus:ring-2 focus:ring-Indigo focus:bg-Indigo focus:text-FloralWhite focus:border-FloralWhite "
+                : " text-Indigo bg-transparent border border-Indigo "
             }`}
           >
-            <button.Icon className="w-6 h-6 me-2" />
-            <span className="whitespace-nowrap text-md capitalize tracking-wider">
-              {button.title}
-            </span>
+            {faqItem.faqButton}
           </button>
         ))}
       </div>
 
-      {/* Content */}
-      <div className="p-6 border border-LightGray bg-white rounded-lg shadow-md w-full max-w-2xl">
-        <h2 className="text-2xl text-Indigo capitalize font-bold mb-4">
-          {activeContent.title}
-        </h2>
-        <p className="text-Gray text-md mb-6">{activeContent.content}</p>
-
-        {/* Accordion */}
-        <div id="accordion-collapse" data-accordion="collapse">
-          {activeContent.questions.map((item, index) => (
-            <div key={index} className="mb-4">
-              <button
-                className="w-full text-left text-lg text-Indigo font-medium"
-                onClick={() => toggleQuestion(index)}
-              >
-                {item.q}
-              </button>
-              {openQuestions[index] && (
-                <p className="pl-4 text-Gray text-md">{item.a}</p>
-              )}
-            </div>
-          ))}
-        </div>
+      {/* Accordion */}
+      <div>
+        {selectedCountry.faq.map((faqItem, index) => (
+          <div
+            key={index}
+            ref={(el) => (accordionRefs.current[index] = el)}
+            className="border-b border-gray-200 mb-4"
+          >
+            <button
+              className="w-full flex justify-between items-center p-4 text-left font-medium text-Indigo text-[19px] transition"
+              onClick={() => handleAccordionToggle(index)}
+            >
+              <span className="font-bold uppercase text-[18px]">{faqItem.faqButton}</span>
+              <span className="text-xl">
+                {openAccordion === index ? (
+                  <span className="text-[15px] text-Indigo">
+                    <FaMinus />
+                  </span>
+                ) : (
+                  <span className="text-[15px] text-Indigo">
+                    <FaPlus />
+                  </span>
+                )}
+              </span>
+            </button>
+            {openAccordion === index && (
+              <div className="p-6 bg-transparent ">
+                {faqItem.questions.map((qItem, qIndex) => (
+                  <div key={qIndex} className="mb-4">
+                    <p className="font-bold text-[18px] tracking-wide text-gray-500">{qItem.q}</p>
+                    <p className="text-gray-500 tracking-wide text-[18px] text-justify mt-1 mb-6">{qItem.a}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 };
 
-export default FAQ;
+export default FAQSection;
