@@ -1,83 +1,92 @@
-import React from 'react';
-import { MdDescription } from 'react-icons/md';
+import { useRouter } from "next/router";
+import React, { useState, useRef } from "react";
 import { countriesData } from "@/utils/CountriesData";
 
-function VisaItinerary({ country }) {
-  const itineraryData = [
-    {
-      id: 1,
-      heading: "Essential for Approval",
-      description: "Demonstrates your visit's purpose and ensures plans are legitimate and well-organized."
-    },
-    {
-      id: 2,
-      heading: "Shows Financial Readiness",
-      description: "Demonstrates your visit's purpose and ensures plans are legitimate and well-organized."
-    },
-    {
-      id: 3,
-      heading: "Proves Ties to Home",
-      description: "Demonstrates your visit's purpose and ensures plans are legitimate and well-organized."
-    },
-    {
-      id: 4,
-      heading: "Ensures Consistency",
-      description: "Aligns details across your application, avoiding discrepancies."
-    },
-    {
-      id: 5,
-      heading: "Supports Security Checks",
-      description: "Highlights safe and appropriate travel plans."
-    },
-    {
-      id: 6,
-      heading: "Simplifies Review",
-      description: "Organizes required documents, making the application easier to process."
-    },
-    {
-      id: 7,
-      heading: "Builds Credibility",
-      description: "Positions you as a responsible and prepared traveler."
-    },
-  ];
+const FAQSection = () => {
+  const [openAccordion, setOpenAccordion] = useState(null);
+  const accordionRefs = useRef([]);
+  const router = useRouter();
+  const { country } = router.query;
 
+  // Find the selected country's data based on the route's query parameter
   const selectedCountry = countriesData.find(
     (item) => item.name.toLowerCase() === country?.toLowerCase()
   );
 
-  return (
-    <>
-      <section className="py-8 px-6 mx-auto max-w-screen-xl">
-        <h2 className="text-3xl text-Indigo font-bold mb-1 capitalize">
-          {selectedCountry
-            ? `${selectedCountry.name.replace(/-/g, " ")} Visa requirements`
-            : "Visa requirements"}
-        </h2>
-        <div className="mb-4 text-lg text-gray-700">
-          MigraHub helps you create a professional, visa-compliant travel itinerary tailored to your application.
-          We ensure it aligns with your travel purpose, meets all requirements, and strengthens your case.
-          Let us handle the details, so you can focus on your trip.
-        </div>
-        <div className="mb-6 text-xl font-semibold text-gray-900">
-          Why you need a Travel Itinerary?
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {itineraryData.map((item) => (
-            <div
-              key={item.id}
-              className="p-4 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center mb-2">
-                <MdDescription className="text-Indigo text-xl mr-2" />
-                <h3 className="text-lg font-medium text-gray-800">{item.heading}</h3>
-              </div>
-              <p className="text-gray-500">{item.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    </>
-  );
-}
+  // If no country is found, display a fallback message
+  if (!selectedCountry) {
+    return (
+      <div className="p-6 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-6">Country Not Found</h2>
+        <p className="text-gray-700">Please select a valid country.</p>
+      </div>
+    );
+  }
 
-export default VisaItinerary;
+  const handleAccordionToggle = (index) => {
+    setOpenAccordion(openAccordion === index ? null : index);
+  };
+
+  const handleButtonClick = (index) => {
+    setOpenAccordion(index);
+    accordionRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto">
+      {/* Heading */}
+      <h2 className="text-2xl font-semibold mb-6">
+        Frequently Asked Questions about {selectedCountry.name}
+      </h2>
+
+      {/* FAQ Buttons */}
+      <div className="flex flex-wrap gap-4 mb-8">
+        {selectedCountry.faq.map((faqItem, index) => (
+          <button
+            key={index}
+            onClick={() => handleButtonClick(index)}
+            className="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded hover:bg-blue-500 hover:text-white transition"
+          >
+            {faqItem.faqButton}
+          </button>
+        ))}
+      </div>
+
+      {/* Accordion */}
+      <div>
+        {selectedCountry.faq.map((faqItem, index) => (
+          <div
+            key={index}
+            ref={(el) => (accordionRefs.current[index] = el)}
+            className="border-b border-gray-300 mb-4"
+          >
+            <button
+              className="w-full flex justify-between items-center p-4 text-left font-medium text-blue-700 hover:bg-gray-100 transition"
+              onClick={() => handleAccordionToggle(index)}
+            >
+              {faqItem.faqHeading}
+              <span className="text-xl">
+                {openAccordion === index ? "−" : "+"}
+              </span>
+            </button>
+            {openAccordion === index && (
+              <div className="p-4 bg-gray-50">
+                {faqItem.questions.map((qItem, qIndex) => (
+                  <div key={qIndex} className="mb-4">
+                    <p className="font-semibold">{qItem.q}</p>
+                    <p>{qItem.a}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default FAQSection;

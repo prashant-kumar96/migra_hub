@@ -88,7 +88,7 @@ function VisaItinerary() {
                 </div>
                 <div className="text-[17px] text-gray-700 text-justify">
                     Visitor visa insurance provides essential coverage for unforeseen medical expenses,
-                     ensuring peace of mind during your travels.
+                    ensuring peace of mind during your travels.
                 </div>
             </section>
         </>

@@ -9,7 +9,7 @@ import VisaTimeline from "@/components/countries/visaTimeline";
 import Footer from "@/components/Footer";
 import { countriesData } from "@/utils/CountriesData";
 import VisaItinerary from "@/components/countries/visaItinerary";
-
+import FAQ from "@/components/countries/faq"
 export async function getStaticPaths() {
   const paths = countriesData.map((country) => ({
     params: { country: country.name.toLowerCase() },
@@ -48,6 +48,7 @@ const CountryPage = ({ countryData }) => {
           <VisaTimeline />
           <Concierge />
           <VisaRejectionReasons />
+          <FAQ/>
         </div>
 
         {/* Right Column */}
