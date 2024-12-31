@@ -107,7 +107,7 @@ const StepsModal: React.FC<Props> = ({
       // Add a small delay to allow the loader to render
       setTimeout(() => {
         if (!user) {
-          router.push("/loginpage");
+          router.push("/login");
         }
       }, 500); // Adjust the delay as needed
     } else if (progressBarpercentage !== 100) {

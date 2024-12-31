@@ -14,7 +14,7 @@ function Header2() {
   const router = useRouter();
 
   const handleLogin = () => {
-    router.push("/loginpage");
+    router.push("/login");
   };
 
   const handleSignout = () => {

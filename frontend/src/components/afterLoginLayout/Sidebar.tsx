@@ -112,7 +112,7 @@ const Sidebar = () => {
       }
   
       // Redirect to login page
-      await router.push("/loginpage");
+      await router.push("/login");
     } catch (error) {
       console.error("Error during signout:", error);
       // Optionally handle signout errors (e.g., show a notification)

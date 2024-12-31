@@ -42,7 +42,7 @@ import { me } from '@/api/auth';
       localStorage.removeItem('token');
         setUser(null);
       setToken(null);
-      router.push('/loginpage');
+      router.push('/login');
     };
   
       const fetchUser = async (token: string) => {

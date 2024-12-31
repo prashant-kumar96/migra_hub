@@ -64,7 +64,7 @@ const AfterLoginLayout = <P extends {}>(WrappedComponent: ComponentType<P>) => {
 
 
     if (isAuthenticated === false) {
-        router.push("/loginpage");
+        router.push("/login");
       return null;
     }
 
