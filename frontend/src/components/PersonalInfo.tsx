@@ -47,21 +47,33 @@ const PersonalInfo = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [riskAssessmentData, setRiskAssessmentData] = useState<any>({})
+  const [personalData, setPersonalData] = useState();
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
   console.log(';; personal visa data',user)
-  useEffect(()=>{
-    const resultVisaData = async () => { 
-    const data =   await getSingleVisaData(user?.user?.visaDataId);
-    setRiskAssessmentData(data?.data)
-    return data;
-    };
+  const userEmail= user?.user?.email
+  const userName = user?.user?.name
 
-    if(user?.user?.visaDataId){
-    resultVisaData()
+  useEffect(() => {
+    // Early return if no user data is available
+    if (!user?.user?.visaDataId) {
+      return;
     }
-    
-  },[user?.user?.visaDataId])
+  
+    const fetchVisaData = async () => {
+      try {
+        const visaDataResult = await getSingleVisaData(user?.user?.visaDataId);
+        
+        if (visaDataResult?.data) {
+          setRiskAssessmentData(visaDataResult.data);
+        }
+      } catch (error) {
+        console.error('Error fetching visa data:', error);
+      }
+    };
+  
+    fetchVisaData();
+  }, [user?.user?.visaDataId]);
 
 
   console.log(';; risk assessment data',riskAssessmentData)
@@ -115,7 +127,15 @@ const PersonalInfo = () => {
             }
           
         }
-    }, [riskAssessmentData]);
+        if(userEmail){
+          setValue("email",userEmail)
+      }
+      if(userName){
+        setValue('first_name',userName)
+      }
+  }, [riskAssessmentData,userEmail,setValue]);
+
+
   const handleCountrySelectChange = (e: any) => {
     console.log("countrySelect", e);
     setCountryid(e.id);
@@ -210,7 +230,7 @@ const PersonalInfo = () => {
       const newdata = {
         ...data,
         firstLanguage,
-        citizenshipCountry: citizenshipCountry.value,
+        citizenshipCountry: citizenshipCountry,
         addressData,
         userId: sharedMedata?._id,
       };
@@ -226,7 +246,7 @@ const PersonalInfo = () => {
         // Navigate to dashboard
         // console.log("we are here");
         // localStorage.setItem("token", result?.data?.token);
-        router.push("/documentupload");
+        router.push("/dashboard/payment");
         setLoading(false);
       } else {
         console.log("result@@@", result);
@@ -263,7 +283,7 @@ const PersonalInfo = () => {
       // Navigate to dashboard
       // console.log("we are here");
       // localStorage.setItem("token", result?.data?.token);
-      router.push("/documentupload");
+      router.push("/dashboard/documentupload");
       setLoading(false);
     } else {
       console.log("result@@@", result);
@@ -398,7 +418,7 @@ const PersonalInfo = () => {
           />
           <div className="text-gray-900">
             <label
-              htmlFor="first_name"
+              htmlFor="current_country"
               className="block mb-2 text-base font-medium text-gray-700"
             >
               Current Country
@@ -416,7 +436,7 @@ const PersonalInfo = () => {
           </div>
           <div className="text-gray-900">
             <label
-              htmlFor="first_name"
+              htmlFor="state"
               className="block mb-2 text-base font-medium text-gray-700"
             >
               Province/State
@@ -435,7 +455,7 @@ const PersonalInfo = () => {
           </div>
           <div className="text-gray-900">
             <label
-              htmlFor="first_name"
+              htmlFor="city"
               className="block mb-2 text-base font-medium text-gray-700"
             >
               City/Town
@@ -468,7 +488,7 @@ const PersonalInfo = () => {
             }}
             errors={errors.zipCode}
           />
-          <Input
+           <Input
             label="Email"
             id="email"
             type="email"

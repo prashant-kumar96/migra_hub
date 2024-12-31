@@ -1,5 +1,6 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
+
 // Define an interface for the profile data
 interface IPersonalData extends Document {
   marital_status: "Single" | "Married" | "Divorced" | "Widowed";
@@ -24,6 +25,7 @@ interface IPersonalData extends Document {
   };
   userId: ObjectId;
 }
+
 
 // Define the schema with validation
 const PersonalDataSchema: Schema<IPersonalData> = new Schema({
@@ -128,9 +130,12 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
+
 // Export the model
 const PersonalData = mongoose.model<IPersonalData>(
   "PersonalData",
   PersonalDataSchema
 );
+
+
 export default PersonalData;

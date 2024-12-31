@@ -69,40 +69,38 @@ const Dashboard = () => {
   };
 
 
-  const breadcrumbs = [
+  const visaAssessmentDetails = [
     {
-      title: splitCamelCaseToTitleCase("ApplyingFromPassportCountry"),
-      value: visaData?.areYouApplyingFromPassportCountry ? "YES" : "NO",
+      title: "Applying From Passport Country",
+      value: visaData?.areYouApplyingFromPassportCountry ? "Yes" : "No",
     },
     {
-      title: splitCamelCaseToTitleCase("citizenshipCountry"),
-      value: visaData?.citizenshipCountry?.label || "N/A",
+      title: "Citizenship Country",
+      value: visaData?.citizenshipCountry?.label || "Not Specified",
     },
     {
-      title: splitCamelCaseToTitleCase("deniedVisaToUs"),
-      value: visaData?.deniedVisaToUs ? "YES" : "NO",
+      title: "Previously Denied US Visa",
+      value: visaData?.deniedVisaToUs ? "Yes" : "No",
     },
     {
-      title: splitCamelCaseToTitleCase("destinationCountry"),
-      value: visaData?.destinationCountry?.label || "N/A",
+      title: "Destination Country",
+      value: visaData?.destinationCountry?.label || "Not Specified",
     },
     {
-      title: splitCamelCaseToTitleCase("haveSpouseOrProperty"),
-      value: visaData?.haveSpouseOrProperty ? "YES" : "NO",
+      title: "Have Spouse or Property",
+      value: visaData?.haveSpouseOrProperty ? "Yes" : "No",
     },
     {
-      title: splitCamelCaseToTitleCase("passportCountry"),
-      value: visaData?.passportCountry?.label || "N/A",
+      title: "Passport Country",
+      value: visaData?.passportCountry?.label || "Not Specified",
     },
     {
-      title: splitCamelCaseToTitleCase(
-        "travelledInternationallyAndReturnedHome"
-      ),
-      value: visaData?.travelledInternationallyAndReturnedHome ? "YES" : "NO",
+      title: "International Travel History",
+      value: visaData?.travelledInternationallyAndReturnedHome ? "Yes" : "No",
     },
     {
-      title: splitCamelCaseToTitleCase("whereWillYouApplyForYourVisa"),
-      value: visaData?.whereWillYouApplyForYourVisa?.label || "-",
+      title: "Visa Application Location",
+      value: visaData?.whereWillYouApplyForYourVisa?.label || "Not Specified",
     },
   ];
 
@@ -110,80 +108,67 @@ const Dashboard = () => {
     setSelectedValue(value); // Update the state with the clicked breadcrumb's value
   };
 
+
   return (
-    <div className="flex flex-col justify-center items-center space-y-4 p-4">
-      {/* Breadcrumbs */}
-      <nav className="flex flex-wrap items-center justify-center text-sm ">
-        {(visaData || user?.visaDataId ) ? breadcrumbs.map((box, index) => (
-          <React.Fragment key={index}>
-            {index > 0 && (
-              <span className="mx-2 font-bold">
-                {" "}
-                <TfiControlForward className="font-bold text-Gray" size={16} />
-              </span>
-            )}
-            <button
-              onClick={() => handleBreadcrumbClick(box.value)}
-              className="text-DarkGray tracking-wider hover:underline  hover: underline-offset-4 hover:text-indigo-400 focus:outline-none"
+    <div className="max-w-4xl mx-auto p-6">
+      {(visaData || user?.visaDataId) ? (
+        <>
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 className="text-2xl font-bold text-Indigo mb-6 text-center">
+              Visa Assessment Details
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {visaAssessmentDetails.map((detail, index) => (
+                <div 
+                  key={index} 
+                  className="bg-gray-50 p-4 rounded-md border border-gray-200"
+                >
+                  <h3 className="text-sm font-semibold text-gray-600 mb-2">
+                    {detail.title}
+                  </h3>
+                  <p className="text-lg text-Indigo font-medium">
+                    {detail.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+            <h2 className="text-2xl font-bold text-Indigo mb-4">
+              Travel Visa Denial Risk
+            </h2>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <RiSlowDownFill className="text-green-500" size={24} />
+              <span className="text-xl font-medium">Low</span>
+            </div>
+            <p className="text-lg text-gray-600 italic mb-6">
+              But our service gets your risk even lower
+            </p>
+            <Link
+              href="/profilepage"
+              className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
             >
-              {box.title}
-            </button>
-          </React.Fragment>
-        )) : 
-        <TravelPlan/>
-        }
-      </nav>
-      {/* <Stepper/> */}
-
-      {/* Display selected value */}
-      { visaData ? 
-      <div className="max-w-md p-4 bg-transparent rounded-xl shadow text-center justify-center mt-8">
-        {selectedValue ? (
-          <p className="text-base font-medium text-Indigo">
-            Selected Value:{" "}
-            <span className="text-indigo-400">{selectedValue}</span>
-          </p>
-        ) : (
-          <p className="text-gray-500">Click a breadcrumb to view its value</p>
-        )}
-      </div>
-       : ''
-      }
-      {visaData ? <div className="max-w-md p-6 bg-transparent rounded-xl shadow text-center justify-center mt-12">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-Indigo text-center">
-          Travel Visa Denial Risk
-        </h5>
-
-        <div className="flex items-center gap-2 justify-center">
-          <RiSlowDownFill className="text-green-500 text-center" size={24} />{" "}
-          Low
-        </div>
-        <h2 className="mb-3 font-normal text-LightGray italic text-xl text-center">
-          But our service gets your risk even lower
-        </h2>
-        <Link
-          href="/profilepage"
-          className="inline-flex items-center tracking-widest px-3 py-2 text-sm font-medium text-center text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]"
-        >
-          Complete Profile
-          <svg
-            className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 10"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M1 5h12m0 0L9 1m4 4L9 9"
-            />
-          </svg>
-        </Link>
-      </div>
-       : ''}
+              Complete Profile
+              <svg
+                className="w-4 h-4 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+          </div>
+        </>
+      ) : (
+        <TravelPlan />
+      )}
     </div>
   );
 };
