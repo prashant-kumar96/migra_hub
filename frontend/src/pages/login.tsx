@@ -35,21 +35,33 @@ const LoginPage = () => {
   const [isPasswordTypePassword, setIsPasswordTypePassword] = useState(true);
   const [isGoogleLoginComplete, setIsGoogleLoginComplete] = useState(false); // New flag
   const [isSignUpShowing, setIsSignUpFormShowing] = useState(true);
+  const [googleLoginState, setGoogleLoginState] = useState({
+    loading: false,
+    completed: false,
+    attempted: false
+  });
 
   useEffect(() => {
-    if (status === "authenticated" && !googleLoading && !isGoogleLoginComplete) {
+    // Only proceed if we have an authenticated session and haven't attempted login yet
+    if (status === "authenticated" && 
+        !googleLoginState.attempted && 
+        !googleLoginState.completed) {
       handleGoogleLogin();
     }
-  }, [status, googleLoading, isGoogleLoginComplete]);
+  }, [status]); // Only depend on session status
 
   const handleGoogleLogin = async () => {
     if (!session) return;
-
-    const assessmentData = JSON.parse(localStorage.getItem("assessmentData") || "null");
-
-    setGoogleLoading(true);
-
+  
+    setGoogleLoginState(prev => ({
+      ...prev,
+      loading: true,
+      attempted: true
+    }));
+  
     try {
+      const assessmentData = JSON.parse(localStorage.getItem("assessmentData") || "null");
+      
       const response = await googleLogin({
         accessToken: session?.accessToken,
         email: session?.user?.email,
@@ -57,30 +69,30 @@ const LoginPage = () => {
         googleId: session?.user?.googleId,
         riskAssessmentData: assessmentData,
       });
-
+  
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        setIsGoogleLoginComplete(true); // Set flag after successful login
-        router.push("/dashboard");
+        
+        // Wait for router navigation to complete before updating state
+        await router.push("/dashboard");
+        
+        setGoogleLoginState(prev => ({
+          ...prev,
+          loading: false,
+          completed: true
+        }));
       }
     } catch (err) {
-      console.log(err, "error during backend google login");
-      setGoogleLoading(false);
+      console.error("Error during backend google login:", err);
+      setGoogleLoginState(prev => ({
+        ...prev,
+        loading: false,
+        completed: false
+      }));
     }
   };
-
-  const handleChange = (e: any) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleEmailSignup = async (e: any) => {
-    e.preventDefault();
-    console.log("Sign up with:", formData);
-  };
+ 
 
   const {
     register,
@@ -171,10 +183,13 @@ const LoginPage = () => {
     setStepsData(router?.query ? router?.query : "");
   }, [router]);
 
-  if (googleLoading) {
+ 
+
+  // Show loader only during active Google login process
+  if (googleLoginState.loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader />
+        <Loader  text='Loading'/>
       </div>
     );
   }

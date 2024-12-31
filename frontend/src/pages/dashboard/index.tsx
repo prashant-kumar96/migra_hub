@@ -27,26 +27,18 @@ const Dashboard = () => {
 
   console.log(';; user',user);
  
-  console.log('visa data',sharedState)
+  console.log('visa data',sharedState);
 
   const fetchData = async () => { 
     try {
-      setLoading(true); // Set loading to true before fetching data
-         // Using setRole in the correct scope
-    //   const setRole = (user: any) => {
-    //         console.log("Setting user", user)
-    //         setSharedMedata(user);
-    //    }
-
-    //   const meData = await me(); // Wait for meData to complete
-    //   console.log('me data',meData?.data)
-    //   setRole(meData?.data?.user)
-       // Check if sharedMedata is still null
-      if (!user) {
+      setLoading(true); 
+       
+      if (!user) {  
         setLoading(false); // Clear loading state
         return; // Stop data fetching
-        }
-        console.log(';; fetching data')
+      }
+
+      console.log(';; fetching data')
       const resultVisaData = await getSingleVisaData(user?.user?.visaDataId);
       console.log(';; resultVisaData',resultVisaData)
       setVisaData(resultVisaData?.data);
@@ -58,9 +50,7 @@ const Dashboard = () => {
      }
     };
 
-
     console.log('set shared data',sharedMedata)
-
 
    useEffect(() => {
     fetchData();
@@ -119,10 +109,6 @@ const Dashboard = () => {
   const handleBreadcrumbClick = (value) => {
     setSelectedValue(value); // Update the state with the clicked breadcrumb's value
   };
-
- 
-
-   // return <Stepper/>
 
   return (
     <div className="flex flex-col justify-center items-center space-y-4 p-4">

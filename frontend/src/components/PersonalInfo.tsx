@@ -21,6 +21,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import ButtonLoader from "./loaders/buttonLoader";
 import { useAuth } from "@/context/auth-context";
+import { getSingleVisaData } from "@/api/visaData";
+
+
 const options = [
   { code: "en", label: "English" },
   { code: "es", label: "Spanish" },
@@ -43,15 +46,32 @@ const PersonalInfo = () => {
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [riskAssessmentData, setRiskAssessmentData] = useState<any>({})
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
+  console.log(';; personal visa data',user)
+  useEffect(()=>{
+    const resultVisaData = async () => { 
+    const data =   await getSingleVisaData(user?.user?.visaDataId);
+    setRiskAssessmentData(data?.data)
+    return data;
+    };
 
+    if(user?.user?.visaDataId){
+    resultVisaData()
+    }
+    
+  },[user?.user?.visaDataId])
+
+
+  console.log(';; risk assessment data',riskAssessmentData)
+ 
   console.log('me data',sharedMedata);
 
   console.log("sharedMedata", sharedMedata);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
     useState(countriesCodes);
-  const [citizenshipCountry, setCitizenShipCountry] = useState<string>("");
+  const [citizenshipCountry, setCitizenShipCountry] = useState<any>("");
   // const [citizenshipCountryError, setCitizenshipCountryError] = useState("");
   const [firstLanguage, setFirstLanguage] = useState<string>("");
   
@@ -71,6 +91,31 @@ const PersonalInfo = () => {
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
 
+
+  // Prefill logic
+    useEffect(() => {
+        if (riskAssessmentData) {
+          if(riskAssessmentData?.citizenshipCountry){
+              const tempCountry: any = countryList()
+              .getData()
+              .find((country) => country.value === riskAssessmentData?.citizenshipCountry);
+            setCitizenShipCountry(tempCountry);
+          }
+            if(riskAssessmentData?.whereWillYouApplyForYourVisa?.value){
+                const tempCountry: any = countryList()
+                .getData()
+                .find((country) => country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value);
+                
+            setAddressData(prev => ({ ...prev, country: tempCountry?.name }));
+            const tempCountryId = countryList()
+              .getData()
+              .find((country) => country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value);
+            setCountryid(tempCountryId?.id)
+
+            }
+          
+        }
+    }, [riskAssessmentData]);
   const handleCountrySelectChange = (e: any) => {
     console.log("countrySelect", e);
     setCountryid(e.id);
@@ -165,7 +210,7 @@ const PersonalInfo = () => {
       const newdata = {
         ...data,
         firstLanguage,
-        citizenshipCountry,
+        citizenshipCountry: citizenshipCountry.value,
         addressData,
         userId: sharedMedata?._id,
       };
@@ -327,7 +372,7 @@ const PersonalInfo = () => {
               Country of Citizenship
             </label>
             <ReactFlagsSelect
-              selected={citizenshipCountry.value}
+              selected={citizenshipCountry?.value}
               onSelect={handleSelectcountryOfCitizenship}
               className="w-full  border shadow-md border-gray-200 rounded-lg text-gray-800"
               countries={citizenshipCountryCodes} // You can replace this with a more comprehensive list or dynamic data
