@@ -83,6 +83,7 @@ async function register(req: any, res: any) {
   }
 }
 
+
 // google login
 async function googleLogin(req: any, res: any) {
   try {

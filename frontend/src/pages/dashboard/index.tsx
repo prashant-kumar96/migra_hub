@@ -46,6 +46,7 @@ const Dashboard = () => {
         setLoading(false); // Clear loading state
         return; // Stop data fetching
         }
+        console.log(';; fetching data')
       const resultVisaData = await getSingleVisaData(user?.user?.visaDataId);
       console.log(';; resultVisaData',resultVisaData)
       setVisaData(resultVisaData?.data);

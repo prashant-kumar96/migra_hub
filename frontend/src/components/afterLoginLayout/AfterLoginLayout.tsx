@@ -13,10 +13,10 @@ const AfterLoginLayout = <P extends {}>(WrappedComponent: ComponentType<P>) => {
   // Return a new functional component that can accept props
   return (props: P) => {
     const [isOpen, setIsOpen] = useState(false);
-      const [role, setRole] = useState<string | undefined>();
+    const [role, setRole] = useState<string | undefined>();
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-      const router = useRouter();
+    const router = useRouter();
 
 
     const toggleSidebar = () => {
@@ -35,7 +35,7 @@ const AfterLoginLayout = <P extends {}>(WrappedComponent: ComponentType<P>) => {
                     return; // Stop execution here
                 }
                 setRole(medata?.user?.role);
-            setIsAuthenticated(true)
+                setIsAuthenticated(true)
             } else {
               console.warn("User token not found.");
                 setIsAuthenticated(false)

@@ -4,37 +4,46 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Header2 from "./Header";
 import { me } from "@/api/auth";
+import { useAuth } from "@/context/auth-context";
+
 
 const BeforeLoginLayout = (WrappedComponent: any) => {
   return function (props: any) {
     const router = useRouter();
     const { data: session } = useSession();
+    const { user } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
       const handleAuth = async () => {
-        if (localStorage.getItem("token") || session) {
+        const token = localStorage.getItem("token");
+
+        if (token || session) {
           setIsLoading(true);
           try {
             const result = await me();
             const userRole = result?.data?.user?.role;
-            
-            switch (userRole) {
-              case "SA":
-                await router.push("/adminDashboard");
-                break;
-              case "USER":
-                await router.push("/dashboard");
-                break;
-              case "CASE_MANAGER":
-                await router.push("/caseManagerDashboard");
-                break;
-              default:
-                console.error("Unknown user role:", userRole);
+            console.log("role", userRole);
+
+            if (userRole === "SA") {
+              // Admin role: redirect to /dashboard first, then to /adminDashboard
+              await router.push("/dashboard"); // Wait for the first redirection
+              await router.replace("/adminDashboard"); // Replace the URL with /adminDashboard
+            } else if (userRole === "USER") {
+              // Regular user role
+              await router.push("/dashboard");
+            } else if (userRole === "CASE_MANAGER") {
+              // Case manager role
+              await router.push("/caseManagerDashboard");
+            } else {
+              console.error("Unknown user role:", userRole);
+              // Optionally redirect to a fallback route
+              await router.push("/login");
             }
           } catch (error) {
             console.error("Error fetching user role:", error);
-            // Handle error - maybe redirect to login or show error message
+            // Redirect to login or show an error message
+            await router.push("/login");
           } finally {
             setIsLoading(false);
           }
@@ -42,7 +51,7 @@ const BeforeLoginLayout = (WrappedComponent: any) => {
       };
 
       handleAuth();
-    }, [session]);
+    }, [session, user]); // Dependencies to trigger when `session` or `user` changes
 
     if (isLoading) {
       return (

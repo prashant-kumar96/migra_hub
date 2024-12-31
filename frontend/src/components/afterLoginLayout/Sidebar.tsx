@@ -93,25 +93,32 @@ const Sidebar = () => {
       const userRole = medata?.data?.user?.role?.toUpperCase().trim();
       setRole(userRole);
 
-      const roleMenu = sidebarData.find((item) => item.role === userRole);
+      const roleMenu = sidebarData?.find((item) => item.role === userRole);
       setMenuItems(roleMenu?.menu || []);
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
   };
 
-  const handleSignout = () => {
-    if (session) {
+  const handleSignout = async () => {
+    try {
+      // Remove token from local storage
       localStorage.removeItem("token");
       setToken("");
-      signOut();
-      router.push("/loginpage");
-    } else {
-      localStorage.removeItem("token");
-      setToken("");
-      router.push("/loginpage");
+  
+      // Sign out and clear session if it exists
+      if (session) {
+        await signOut({ redirect: false }); // Ensure session is cleared without automatic redirect
+      }
+  
+      // Redirect to login page
+      await router.push("/loginpage");
+    } catch (error) {
+      console.error("Error during signout:", error);
+      // Optionally handle signout errors (e.g., show a notification)
     }
   };
+  
 
   useEffect(() => {
     if (localStorage.getItem("token")) {

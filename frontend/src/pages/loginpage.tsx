@@ -91,55 +91,74 @@ const LoginPage = () => {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    console.log(data);
+    console.log("Submitted Data:", data);
+  
     const newData = { ...data, role: "USER", data: sharedState };
-    console.log("sharedState", sharedState);
-    console.log("newData", newData);
+    console.log("Shared State:", sharedState);
+    console.log("New Data:", newData);
+  
     try {
       if (isSignUpShowing) {
+        // Handle user registration
         const result = await registerUser(newData);
-        console.log("result registerUser ", result);
+        console.log("Registration Result:", result);
+  
         if (result?.status === 200) {
           localStorage.setItem("token", result?.data?.token);
           setLoading(false);
           router.push("/dashboard");
         } else {
-          console.log("result@@@", result);
+          console.log("Registration Error Result:", result);
           setLoading(false);
         }
       } else {
+        // Handle user login
+        console.log("Login Data:", data);
         const result = await loginUser(data);
-        console.log("result loginUser@@@@@@@", result);
+        console.log("Login Result:", result);
+  
         if (result?.status === 200) {
           localStorage.setItem("token", result?.data?.token);
-          if (result?.data?.user?.role === "SA") {
-            router.push("/adminDashboard");
+          const userRole = result?.data?.user?.role;
+          console.log("User Role:", userRole);
+  
+          // Redirect based on role
+          switch (userRole) {
+            case "SA": // Admin
+              await router.push("/adminDashboard");
+              break;
+            case "CASE_MANAGER": // Case Manager
+              await router.push("/caseManagerDashboard");
+              break;
+            case "USER": // Regular User
+            default: // Default role fallback
+              await router.push("/dashboard");
+              break;
           }
-          if (result?.data?.user?.role === "CASE_MANAGER") {
-            router.push("/caseManagerDashboard");
-          } else router.push("/dashboard");
+  
           setLoading(false);
         } else {
-          console.log("result@@@", result);
+          console.log("Login Error Result:", result);
           setLoading(false);
         }
       }
     } catch (err) {
       setLoading(false);
-      console.log("errstatus", err);
+      console.log("Error Status:", err);
+  
       if (err.status === 400) {
         setError("password", {
           type: "manual",
           message: err?.response?.data?.message,
         });
-
+  
         if (err?.response?.data?.extraInfo === "Info Incomplete") {
           setShowIndexPage(true);
         }
       }
     }
   };
-
+  
   const handleEyeClick = () => {
     setIsPasswordTypePassword(!isPasswordTypePassword);
   };
