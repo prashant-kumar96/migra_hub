@@ -115,7 +115,7 @@ const Dashboard = () => {
         <>
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-Indigo mb-6 text-center">
-              Visa Assessment Details
+              Risk Assessment Details
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
               {visaAssessmentDetails.map((detail, index) => (
