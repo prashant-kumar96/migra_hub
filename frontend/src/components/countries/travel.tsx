@@ -9,12 +9,15 @@ import { useRouter } from "next/router";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { RiGovernmentLine } from "react-icons/ri";
 
+
 const Travel = () => {
+  
   const router = useRouter();
   const { country } = router.query;
   const selectedCountry = countriesData.find(
     (item) => item.name.toLowerCase() === country?.toLowerCase()
   );
+
   useEffect(() => {
     if (selectedCountry) {
       setDestinationCountry({
@@ -23,6 +26,7 @@ const Travel = () => {
       });
     }
   }, [selectedCountry]);
+
 
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
@@ -67,6 +71,7 @@ const Travel = () => {
       });
     }
   };
+
   const handleStartjourney = () => {
     console.log("citizenshipCountry", citizenshipCountry);
     console.log("destinationCountry", destinationCountry);
@@ -92,6 +97,8 @@ const Travel = () => {
       setShouldStartjourneyShow(true);
     }
   };
+
+
   return (
     <>
       <div className="relative flex w-[360px] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md mt-10 ml-8">

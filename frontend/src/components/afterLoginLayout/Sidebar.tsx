@@ -151,8 +151,7 @@ const Sidebar = () => {
   }, []);
   return (
     <main className="flex">
-      <div className="bg-Indigo sm:w-60 min-h-screen w-14 flex flex-col transition-all">
-        {/* Logo Section */}
+      <div className="bg-Indigo sm:w-60 min-h-screen w-14 flex flex-col fixed left-0 top-0">        {/* Logo Section */}
         <div className="text-center text-white p-6">
           <Link href="/">
             {isSmallScreen ? (
@@ -199,7 +198,7 @@ const Sidebar = () => {
         </ul>
 
         {/* Sign Out Button */}
-        <div className="p-3">
+        <div className="p-3 sticky bottom-0 bg-Indigo">
           {session || token ? (
             <button
               className="bg-FloralWhite text-Indigo border-2 border-FloralWhite p-2 rounded-md w-full flex items-center justify-center hover:bg-transparent hover:text-FloralWhite"
