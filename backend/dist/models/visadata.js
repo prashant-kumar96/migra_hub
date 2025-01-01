@@ -9,7 +9,7 @@ const visaDataSchema = new Schema({
     },
     deniedVisaToUs: {
         type: Boolean,
-        required: [true, "Denied Visa To Us is required"],
+        required: [true, "Denied Visa In Last 90 Days is required"],
     },
     destinationCountry: {
         type: {},

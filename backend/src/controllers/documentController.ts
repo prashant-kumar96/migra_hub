@@ -7,7 +7,7 @@ export const uploadPassportImages = async (req: Request, res: Response) => {
   // console.log("req.files", req.files);
   // console.log("req.body", req.body);
 
-  console.log("this is run");
+  console.log("upload Passport Images", req.body);
   try {
     const fileUrls = req.files.map((file) => ({
       url: `http://localhost:5000/uploads/${file.filename}`,

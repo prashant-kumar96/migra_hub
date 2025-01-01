@@ -3,6 +3,7 @@ import Image from "next/image";
 import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
 import { getSinglePassportData } from "@/api/document";
+import { useAuth } from "@/context/auth-context";
 // import CrossIcon from "@/utils/elements/icons/cross-icon";
 
 const UploadModal = ({ isOpen, onClose }) => {
@@ -10,6 +11,9 @@ const UploadModal = ({ isOpen, onClose }) => {
   const [previewImages, setPreviewImages] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [medata] = useAtom(meDataAtom);
+
+  const {user} = useAuth()
+  const userId = user?.user?._id
 
   // console.log("medata@@@@", medata);
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -30,12 +34,11 @@ const UploadModal = ({ isOpen, onClose }) => {
       formData.append("images", file);
     });
 
-    console.log("hello", medata?._id);
-    // return;
-    formData.append("userId", medata?._id);
+     // return;
+    formData.append("userId", userId);
     try {
       const response = await fetch(
-        "http://localhost:5000/api/document/uploadPassportImages",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/document/uploadPassportImages`,
         {
           method: "POST",
           body: formData,
@@ -57,7 +60,6 @@ const UploadModal = ({ isOpen, onClose }) => {
       alert("An error occurred while uploading.");
     }
   };
-
   // Fetch previously uploaded files
 
   if (!isOpen) return null;
@@ -130,16 +132,19 @@ const UploadModal = ({ isOpen, onClose }) => {
 
 const PassportUploadComp = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const {user} = useAuth();
+  const userId = user?.user?._id
 
   const [isPassportPreviouslyUploaded, setPassportPreviouslyUploaded] =
     useState(false);
 
   const [medata] = useAtom(meDataAtom);
-
+   
+ 
   const fetchUploadedPassport = async () => {
     try {
       console.log("fetchUploadedPassport");
-      const response = await getSinglePassportData(medata?._id);
+      const response = await getSinglePassportData(userId);
       if (response) {
         console.log("response fetchUploadedPassport", response);
         // const data = await response.json();

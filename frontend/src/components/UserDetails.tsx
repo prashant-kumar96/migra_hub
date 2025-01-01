@@ -55,7 +55,7 @@ const UserDetails = ({ data }) => {
             {JSON.stringify(user?.visaDataId?.citizenshipCountry?.label)}
           </p>
           <p>
-            <strong className="font-medium">Denied Visa to US:</strong>{" "}
+            <strong className="font-medium">Denied Visa In Last 90 Days:</strong>{" "}
             {user?.visaDataId?.deniedVisaToUs ? "Yes" : "No"}
           </p>
           <p>
