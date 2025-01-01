@@ -7,6 +7,7 @@ import {
   getSingleProofOfTiesData,
 } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
+import { useAuth } from "@/context/auth-context";
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -127,7 +128,8 @@ const UploadModal = ({ isOpen, onClose }) => {
 
 const AdditionalDocuments = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-
+    const {user} = useAuth()
+    const userId = user?.user?._id
   const [
     areAdditionalDocumentsPreviouslyUploaded,
     setAreAdditionalDocumentsPreviouslyUploaded,
@@ -137,7 +139,7 @@ const AdditionalDocuments = () => {
   const fetchUploadedProofOfTies = async () => {
     try {
       console.log("fetchUploadedProofOfFunds");
-      const response = await getAdditionalDocuments(medata?._id);
+      const response = await getAdditionalDocuments(userId);
       if (response) {
         console.log("response getAdditionalDocuments", response);
         // const data = await response.json();

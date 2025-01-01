@@ -4,6 +4,7 @@ import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
 import { getSingleProofOfTiesData } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
+import { useAuth } from "@/context/auth-context";
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -123,6 +124,8 @@ const UploadModal = ({ isOpen, onClose }) => {
 
 const ProofOfTiesComp = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+    const {user} = useAuth()
+    const userId = user?.user?._id
   const [
     isProofOfTiesCompPreviouslyUploaded,
     setProofOfTiesCompPreviouslyUploaded,
@@ -131,7 +134,7 @@ const ProofOfTiesComp = () => {
   const fetchUploadedProofOfTies = async () => {
     try {
       console.log("fetchUploadedProofOfFunds");
-      const response = await getSingleProofOfTiesData(medata?._id);
+      const response = await getSingleProofOfTiesData(userId);
       if (response) {
         console.log("response getSingleProofOfTiesData", response);
         // const data = await response.json();
