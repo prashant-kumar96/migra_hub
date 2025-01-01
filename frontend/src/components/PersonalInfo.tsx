@@ -100,6 +100,7 @@ const PersonalInfo = () => {
     state: "",
     city: "",
   });
+
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
 
@@ -303,133 +304,133 @@ const PersonalInfo = () => {
    console.log(';; personal data',personalDataStatus)
    if (personalDataStatus) {
     return (
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] px-8 py-4">
-          <h2 className="text-2xl font-bold text-white flex items-center">
-            <svg 
-              className="w-6 h-6 mr-2" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
-              />
-            </svg>
-            Personal Information
-          </h2>
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+        {/* Header Section */}
+        <div className="flex items-center justify-between mb-8 pb-4 border-b">
+          <div>
+            <h1 className="text-3xl font-bold text-[#333366] mb-2">Profile Overview</h1>
+            <p className="text-gray-600">Visa Application Details & Risk Assessment</p>
+          </div>
+          {/* <button className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors">
+            Edit Profile
+          </button> */}
         </div>
   
-        <div className="p-8">
-          <div className="grid gap-8 mb-8 md:grid-cols-2">
-            {/* Personal Details Section */}
-            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
-              <h3 className="text-lg font-semibold text-[#333366] mb-4">Basic Details</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <div className="w-1/2">
-                    <p className="text-sm font-medium text-gray-500">First Name</p>
-                    <p className="text-gray-900 font-medium">{personalData?.first_name}</p>
-                  </div>
-                  <div className="w-1/2">
-                    <p className="text-sm font-medium text-gray-500">Last Name</p>
-                    <p className="text-gray-900 font-medium">{personalData?.last_name}</p>
-                  </div>
+        {/* Personal Information Section */}
+        <div className="mb-12 text-gray-600">
+          <div className="flex items-center mb-6">
+            <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-[#333366]">Personal Information</h2>
+          </div>
+  
+          <div className="grid gap-8 text-gray-600 mb-8">
+            {/* Basic Info Card */}
+            <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500">Full Name</p>
+                  <p className="text-sm font-medium">{`${personalData?.first_name} ${personalData?.last_name}`}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">First Language</p>
-                  <p className="text-gray-900 font-medium">{personalData?.firstLanguage}</p>
-                </div>
-                <div>
+                <div className="space-y-1">
                   <p className="text-sm font-medium text-gray-500">Email</p>
-                  <p className="text-gray-900 font-medium">{personalData?.email}</p>
+                  <p className="text-sm font-medium">{personalData?.email}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Phone Number</p>
-                  <p className="text-gray-900 font-medium">{personalData?.phoneNumber}</p>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500">Phone</p>
+                  <p className="text-sm font-medium">{personalData?.phoneNumber}</p>
                 </div>
               </div>
             </div>
   
-            {/* Passport Information Section */}
-            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
-              <h3 className="text-lg font-semibold text-[#333366] mb-4">Passport Details</h3>
-              <div className="space-y-4">
-                <div>
+            {/* Passport Details Card */}
+            <div className="bg-gray-50 rounded-xl text-gray-600 p-6 shadow-sm">
+              <h3 className="text-sm font-semibold text-[#333366] mb-4">Passport Information</h3>
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="space-y-1">
                   <p className="text-sm font-medium text-gray-500">Passport Number</p>
-                  <p className="text-gray-900 font-medium">{personalData?.passport_number}</p>
+                  <p className="text-sm font-medium">{personalData?.passport_number}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Country of Citizenship</p>
-                  <p className="text-gray-900 font-medium">{personalData?.citizenshipCountry?.label}</p>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500">Citizenship</p>
+                  <p className="text-sm font-medium">{personalData?.citizenshipCountry?.label}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Passport Expiry Date</p>
-                  <p className="text-gray-900 font-medium">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500">Expiry Date</p>
+                  <p className="text-sm font-medium">
                     {moment(personalData?.passport_expiry).format("YYYY-MM-DD")}
                   </p>
                 </div>
               </div>
             </div>
   
-            {/* Address Section */}
-            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
-              <h3 className="text-lg font-semibold text-[#333366] mb-4">Address Information</h3>
-              <div className="space-y-4">
+            {/* Address Card */}
+            <div className="bg-gray-50  text-gray-600 rounded-xl p-6 shadow-sm">
+              <h3 className="text-sm font-semibold text-[#333366] mb-4">Address Details</h3>
+              <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Street Address</p>
-                  <p className="text-gray-900 font-medium">{personalData?.addressLine}</p>
+                  <p className="text-sm font-medium">{personalData?.addressLine}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm font-medium text-gray-500">Country</p>
-                    <p className="text-gray-900 font-medium">{personalData?.addressData?.country}</p>
+                    <p className="text-sm font-medium">{personalData?.addressData?.country}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Province/State</p>
-                    <p className="text-gray-900 font-medium">{personalData?.addressData?.state}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">City/Town</p>
-                    <p className="text-gray-900 font-medium">{personalData?.addressData?.city}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Postal/Zip Code</p>
-                    <p className="text-gray-900 font-medium">{personalData?.zipCode}</p>
+                    <p className="text-sm font-medium text-gray-500">State</p>
+                    <p className="text-sm font-medium">{personalData?.addressData?.state}</p>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
   
-            {/* Additional Information Section */}
-            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
-              <h3 className="text-lg font-semibold text-[#333366] mb-4">Additional Details</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <div className="w-1/2">
-                    <p className="text-sm font-medium text-gray-500">Marital Status</p>
-                    <p className="text-gray-900 font-medium">{personalData?.marital_status}</p>
-                  </div>
-                  <div className="w-1/2">
-                    <p className="text-sm font-medium text-gray-500">Gender</p>
-                    <p className="text-gray-900 font-medium">{personalData?.gender}</p>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-500">Terms and Conditions</p>
-                  <span className={`px-2 py-1 text-sm rounded-full ${
-                    personalData?.terms 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
-                  }`}>
-                    {personalData?.terms ? "Agreed" : "Not Agreed"}
-                  </span>
-                </div>
-              </div>
+        {/* Risk Assessment Section */}
+        <div className="text-gray-600 mt-12">
+          <div className="flex items-center mb-6">
+            <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
+            <h2 className="text-2xl font-bold text-[#333366]">Risk Assessment</h2>
+          </div>
+  
+          <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
+            <div className="grid gap-6 md:grid-cols-2">
+              {Object.entries(riskAssessmentData || {}).map(([key, value]) => (
+                <div key={key} className="border-l-4 border-[#333366] pl-4">
+                  <p className="text-sm font-medium text-gray-500">
+                    {key.split(/(?=[A-Z])/).join(' ')}
+                  </p>
+                  <p className="text-sm font-medium">
+                    {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : 
+                     typeof value === 'object' ? value?.label :
+                     value === 'true' ? 'Yes' : 
+                     value === 'false' ? 'No' : 
+                     value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+  
+        {/* Status Banner */}
+        <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-4 flex items-center">
+          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-green-800">Profile Complete</h4>
+            <p className="text-green-600">All required information has been provided</p>
           </div>
         </div>
       </div>
