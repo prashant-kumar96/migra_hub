@@ -31,7 +31,6 @@ const options = [
   { code: "hi", label: "Hindi" },
   { code: "zh", label: "Chinese" },
 ];
-
 const PersonalInfo = () => {
   const {
     register,
@@ -46,39 +45,40 @@ const PersonalInfo = () => {
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [riskAssessmentData, setRiskAssessmentData] = useState<any>({})
-  const [personalData, setPersonalData] = useState();
+  const [riskAssessmentData, setRiskAssessmentData] = useState<any>({});
+  const [personalDataStatus, setPersonalDataStatus] = useState<any>(null);
+  const [personalData , setPersonalData] = useState()
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
-  console.log(';; personal visa data',user)
-  const userEmail= user?.user?.email
-  const userName = user?.user?.name
+  console.log(";; personal visa data", user);
+  const userEmail = user?.user?.email;
+  const userName = user?.user?.name;
+  const userId = user?.user?._id;
 
   useEffect(() => {
     // Early return if no user data is available
     if (!user?.user?.visaDataId) {
       return;
     }
-  
+
     const fetchVisaData = async () => {
       try {
         const visaDataResult = await getSingleVisaData(user?.user?.visaDataId);
-        
+
         if (visaDataResult?.data) {
           setRiskAssessmentData(visaDataResult.data);
         }
       } catch (error) {
-        console.error('Error fetching visa data:', error);
+        console.error("Error fetching visa data:", error);
       }
     };
-  
+
     fetchVisaData();
   }, [user?.user?.visaDataId]);
 
+  console.log(";; risk assessment data", riskAssessmentData);
 
-  console.log(';; risk assessment data',riskAssessmentData)
- 
-  console.log('me data',sharedMedata);
+  console.log("me data", sharedMedata);
 
   console.log("sharedMedata", sharedMedata);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
@@ -86,7 +86,7 @@ const PersonalInfo = () => {
   const [citizenshipCountry, setCitizenShipCountry] = useState<any>("");
   // const [citizenshipCountryError, setCitizenshipCountryError] = useState("");
   const [firstLanguage, setFirstLanguage] = useState<string>("");
-  
+
   const [error, setError] = useState({
     citizenshipCountryError: "",
     firstLanguageError: "",
@@ -103,38 +103,42 @@ const PersonalInfo = () => {
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
 
-
   // Prefill logic
-    useEffect(() => {
-        if (riskAssessmentData) {
-          if(riskAssessmentData?.citizenshipCountry){
-              const tempCountry: any = countryList()
-              .getData()
-              .find((country) => country.value === riskAssessmentData?.citizenshipCountry);
-            setCitizenShipCountry(tempCountry);
-          }
-            if(riskAssessmentData?.whereWillYouApplyForYourVisa?.value){
-                const tempCountry: any = countryList()
-                .getData()
-                .find((country) => country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value);
-                
-            setAddressData(prev => ({ ...prev, country: tempCountry?.name }));
-            const tempCountryId = countryList()
-              .getData()
-              .find((country) => country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value);
-            setCountryid(tempCountryId?.id)
-
-            }
-          
-        }
-        if(userEmail){
-          setValue("email",userEmail)
+  useEffect(() => {
+    if (riskAssessmentData) {
+      if (riskAssessmentData?.citizenshipCountry) {
+        const tempCountry: any = countryList()
+          .getData()
+          .find(
+            (country) => country.value === riskAssessmentData?.citizenshipCountry
+          );
+        setCitizenShipCountry(tempCountry);
       }
-      if(userName){
-        setValue('first_name',userName)
-      }
-  }, [riskAssessmentData,userEmail,setValue]);
+      if (riskAssessmentData?.whereWillYouApplyForYourVisa?.value) {
+        const tempCountry: any = countryList()
+          .getData()
+          .find(
+            (country) =>
+              country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value
+          );
 
+        setAddressData((prev) => ({ ...prev, country: tempCountry?.name }));
+        const tempCountryId = countryList()
+          .getData()
+          .find(
+            (country) =>
+              country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value
+          );
+        setCountryid(tempCountryId?.id);
+      }
+    }
+    if (userEmail) {
+      setValue("email", userEmail);
+    }
+    if (userName) {
+      setValue("first_name", userName);
+    }
+  }, [riskAssessmentData, userEmail, setValue, userName]);
 
   const handleCountrySelectChange = (e: any) => {
     console.log("countrySelect", e);
@@ -230,9 +234,9 @@ const PersonalInfo = () => {
       const newdata = {
         ...data,
         firstLanguage,
-        citizenshipCountry: citizenshipCountry,
+        citizenshipCountry: citizenshipCountry.value,
         addressData,
-        userId: sharedMedata?._id,
+        userId: userId,
       };
 
       console.log("newData", newdata);
@@ -274,16 +278,14 @@ const PersonalInfo = () => {
     setFirstLanguage(event.label);
   };
 
+
   const getPersonalInfofunction = async () => {
     const result = await getPersonalData(user?.user?._id);
-    console.log("getPersonalData", result);
-    if (result?.status === 200) {
-      // toast(result?.data?.message);
-      alert("Personal Data is Already filled");
-      // Navigate to dashboard
-      // console.log("we are here");
-      // localStorage.setItem("token", result?.data?.token);
-      router.push("/dashboard/documentupload");
+    console.log(";; getPersonalData", result);
+    if (result?.status) {
+      //show the info without form format if the status is true
+      setPersonalData(result?.data)
+      setPersonalDataStatus(result?.status);
       setLoading(false);
     } else {
       console.log("result@@@", result);
@@ -291,11 +293,149 @@ const PersonalInfo = () => {
     }
   };
 
+
   useEffect(() => {
     getPersonalInfofunction();
   }, []);
 
+
   console.log("moment", moment().format("YYYY-MM-DD"));
+   console.log(';; personal data',personalDataStatus)
+   if (personalDataStatus) {
+    return (
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] px-8 py-4">
+          <h2 className="text-2xl font-bold text-white flex items-center">
+            <svg 
+              className="w-6 h-6 mr-2" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+              />
+            </svg>
+            Personal Information
+          </h2>
+        </div>
+  
+        <div className="p-8">
+          <div className="grid gap-8 mb-8 md:grid-cols-2">
+            {/* Personal Details Section */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+              <h3 className="text-lg font-semibold text-[#333366] mb-4">Basic Details</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <div className="w-1/2">
+                    <p className="text-sm font-medium text-gray-500">First Name</p>
+                    <p className="text-gray-900 font-medium">{personalData?.first_name}</p>
+                  </div>
+                  <div className="w-1/2">
+                    <p className="text-sm font-medium text-gray-500">Last Name</p>
+                    <p className="text-gray-900 font-medium">{personalData?.last_name}</p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">First Language</p>
+                  <p className="text-gray-900 font-medium">{personalData?.firstLanguage}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p className="text-gray-900 font-medium">{personalData?.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Phone Number</p>
+                  <p className="text-gray-900 font-medium">{personalData?.phoneNumber}</p>
+                </div>
+              </div>
+            </div>
+  
+            {/* Passport Information Section */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+              <h3 className="text-lg font-semibold text-[#333366] mb-4">Passport Details</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Passport Number</p>
+                  <p className="text-gray-900 font-medium">{personalData?.passport_number}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Country of Citizenship</p>
+                  <p className="text-gray-900 font-medium">{personalData?.citizenshipCountry?.label}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Passport Expiry Date</p>
+                  <p className="text-gray-900 font-medium">
+                    {moment(personalData?.passport_expiry).format("YYYY-MM-DD")}
+                  </p>
+                </div>
+              </div>
+            </div>
+  
+            {/* Address Section */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+              <h3 className="text-lg font-semibold text-[#333366] mb-4">Address Information</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Street Address</p>
+                  <p className="text-gray-900 font-medium">{personalData?.addressLine}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Country</p>
+                    <p className="text-gray-900 font-medium">{personalData?.addressData?.country}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Province/State</p>
+                    <p className="text-gray-900 font-medium">{personalData?.addressData?.state}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">City/Town</p>
+                    <p className="text-gray-900 font-medium">{personalData?.addressData?.city}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Postal/Zip Code</p>
+                    <p className="text-gray-900 font-medium">{personalData?.zipCode}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            {/* Additional Information Section */}
+            <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+              <h3 className="text-lg font-semibold text-[#333366] mb-4">Additional Details</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <div className="w-1/2">
+                    <p className="text-sm font-medium text-gray-500">Marital Status</p>
+                    <p className="text-gray-900 font-medium">{personalData?.marital_status}</p>
+                  </div>
+                  <div className="w-1/2">
+                    <p className="text-sm font-medium text-gray-500">Gender</p>
+                    <p className="text-gray-900 font-medium">{personalData?.gender}</p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Terms and Conditions</p>
+                  <span className={`px-2 py-1 text-sm rounded-full ${
+                    personalData?.terms 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-red-100 text-red-800'
+                  }`}>
+                    {personalData?.terms ? "Agreed" : "Not Agreed"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="border-2 p-8 ">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -488,7 +628,7 @@ const PersonalInfo = () => {
             }}
             errors={errors.zipCode}
           />
-           <Input
+          <Input
             label="Email"
             id="email"
             type="email"

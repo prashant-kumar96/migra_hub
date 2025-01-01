@@ -79,7 +79,7 @@ const Dashboard = () => {
       value: visaData?.citizenshipCountry?.label || "Not Specified",
     },
     {
-      title: "Previously Denied US Visa",
+      title: "Previously Denied Visa",
       value: visaData?.deniedVisaToUs ? "Yes" : "No",
     },
     {
@@ -146,7 +146,7 @@ const Dashboard = () => {
               But our service gets your risk even lower
             </p>
             <Link
-              href="/profilepage"
+              href="/dashboard/profile"
               className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
             >
               Complete Profile

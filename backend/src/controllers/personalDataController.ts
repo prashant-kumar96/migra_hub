@@ -44,7 +44,7 @@ export const getSinglePersonalData = async (req: Request, res: Response) => {
 
     // If no data found, return 200 with empty data
     return res.status(200).json({
-      status: true,
+      status: false,
       message: "No personal data found for this user",
       data: null
     });

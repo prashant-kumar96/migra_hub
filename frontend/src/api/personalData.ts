@@ -12,5 +12,5 @@ export const getPersonalData = async (userId: {}) => {
   const result = await axiosInstance.get(
     `/personalData/getSinglePersonalData?userId=${userId}`
   );
-  return result;
+  return result?.data;
 };
