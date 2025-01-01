@@ -42,7 +42,7 @@ export const uploadPassportImages = async (req: Request, res: Response) => {
 export const uploadProofOfFundsImages = async (req: Request, res: Response) => {
   try {
     const fileUrls = req.files.map((file) => ({
-      url: `http://localhost:5000/uploads/${file.filename}`,
+      url: `${process.env.API_URL}uploads/${file.filename}`,
     }));
 
     // Save passport data with passport images in the database.

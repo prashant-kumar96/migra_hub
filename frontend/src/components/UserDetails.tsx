@@ -2,11 +2,12 @@ import React from "react";
 
 const UserDetails = ({ data }) => {
   const { user, personalData, document } = data;
-
+  
   console.log("UserDetails data", data);
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  
   return (
-    <div>
+    <div className="">
       <section className="p-6 bg-white shadow-md rounded-lg">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           User Information

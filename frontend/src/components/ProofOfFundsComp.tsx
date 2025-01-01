@@ -7,11 +7,14 @@ import {
   getSingleProofOfFundsData,
 } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
+import { useAuth } from "@/context/auth-context";
 
 const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [medata] = useAtom(meDataAtom);
+  const {user} = useAuth();
+  const userId = user?.user?._id
 
   console.log("selectedFiles", selectedFiles);
   // Fetch uploaded files when modal opens
@@ -29,12 +32,12 @@ const UploadModal = ({ isOpen, onClose }) => {
       formData.append("images", file);
     });
 
-    console.log("hello", medata?._id);
+    console.log("hello", userId);
     // return;
-    formData.append("userId", medata?._id);
+    formData.append("userId", userId);
     try {
       const response = await fetch(
-        "http://localhost:5000/api/document/uploadproofOfFundsImages",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/document/uploadproofOfFundsImages`,
         {
           method: "POST",
           body: formData,
@@ -131,11 +134,13 @@ const ProofOfFundsComp = () => {
     isProofOfFundsCompPreviouslyUploaded,
     setProofOfFundsCompPreviouslyUploaded,
   ] = useState(false);
+  const {user} = useAuth()
+  const userId = user?.user?._id
   const [medata] = useAtom(meDataAtom);
   const fetchUploadedProofOfFunds = async () => {
     try {
       console.log("fetchUploadedProofOfFunds");
-      const response = await getSingleProofOfFundsData(medata?._id);
+      const response = await getSingleProofOfFundsData(userId);
       if (response) {
         console.log("response getSingleProofOfFundsData", response);
         // const data = await response.json();
