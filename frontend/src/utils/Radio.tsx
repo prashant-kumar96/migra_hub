@@ -1,26 +1,29 @@
 import React from "react";
-interface props {
+
+interface Props {
   text: string;
   onChange: any;
   name: string;
   checked: boolean;
-  textColor?: string
+  textColor?: string;
+  className?: string; // Optional className prop
 }
-const Radio: React.FC<props> = ({ text, onChange, name, checked,textColor  }) => {
+
+const Radio: React.FC<Props> = ({ text, onChange, name, checked, textColor, className }) => {
   return (
-    <div className="flex items-center">
+    <div className={`flex items-center bg-white p-4 rounded-xl ${className || ""}`}>
       <input
         checked={checked}
         id="default-radio-1"
         type="radio"
         value=""
         name={name}
-        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+        className="shrink-0 w-5 h-5 mt-0.5 border-gray-200 rounded-full text-Indigo focus:ring-Indigo disabled:opacity-50 disabled:pointer-events-none"
         onChange={onChange}
       />
       <label
         htmlFor="default-radio-1"
-        className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-800"
+        className={`text-sm ms-2 font-semibold tracking-wide ${textColor || "text-Indigo"}`}
       >
         {text}
       </label>

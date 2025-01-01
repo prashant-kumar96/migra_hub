@@ -15,7 +15,9 @@ import { visaDataAtom } from "@/store/visaDataAtom";
 import { useAtom } from "jotai";
 import { useAuth } from "@/context/auth-context";
 import Loader from "./loaders/loader";
-
+import { RiErrorWarningLine } from "react-icons/ri";
+import Decreased from "./ui/Text/Decreased";
+import Increased from "./ui/Text/Increased";
 
 interface Props {
   setShouldStartjourneyShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,17 +36,30 @@ const StepsModal: React.FC<Props> = ({
   countryCodes,
   destinationCountry,
 }) => {
-  console.log(':: props',citizenshipCountry,destinationCountry)
+  console.log(':: props', citizenshipCountry, destinationCountry)
   const handleCloseModal = () => {
     setShouldStartjourneyShow(false);
   };
+  useEffect(() => {
+    const disableScroll = () => {
+      document.body.style.overflow = "hidden";
+    };
+    const enableScroll = () => {
+      document.body.style.overflow = "";
+    };
+
+    disableScroll(); // Disable scrolling when modal opens
+    return () => {
+      enableScroll(); // Enable scrolling when modal closes
+    };
+  }, []);
   const router = useRouter();
   const [sharedState, setSharedState] = useAtom(visaDataAtom);
   const [error, showError] = useState("");
   const [redirection, setRedirection] = useState(false)
   console.log("citizenshipCountry@@", citizenshipCountry);
   console.log("destinationCountry@@", destinationCountry);
-  const {user} = useAuth()
+  const { user } = useAuth()
   const [passportCountry, setPassportCountry] =
     useState<string>(citizenshipCountry);
   const [progressBarpercentage, setProgressBarPercentage] = useState(10);
@@ -54,11 +69,11 @@ const StepsModal: React.FC<Props> = ({
     citizenshipCountry == "IN" ? true : false
   );
 
-  const selectedCitizenshipcountry =  countryList()
-  .getData()
-  .find((country) => country.value === citizenshipCountry);
+  const selectedCitizenshipcountry = countryList()
+    .getData()
+    .find((country) => country.value === citizenshipCountry);
 
-  console.log(';; default citizenshipCountry',selectedCitizenshipcountry)
+  console.log(';; default citizenshipCountry', selectedCitizenshipcountry)
 
   const [data, setData] = useState({
     citizenshipCountry,
@@ -71,16 +86,16 @@ const StepsModal: React.FC<Props> = ({
     deniedVisaToUs: false,
   });
 
-  console.log('visa data',data)
+  console.log('visa data', data)
 
   console.log("step", step);
 
   const getCountryNameByCode = (code) => {
     if (!code) return null; // Handle cases where code is not provided
-    
+
     const countries = countryList().getData();
     const country = countries.find(c => c.value === code);
-  
+
     return country ? country.label : null; // Return country name or null if not found
   };
 
@@ -98,12 +113,12 @@ const StepsModal: React.FC<Props> = ({
       }
     }
 
-    
+
     if (step === 4) {
       setSharedState(data);
-      localStorage.setItem('assessmentData',JSON.stringify(data)  )
+      localStorage.setItem('assessmentData', JSON.stringify(data))
       setRedirection(true);
-    
+
       // Add a small delay to allow the loader to render
       setTimeout(() => {
         if (!user) {
@@ -115,7 +130,7 @@ const StepsModal: React.FC<Props> = ({
       setStep((prev) => prev + 1);
     }
   }
-    
+
 
 
   console.log("progressBarpercentage", progressBarpercentage);
@@ -127,12 +142,12 @@ const StepsModal: React.FC<Props> = ({
     }
   };
 
-  const handleSelectPassportCountry = (code ) => {
+  const handleSelectPassportCountry = (code) => {
     // onSelectCitizenShipCountry(code);
     const tempCountry: any = countryList()
       .getData()
       .find((country) => country.value === code);
-    setPassportCountry(tempCountry);  
+    setPassportCountry(tempCountry);
     if (code === "IN") {
       setShowRiskDecreased(true);
     } else {
@@ -140,9 +155,9 @@ const StepsModal: React.FC<Props> = ({
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     handleSelectPassportCountry(citizenshipCountry)
-  },[countryCodes])
+  }, [countryCodes])
 
   const handleYes = (name: string) => {
     setData({
@@ -161,9 +176,9 @@ const StepsModal: React.FC<Props> = ({
   };
 
 
-  const handleSelectFromWhichCountry = (code=citizenshipCountry) => {
-    console.log(';; code',code);
-    console.log(';; citizenshipCountry',citizenshipCountry)
+  const handleSelectFromWhichCountry = (code = citizenshipCountry) => {
+    console.log(';; code', code);
+    console.log(';; citizenshipCountry', citizenshipCountry)
     const tempCountry: any = countryList()
       .getData()
       .find((country) => country.value === code);
@@ -171,11 +186,11 @@ const StepsModal: React.FC<Props> = ({
       ...data,
       whereWillYouApplyForYourVisa: tempCountry.label,
     });
-    console.log(';; temp country',tempCountry)
+    console.log(';; temp country', tempCountry)
   };
-  
 
-  console.log(';; citizenshipCountry',citizenshipCountry)
+
+  console.log(';; citizenshipCountry', citizenshipCountry)
 
   const showFullCountryName = (code: string) => {
     let country: any = countryList()
@@ -184,161 +199,80 @@ const StepsModal: React.FC<Props> = ({
     return country.label;
   };
 
-  
+
 
 
   return (
     <div>
-       <div
+      <div
         id="default-modal"
         tabIndex={-1}
         aria-hidden="true"
-        className="justify-center flex bg-[#80808085] overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+        className="justify-center flex backdrop-blur-md bg-[#8A775C]/40 overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center  w-screen  md:inset-0 h-screen"
       >
-        <div className="relative p-4 w-full max-w-2xl max-h-full">
-        { redirection ? 
+        <div className="relative p-4 w-full max-w-[700px] max-h-[900px]">
+          {redirection ?
 
-            <div className='h-screen flex justify-center '><Loader /></div> 
+            <div className='h-screen flex justify-center '><Loader /></div>
             :
-          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-              <button
-                type="button"
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                data-modal-hide="default-modal"
-                onClick={handleCloseModal}
-              >
-                <svg
-                  className="w-3 h-3"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 14 14"
+            <div className="relative bg-FloralWhite rounded-lg shadow ">
+              <div className="flex justify-between items-center p-4 md:p-5 border-b rounded-t">
+                {/* Left Section: Risk Assessment */}
+                <span className="font-medium tracking-wide whitesapce-nowrap text-[19px] text-Indigo">Risk Assessment</span>
+
+                {/* Right Section: Close Button */}
+                <button
+                  type="button"
+                  className="text-gray-400 bg-transparent hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
+                  data-modal-hide="default-modal"
+                  onClick={handleCloseModal}
                 >
-                  <path
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                  />
-                </svg>
-                <span className="sr-only">Close modal</span>
-              </button>
-            </div>
-            <span className="p-6 font-bold text-4xl mx-auto flex justify-center text-white">Risk Assessment</span>
-
-            <div className="m-4 p-4 md:m-5 md:p-5 space-y-4 bg-white rounded text-gray-900">
-              <ProgressBar progressBarpercentage={progressBarpercentage} />
-              <h2 className="leading-relaxed text-gray-900 dark:text-gray-900 text-4xl text-center py-8">
-                {ModalData[step].question} {' '}
-                {(step === 1 || step === 2) && getCountryNameByCode(citizenshipCountry)}
-              </h2>
-            </div>
-            {step === 0 && (
-              <>
-                <div className="p-4 md:p-5 space-y-4">
-                  <ReactFlagsSelect
-                    selected={passportCountry.value}
-                    onSelect={handleSelectPassportCountry}
-                    className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
-                    countries={countryCodes}
-                    searchable
-                    /*showSelectedLabel={showSelectedLabel}
-                    selectedSize={selectedSize}
-                    showOptionLabel={showOptionLabel}
-                    optionsSize={optionsSize}
-                    placeholder={placeholder}
-                    searchable={searchable}
-                    searchPlaceholder={searchPlaceholder}
-                    alignOptionsToRight={alignOptionsToRight}
-                    fullWidth={fullWidth}
-                    disabled={disabled} */
-                  />
-                </div>
-
-                <div className="bg-gray-600 m-4">
-                  {showRiskDecreased && (
-                    <div className="p-4 md:p-5 space-y-4">
-                      <Checkbox
-                        text="Risk Decreased"
-                        textColor="white"
-                        checked={showRiskDecreased}
-                      />
-                      <p className="text-sm"> {ModalData[step].firstLine}</p>
-                      <p className="text-sm">{ModalData[step].secondLine}</p>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-
-            {step === 1 && (
-              <>
-                <div
-                  className={`m-4 ${
-                    data.areYouApplyingFromPassportCountry
-                      ? "border-2 border-red-400"
-                      : ""
-                  }`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="Yes"
-                      onChange={() =>
-                        handleYes("areYouApplyingFromPassportCountry")
-                      }
-                      name="areYouApplyingFromPassportCountry"
-                      checked={data.areYouApplyingFromPassportCountry}
+                  <svg
+                    className="w-3 h-3 hover:text-Indigo"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M1 1l6 6m0 0l6 6M7 7l6-6M7 7l-6 6"
                     />
-                  </div>
-                  {data.areYouApplyingFromIndia && (
-                    <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                      <Checkbox
-                        text="Risk Decreased"
-                        textColor="white"
-                        checked={data.areYouApplyingFromIndia}
-                      />
-                      <p className="text-sm"> {ModalData[step].firstLine}</p>
+                  </svg>
+                  <span className="sr-only">Close modal</span>
+                </button>
+              </div>
 
-                      <p className="text-sm">{ModalData[step].secondLine}</p>
-                    </div>
-                  )}
-                </div>
 
-                <div
-                  className={`${
-                    !data.areYouApplyingFromPassportCountry
-                      ? "border-2 border-red-400"
-                      : ""
-                  } m-4`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="No"
-                      textColor="white"
-                      onChange={() =>
-                        handleNo("areYouApplyingFromPassportCountry")
-                      }
-                      name="areYouApplyingFromPassportCountry"
-                      checked={!data.areYouApplyingFromPassportCountry}
-                    />
-                  </div>
-                  {!data.areYouApplyingFromPassportCountry && (
-                    <>
-                      <h2 className="leading-relaxed text-gray-900 dark:text-gray-900 text-4xl text-center py-8 bg-white mb-4">
-                        {ModalData[step].questionForNo}
-                      </h2>
-
+              <div className="m-2 p-4 md:m-5 md:p-5 space-y-2 rounded text-gray-900 ">
+                <ProgressBar progressBarpercentage={progressBarpercentage} />
+                <h2 className="leading-relaxed text-center font-medium text-Indigo text-2xl py-6">
+                  {ModalData[step].question} {' '}
+                  {(step === 1 || step === 2) && getCountryNameByCode(citizenshipCountry)} ?
+                </h2>
+                {step === 0 && (
+                  <>
+                    <div className="">
+                      <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
+                        <RiErrorWarningLine className="text-lg" />
+                        <p className="text-xs tracking-wide font-semibold  text-Indigo mt-1 uppercase  ">Multiple passports</p>
+                      </div>
+                      {error && (
+                        <div className="px-6">
+                          {" "}
+                          <p className="text-sm text-red-500">{error}</p>
+                        </div>
+                      )}
                       <ReactFlagsSelect
-                        selected={data.whereWillYouApplyForYourVisa.value}
-                        onSelect={handleSelectFromWhichCountry}
-                        className="w-full px-3 border shadow-md dark:bg-white border-gray-200 rounded-lg text-gray-800"
-                        countries={countryCodes?.filter(
-                          (c) => c !== citizenshipCountry
-                        )}
+                        selected={passportCountry.value}
+                        onSelect={handleSelectPassportCountry}
+                        className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
+                        countries={countryCodes}
                         searchable
-                        /*showSelectedLabel={showSelectedLabel}
+                      /*showSelectedLabel={showSelectedLabel}
                       selectedSize={selectedSize}
                       showOptionLabel={showOptionLabel}
                       optionsSize={optionsSize}
@@ -349,230 +283,316 @@ const StepsModal: React.FC<Props> = ({
                       fullWidth={fullWidth}
                       disabled={disabled} */
                       />
-                      {/* <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                        <Checkbox
-                          text="Risk Increased"
-                          textColor="white"
-                          checked={!data.areYouApplyingFromIndia}
-                        />
-                        <p className="text-sm">
-                          {" "}
-                          {ModalData[step].firstLineForNo}
-                        </p>
-
-                        <p className="text-sm">
-                          {ModalData[step].secondLineForNo}
-                        </p>
-                      </div> */}
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-
-            {step === 2 && (
-              <>
-                <div
-                  className={`${
-                    data.haveSpouseOrProperty ? "border-2 border-red-400" : ""
-                  } m-4`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="Yes"
-                      textColor="white"
-                      onChange={() => handleYes("haveSpouseOrProperty")}
-                      name="haveSpouseOrProperty"
-                      checked={data.haveSpouseOrProperty}
-                    />
-                  </div>
-                  {/* {data.haveSpouseOrProperty && (
-                    <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                      <Checkbox
-                        text="Risk Decreased"
-                        textColor="white"
-                        checked={data.haveSpouseOrProperty}
-                      />
-                      <p className="text-sm"> {ModalData[step].lineForYes}</p>
                     </div>
-                  )} */}
-                </div>
 
-                <div
-                  className={`${
-                    !data.haveSpouseOrProperty ? "border-2 border-red-400" : ""
-                  } m-4`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="No"
-                      textColor="white"
-                      onChange={() => handleNo("haveSpouseOrProperty")}
-                      name="haveSpouseOrProperty"
-                      checked={!data.haveSpouseOrProperty}
-                    />
-                  </div>
-                  {/* {!data.haveSpouseOrProperty && (
-                    <>
-                      <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                        <Checkbox
-                          text="Risk Increased"
+                    <div className="bg-[#F6EFE6]">
+                      {showRiskDecreased && (
+                        <div className="p-4 md:p-5 space-y-4">
+                          {/* <Checkbox
+                            text="Risk Decreased"
+                            textColor="white"
+                            checked={showRiskDecreased}
+                          /> */}
+                          <Decreased />
+                          <p className="text-sm"> {ModalData[step].firstLine}</p>
+                          <p className="text-sm">{ModalData[step].secondLine}</p>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+                {step === 1 && (
+                  <>
+                    <div
+                      className={`${data.areYouApplyingFromPassportCountry
+                        ? "border-2 border-lime-600 rounded-xl"
+                        : ""
+                        } ? `}
+                    >
+                      {/* <span className="">?</span> */}
+                      <div className="ml-1  bg-transparent">
+                        <Radio
+                          text="Yes"
                           textColor="white"
+                          onChange={() =>
+                            handleYes("areYouApplyingFromPassportCountry")
+                          }
+                          name="areYouApplyingFromPassportCountry"
+                          checked={data.areYouApplyingFromPassportCountry}
+                        />
+                      </div>
+                      {data.areYouApplyingFromPassportCountry && (
+                        <div className="p-4 md:p-5 rounded-b-xl bg-[#F6EFE6]">
+                          {/* <Checkbox
+                            text="Risk Decreased"
+                            textColor="white"
+                            checked={data.areYouApplyingFromIndia}
+                          /> */}
+                          <Decreased />
+                          <p className="text-sm text-justify tracking-wide leading-5"> {ModalData[step].firstLine}</p>
+
+                          <p className="text-sm text-justify tracking-wide mt-1 leading-5">{ModalData[step].secondLine}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div
+                      className={`${!data.areYouApplyingFromPassportCountry
+                        ? ""
+                        : ""
+                        } `}
+                    >
+                      <div className=" ml-1 bg-transparent">
+                        <Radio
+                          text="No"
+                          textColor="white"
+                          onChange={() =>
+                            handleNo("areYouApplyingFromPassportCountry")
+                          }
+                          name="areYouApplyingFromPassportCountry"
+                          checked={!data.areYouApplyingFromPassportCountry}
+                        />
+                      </div>
+                      {!data.areYouApplyingFromPassportCountry && (
+                        <div className="bg-[#F6EFE6] rounded-xl p-4 mt-6">
+                          <h2 className="leading-relaxed text-center font-medium text-Indigo text-2xl ">
+                            {ModalData[step].questionForNo} ?
+                          </h2>
+
+                          <ReactFlagsSelect
+                            selected={passportCountry.value}
+                            onSelect={handleSelectPassportCountry}
+                            // className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
+                            countries={countryCodes}
+                            searchable
+                            // selected={data.whereWillYouApplyForYourVisa.value}
+                            // onSelect={handleSelectFromWhichCountry}
+                            className="w-full px-3 mt-6 border shadow-md bg-white   border-gray-200 rounded-lg text-Indigo "
+                            countries={countryCodes?.filter(
+                              (c) => c !== citizenshipCountry
+                            )}
+                            searchable
+
+                          />
+
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+                {step === 2 && (
+                  <>
+                    <div
+                      className={`${data.haveSpouseOrProperty ? "border-2 border-lime-600 rounded-xl" : ""
+                        } `}
+                    >
+                      <div className="ml-1 bg-transparent ">
+                        <Radio
+                          text="Yes"
+                          textColor="white"
+                          onChange={() => handleYes("haveSpouseOrProperty")}
+                          name="haveSpouseOrProperty"
+                          checked={data.haveSpouseOrProperty}
+                        />
+                      </div>
+                      {data.haveSpouseOrProperty && (
+                        <div className="p-4 md:p-5 rounded-b-xl bg-[#F6EFE6]">
+                          {/* <Checkbox
+                            text="Risk Decreased"
+                            textColor="white"
+                            checked={data.haveSpouseOrProperty}
+                          /> */}
+                          <Decreased />
+                          <p className="text-sm tracking-wide leading-5 text-Indigo text-justify"> {ModalData[step].lineForYes}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div
+                      className={`${!data.haveSpouseOrProperty ? "border-2 border-red-500 rounded-xl  rounded-xl" : ""
+                        } `}
+                    >
+                      <div className="ml-1 bg-transparent">
+                        <Radio
+                          text="No"
+                          textColor="white"
+                          onChange={() => handleNo("haveSpouseOrProperty")}
+                          name="haveSpouseOrProperty"
                           checked={!data.haveSpouseOrProperty}
                         />
-
-                        <p className="text-sm">
-                          {ModalData[step].firstlineForNo}
-                        </p>
-                        <p className="text-sm">
-                          {ModalData[step].secondlineForNo}
-                        </p>
                       </div>
-                    </>
-                  )} */}
-                </div>
-              </>
-            )}
-            {step === 3 && (
-              <>
-                <div
-                  className={`${
-                    data.travelledInternationallyAndReturnedHome
-                      ? "border-2 border-red-400"
-                      : ""
-                  } m-4`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="Yes"
-                      textColor="white"
-                      onChange={() =>
-                        handleYes("travelledInternationallyAndReturnedHome")
-                      }
-                      name="travelledInternationallyAndReturnedHome"
-                      checked={data.travelledInternationallyAndReturnedHome}
-                    />
-                  </div>
-                  {/* {data.travelledInternationallyAndReturnedHome && (
-                    <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                      <Checkbox
-                        text="Risk Decreased"
-                        textColor="white"
-                        checked={data.travelledInternationallyAndReturnedHome}
-                      />
-                      <p className="text-sm"> {ModalData[step].lineForYes}</p>
+                      {!data.haveSpouseOrProperty && (
+                        <>
+                          <div className="p-4 md:p-5 rounded-b-xl bg-[#F6EFE6]">
+                            {/* <Checkbox
+                              text="Risk Increased"
+                              textColor="white"
+                              checked={!data.haveSpouseOrProperty}
+                            /> */}
+                            <Increased />
+                            <p className="text-sm tracking-wide leading-5 text-Indigo text-justify">
+                              {ModalData[step].firstlineForNo}
+                            </p>
+                            <p className="text-sm tracking-wide leading-5 text-Indigo text-justify">
+                              {ModalData[step].secondlineForNo}
+                            </p>
+                          </div>
+                        </>
+                      )}
                     </div>
-                  )} */}
-                </div>
+                  </>
+                )}
+                {step === 3 && (
+                  <>
+                    <div
+                      className={`${data.travelledInternationallyAndReturnedHome
+                        ? "border-2 border-lime-600 rounded-xl "
+                        : ""
+                        } `}
+                    >
+                      <div className="ml-1 bg-transparent">
+                        <Radio
+                          text="Yes"
+                          textColor="white"
+                          onChange={() =>
+                            handleYes("travelledInternationallyAndReturnedHome")
+                          }
+                          name="travelledInternationallyAndReturnedHome"
+                          checked={data.travelledInternationallyAndReturnedHome}
+                        />
+                      </div>
+                      {data.travelledInternationallyAndReturnedHome && (
+                        <div className="p-4 md:p-5 space-y-2 rounded-b-xl bg-[#F6EFE6]">
+                          {/* <Checkbox
+                            text="Risk Decreased"
+                            textColor="white"
+                            checked={data.travelledInternationallyAndReturnedHome}
+                          /> */}
+                          <Decreased />
+                          <p className="text-sm text-justify text-Indigo  tracking-wide leading-5"> {ModalData[step].lineForYes}</p>
+                        </div>
+                      )}
+                    </div>
 
-                <div
-                  className={`${
-                    !data.travelledInternationallyAndReturnedHome
-                      ? "border-2 border-red-400"
-                      : ""
-                  } m-4`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="No"
-                      textColor="white"
-                      onChange={() =>
-                        handleNo("travelledInternationallyAndReturnedHome")
-                      }
-                      name="travelledInternationallyAndReturnedHome"
-                      checked={!data.travelledInternationallyAndReturnedHome}
-                    />
-                  </div>
-                  {/* {!data.travelledInternationallyAndReturnedHome && (
-                    <>
-                      <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                        <Checkbox
+                    <div
+                      className={`${!data.travelledInternationallyAndReturnedHome
+                        ? "border-2 border-red-500 rounded-xl "
+                        : ""
+                        } `}
+                    >
+                      <div className="ml-1 bg-transparent">
+                        <Radio
+                          text="No"
+                          textColor="white"
+                          onChange={() =>
+                            handleNo("travelledInternationallyAndReturnedHome")
+                          }
+                          className="rounded-t-xl"
+                          name="travelledInternationallyAndReturnedHome"
+                          checked={!data.travelledInternationallyAndReturnedHome}
+                        />
+                      </div>
+                      {!data.travelledInternationallyAndReturnedHome && (
+                        <>
+                          <div className="p-4 md:p-5 space-y-2 bg-[#F6EFE6] rounded-b-xl text-sm tracking-wide leading-5 text-Indigo text-justify">
+                            {/* <Checkbox
                           text="Risk Increased"
                           textColor="white"
                           checked={
                             !data.travelledInternationallyAndReturnedHome
                           }
-                        />
-
-                        <p className="text-sm">
-                          {ModalData[step].firstlineForNo}
-                        </p>
-                        <p className="text-sm">
-                          {ModalData[step].secondlineForNo}
-                        </p>
-                      </div>
-                    </>
-                  )} */}
-                </div>
-              </>
-            )}
-
-            {step === 4 && (
-              <>
-                <div
-                  className={`${
-                    data.deniedVisaToUs ? "border-2 border-red-400" : ""
-                  } m-4`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="Yes"
-                      textColor="white"
-                      onChange={() => handleYes("deniedVisaToUs")}
-                      name="deniedVisaToUs"
-                      checked={data.deniedVisaToUs}
-                    />
-                  </div>
-                  {/* {data.deniedVisaToUs && (
-                    <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                      <Checkbox
-                        text="Risk Decreased"
-                        textColor="white"
-                        checked={data.deniedVisaToUs}
-                      />
-                      <p className="text-sm">
-                        {" "}
-                        {ModalData[step].firstlineForYes}
-                      </p>
-                      <p className="text-sm">
-                        {ModalData[step].secondlineForYes}
-                      </p>
+                        /> */}
+                            <Increased />
+                            <p className="text-sm text-justify text-Indigo  tracking-wide leading-5">
+                              {ModalData[step].firstlineForNo}
+                            </p>
+                            <p className="text-sm text-justify text-Indigo  tracking-wide leading-5">
+                              {ModalData[step].secondlineForNo}
+                            </p>
+                          </div>
+                        </>
+                      )}
                     </div>
-                  )} */}
-                </div>
+                  </>
+                )}
 
-                <div
-                  className={`${
-                    !data.deniedVisaToUs ? "border-2 border-red-400" : ""
-                  } m-4`}
-                >
-                  <div className="p-2 px-5 space-y-4 border-b-2 py-4 bg-red-100">
-                    <Radio
-                      text="No"
-                      textColor="white"
-                      onChange={() => handleNo("deniedVisaToUs")}
-                      name="deniedVisaToUs"
-                      checked={!data.deniedVisaToUs}
-                    />
-                  </div>
-                  {/* {!data.deniedVisaToUs && (
-                    <>
-                      <div className="p-4 md:p-5 space-y-4 bg-gray-600">
-                        <Checkbox
-                          text="Risk Increased"
+                {step === 4 && (
+                  <>
+                    <div
+                      className={`${data.deniedVisaToUs ? "border-2 border-red-500 rounded-xl " : ""
+                        } `}
+                    >
+                      <div className="ml-1 bg-transparent">
+                        <Radio
+                          text="Yes"
                           textColor="white"
+                          onChange={() => handleYes("deniedVisaToUs")}
+                          name="deniedVisaToUs"
+                          checked={data.deniedVisaToUs}
+                        />
+                      </div>
+                      {data.deniedVisaToUs && (
+                        <>
+                          <div className="p-4 md:p-5 bg-[#F6EFE6] rounded-b-xl">
+                            <Increased />
+
+                            {/* <Checkbox
+                            text="Risk Decreased"
+                            textColor="white"
+                            checked={data.deniedVisaToUs}
+                          /> */}
+                            <p className="text-[14.5px] text-Indigo text-justify tracking-wide leading-5">
+                              {" "}
+                              {ModalData[step].firstlineForYes}
+                            </p>
+                            <p className="text-[14.5px] text-Indigo text-justify tracking-wide leading-5">
+                              {ModalData[step].secondlineForYes}
+                            </p>
+                          </div>
+                        </>
+
+                      )}
+                    </div>
+
+                    <div
+                      className={`${!data.deniedVisaToUs ? "border-2 border-lime-700 rounded-xl " : ""
+                        } `}
+                    >
+                      <div className="ml-1 bg-transparent">
+                        <Radio
+                          text="No"
+                          textColor="white"
+                          onChange={() => handleNo("deniedVisaToUs")}
+                          name="deniedVisaToUs"
                           checked={!data.deniedVisaToUs}
                         />
-
-                        <p className="text-sm">{ModalData[step].lineForNo}</p>
                       </div>
-                    </>
-                  )} */}
-                </div>
-              </>
-            )}
+                      {!data.deniedVisaToUs && (
+                        <>
+                          <div className="p-4 md:p-5 bg-[#F6EFE6] rounded-b-xl">
+                            {/* <Checkbox
+                              text="Risk Increased"
+                              textColor="white"
+                              checked={!data.deniedVisaToUs}
+                            /> */}
+                            <Decreased />
+                            <p className="text-sm text-Indigo text-justify tracking-wide">{ModalData[step].lineForNo}</p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
 
-            {/* {step === 5 && (
+
+
+
+
+
+
+
+              {/* {step === 5 && (
               <div className=" bg-gray-100 flex items-center justify-center  bg-white rounded-lg shadow dark:bg-gray-700 mb-2">
                 <div className="w-full max-w-md bg-white shadow-md rounded-lg p-6">
                   <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
@@ -648,39 +668,39 @@ const StepsModal: React.FC<Props> = ({
               </div>
             )} */}
 
-            <div className="flex p-2 bg-white w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
-              <PiHeadsetFill className="text-xl" />
-              <p className="text-sm">Contact Us</p>
-            </div>
-            {error && (
-              <div className="px-6">
-                {" "}
-                <p className="text-sm text-red-500">{error}</p>
+              <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
+                <PiHeadsetFill className="text-xl" />
+                <p className="text-xs tracking-wide font-semibold uppercase  ">Contact Us</p>
               </div>
-            )}
-            <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-              <button
-                data-modal-hide="default-modal"
-                type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 w-1/2"
-                onClick={handleBackButtonClick}
-              >
-                Back
-              </button>
-              <button
-                data-modal-hide="default-modal"
-                type="button"
-                className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 w-1/2"
-                onClick={handleNextButtonClick}
-              >
-                Next
-              </button>
+              {error && (
+                <div className="px-6">
+                  {" "}
+                  <p className="text-sm text-red-500">{error}</p>
+                </div>
+              )}
+              <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b ">
+                <button
+                  data-modal-hide="default-modal"
+                  type="button"
+                  className="shadow-blue-gray-500/40 bg-transparent  border border-Indigo  font-medium rounded-lg text-base text-Indigo px-5 py-2.5 text-center  w-1/2"
+                  onClick={handleBackButtonClick}
+                >
+                  Back
+                </button>
+                <button
+                  data-modal-hide="default-modal"
+                  type="button"
+                  className="py-2.5 px-5 ms-3 text-base font-medium text-FloralWhite tracking-wide focus:outline-none shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-lg border border-gray-200 focus:z-10 focus:ring-4 focus:ring-gray-100 w-1/2"
+                  onClick={handleNextButtonClick}
+                >
+                  Next
+                </button>
+              </div>
             </div>
-          </div>
-        }
+          }
         </div>
       </div>
-    
+
     </div>
   );
 };
