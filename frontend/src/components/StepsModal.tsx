@@ -18,6 +18,7 @@ import Loader from "./loaders/loader";
 import { RiErrorWarningLine } from "react-icons/ri";
 import Decreased from "./ui/Text/Decreased";
 import Increased from "./ui/Text/Increased";
+import { createVisaData } from "@/api/visaData";
 
 interface Props {
   setShouldStartjourneyShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,6 +34,7 @@ const StepsModal: React.FC<Props> = ({
   setShouldStartjourneyShow,
   setCitizenshipCountry,
   onSelectCitizenShipCountry,
+  onModalClose,
   countryCodes,
   destinationCountry,
 }) => {
@@ -53,15 +55,20 @@ const StepsModal: React.FC<Props> = ({
       enableScroll(); // Enable scrolling when modal closes
     };
   }, []);
+  
   const router = useRouter();
   const [sharedState, setSharedState] = useAtom(visaDataAtom);
   const [error, showError] = useState("");
-  const [redirection, setRedirection] = useState(false)
+  const [redirection, setRedirection] = useState(false);
   console.log("citizenshipCountry@@", citizenshipCountry);
   console.log("destinationCountry@@", destinationCountry);
-  const { user } = useAuth()
+  const { user } = useAuth();
+  console.log(';; user', user);
+
+  const userId = user?.user?._id
   const [passportCountry, setPassportCountry] =
     useState<string>(citizenshipCountry);
+
   const [progressBarpercentage, setProgressBarPercentage] = useState(10);
 
   const [step, setStep] = useState(0);
@@ -86,7 +93,32 @@ const StepsModal: React.FC<Props> = ({
     deniedVisaToUs: false,
   });
 
-  console.log('visa data', data)
+  const saveVisaData = async (data: any) => {
+    // Add userId to the data object
+    const visaDataWithUserId = { ...data, userId };
+  
+    try {
+      const response = await createVisaData(visaDataWithUserId);
+  
+      if (response.status === 200) {
+        console.log("Data saved successfully");
+        setRedirection(true);
+      } else {
+        console.error("Error saving data:", response.data?.message || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error saving data:", error.message || error);
+    } finally {
+
+      // Ensure modal closes after the API call, whether it succeeds or fails
+      handleCloseModal();
+      // onModalClose()
+    }
+  };
+  
+
+
+  console.log('visa data', data);
 
   console.log("step", step);
 
@@ -118,6 +150,7 @@ const StepsModal: React.FC<Props> = ({
       setSharedState(data);
       localStorage.setItem('assessmentData', JSON.stringify(data))
       setRedirection(true);
+      userId && saveVisaData(data)
 
       // Add a small delay to allow the loader to render
       setTimeout(() => {
@@ -266,23 +299,25 @@ const StepsModal: React.FC<Props> = ({
                           <p className="text-sm text-red-500">{error}</p>
                         </div>
                       )}
+
                       <ReactFlagsSelect
                         selected={passportCountry.value}
                         onSelect={handleSelectPassportCountry}
                         className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
                         countries={countryCodes}
                         searchable
-                      /*showSelectedLabel={showSelectedLabel}
-                      selectedSize={selectedSize}
-                      showOptionLabel={showOptionLabel}
-                      optionsSize={optionsSize}
-                      placeholder={placeholder}
-                      searchable={searchable}
-                      searchPlaceholder={searchPlaceholder}
-                      alignOptionsToRight={alignOptionsToRight}
-                      fullWidth={fullWidth}
-                      disabled={disabled} */
+                        /*showSelectedLabel={showSelectedLabel}
+                        selectedSize={selectedSize}
+                        showOptionLabel={showOptionLabel}
+                        optionsSize={optionsSize}
+                        placeholder={placeholder}
+                        searchable={searchable}
+                        searchPlaceholder={searchPlaceholder}
+                        alignOptionsToRight={alignOptionsToRight}
+                        fullWidth={fullWidth}
+                        disabled={disabled} */
                       />
+
                     </div>
 
                     <div className="bg-[#F6EFE6]">

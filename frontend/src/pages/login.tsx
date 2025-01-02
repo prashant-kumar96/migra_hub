@@ -2,7 +2,7 @@ import { googleLogin, loginUser, registerUser } from "@/api/auth";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import BeforeLoginLayout from "@/components/BeforeLoginLayout";
 import FaceBookLoginButton from "@/components/FacebookLoginButton";
-import GoogleLoginButton from "@/components/loginButton";
+// import GoogleLoginButton from "@/components/loginButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -16,330 +16,375 @@ import { visaDataAtom } from "@/store/visaDataAtom";
 import ButtonLoader from "@/components/loaders/buttonLoader";
 import Loader from "@/components/loaders/loader";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { FaGoogle } from "react-icons/fa";
 
 
+const GoogleLoginButton = ({ onSignIn, onSignOut, session, disabled }) => {
+  const handleClick = async () => {
+    if (session) {
+      await onSignOut();
+    } else {
+      await onSignIn();
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={disabled}
+      className={`flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 rounded-md shadow-sm
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}
+    >
+      <FaGoogle className="text-2xl" />
+      <span className="text-gray-700 text-center font-medium">
+        {session ? 'Sign Out' : 'Sign in with Google'}
+      </span>
+    </button>
+  );
+};
 
 const LoginPage = () => {
   const router = useRouter();
   const [sharedState] = useAtom(visaDataAtom);
-  const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    email: "",
-    password: "",
-  });
   const { data: session, status } = useSession();
-  const [showIndexPage, setShowIndexPage] = useState(false);
-  const [stepsData, setStepsData] = useState<any>();
-  const [isPasswordTypePassword, setIsPasswordTypePassword] = useState(true);
-  const [isGoogleLoginComplete, setIsGoogleLoginComplete] = useState(false); // New flag
+
+  // Form States
   const [isSignUpShowing, setIsSignUpFormShowing] = useState(true);
-  const [googleLoginState, setGoogleLoginState] = useState({
-    loading: false,
-    completed: false,
-    attempted: false
+  const [isPasswordTypePassword, setIsPasswordTypePassword] = useState(true);
+  const [showIndexPage, setShowIndexPage] = useState(false);
+
+  // Auth States
+  const [authState, setAuthState] = useState({
+    isLoading: false,
+    isProcessing: false,
+    error: null,
+    completed: false
   });
 
-  useEffect(() => {
-    // Only proceed if we have an authenticated session and haven't attempted login yet
-    if (status === "authenticated" && 
-        !googleLoginState.attempted && 
-        !googleLoginState.completed) {
-      handleGoogleLogin();
-    }
-  }, [status]); // Only depend on session status
-
-  const handleGoogleLogin = async () => {
-    if (!session) return;
-  
-    setGoogleLoginState(prev => ({
-      ...prev,
-      loading: true,
-      attempted: true
-    }));
-  
-    try {
-      const assessmentData = JSON.parse(localStorage.getItem("assessmentData") || "null");
-      
-      const response = await googleLogin({
-        accessToken: session?.accessToken,
-        email: session?.user?.email,
-        name: session?.user?.name,
-        googleId: session?.user?.googleId,
-        riskAssessmentData: assessmentData,
-      });
-  
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        
-        // Wait for router navigation to complete before updating state
-        await router.push("/dashboard");
-        
-        setGoogleLoginState(prev => ({
-          ...prev,
-          loading: false,
-          completed: true
-        }));
-      }
-    } catch (err) {
-      console.error("Error during backend google login:", err);
-      setGoogleLoginState(prev => ({
-        ...prev,
-        loading: false,
-        completed: false
-      }));
-    }
-  };
- 
+  const [googleAuthStatus, setGoogleAuthStatus] = useState({
+    attempted: false,
+    completed: false,
+    processing: false,
+    error: null
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm({});
+  } = useForm();
 
-  const onSubmit = async (data: any) => {
-    setLoading(true);
-    console.log("Submitted Data:", data);
-  
-    const newData = { ...data, role: "USER", data: sharedState };
-    console.log("Shared State:", sharedState);
-    console.log("New Data:", newData);
-  
-    try {
-      if (isSignUpShowing) {
-        // Handle user registration
-        const result = await registerUser(newData);
-        console.log("Registration Result:", result);
-  
-        if (result?.status === 200) {
-          localStorage.setItem("token", result?.data?.token);
-          setLoading(false);
-          router.push("/dashboard");
-        } else {
-          console.log("Registration Error Result:", result);
-          setLoading(false);
-        }
-      } else {
-        // Handle user login
-        console.log("Login Data:", data);
-        const result = await loginUser(data);
-        console.log("Login Result:", result);
-  
-        if (result?.status === 200) {
-          localStorage.setItem("token", result?.data?.token);
-          const userRole = result?.data?.user?.role;
-          console.log("User Role:", userRole);
-  
-          // Redirect based on role
-          switch (userRole) {
-            case "SA": // Admin
-              await router.push("/adminDashboard");
-              break;
-            case "CASE_MANAGER": // Case Manager
-              await router.push("/caseManagerDashboard");
-              break;
-            case "USER": // Regular User
-            default: // Default role fallback
-              await router.push("/dashboard");
-              break;
-          }
-  
-          setLoading(false);
-        } else {
-          console.log("Login Error Result:", result);
-          setLoading(false);
-        }
+  useEffect(() => {
+    // Handle Google Auth
+    if (status === "authenticated" && 
+        session?.user?.email &&
+        !googleAuthStatus.attempted && 
+        !googleAuthStatus.completed && 
+        !googleAuthStatus.processing) {
+      handleGoogleLogin();
+    }
+  }, [status, session, googleAuthStatus]);
+
+
+// Similarly for Google login
+const handleGoogleLogin = async () => {
+  if (googleAuthStatus.processing || googleAuthStatus.completed) {
+    return;
+  }
+
+  if (!session?.user?.email) {
+    console.error("No valid session found");
+    return;
+  }
+
+  try {
+    setGoogleAuthStatus(prev => ({
+      ...prev,
+      processing: true,
+      attempted: true,
+      error: null
+    }));
+
+    setAuthState(prev => ({
+      ...prev,
+      isLoading: true,
+      error: null
+    }));
+
+    const assessmentData = JSON.parse(localStorage.getItem("assessmentData") || "null");
+    
+    const response = await googleLogin({
+      accessToken: session?.accessToken,
+      email: session?.user?.email,
+      name: session?.user?.name,
+      googleId: session?.user?.googleId,
+      riskAssessmentData: assessmentData,
+    });
+
+    if (response?.status === 200 && response?.data?.token) {
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.removeItem('assessmentData');
+
+      // Don't set states to false/completed before redirect
+      await router.push("/dashboard");
+    } else {
+      throw new Error("Invalid response from server");
+    }
+  } catch (err) {
+    console.error("Google login error:", err);
+    
+    setGoogleAuthStatus(prev => ({
+      ...prev,
+      processing: false,
+      error: err.message || "Login failed"
+    }));
+
+    setAuthState(prev => ({
+      ...prev,
+      isLoading: false,
+      error: err.message || "Login failed"
+    }));
+  }
+};
+
+const onSubmit = async (data) => {
+  setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+
+  try {
+    if (isSignUpShowing) {
+      const newData = { ...data, role: "USER", data: sharedState };
+      const result = await registerUser(newData);
+
+      if (result?.status === 200) {
+        localStorage.setItem("token", result?.data?.token);
+        // Don't set isLoading to false before redirect
+        await router.push("/dashboard");
       }
-    } catch (err) {
-      setLoading(false);
-      console.log("Error Status:", err);
-  
-      if (err.status === 400) {
-        setError("password", {
-          type: "manual",
-          message: err?.response?.data?.message,
-        });
-  
-        if (err?.response?.data?.extraInfo === "Info Incomplete") {
-          setShowIndexPage(true);
+    } else {
+      const result = await loginUser(data);
+
+      if (result?.status === 200) {
+        localStorage.setItem("token", result?.data?.token);
+        
+        // Don't set isLoading to false before redirect
+        switch (result?.data?.user?.role) {
+          case "SA":
+            await router.push("/adminDashboard");
+            break;
+          case "CASE_MANAGER":
+            await router.push("/caseManagerDashboard");
+            break;
+          default:
+            await router.push("/dashboard");
         }
       }
     }
-  };
-  
-  const handleEyeClick = () => {
-    setIsPasswordTypePassword(!isPasswordTypePassword);
-  };
+  } catch (err) {
+    console.error("Auth error:", err);
+    
+    if (err.status === 400) {
+      setError("password", {
+        type: "manual",
+        message: err?.response?.data?.message,
+      });
 
-  const handleLoginFormShow = () => {
-    setIsSignUpFormShowing((prev) => !prev);
-  };
+      if (err?.response?.data?.extraInfo === "Info Incomplete") {
+        setShowIndexPage(true);
+      }
+    }
 
-  useEffect(() => {
-    setStepsData(router?.query ? router?.query : "");
-  }, [router]);
+    setAuthState(prev => ({
+      ...prev,
+      isLoading: false,
+      error: err?.response?.data?.message || "Authentication failed"
+    }));
+  }
+  // Remove the finally block since we want to keep loading state during redirect
+};
 
- 
+  const handleEyeClick = () => setIsPasswordTypePassword(!isPasswordTypePassword);
+  const handleLoginFormShow = () => setIsSignUpFormShowing(prev => !prev);
 
-  // Show loader only during active Google login process
-  if (googleLoginState.loading) {
+  // Loading State
+  if (authState.isLoading || googleAuthStatus.processing) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader  text='Loading'/>
+      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
+        <div className="text-center">
+          <Loader text="Please wait..." />
+          <p className="mt-4 text-gray-600">Processing your request...</p>
+        </div>
       </div>
     );
   }
 
-
-   return (
-    <div className="flex items-center justify-center  mb-2">
-      {/* {googleLoading ? (
-          <div className="flex items-center justify-center">
-            <Loader />
+  // Error State
+  if (authState.error || googleAuthStatus.error) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
+        <div className="text-center p-6 bg-white rounded-lg shadow-lg">
+          <div className="text-red-600 mb-4">
+            {authState.error || googleAuthStatus.error}
           </div>
-        ) :( */}
-         <div className="bg-white shadow-md rounded-lg pt-10 my-10">
-          <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
-            Sign Up With
+          <button 
+            onClick={() => {
+              setAuthState(prev => ({ ...prev, error: null }));
+              setGoogleAuthStatus(prev => ({
+                attempted: false,
+                completed: false,
+                processing: false,
+                error: null
+              }));
+            }}
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 py-12">
+      <div className="bg-white shadow-xl rounded-lg w-full max-w-md">
+        <div className="px-8 pt-10">
+          <h1 className="text-2xl font-bold text-center text-gray-800 mb-8">
+            {isSignUpShowing ? "Create an Account" : "Welcome Back"}
           </h1>
 
-          <div className="flex gap-5  px-8 my-8 justify-around">
-          <GoogleLoginButton 
-            onSignIn={() => signIn("google")}
-            onSignOut={() => signOut()}
-            session={session}
-          />
+          <div className="mb-8">
+            <GoogleLoginButton 
+              onSignIn={() => signIn("google")}
+              onSignOut={() => signOut()}
+              session={session}
+              disabled={authState.isLoading || googleAuthStatus.processing}
+            />
           </div>
 
-          <hr />
-          <div className="p-6 py-8 ">
-            <h1 className="text-2xl font-bold mb-4 text-center text-gray-600">
-              {isSignUpShowing ? "Or Sign Up With your email" : "Login Form"}
-            </h1>
+          <div className="relative mb-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-              {isSignUpShowing && (
-                <div className="mb-4 relative">
-                  <IoPersonSharp className="absolute left-4 top-3 text-gray-400" />
-                  <input
-                    type="text"
-                    {...register("name", {
-                      required: "Name is required",
-                      minLength: {
-                        value: 2,
-                        message: "Name must be atleast 2 characters ",
-                      },
-                      maxLength: {
-                        value: 20,
-                        message: "Name must be atmost 20 characters ",
-                      },
-                    })}
-                    // onChange={handleChange}
-
-                    className="w-full px-3 py-2 border shadow-md border border-gray-200 pl-10 text-gray-800"
-                    placeholder="Name"
-                  />
-                  <p className="text-red-500 text-xs font-bold mt-1">
-                    {errors?.name?.message}
-                  </p>
-                </div>
-              )}
-
-              <div className="mb-4 relative">
-                <MdEmail className="absolute left-4 top-3 text-gray-400" />
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {isSignUpShowing && (
+              <div className="relative">
+                <IoPersonSharp className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  type="email"
-                  {...register("email", {
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                      message: "Please enter email in the correct format",
-                    },
-                  })}
-                  className="w-full px-3 py-2 border shadow-md border border-gray-200 pl-10 text-gray-800"
-                  placeholder="Email"
-                />
-                <p className="text-red-500 text-xs font-bold mt-1">
-                  {errors?.email?.message}
-                </p>
-              </div>
-
-              <div className="mb-4 relative">
-                <FaLock className="absolute left-4 top-3 text-gray-400" />
-                <input
-                  type={isPasswordTypePassword ? "password" : "text"}
-                  {...register("password", {
-                    required: "password is required",
-                    // pattern: {
-                    //   value:
-                    //     /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-                    //   message:
-                    //     "Please must contain at least 8 characters, one lowercase, One uppercase, One number",
-                    // },
+                  type="text"
+                  {...register("name", {
+                    required: "Name is required",
                     minLength: {
-                      value: 6,
-                      message: "Password must be atleast 6 characters ",
+                      value: 2,
+                      message: "Name must be at least 2 characters",
                     },
                     maxLength: {
                       value: 20,
-                      message: "Password must be atmost 20 characters ",
+                      message: "Name must be at most 20 characters",
                     },
                   })}
-                  className="w-full px-3 py-2 border shadow-md border border-gray-200 pl-10 text-gray-800"
-                  placeholder="Password"
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Full Name"
                 />
-                <FaEye
-                  className="absolute right-4 top-3 text-gray-400 cursor-pointer"
-                  onClick={handleEyeClick}
-                />
-                <p className="text-red-500 text-xs font-bold mt-1">
-                  {errors?.password?.message}
-                </p>
+                {errors?.name && (
+                  <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>
+                )}
               </div>
+            )}
 
-              {showIndexPage && (
-                <div className="my-2">
-                  <Link
-                    href="/"
-                    type="submit"
-                    className="w-full bg-yellow-600 text-white py-2 rounded-md px-4 text-sm"
-                  >
-                    Go to steps page
-                  </Link>
-                </div>
+            <div className="relative">
+              <MdEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Email address"
+              />
+              {errors?.email && (
+                <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
               )}
+            </div>
 
+            <div className="relative">
+              <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type={isPasswordTypePassword ? "password" : "text"}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+                className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Password"
+              />
               <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white py-2 rounded-md flex gap-2 justify-center items-center"
+                type="button"
+                onClick={handleEyeClick}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                {isSignUpShowing ? "Sign Up" : "Login"}
+                <FaEye />
               </button>
-              <div className="text-gray-900 mt-10">
-                <p className="text-sm">* Minimum Password Requirement</p>
-                <p className="text-sm">
-                  {" "}
-                  At least 8 characters. One lowercase letter, One uppercase
-                  letter, One number
-                </p>
-              </div>
-            </form>
-            <p
+              {errors?.password && (
+                <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
+              )}
+            </div>
+
+            {showIndexPage && (
+              <Link
+                href="/"
+                className="block w-full text-center bg-yellow-600 text-white py-2 rounded-md hover:bg-yellow-700 transition-colors"
+              >
+                Complete Assessment First
+              </Link>
+            )}
+
+            <button
+              type="submit"
+              disabled={authState.isLoading}
+              className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            >
+              {isSignUpShowing ? "Sign Up" : "Sign In"}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
               onClick={handleLoginFormShow}
-              className="cursor-pointer text-blue-600"
+              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
             >
               {isSignUpShowing
-                ? "Already Registered! Login"
-                : "New User! Register Here"}
-            </p>
+                ? "Already have an account? Sign in"
+                : "Need an account? Sign up"}
+            </button>
+          </div>
+
+          <div className="mt-8 pb-8 text-xs text-gray-500">
+            <p className="font-medium">Password Requirements:</p>
+            <ul className="mt-2 list-disc list-inside">
+              <li>Minimum 6 characters</li>
+              <li>At least one uppercase letter</li>
+              <li>At least one lowercase letter</li>
+              <li>At least one number</li>
+            </ul>
           </div>
         </div>
-      
+      </div>
     </div>
   );
 };
+
 export default BeforeLoginLayout(LoginPage);

@@ -72,6 +72,11 @@ const TravelPlan = () => {
     const citizenshipCountryCodes = citizenshipCountries.map(c => c.value);
     const destinationCountryCodes = destinationCountries.map(c => c.value);
 
+    const handleModalClose = () => {
+        // setShouldStartJourneyShow(false); // Close the modal
+        window.location.reload(); // Reload the page
+      };
+
     console.log(':: countries', countryList()
         .getData())
     console.log(':: citizenshipCountries', citizenshipCountries)
@@ -288,6 +293,7 @@ const TravelPlan = () => {
                     onSelectCitizenShipCountry={onSelectCitizenShipCountry}
                     countryCodes={citizenshipOptions}
                     destinationCountry={destinationCountry}
+                    onModalClose={handleModalClose} // Pass the close and reload handler
                 />
             )}
         </section>

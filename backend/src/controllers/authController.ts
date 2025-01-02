@@ -6,7 +6,8 @@ import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
 import ObjectId from "mongoose";
 import axios from 'axios';
-
+import ApplicationStatus from "../models/applicationStatus.js";
+import { v4 as uuidv4 } from "uuid";
 
 
 async function login(req: any, res: any) {
@@ -39,127 +40,162 @@ async function register(req: any, res: any) {
   // return;
   const { email, password, name, role, data } = req.body;
   if (!data) {
-    res.status(400).json({
+      res.status(400).json({
       message:
-        "Please fill all the steps from the index page before registering",
+          "Please fill all the steps from the index page before registering",
       extraInfo: "Info Incomplete",
-    });
+      });
   } else {
-    console.log("/register is run");
-    try {
+      console.log("/register is run");
+      try {
       const existingUser = await User.findOne({ email: email });
       if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+          return res.status(400).json({ message: "User already exists" });
       }
       const visadata = new VisaData(data);
       const resultVisadata = await visadata.save();
       console.log("resultVisaData", resultVisadata);
-
+ 
       const hashedPassword = await bcrypt.hash(password, 10);
+      const applicationId = uuidv4();
+ 
+      const applicationStatus = new ApplicationStatus({ userId: null });
+       const resultApplicationStatus = await applicationStatus.save();
+ 
       const user = new User({
-        email,
-        password: hashedPassword,
-        role,
-        name,
-        visaDataId: resultVisadata._id,
+          email,
+          password: hashedPassword,
+          role,
+          name,
+          visaDataId: resultVisadata._id,
+          applicationId: role === "USER" ? applicationId : undefined, // Generate only for "USER"
+          isPrimaryApplicant: role === "USER" ? true : false,
+          applicationStatusId: resultApplicationStatus._id,
+         
       });
-      const result = await user.save();
-      console.log(result, "result");
-
+ 
+ 
+        const result = await user.save();
+          console.log(result, "result");
+        // update user id in application status table
+          await ApplicationStatus.updateOne({ _id: resultApplicationStatus._id}, { userId: result._id })
+ 
+ 
+ 
       const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1d" });
       res.status(200).json({
-        token,
-        user: {
+          token,
+          user: {
           email: user.email,
           id: user._id,
           message: "User registered successfully",
           role: user.role,
-        },
+          },
       });
-    } catch (error) {
+      } catch (error) {
       console.log("Error", error);
       res.status(500).json({ message: "Internal server error", error });
-    }
-  }
-}
-
-
-// google login
-async function googleLogin(req: any, res: any) {
-  try {
-    const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
-    console.log("risk assessment::", riskAssessmentData);
-
-    if (!accessToken || !email || !name || !googleId) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    // Verify the Google access token
-    const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
-    try {
-      const googleRes = await axios.get(googleApiUrl);
-      if (googleRes.data.email !== email) {
-        return res.status(401).json({ message: "Invalid Google token" });
       }
-    } catch (err) {
-      console.log(err, "google error");
-      return res.status(401).json({ message: "Invalid Google token" });
-    }
+  }
+  }
 
-    let user = await User.findOne({ email: email });
+  async function googleLogin(req: any, res: any) {
+    try {
+        const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
 
-    console.log("google user", user);
-    let visaDataId = null; // Initialize visaDataId
-
-    if (riskAssessmentData) {
-      // If riskAssessmentData exists, check if visaDataId already exists
-        if(user && user.visaDataId) {
-            visaDataId = user.visaDataId
-        } else {
-           const visaData = new VisaData(riskAssessmentData);
-            const resultVisadata = await visaData.save();
-            visaDataId = resultVisadata._id;
-            console.log("resultVisaData", resultVisadata);
+        if (!accessToken || !email || !name || !googleId) {
+            return res.status(400).json({ message: "Missing required fields" });
         }
 
+        // Verify Google token
+        const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
+        try {
+            const googleRes = await axios.get(googleApiUrl);
+            if (googleRes.data.email !== email) {
+                return res.status(401).json({ message: "Invalid Google token" });
+            }
+        } catch (err) {
+            console.log(err, "google error");
+            return res.status(401).json({ message: "Invalid Google token" });
+        }
+
+         let user = await User.findOne({ email });
+
+        // Handle visa data
+        let visaDataId = null;
+        let applicationStatusId = null;
+
+        if (riskAssessmentData) {
+             if(user && user.visaDataId) {
+                visaDataId = user.visaDataId;
+
+            } else {
+                 const visaData = new VisaData(riskAssessmentData);
+                const resultVisadata = await visaData.save();
+                visaDataId = resultVisadata._id;
+            }
+        }
+         if (!user) {
+           // User doesn't exist, create a new user
+            const newUser = new User({
+                email: email,
+                name: name,
+                googleId: googleId,
+                 ...(visaDataId && { visaDataId }), // Link to VisaData if exists
+                 isPrimaryApplicant: true,
+             });
+                user = await newUser.save();
+        } else {
+              user.name = name;
+              user.googleId = googleId
+              user.isPrimaryApplicant = true;
+              if(visaDataId){
+                user.visaDataId = visaDataId
+              }
+              await user.save();
+        }
+
+
+        if(riskAssessmentData){
+             if(user && user.applicationStatusId){
+              applicationStatusId = user.applicationStatusId;
+             }
+             else {
+                const applicationId = uuidv4();
+                const applicationStatus = new ApplicationStatus({ userId: user._id });
+                const resultApplicationStatus = await applicationStatus.save();
+
+                // Update the user object with application id
+                 user.applicationId = applicationId;
+                user.applicationStatusId = resultApplicationStatus._id;
+                 await user.save();
+           }
+        }
+
+
+
+
+        // Generate JWT
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET as string,
+            { expiresIn: "1d" }
+        );
+
+        res.status(200).json({
+            token,
+            user: {
+                username: user.name,
+                id: user._id,
+                role: user.role,
+            },
+        });
+
+    } catch (error) {
+        console.log("Error during Google login", error);
+        res.status(500).json({ message: "Internal server error" });
     }
-
-
-    if (!user) {
-      // User doesn't exist, create a new user
-      const newUser = new User({
-        email: email,
-        name: name,
-        googleId: googleId,
-        visaDataId: visaDataId || null, // Link to VisaData if exists
-      });
-      user = await newUser.save();
-    }
-     // if user exists then associate only if visaDataId does not exist
-    else if (riskAssessmentData && !user.visaDataId) {
-            user.visaDataId = visaDataId;
-           await user.save();
-      }
-
-
-    // Generate JWT for your application
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-      expiresIn: "1d",
-    });
-    res.status(200).json({
-      token,
-      user: {
-        username: user.name,
-        id: user._id,
-        role: user.role, // Assuming you might store roles
-      },
-    });
-  } catch (error) {
-    console.log("Error during Google login", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
+}
   
 const isValidObjectId = (id: any) => {
   return mongoose.Types.ObjectId.isValid(id);

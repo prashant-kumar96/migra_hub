@@ -2,6 +2,11 @@ import VisaData from "../models/visadata.js";
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 
+// Import uuid
+import { v4 as uuidv4 } from "uuid";
+import User from "../models/User.js";
+import ApplicationStatus from "../models/applicationStatus.js";
+ 
 
 export const getSingleVisaData = async (req: Request, res: Response) => { 
   try {
@@ -44,19 +49,71 @@ export const getSingleVisaData = async (req: Request, res: Response) => {
 };
 
 
+ 
 
-export const addVisaData = async (req: Request, res: Response) => {
+export const addVisaData = async (req: any, res: any) => {
   try {
-    const visaData = new VisaData(req.body);
-    const resultVisaData = await visaData.save();
-    console.log("resultVisaData", resultVisaData);
-    res.status(201).json({
-      message: "Visa data created successfully",
-      visaDataId: resultVisaData._id,
-    });
+      const { userId } = req.body;
+      const visaData = new VisaData(req.body);
+      const resultVisaData = await visaData.save();
+      console.log("resultVisaData", resultVisaData);
+
+      // Generate ApplicationId only when visa data is created
+      const applicationId = uuidv4();
+
+      // Find the user from the user id
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+      // if user application id already exists, do not create again
+      if (user.applicationId) {
+          return res.status(400).json({ message: "Application id already exists" });
+      }
+
+
+      let applicationStatus = null;
+      // if application status already exists find the record
+      if(user.applicationStatusId){
+         applicationStatus = await ApplicationStatus.findById(user.applicationStatusId)
+      } else {
+          applicationStatus = new ApplicationStatus({ userId: null });
+      }
+
+
+      const resultApplicationStatus = await applicationStatus.save();
+
+
+      // Update the user object with application id
+      user.applicationId = applicationId;
+      user.visaDataId = resultVisaData._id;
+      user.isPrimaryApplicant = true;
+       if(!user.applicationStatusId){
+          user.applicationStatusId = resultApplicationStatus._id
+       }
+
+      await user.save();
+
+      // Update the application status to completed
+     await ApplicationStatus.updateOne(
+         {_id: user.applicationStatusId},
+         {$set: { riskAssessment: "completed" }}
+     )
+
+     if(!user.applicationStatusId){
+         // update user id in application status table only if its a new document creation
+           await ApplicationStatus.updateOne({ _id: resultApplicationStatus._id}, { userId: user._id })
+       }
+
+
+      res.status(201).json({
+          message: "Visa data created successfully",
+          visaDataId: resultVisaData._id,
+          applicationId: applicationId,
+      });
   } catch (error) {
-    console.error("Error creating visa data:", error);
-    res.status(500).json({ message: "Failed to create visa data", error });
+      console.error("Error creating visa data:", error);
+      res.status(500).json({ message: "Failed to create visa data", error });
   }
 };
 
