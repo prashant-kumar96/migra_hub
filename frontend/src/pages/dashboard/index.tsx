@@ -13,60 +13,37 @@ import { useAuth } from "@/context/auth-context";
 import TravelPlan from "@/components/TravelPlan";
 import { visaDataAtom } from "@/store/visaDataAtom";
 
-
 const Dashboard = () => {
- 
   const [visaData, setVisaData] = useState("");
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [sharedState, setSharedState] = useAtom(visaDataAtom);
-
-  const [selectedValue, setSelectedValue] = useState(""); // State for selected breadcrumb value
   const [loading, setLoading] = useState<boolean>(true);
-  console.log('loading',loading);
   const { user, isLoading } = useAuth();
-
-  console.log(';; user',user);
- 
-  console.log('visa data',sharedState);
 
   const fetchData = async () => { 
     try {
       setLoading(true); 
        
-      if (!user) {  
-        setLoading(false); // Clear loading state
-        return; // Stop data fetching
+      if (!user?.user?.visaDataId) {  
+        setLoading(false);
+        return;
       }
 
-      console.log(';; fetching data')
-      const resultVisaData = await getSingleVisaData(user?.user?.visaDataId);
-      console.log(';; resultVisaData',resultVisaData)
-      setVisaData(resultVisaData?.data);
-      console.log('set data',user);
-     }catch(err) {
-         console.error("Error during data fetching", err)
+      const resultVisaData = await getSingleVisaData(user.user.visaDataId);
+      if (resultVisaData?.data) {
+        setVisaData(resultVisaData.data);
+      }
+    } catch(err) {
+      console.error("Error during data fetching", err);
     } finally {
-       setLoading(false) // Clear loading state
-     }
-    };
-
-    console.log('set shared data',sharedMedata)
-
-   useEffect(() => {
-    fetchData();
-  }, []); // Only runs on initial render
-
-
-  console.log('loading',loading)
-
-  const splitCamelCaseToTitleCase = (str) => {
-    return str
-      .replace(/([a-z])([A-Z])/g, "$1 $2")
-      .replace(/([A-Z])([A-Z][a-z])/g, "$1 $2")
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(" ");
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [user]); // Add user as dependency to refetch when user changes
+
 
 
   const visaAssessmentDetails = [
@@ -103,22 +80,34 @@ const Dashboard = () => {
       value: visaData?.whereWillYouApplyForYourVisa?.label || "Not Specified",
     },
   ];
-
-  const handleBreadcrumbClick = (value) => {
-    setSelectedValue(value); // Update the state with the clicked breadcrumb's value
+  // Helper function to check if visa data exists and is valid
+  const hasValidVisaData = () => {
+    return visaData && Object.keys(visaData).length > 0;
   };
 
+  // Helper function to check if user has visaDataId
+  const hasVisaDataId = () => {
+    return Boolean(user?.user?.visaDataId);
+  };
+
+  if (loading || isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader  text='Loading..'/>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      {(visaData || user?.visaDataId) ? (
+      {hasValidVisaData() ? (
         <>
           <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 className="text-2xl font-bold text-Indigo mb-6 text-center">
               Risk Assessment Details
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
-              {visaAssessmentDetails.map((detail, index) => (
+              {visaAssessmentDetails?.map((detail, index) => (
                 <div 
                   key={index} 
                   className="bg-gray-50 p-4 rounded-md border border-gray-200"

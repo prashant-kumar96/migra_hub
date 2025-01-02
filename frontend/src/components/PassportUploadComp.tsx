@@ -146,7 +146,7 @@ const PassportUploadComp = () => {
       console.log("fetchUploadedPassport");
       const response = await getSinglePassportData(userId);
       if (response) {
-        console.log("response fetchUploadedPassport", response);
+        console.log(";; response fetchUploadedPassport", response);
         // const data = await response.json();
         if (response.status === 200) {
           setPassportPreviouslyUploaded(true);

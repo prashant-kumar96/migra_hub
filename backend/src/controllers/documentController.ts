@@ -31,11 +31,11 @@ export const uploadPassportImages = async (req: Request, res: Response) => {
     if (result) {
       res
         .status(200)
-        .json({ message: "Files uploaded successfully", files: fileUrls });
+        .json({status:true, message: "Files uploaded successfully", files: fileUrls });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Upload failed" });
+    res.status(500).json({status:true, message: "Upload failed" });
   }
 };
 
@@ -63,11 +63,11 @@ export const uploadProofOfFundsImages = async (req: Request, res: Response) => {
     if (result) {
       res
         .status(200)
-        .json({ message: "Files uploaded successfully", files: fileUrls });
+        .json({status:true, message: "Files uploaded successfully", files: fileUrls });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Upload failed" });
+    res.status(500).json({status:true, message: "Upload failed" });
   }
 };
 export const uploadProofOfTiesImages = async (req: Request, res: Response) => {
@@ -99,7 +99,7 @@ export const uploadProofOfTiesImages = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Upload failed" });
+    res.status(500).json({status:true, message: "Upload failed" });
   }
 };
 
@@ -135,7 +135,7 @@ export const uploadAdditionalDocuments = async (
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Upload failed" });
+    res.status(500).json({status:true, message: "Upload failed" });
   }
 };
 
@@ -149,13 +149,13 @@ export const getSinglePassportData = async (req: Request, res: Response) => {
     if (result?.passportImages.length > 0) {
       res
         .status(200)
-        .json({ message: "Passport Data fetched successfully", result });
+        .json({status:true, message: "Passport Data fetched successfully", result });
     } else {
-      res.status(404).json({ message: "Passport Data Does Not Exist", result });
+      res.status(404).json({status:true, message: "Passport Data Does Not Exist", result });
     }
   } catch (err) {
     console.log("ERROr=.>", err);
-    res.status(400).json({ message: err });
+    res.status(400).json({status:false, message: err });
   }
 };
 
@@ -170,10 +170,10 @@ export const getSingleProofOfFundsData = async (
     if (result?.proofOfFundsImages?.length > 0)
       res
         .status(200)
-        .json({ message: "Proof Of Funds Data fetched successfully", result });
+        .json({status:true, message: "Proof Of Funds Data fetched successfully", result });
   } catch (err) {
     console.log("ERROr=.>", err);
-    res.status(400).json({ message: err });
+    res.status(400).json({status:false, message: err });
   }
 };
 
@@ -185,12 +185,13 @@ export const getSingleProofOfTiesData = async (req: Request, res: Response) => {
     // console.log("find getSinglePassportData result", result);
     if (result?.proofOfTiesImages?.length > 0)
       res.status(200).json({
+        status:true,
         message: "Proof Of Ties to country Data fetched successfully",
         result,
       });
   } catch (err) {
     console.log("ERROr=.>", err);
-    res.status(400).json({ message: err });
+    res.status(400).json({status:false, message: err });
   }
 };
 
@@ -202,6 +203,7 @@ export const getAdditionalDocuments = async (req: Request, res: Response) => {
     // console.log("find getSinglePassportData result", result);
     if (result?.additionalDocuments?.length > 0) {
       res.status(200).json({
+        status:true,
         message: "Additional Documents Data fetched successfully",
         result,
       });
@@ -213,6 +215,6 @@ export const getAdditionalDocuments = async (req: Request, res: Response) => {
     }
   } catch (err) {
     console.log("ERROr=.>", err);
-    res.status(400).json({ message: err });
+    res.status(400).json({status:false, message: err });
   }
 };

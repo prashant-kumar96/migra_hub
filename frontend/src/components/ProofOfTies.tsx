@@ -10,6 +10,8 @@ const UploadModal = ({ isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [medata] = useAtom(meDataAtom);
+    const {user} = useAuth()
+    const userId = user?.user?._id
 
   console.log("selectedFiles", selectedFiles);
   // Fetch uploaded files when modal opens
@@ -27,12 +29,12 @@ const UploadModal = ({ isOpen, onClose }) => {
       formData.append("images", file);
     });
 
-    console.log("hello", medata?._id);
+    console.log("hello", userId);
     // return;
-    formData.append("userId", medata?._id);
+    formData.append("userId", userId);
     try {
       const response = await fetch(
-        "http://localhost:5000/api/document/uploadProofOfTiesImages",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/document/uploadProofOfTiesImages`,
         {
           method: "POST",
           body: formData,

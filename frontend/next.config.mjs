@@ -8,6 +8,10 @@ const nextConfig = {
     // temporarily bypassing type checking for a quick build.
     ignoreBuildErrors: true,
   },
+  images: {
+    domains: [],
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;
