@@ -1,6 +1,6 @@
 const ModalData = [
   {
-    question: "Where is your passport from?",
+    question: "Where is your passport from",
   },
   {
     question: "Are you applying from",
@@ -28,7 +28,7 @@ const ModalData = [
   },
   {
     question:
-      "In the past have you travelled internationally and returned home",
+      "In the past have you travelled internationally and returned home ",
     lineForYes:
       "Past international travel is one of the factors most often reviewed by consular officers. Returning home afterwards shows you're likely to do so after this trip too",
     firstlineForNo:
@@ -38,7 +38,7 @@ const ModalData = [
   },
   {
     question:
-      "Have you been denied a travel visa to the United States in the last 90 days",
+      "Have you been denied a travel visa in the last 90 days ",
     firstlineForYes:
       "You can still get approved, and we'll help you find ways to strengthen your case!",
     secondlineForYes:
