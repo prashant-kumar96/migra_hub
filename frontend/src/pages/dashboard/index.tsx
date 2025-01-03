@@ -234,102 +234,102 @@ const Dashboard = () => {
 
                       </div>
                       {familyMembers.length > 0 ? (
-  <div className="overflow-x-auto">
-    <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm">
-      <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <tr>
-          <th className="px-4 py-3 text-left text-sm font-medium">Name</th>
-          <th className="px-4 py-3 text-left text-sm font-medium">Email</th>
-          <th className="px-4 py-3 text-left text-sm font-medium">Risk</th>
-          <th className="px-4 py-3 text-left text-sm font-medium">Profile</th>
-          <th className="px-4 py-3 text-left text-sm font-medium">Payment</th>
-          <th className="px-4 py-3 text-left text-sm font-medium">Document</th>
-          <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
-        </tr>
-      </thead>
-            <tbody className="divide-y divide-gray-200 text-gray-800">
-                {familyMembers.map((member) => (
-                <tr key={member._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-800">{member.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{member.email}</td>
-                    <td className="px-4 py-3 text-sm font-semibold">
-                    <span
-                        className={`${
-                        member?.applicationStatus?.riskAssessment === "completed"
-                            ? "text-green-600"
-                            : "text-yellow-500"
-                        }`}
-                    >
-                        {member?.applicationStatus?.riskAssessment || "N/A"}
-                    </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm font-semibold">
-                    <span
-                        className={`${
-                        member?.applicationStatus?.profileCompletion === "completed"
-                            ? "text-green-600"
-                            : "text-yellow-500"
-                        }`}
-                    >
-                        {member?.applicationStatus?.profileCompletion || "N/A"}
-                    </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm font-semibold">
-                    <span
-                        className={`${
-                        member?.applicationStatus?.payment === "completed"
-                            ? "text-green-600"
-                            : "text-yellow-500"
-                        }`}
-                    >
-                        {member?.applicationStatus?.payment || "N/A"}
-                    </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm font-semibold">
-                    <span
-                        className={`${
-                        member?.applicationStatus?.documentUpload === "completed"
-                            ? "text-green-600"
-                            : "text-yellow-500"
-                        }`}
-                    >
-                        {member?.applicationStatus?.documentUpload || "N/A"}
-                    </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                    <Link
-                        href={`/dashboard/profile?userId=${member._id}`}
-                        className="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
-                    >
-                        View / Edit
-                        <svg
-                        className="w-4 h-4 ml-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                        />
-                        </svg>
-                    </Link>
-                    </td>
-                </tr>
-                ))}
-            </tbody>
-            </table>
-        </div>
-        ) : (
-        <p className="text-gray-600 text-center italic">No family members added yet.</p>
-        )}
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm">
+                            <thead className="bg-gradient-to-r  text-gray-600">
+                                <tr>
+                                <th className="px-4 py-3 text-left text-sm font-medium">Name</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">Email</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">Risk Assessment</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">Profile</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">Payment</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">Documents</th>
+                                <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                                    <tbody className="divide-y divide-gray-200 text-gray-800">
+                                        {familyMembers.map((member) => (
+                                        <tr key={member._id} className="hover:bg-gray-50">
+                                            <td className="px-4 py-3 text-sm font-semibold text-gray-800">{member.name}</td>
+                                            <td className="px-4 py-3 text-sm text-gray-600">{member.email}</td>
+                                            <td className="px-4 py-3 text-sm font-semibold">
+                                            <span
+                                                className={`${
+                                                member?.applicationStatus?.riskAssessment === "completed"
+                                                    ? "text-green-600"
+                                                    : "text-yellow-500"
+                                                }`}
+                                            >
+                                                {member?.applicationStatus?.riskAssessment || "N/A"}
+                                            </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-sm font-semibold">
+                                            <span
+                                                className={`${
+                                                member?.applicationStatus?.profileCompletion === "completed"
+                                                    ? "text-green-600"
+                                                    : "text-yellow-500"
+                                                }`}
+                                            >
+                                                {member?.applicationStatus?.profileCompletion || "N/A"}
+                                            </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-sm font-semibold">
+                                            <span
+                                                className={`${
+                                                member?.applicationStatus?.payment === "completed"
+                                                    ? "text-green-600"
+                                                    : "text-yellow-500"
+                                                }`}
+                                            >
+                                                {member?.applicationStatus?.payment || "N/A"}
+                                            </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-sm font-semibold">
+                                            <span
+                                                className={`${
+                                                member?.applicationStatus?.documentUpload === "completed"
+                                                    ? "text-green-600"
+                                                    : "text-yellow-500"
+                                                }`}
+                                            >
+                                                {member?.applicationStatus?.documentUpload || "N/A"}
+                                            </span>
+                                            </td>
+                                            <td className="px-4 py-3 text-sm">
+                                            <Link
+                                                href={`/dashboard/family-member/${member._id}?visaDataId=${member?.visaData?._id}&name=${member?.name}&email=${member?.email}`}
+                                                className="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+                                            >
+                                                View / Edit
+                                                <svg
+                                                className="w-4 h-4 ml-2"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                                >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M9 5l7 7-7 7"
+                                                />
+                                                </svg>
+                                            </Link>
+                                            </td>
+                                        </tr>
+                                        ))}
+                                    </tbody>
+                                    </table>
+                                </div>
+                                ) : (
+                                <p className="text-gray-600 text-center italic">No family members added yet.</p>
+                                )}
 
-                  </div>
-              </TabPanel>
+                        </div>
+                    </TabPanel>
 
-          </Tabs>
+            </Tabs>
           <AddFamilyMemberModal isOpen={isModalOpen} onClose={closeModal} onSubmit={handleAddFamilyMember}/>
       </div>
   );

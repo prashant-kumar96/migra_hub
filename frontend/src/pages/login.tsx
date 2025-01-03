@@ -17,6 +17,7 @@ import ButtonLoader from "@/components/loaders/buttonLoader";
 import Loader from "@/components/loaders/loader";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { FaGoogle } from "react-icons/fa";
+import { useAuth } from "@/context/auth-context";
 
 
 const GoogleLoginButton = ({ onSignIn, onSignOut, session, disabled }) => {
@@ -47,6 +48,7 @@ const LoginPage = () => {
   const router = useRouter();
   const [sharedState] = useAtom(visaDataAtom);
   const { data: session, status } = useSession();
+  const { logout } = useAuth(); // Get the logout function from auth-context
 
   // Form States
   const [isSignUpShowing, setIsSignUpFormShowing] = useState(true);
@@ -133,6 +135,7 @@ const handleGoogleLogin = async () => {
       throw new Error("Invalid response from server");
     }
   } catch (err) {
+    
     console.error("Google login error:", err);
     
     setGoogleAuthStatus(prev => ({
@@ -146,6 +149,9 @@ const handleGoogleLogin = async () => {
       isLoading: false,
       error: err.message || "Login failed"
     }));
+
+     // Call logout on error
+     logout(); 
   }
 };
 

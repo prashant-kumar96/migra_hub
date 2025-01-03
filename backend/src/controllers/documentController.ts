@@ -177,6 +177,51 @@ export const getSingleProofOfFundsData = async (
   }
 };
 
+
+export const getUploadedDocuments = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    console.log('Fetching documents...');
+    const userId = req?.query?.userId;
+
+    if (!userId) {
+      return res.status(400).json({
+        status: false,
+        message: "User ID is required to fetch documents.",
+      });
+    }
+
+    const result = await UserDocument.findOne({ userId: userId });
+
+    console.log('Found documents:', result);
+
+    if (result?.documents?.length > 0) {
+      return res.status(200).json({
+        status: true,
+        message: "Documents fetched successfully.",
+        result,
+      });
+    }
+
+    // No documents found case
+    return res.status(200).json({
+      status: false,
+      message: "No documents found for the provided user ID.",
+    });
+  } catch (err) {
+    console.error("Error fetching documents:", err);
+    return res.status(500).json({
+      status: false,
+      message: "An error occurred while fetching documents.",
+      error: err.message,
+    });
+  }
+};
+
+
+
 export const getSingleProofOfTiesData = async (req: Request, res: Response) => {
   try {
     // console.log("getSingleProofOfTiesData is run");

@@ -9,12 +9,11 @@ import {
 import CrossIcon from "@/utils/crossIcon";
 import { useAuth } from "@/context/auth-context";
 
-const UploadModal = ({ isOpen, onClose }) => {
+const UploadModal = ({ userId, isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [medata] = useAtom(meDataAtom);
-    const {user} = useAuth()
-    const userId = user?.user?._id
+ 
 
   console.log("selectedFiles", selectedFiles);
   // Fetch uploaded files when modal opens
@@ -128,10 +127,9 @@ const UploadModal = ({ isOpen, onClose }) => {
   );
 };
 
-const AdditionalDocuments = () => {
+const AdditionalDocuments = ({userId}) => {
   const [isModalOpen, setModalOpen] = useState(false);
-    const {user} = useAuth()
-    const userId = user?.user?._id
+ 
   const [
     areAdditionalDocumentsPreviouslyUploaded,
     setAreAdditionalDocumentsPreviouslyUploaded,
@@ -190,7 +188,7 @@ const AdditionalDocuments = () => {
           Upload Additional Documents
         </button>
       )}
-      <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <UploadModal userId={userId} isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 };

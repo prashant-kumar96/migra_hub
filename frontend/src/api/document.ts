@@ -8,6 +8,14 @@ export const getSinglePassportData = async (userId: {}) => {
   return result;
 };
 
+export const getUploadedDocumentsData = async (userId: {}) => {
+  console.log(';; user id passed', userId)
+  const result = await axiosInstance.get(
+    `/document/uploadedDocuments?userId=${userId}`
+  );
+  return result;
+};
+
 export const getSingleProofOfFundsData = async (userId: {}) => {
   const result = await axiosInstance.get(
     `/document/getSingleProofOfFundsData?userId=${userId}`

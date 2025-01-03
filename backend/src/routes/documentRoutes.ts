@@ -9,6 +9,7 @@ import {
   getSingleProofOfTiesData,
   uploadAdditionalDocuments,
   uploadPassportImages,
+  getUploadedDocuments,
   uploadProofOfFundsImages,
   uploadProofOfTiesImages,
 } from "../controllers/documentController.js";
@@ -87,6 +88,11 @@ router.get(
   "/getSingleProofOfFundsData",
   verifyToken,
   getSingleProofOfFundsData
+);
+
+router.get(
+  "/uploadedDocuments",
+  getUploadedDocuments
 );
 
 router.get("/getSingleProofOfTiesData", verifyToken, getSingleProofOfTiesData);

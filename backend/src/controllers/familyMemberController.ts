@@ -5,11 +5,14 @@ import VisaData from "../models/visadata.js";
 import { v4 as uuidv4 } from "uuid";
 
 
-export async function addFamilyMember(req: any, res: any) {
+
+
+export 
+async function addFamilyMember(req: any, res: any) {
     try {
-        const { name, email, relationship, ...data } = req.body;
-        const primaryApplicantId = req.user.id; // Assuming you're using middleware to auth
-          console.log("add family member::", req.body, req.user)
+        const { name, email, relationship, data } = req.body;
+        const primaryApplicantId = req.user.id;
+        console.log("add family member::", req.body, req.user)
         // Check if the primary applicant exists
         const primaryApplicant = await User.findById(primaryApplicantId);
         if (!primaryApplicant) {
@@ -19,7 +22,7 @@ export async function addFamilyMember(req: any, res: any) {
         if(!primaryApplicant.applicationId){
             return res.status(400).json({ message: "Primary application id is missing" });
         }
-        if (!data) {
+         if (!data) {
             res.status(400).json({
                 message:
                     "Please fill all the steps from the index page before adding family member",
@@ -29,14 +32,15 @@ export async function addFamilyMember(req: any, res: any) {
         }
 
 
-        const existingUser = await User.findOne({ email: email });
+         const existingUser = await User.findOne({ email: email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
 
 
-        const visadata = new VisaData(data);
-        const resultVisadata = await visadata.save();
+       const visadata = new VisaData(data);
+      const resultVisadata = await visadata.save();
+
 
         const applicationId = uuidv4();
          const applicationStatus = new ApplicationStatus({ userId: null, applicationId: applicationId });
@@ -60,13 +64,19 @@ export async function addFamilyMember(req: any, res: any) {
        await ApplicationStatus.updateOne({ _id: resultApplicationStatus._id}, { userId: savedFamilyMember._id })
 
 
+      // Update the application status to completed
+    await ApplicationStatus.updateOne(
+          {_id: resultApplicationStatus._id},
+          {$set: { riskAssessment: "completed" }}
+       );
+
+
         res.status(201).json({ message: "Family member added successfully", familyMember: savedFamilyMember });
     } catch (error) {
         console.error("Error adding family member:", error);
         res.status(500).json({ message: "Internal server error", error: error });
     }
 }
-
          // In your user or family member controller
       export async function getFamilyMemberApplicationDetails(req: any, res: any) {
         

@@ -31,7 +31,7 @@ const options = [
   { code: "hi", label: "Hindi" },
   { code: "zh", label: "Chinese" },
 ];
-const PersonalInfo = () => {
+const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
   const {
     register,
     handleSubmit,
@@ -51,9 +51,8 @@ const PersonalInfo = () => {
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
   console.log(";; personal visa data", user);
-  const userEmail = user?.user?.email;
-  const userName = user?.user?.name;
-  const userId = user?.user?._id;
+  
+  // const userId = user?.user?._id;
 
   useEffect(() => {
     // Early return if no user data is available
@@ -63,7 +62,7 @@ const PersonalInfo = () => {
 
     const fetchVisaData = async () => {
       try {
-        const visaDataResult = await getSingleVisaData(user?.user?.visaDataId);
+        const visaDataResult = await getSingleVisaData(visaDataId);
 
         if (visaDataResult?.data) {
           setRiskAssessmentData(visaDataResult.data);
@@ -74,7 +73,7 @@ const PersonalInfo = () => {
     };
 
     fetchVisaData();
-  }, [user?.user?.visaDataId]);
+  }, [user?.user?.visaDataId]); 
 
   console.log(";; risk assessment data", riskAssessmentData);
 
@@ -235,7 +234,7 @@ const PersonalInfo = () => {
       const newdata = {
         ...data,
         firstLanguage,
-        citizenshipCountry: citizenshipCountry.value,
+        citizenshipCountry: citizenshipCountry,
         addressData,
         userId: userId,
       };
@@ -281,7 +280,7 @@ const PersonalInfo = () => {
 
 
   const getPersonalInfofunction = async () => {
-    const result = await getPersonalData(user?.user?._id);
+    const result = await getPersonalData(userId);
     console.log(";; getPersonalData", result);
     if (result?.status) {
       //show the info without form format if the status is true
