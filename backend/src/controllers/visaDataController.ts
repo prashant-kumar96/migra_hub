@@ -53,6 +53,7 @@ export const getSingleVisaData = async (req: Request, res: Response) => {
 
 export const addVisaData = async (req: any, res: any) => {
   try {
+    console.log('visa data', req.body)
       const { userId } = req.body;
       const visaData = new VisaData(req.body);
       const resultVisaData = await visaData.save();

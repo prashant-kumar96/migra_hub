@@ -16,6 +16,7 @@ import AddFamilyMemberModal from "@/components/modal/add-family-member-modal";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { toast } from "react-toastify";
+import { getLinkedFamilyMembers } from "@/api/familyMember";
 
 interface FamilyMember {
   _id: string;
@@ -40,8 +41,7 @@ const Dashboard = () => {
   const { user, isLoading } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState<string| null>(null);
-
-
+  const userId = user?.user?._id
   const openModal = () => {
       setIsModalOpen(true);
   };
@@ -70,32 +70,24 @@ const Dashboard = () => {
       }
   };
 
+
   const fetchFamilyMembers = async () => {
-      try {
-          setLoading(true);
-          if (!user?.user?.id) {
-              setLoading(false);
-              return;
-          }
-          const response = await axios.get(
-              `${process.env.NEXT_PUBLIC_API_URL}/dashboard`,
-              {
-                  headers: {
-                      Authorization: `Bearer ${user.token}`,
-                  },
-              }
-          );
-          console.log("family members response", response.data)
+    if (!userId) {
+        console.error("User ID is not defined");
+        return;
+    }
 
-          if(response.data){
-              setFamilyMembers(response?.data?.familyMembers);
-          }
+    try {
+        setLoading(true);
+        const response = await getLinkedFamilyMembers(userId);
+        setFamilyMembers(response?.data?.familyMembers || []); // Set empty array if undefined
+    } catch (err) {
+        console.error("Error during family members fetching", err);
+    } finally {
+        setLoading(false);
+    }
+};
 
-
-      } catch(err) {
-          console.error("Error during family members fetching", err);
-      }
-  };
 
 
   useEffect(() => {
@@ -242,64 +234,98 @@ const Dashboard = () => {
 
                       </div>
                       {familyMembers.length > 0 ? (
-                          <ul className="space-y-4">
-                              {familyMembers.map((member) => (
-                                  <li key={member._id} className="bg-gray-50 p-4 rounded-md border border-gray-200">
-                                      <div className="flex justify-between items-center">
-                                          <div>
-                                              <h3 className="text-lg font-semibold text-Indigo mb-1">{member.name}</h3>
-                                              <p className='text-sm text-gray-600'>Email: {member.email}</p>
-                                          </div>
-                                          <div className='flex items-center gap-4'>
-                                              {member?.applicationStatusId && (
-                                                  <>
-                                                      <div className='flex items-center gap-1'>
-                                                          <p className='text-sm'>Risk : </p>
-                                                          <p className={`text-sm  ${member.applicationStatusId?.riskAssessment === 'completed' ? 'text-green-500' : 'text-yellow-500' } font-semibold`}>{member.applicationStatusId?.riskAssessment}</p>
-                                                      </div>
-                                                      <div className='flex items-center gap-1'>
-                                                          <p className='text-sm'>Profile :</p>
-                                                          <p className={`text-sm ${member.applicationStatusId?.profileCompletion === 'completed' ? 'text-green-500' : 'text-yellow-500' } font-semibold`}>{member.applicationStatusId?.profileCompletion}</p>
-                                                      </div>
-                                                      <div className='flex items-center gap-1'>
-                                                          <p className='text-sm'>Payment :</p>
-                                                          <p className={`text-sm ${member.applicationStatusId?.payment === 'completed' ? 'text-green-500' : 'text-yellow-500' } font-semibold`}>{member.applicationStatusId?.payment}</p>
-                                                      </div>
-                                                      <div className='flex items-center gap-1'>
-                                                          <p className='text-sm'>Document : </p>
-                                                          <p className={`text-sm ${member.applicationStatusId?.documentUpload === 'completed' ? 'text-green-500' : 'text-yellow-500' } font-semibold`}>{member.applicationStatusId?.documentUpload}</p>
-                                                      </div>
-                                                  </>
-                                              )}
-                                               <Link
-                                                  href={`/dashboard/profile?userId=${member._id}`}
-                                                  className="inline-flex items-center tracking-widest px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
-                                              >
-                                                  View / Edit
-                                                  <svg
-                                                      className="w-4 h-4 ml-2"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      viewBox="0 0 24 24"
-                                                  >
-                                                      <path
-                                                          strokeLinecap="round"
-                                                          strokeLinejoin="round"
-                                                          strokeWidth={2}
-                                                          d="M9 5l7 7-7 7"
-                                                      />
-                                                  </svg>
-                                              </Link>
-                                          </div>
-                                      </div>
-                                  </li>
-                              ))}
-                          </ul>
-                      ) : (
-                          <p className="text-gray-600 text-center italic">
-                              No family members added yet.
-                          </p>
-                      )}
+  <div className="overflow-x-auto">
+    <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm">
+      <thead className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <tr>
+          <th className="px-4 py-3 text-left text-sm font-medium">Name</th>
+          <th className="px-4 py-3 text-left text-sm font-medium">Email</th>
+          <th className="px-4 py-3 text-left text-sm font-medium">Risk</th>
+          <th className="px-4 py-3 text-left text-sm font-medium">Profile</th>
+          <th className="px-4 py-3 text-left text-sm font-medium">Payment</th>
+          <th className="px-4 py-3 text-left text-sm font-medium">Document</th>
+          <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
+        </tr>
+      </thead>
+            <tbody className="divide-y divide-gray-200 text-gray-800">
+                {familyMembers.map((member) => (
+                <tr key={member._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm font-semibold text-gray-800">{member.name}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{member.email}</td>
+                    <td className="px-4 py-3 text-sm font-semibold">
+                    <span
+                        className={`${
+                        member?.applicationStatus?.riskAssessment === "completed"
+                            ? "text-green-600"
+                            : "text-yellow-500"
+                        }`}
+                    >
+                        {member?.applicationStatus?.riskAssessment || "N/A"}
+                    </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm font-semibold">
+                    <span
+                        className={`${
+                        member?.applicationStatus?.profileCompletion === "completed"
+                            ? "text-green-600"
+                            : "text-yellow-500"
+                        }`}
+                    >
+                        {member?.applicationStatus?.profileCompletion || "N/A"}
+                    </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm font-semibold">
+                    <span
+                        className={`${
+                        member?.applicationStatus?.payment === "completed"
+                            ? "text-green-600"
+                            : "text-yellow-500"
+                        }`}
+                    >
+                        {member?.applicationStatus?.payment || "N/A"}
+                    </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm font-semibold">
+                    <span
+                        className={`${
+                        member?.applicationStatus?.documentUpload === "completed"
+                            ? "text-green-600"
+                            : "text-yellow-500"
+                        }`}
+                    >
+                        {member?.applicationStatus?.documentUpload || "N/A"}
+                    </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                    <Link
+                        href={`/dashboard/profile?userId=${member._id}`}
+                        className="inline-flex items-center px-3 py-1 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+                    >
+                        View / Edit
+                        <svg
+                        className="w-4 h-4 ml-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                        />
+                        </svg>
+                    </Link>
+                    </td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
+        ) : (
+        <p className="text-gray-600 text-center italic">No family members added yet.</p>
+        )}
+
                   </div>
               </TabPanel>
 

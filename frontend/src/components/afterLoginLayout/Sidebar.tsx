@@ -13,6 +13,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { useAuth } from "@/context/auth-context";
 
 const sidebarData = [
   {
@@ -80,6 +81,7 @@ const sidebarData = [
 
 const Sidebar = () => {
   const [role, setRole] = useState(null);
+  const { logout } = useAuth();
   const [menuItems, setMenuItems] = useState([]);
   const [token, setToken] = useState("");
   const { data: session } = useSession();
@@ -99,23 +101,20 @@ const Sidebar = () => {
       console.error("Error fetching user data:", error);
     }
   };
+  
+ 
 
   const handleSignout = async () => {
     try {
-      // Remove token from local storage
-      localStorage.removeItem("token");
-      setToken("");
-  
-      // Sign out and clear session if it exists
+      // Use the context's logout function which handles everything
+      logout();
+      
+      // Handle next-auth session if it exists
       if (session) {
-        await signOut({ redirect: false }); // Ensure session is cleared without automatic redirect
+        await signOut({ redirect: false });
       }
-  
-      // Redirect to login page
-      await router.push("/login");
     } catch (error) {
       console.error("Error during signout:", error);
-      // Optionally handle signout errors (e.g., show a notification)
     }
   };
   

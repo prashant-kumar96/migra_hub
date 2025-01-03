@@ -54,13 +54,47 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
 
 
    
-    const handleFormSubmit = async (data:FormData) => {
+    const handleFormSubmit = async (formData: FormData) => {
         setIsSubmitting(true);
         try {
-            const response = await addFamilyMember(data);
-            console.log("data::", response)
-            await onSubmit(data);
-             reset()
+           const {
+              name,
+                email,
+                relationship,
+                areYouApplyingFromPassportCountry,
+                 citizenshipCountry,
+                deniedVisaToUs,
+                destinationCountry,
+                haveSpouseOrProperty,
+                passportCountry,
+               travelledInternationallyAndReturnedHome,
+               whereWillYouApplyForYourVisa,
+            } = formData;
+
+
+              const data = {
+                  name,
+                  email,
+                  relationship,
+                  data: {
+                     areYouApplyingFromPassportCountry,
+                     citizenshipCountry,
+                     deniedVisaToUs,
+                     destinationCountry,
+                       haveSpouseOrProperty,
+                    passportCountry,
+                       travelledInternationallyAndReturnedHome,
+                      whereWillYouApplyForYourVisa,
+                   }
+                }
+           const response = await addFamilyMember(data);
+            if (response){
+            reset()
+            onClose()
+            
+            }
+           console.log("data::", response)
+
         } catch(err){
             console.log("family member submission error:", err)
         } finally {
@@ -116,7 +150,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                 <h2 className="text-2xl font-bold mb-6 text-center text-Indigo">
                     Add Family Member
                 </h2>
-                <form onSubmit={handleSubmit(handleFormSubmit)}>
+                <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit(handleFormSubmit)}>
                     {/* Name Input */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
