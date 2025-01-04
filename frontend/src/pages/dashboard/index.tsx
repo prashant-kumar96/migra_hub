@@ -18,6 +18,31 @@ import "react-tabs/style/react-tabs.css";
 import { toast } from "react-toastify";
 import { getLinkedFamilyMembers } from "@/api/familyMember";
 
+
+
+
+interface FamilyMember {
+    _id: string;
+    name:string;
+    email: string;
+    visaDataId: {};
+    applicationStatusId: {
+      riskAssessment: string;
+      profileCompletion: string;
+      payment: string;
+      documentUpload: string;
+    };
+    applicationStatus?: {
+      riskAssessment: string;
+      profileCompletion: string;
+      payment: string;
+      documentUpload: string;
+    };
+    visaData?:{
+      _id:string
+    }
+  }
+  
 const Dashboard = () => {
     const [visaData, setVisaData] = useState(""); // restore visaData local state
     const [primaryApplicant, setPrimaryApplicant] = useState<any>(null);
