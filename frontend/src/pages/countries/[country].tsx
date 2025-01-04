@@ -10,21 +10,29 @@ import Footer from "@/components/Footer";
 import { countriesData } from "@/utils/CountriesData";
 import VisaItinerary from "@/components/countries/visaItinerary";
 import FAQ from "@/components/countries/faq"
-export async function getStaticPaths() {
-  const paths = countriesData.map((country) => ({
-    params: { country: country.name.toLowerCase() },
-  }));
-  return { paths, fallback: false };
-}
 
-export async function getStaticProps({ params }) {
-  const countryData = countriesData.find(
-    (country) => country.name.toLowerCase() === params.country
-  );
 
-  return { props: { countryData } };
-}
 
+// export async function getStaticPaths() {
+//   const paths = countriesData.map((country) => ({
+//     params: { country: country.name.toLowerCase() },
+//   }));
+//   return { paths, fallback: false };
+// }
+
+// export async function getStaticProps({ params }) {
+//   const countryData = countriesData.find(
+//     (country) => country.name.toLowerCase().replace(/\s+/g, '-') === params.country
+//   );
+
+//   if (!countryData) {
+//     return {
+//       notFound: true, // Returns 404 page
+//     };
+//   }
+
+//   return { props: { countryData } };
+// }
 const CountryPage = ({ countryData }) => {
   if (!countryData) return <p>Country data not found</p>;
 
