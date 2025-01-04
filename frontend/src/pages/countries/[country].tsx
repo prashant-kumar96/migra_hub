@@ -33,8 +33,8 @@ import FAQ from "@/components/countries/faq"
 
 //   return { props: { countryData } };
 // }
-const CountryPage = ({ countryData }) => {
-  if (!countryData) return <p>Country data not found</p>;
+const CountryPage = ({ }) => {
+  // if (!countryData) return <p>Country data not found</p>;
 
   return (
     <>

@@ -11,9 +11,12 @@ const FAQSection = () => {
   const { country } = router.query;
 
   // Find the selected country's data based on the route's query parameter
-  const selectedCountry = countriesData.find(
+  const selectedCountry = countriesData?.find(
+    //@ts-ignore
     (item) => item.name.toLowerCase() === country?.toLowerCase()
   );
+  console.log(';; selected country',selectedCountry)
+
 
   // If no country is found, display a fallback message
   if (!selectedCountry) {
@@ -24,6 +27,8 @@ const FAQSection = () => {
       </div>
     );
   }
+
+  console.log('selected country',selectedCountry)
 
   const handleAccordionToggle = (index) => {
     setOpenAccordion(openAccordion === index ? null : index);
@@ -46,7 +51,7 @@ const FAQSection = () => {
 
       {/* FAQ Buttons */}
       <div className="flex flex-wrap gap-4 mb-8">
-        {selectedCountry.faq.map((faqItem, index) => (
+        {selectedCountry?.faq?.map((faqItem, index) => (
           <button
             key={index}
             onClick={() => handleButtonClick(index)}
@@ -63,7 +68,7 @@ const FAQSection = () => {
 
       {/* Accordion */}
       <div>
-        {selectedCountry.faq.map((faqItem, index) => (
+        {selectedCountry?.faq?.map((faqItem, index) => (
           <div
             key={index}
             ref={(el) => (accordionRefs.current[index] = el)}
