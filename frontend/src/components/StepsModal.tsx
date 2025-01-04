@@ -399,8 +399,8 @@ const StepsModal: React.FC<Props> = ({
                             selected={passportCountry.value}
                             onSelect={handleSelectPassportCountry}
                             // className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
-                            countries={countryCodes}
-                            searchable
+                            // countries={countryCodes}
+                             
                             // selected={data.whereWillYouApplyForYourVisa.value}
                             // onSelect={handleSelectFromWhichCountry}
                             className="w-full px-3 mt-6 border shadow-md bg-white   border-gray-200 rounded-lg text-Indigo "
