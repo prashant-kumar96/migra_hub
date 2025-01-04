@@ -91,6 +91,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
             if (response){
             reset()
             onClose()
+            onSubmit()
             
             }
            console.log("data::", response)
