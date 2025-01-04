@@ -1,5 +1,12 @@
 import axiosInstance from "@/utils/axios";
 
+
+// Upload documents
+export const uploadDocuments = async (data: any) => {
+  const result = await axiosInstance.post(`/document/upload`, data);
+  return result;
+};
+
 export const getSinglePassportData = async (userId: {}) => {
   console.log(';; user id passed', userId)
   const result = await axiosInstance.get(

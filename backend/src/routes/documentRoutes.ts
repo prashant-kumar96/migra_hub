@@ -12,7 +12,10 @@ import {
   getUploadedDocuments,
   uploadProofOfFundsImages,
   uploadProofOfTiesImages,
+  uploadDocuments
 } from "../controllers/documentController.js";
+
+
 const router = express.Router();
 import multer from "multer";
 import path from "path";
@@ -64,6 +67,8 @@ router.post(
   upload.array("images", 10),
   uploadPassportImages
 );
+
+router.post('/upload',uploadDocuments)
 
 router.post(
   "/uploadproofOfFundsImages",

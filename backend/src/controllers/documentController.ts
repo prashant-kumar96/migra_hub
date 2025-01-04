@@ -1,7 +1,66 @@
 //@ts-nocheck
-
 import UserDocument from "../models/userDocument.js";
 import Passport from "../models/userDocument.js";
+
+
+
+
+export const uploadDocuments = async (req: Request, res: Response) => {
+  try {
+    console.log("req.body", req.body);
+
+      const { files, documentType, userId } = req.body;
+
+      if (!userId || !documentType || Object.keys(files).length === 0) {
+          return res.status(400).json({ message: "User ID, document type, and files are required" });
+      }
+      
+      let updateData = {};
+    for (const documentTypeKey in files) {
+         const filesArray = files[documentTypeKey]
+          const uploadArray:any[] = []
+          for(const file of filesArray){
+              const {buffer, name, type} = file;
+              const bufferData = Buffer.from(buffer);
+              // Handle Uploading to a local file system
+              const filePath = `./uploads/${Date.now()}-${name}`
+              const fileUrl = `${process.env.API_URL}uploads/${Date.now()}-${name}`
+              // const filePath = path.join("uploads", `${Date.now()}-${file.name}`)
+              // Save the buffer
+              console.log("save", filePath);
+              require('node:fs').writeFileSync(filePath,bufferData);
+                uploadArray.push({
+                  path: fileUrl,
+                  originalname: name,
+                  mimetype: type
+                })
+          }
+          updateData[documentTypeKey] = uploadArray;
+      }
+
+      const filter = { userId: userId };
+      const update = { $set: updateData };
+      const options = {
+          returnDocument: "after",
+          upsert: true,
+      };
+
+    const result = await UserDocument.findOneAndUpdate(filter, update, options);
+      if (result) {
+          res.status(200).json({
+              message: "Files uploaded successfully",
+               files: Object.keys(updateData).map(key => updateData[key]),
+          });
+      } else {
+          res.status(404).json({ message: "User document not found" });
+      }
+  } catch (error) {
+      console.error("Error uploading documents:", error);
+      res.status(500).json({ message: "Upload failed", error: error });
+  }
+};
+
+
 
 export const uploadPassportImages = async (req: Request, res: Response) => {
   // console.log("req.files", req.files);

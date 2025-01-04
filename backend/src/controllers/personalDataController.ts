@@ -1,8 +1,10 @@
 //@ts-nocheck
 
 import PersonalData from "../models/personalData.js";
+import ApplicationStatus from "../models/applicationStatus.js";
+import User from "../models/User.js";
 
-export const savePersonalData = async (req: Request, res: Response) => {
+export const savePersonalData = async (req: any, res: any) => {
   console.log("saveProfileData is run");
   console.log("req.body", req.body);
 
@@ -10,7 +12,19 @@ export const savePersonalData = async (req: Request, res: Response) => {
     const personalData = new PersonalData(req.body);
     const result = await personalData.save();
     console.log("savePersonalData result", result);
-    if (result)
+      if(result){
+          const userId = req.body.userId;
+          const user = await User.findById(userId);
+          if(!user){
+              return res.status(404).json({ message: "User not found" });
+          }
+          if(user && user.applicationStatusId){
+              await ApplicationStatus.updateOne(
+                  {_id: user.applicationStatusId},
+                  {$set: { profileCompletion: "completed" }}
+              )
+          }
+      }
       res.status(200).json({ message: "Personal Data saved successfully" });
   } catch (err) {
     console.log("ERROr=.>", err);

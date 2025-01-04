@@ -130,9 +130,9 @@ console.log(';; visa assessment details',visaAssessmentDetails)
                      <Tab className="py-2 text-gray-700 px-4 cursor-pointer border-b-2 border-transparent hover:border-Indigo focus:outline-none">
                         Profile
                     </Tab>
-                    <Tab className="py-2 px-4 text-gray-700 cursor-pointer border-b-2 border-transparent hover:border-Indigo focus:outline-none">
+                    {/* <Tab className="py-2 px-4 text-gray-700 cursor-pointer border-b-2 border-transparent hover:border-Indigo focus:outline-none">
                         Payment
-                    </Tab>
+                    </Tab> */}
                       <Tab className="py-2 px-4 text-gray-700 cursor-pointer border-b-2 border-transparent hover:border-Indigo focus:outline-none">
                         Documents
                     </Tab>
@@ -258,12 +258,12 @@ console.log(';; visa assessment details',visaAssessmentDetails)
                       </Link>
                   </div>
                 </TabPanel>
-                <TabPanel>
+                {/* <TabPanel>
                      <div className="bg-white rounded-lg shadow-lg p-6 mb-8 text-center">
                             <h2 className="text-2xl font-bold text-Indigo mb-6 text-center">
                                 Payment Status
                             </h2>
-                            {/* {
+                            {
                               familyMember?.applicationStatusId?.payment === 'completed' ? (
                                   <div className="flex items-center justify-center gap-2 mb-4">
                                       <span className="text-xl font-medium text-green-600">Payment Completed</span>
@@ -273,7 +273,7 @@ console.log(';; visa assessment details',visaAssessmentDetails)
                                      <span className="text-xl font-medium text-red-600">Payment Pending</span>
                                     </div>
                                 )
-                           } */}
+                           }
                              <p className="text-lg text-gray-600 italic mb-6">
                                  Please complete payment to continue
                              </p>
@@ -297,7 +297,7 @@ console.log(';; visa assessment details',visaAssessmentDetails)
                             </svg>
                              </Link>
                           </div>
-                </TabPanel>
+                </TabPanel> */}
 
                 <TabPanel>
                     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
