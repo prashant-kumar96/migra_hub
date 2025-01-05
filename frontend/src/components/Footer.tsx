@@ -8,22 +8,22 @@ import { useRouter } from "next/router";
 const Footer = () => {
   const router = useRouter();
   console.log('countries', countriesData)
-  const handleCountryClick = (countryName,id) => {
+  const handleCountryClick = (countryName, id) => {
     const formattedName = countryName.toLowerCase();
     router.push(`/countries/${formattedName}?id=${id}`);
   };
 
 
-   // Define the list of countries to display
-   const visibleCountries = ['Canada', 'United-states'];
+  // Define the list of countries to display
+  const visibleCountries = ['Canada', 'United-states'];
 
-   // Map visibleCountries to countriesData or add custom labels like 'Europe'
-   const filteredCountries = visibleCountries.map((name) => {
-     const match = countriesData.find((item) => 
-       item.name.toLowerCase() === name.toLowerCase()
-     );
-     return match || { id: name, name }; // Add custom entries if not in countriesData
-   });
+  // Map visibleCountries to countriesData or add custom labels like 'Europe'
+  const filteredCountries = visibleCountries.map((name) => {
+    const match = countriesData.find((item) =>
+      item.name.toLowerCase() === name.toLowerCase()
+    );
+    return match || { id: name, name }; // Add custom entries if not in countriesData
+  });
   // return ''
   return (
     <>
@@ -32,7 +32,7 @@ const Footer = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-8 py-10 max-sm:max-w-sm max-sm:mx-auto gap-y-8">
             <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0 text-center lg:text-left">
               <Link href="/" className="flex justify-center lg:justify-start">
-                <span className="text-4xl font-greycliff font-extrabold tracking-tight text-gray-100 dark:text-gray-100">
+                <span className="text-4xl font-greycliff font-extrabold tracking-tight text-gray-100 dark:text-gray-100 mb-2 ">
                   MigraHub
                 </span>
               </Link>
@@ -42,9 +42,9 @@ const Footer = () => {
               </p> */}
               <Link
                 href="/contact"
-                className="py-1 px-5 h-9 block w-fit bg-transparent border-2 border-gray-100 dark:border-gray-100 rounded-full shadow-sm text-[17px] text-gray-100 dark:text-gray-100 transition-all duration-500 hover:bg-gray-800 hover:text-Indigo dark:hover:bg-gray-100 dark:hover:text-gray-900 mx-auto lg:mx-0"
+                className="py-1 px-5 h-9  tracking-wide block w-fit bg-transparent border-2 border-gray-100 dark:border-gray-100 rounded-full shadow-sm text-[17px] text-gray-100 dark:text-gray-100 transition-all duration-500 hover:bg-gray-800 hover:text-Indigo dark:hover:bg-gray-100 dark:hover:text-gray-900 mx-auto lg:mx-0"
               >
-                Contact us
+                Contact Us
               </Link>
             </div>
 
@@ -52,7 +52,7 @@ const Footer = () => {
               <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
                 Company
               </h4>
-              <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
+              <ul className="text-lg space-y-4 transition-all duration-500 tracking-wider capitalize">
                 {[
                   "Home",
                   // "Partners",
@@ -64,37 +64,37 @@ const Footer = () => {
                   <li key={item}>
                     <Link
                       href={
-                        item === 'Newsroom' 
-                          ? '/newsPage' 
-                          : item === 'Contact' 
-                          ? '/contact' 
-                          : item == 'Help' 
-                          ? '/help'
-                          : '#'
+                        item === 'Newsroom'
+                          ? '/newsPage'
+                          : item === 'Contact'
+                            ? '/contact'
+                            : item == 'Help'
+                              ? '/help'
+                              : '#'
                       }
-                      className="text-gray-100 dark:text-gray-300 hover:underline"
+                      className=" hover:underline underline-offset-[6px]"
                     >
                       {item}
                     </Link>
                   </li>
                 ))}
               </ul>
-               
+
 
             </div>
 
             <div className="lg:mx-auto text-left">
-              <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
+              <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase">
                 Countries
               </h4>
-              <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
+              <ul className="text-lg space-y-4 transition-all duration-500 tracking-wider capitalize">
                 {filteredCountries.map((item) => (
                   <li key={item.id}>
                     <a
                       onClick={() => handleCountryClick(item.name, item.id)}
-                      className="text-gray-100 dark:text-gray-300 hover:underline cursor-pointer"
+                      className="hover:underline underline-offset-[6px] cursor-pointer"
                     >
-                      {item.name}
+                      {item.name.replace(/-/g, " ")}
                     </a>
                   </li>
                 ))}
@@ -105,20 +105,19 @@ const Footer = () => {
               <h4 className="text-lg font-bold tracking-widest  font-greycliff mb-7 text-FloralWhite uppercase ">
                 Resources
               </h4>
-              <ul className="text-lg space-y-6 transition-all duration-500 tracking-wider uppercase">
-                {["Privacy Policy", "Terms of Use", "Contact Us",].map(
-                  (item) => (
-                    <li key={item}>
-                      <Link
-                        href="#"
-                        className="text-gray-100 dark:text-gray-300 hover:underline"
-                      >
-                        {item}
-                      </Link>
-                    </li>
-                  )
-                )}
+              <ul className="text-lg space-y-4 transition-all duration-500 tracking-wider capitalize">
+                {[
+                  { name: "Privacy Policy", href: "/PrivacyPolicy" },
+                  { name: "Terms of Use", href: "/terms-of-use" },
+                ].map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className="text-gray-100 hover:underline underline-offset-[6px]">
+                      {item.name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
+
             </div>
 
             {/* <div className="lg:mx-auto text-left">
@@ -175,10 +174,10 @@ const Footer = () => {
                 </Link> */}
                 <Link
                   href="javascript:;"
-                  className="w-9 h-9 rounded-full bg-FloralWhite flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
+                  className="w-10 h-10 rounded-full bg-FloralWhite flex justify-center items-center "
                 >
                   <svg
-                    className="w-[1.25rem] h-[1.125rem] text-Indigo"
+                    className="w-[1.25rem] h-[1.25rem] text-Indigo"
                     viewBox="0 0 15 15"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -191,10 +190,10 @@ const Footer = () => {
                 </Link>
                 <Link
                   href="javascript:;"
-                  className="w-9 h-9 rounded-full bg-FloralWhite flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
+                  className="w-10 h-10 rounded-full bg-FloralWhite flex justify-center items-center"
                 >
                   <svg
-                    className="w-[1rem] h-[1rem] text-Indigo"
+                    className="w-[1.25rem] h-[1.25rem] text-Indigo"
                     viewBox="0 0 13 12"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -207,10 +206,10 @@ const Footer = () => {
                 </Link>
                 <Link
                   href="javascript:;"
-                  className="w-9 h-9 rounded-full bg-FloralWhite  flex justify-center items-center hover:bg-Indigo hover:text-FloralWhite"
+                  className="w-10 h-10 rounded-full bg-FloralWhite  flex justify-center items-center"
                 >
                   <svg
-                    className="w-[1.25rem] h-[0.875rem] text-Indigo"
+                    className="w-[1.5rem] h-[1.5rem] text-Indigo"
                     viewBox="0 0 16 12"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

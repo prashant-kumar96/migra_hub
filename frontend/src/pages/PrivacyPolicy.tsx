@@ -5,7 +5,7 @@ import React from "react";
 const PrivacyPolicy = () => {
     return (
         <>
-        <Navbar/>
+            <Navbar />
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto mt-6 p-4">
                 {/* Title */}
                 <h1 className="text-3xl font-bold mb-4 text-Indigo">Privacy Policy</h1>
@@ -37,7 +37,7 @@ const PrivacyPolicy = () => {
                     </p>
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </>
 
     );
