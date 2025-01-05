@@ -99,6 +99,8 @@ async function register(req: any, res: any) {
   }
   }
 
+  
+
   async function googleLogin(req: any, res: any) {
     try {
         const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
@@ -115,67 +117,57 @@ async function register(req: any, res: any) {
                 return res.status(401).json({ message: "Invalid Google token" });
             }
         } catch (err) {
-            console.log(err, "google error");
+            console.error("Google token verification error:", err);
             return res.status(401).json({ message: "Invalid Google token" });
         }
 
-         let user = await User.findOne({ email });
+        let user = await User.findOne({ email });
 
         // Handle visa data
         let visaDataId = null;
-        let applicationStatusId = null;
 
         if (riskAssessmentData) {
-             if(user && user.visaDataId) {
+            if (user?.visaDataId) {
                 visaDataId = user.visaDataId;
-
-            } else {
-                 const visaData = new VisaData(riskAssessmentData);
-                const resultVisadata = await visaData.save();
-                visaDataId = resultVisadata._id;
+            } else if (!user || !user.visaDataId) {
+                const visaData = new VisaData(riskAssessmentData);
+                const resultVisaData = await visaData.save();
+                visaDataId = resultVisaData._id;
             }
         }
-         if (!user) {
-           // User doesn't exist, create a new user
+
+        if (!user) {
             const newUser = new User({
-                email: email,
-                name: name,
-                googleId: googleId,
-                 ...(visaDataId && { visaDataId }), // Link to VisaData if exists
-                 isPrimaryApplicant: true,
-             });
-                user = await newUser.save();
+                email,
+                name,
+                googleId,
+                ...(visaDataId && { visaDataId }),
+                isPrimaryApplicant: true,
+            });
+            user = await newUser.save();
         } else {
-              user.name = name;
-              user.googleId = googleId
-              user.isPrimaryApplicant = true;
-              if(visaDataId){
-                user.visaDataId = visaDataId
-              }
-              await user.save();
+            user.name = name;
+            user.googleId = googleId;
+            user.isPrimaryApplicant = true;
+            if (visaDataId) {
+                user.visaDataId = visaDataId;
+            }
+            await user.save();
         }
 
+        if (riskAssessmentData && !user.applicationStatusId) {
+            const applicationId = uuidv4(); // Ensure applicationId is unique
+            const applicationStatus = new ApplicationStatus({
+                userId: user._id,
+                applicationId, // Include generated applicationId
+            });
+            const resultApplicationStatus = await applicationStatus.save();
 
-        if(riskAssessmentData){
-             if(user && user.applicationStatusId){
-              applicationStatusId = user.applicationStatusId;
-             }
-             else {
-                const applicationId = uuidv4();
-                const applicationStatus = new ApplicationStatus({ userId: user._id });
-                const resultApplicationStatus = await applicationStatus.save();
-
-                // Update the user object with application id
-                 user.applicationId = applicationId;
-                user.applicationStatusId = resultApplicationStatus._id;
-                 await user.save();
-           }
+            user.applicationId = applicationId;
+            user.applicationStatusId = resultApplicationStatus._id;
+            await user.save();
         }
 
-
-
-
-        // Generate JWT
         const token = jwt.sign(
             { id: user._id },
             process.env.JWT_SECRET as string,
@@ -190,12 +182,14 @@ async function register(req: any, res: any) {
                 role: user.role,
             },
         });
-
     } catch (error) {
-        console.log("Error during Google login", error);
+        console.error("Error during Google login:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+
+
   
 const isValidObjectId = (id: any) => {
   return mongoose.Types.ObjectId.isValid(id);

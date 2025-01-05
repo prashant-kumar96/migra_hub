@@ -9,9 +9,13 @@ import {
   getSingleProofOfTiesData,
   uploadAdditionalDocuments,
   uploadPassportImages,
+  getUploadedDocuments,
   uploadProofOfFundsImages,
   uploadProofOfTiesImages,
+  uploadDocuments
 } from "../controllers/documentController.js";
+
+
 const router = express.Router();
 import multer from "multer";
 import path from "path";
@@ -64,6 +68,8 @@ router.post(
   uploadPassportImages
 );
 
+router.post('/upload',uploadDocuments)
+
 router.post(
   "/uploadproofOfFundsImages",
   upload.array("images", 10),
@@ -87,6 +93,11 @@ router.get(
   "/getSingleProofOfFundsData",
   verifyToken,
   getSingleProofOfFundsData
+);
+
+router.get(
+  "/uploadedDocuments",
+  getUploadedDocuments
 );
 
 router.get("/getSingleProofOfTiesData", verifyToken, getSingleProofOfTiesData);

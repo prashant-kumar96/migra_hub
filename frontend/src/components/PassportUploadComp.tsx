@@ -6,14 +6,13 @@ import { getSinglePassportData } from "@/api/document";
 import { useAuth } from "@/context/auth-context";
 // import CrossIcon from "@/utils/elements/icons/cross-icon";
 
-const UploadModal = ({ isOpen, onClose }) => {
+const UploadModal = ({ userId, isOpen, onClose }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [medata] = useAtom(meDataAtom);
 
-  const {user} = useAuth()
-  const userId = user?.user?._id
+ 
 
   // console.log("medata@@@@", medata);
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -130,10 +129,9 @@ const UploadModal = ({ isOpen, onClose }) => {
   );
 };
 
-const PassportUploadComp = () => {
+const PassportUploadComp = ({userId}) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const {user} = useAuth();
-  const userId = user?.user?._id
+  
 
   const [isPassportPreviouslyUploaded, setPassportPreviouslyUploaded] =
     useState(false);
@@ -193,7 +191,7 @@ const PassportUploadComp = () => {
           Upload passport
         </button>
       )}
-      <UploadModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+      <UploadModal userId={userId} isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
     </div>
   );
 };

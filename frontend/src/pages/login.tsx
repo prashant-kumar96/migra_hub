@@ -17,6 +17,7 @@ import ButtonLoader from "@/components/loaders/buttonLoader";
 import Loader from "@/components/loaders/loader";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { FaGoogle } from "react-icons/fa";
+import { useAuth } from "@/context/auth-context";
 
 
 const GoogleLoginButton = ({ onSignIn, onSignOut, session, disabled }) => {
@@ -32,11 +33,11 @@ const GoogleLoginButton = ({ onSignIn, onSignOut, session, disabled }) => {
     <button
       onClick={handleClick}
       disabled={disabled}
-      className={`flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 rounded-md shadow-sm
+      className={`flex items-center justify-center w-full gap-2 px-6 py-3 border border-gray-300 rounded-md shadow-sm
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}
     >
-      <FaGoogle className="text-2xl" />
-      <span className="text-gray-700 text-center font-medium">
+      <FaGoogle className="text-2xl text-red-600" />
+      <span className="text-red-700 text-center font-medium">
         {session ? 'Sign Out' : 'Sign in with Google'}
       </span>
     </button>
@@ -47,6 +48,7 @@ const LoginPage = () => {
   const router = useRouter();
   const [sharedState] = useAtom(visaDataAtom);
   const { data: session, status } = useSession();
+  const { logout } = useAuth(); // Get the logout function from auth-context
 
   // Form States
   const [isSignUpShowing, setIsSignUpFormShowing] = useState(true);
@@ -89,6 +91,7 @@ const LoginPage = () => {
 
 // Similarly for Google login
 const handleGoogleLogin = async () => {
+ 
   if (googleAuthStatus.processing || googleAuthStatus.completed) {
     return;
   }
@@ -146,6 +149,9 @@ const handleGoogleLogin = async () => {
       isLoading: false,
       error: err.message || "Login failed"
     }));
+
+     // Call logout on error
+     logout(); 
   }
 };
 
@@ -220,31 +226,31 @@ const onSubmit = async (data) => {
   }
 
   // Error State
-  if (authState.error || googleAuthStatus.error) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
-        <div className="text-center p-6 bg-white rounded-lg shadow-lg">
-          <div className="text-red-600 mb-4">
-            {authState.error || googleAuthStatus.error}
-          </div>
-          <button 
-            onClick={() => {
-              setAuthState(prev => ({ ...prev, error: null }));
-              setGoogleAuthStatus(prev => ({
-                attempted: false,
-                completed: false,
-                processing: false,
-                error: null
-              }));
-            }}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (authState.error || googleAuthStatus.error) {
+  //   return (
+  //     <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
+  //       <div className="text-center p-6 bg-white rounded-lg shadow-lg">
+  //         <div className="text-red-600 mb-4">
+  //           {authState.error || googleAuthStatus.error}
+  //         </div>
+  //         <button 
+  //           onClick={() => {
+  //             setAuthState(prev => ({ ...prev, error: null }));
+  //             setGoogleAuthStatus(prev => ({
+  //               attempted: false,
+  //               completed: false,
+  //               processing: false,
+  //               error: null
+  //             }));
+  //           }}
+  //           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+  //         >
+  //           Try Again
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 py-12">

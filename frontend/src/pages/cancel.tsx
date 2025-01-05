@@ -25,7 +25,7 @@ import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
           Your payment process was not completed. Please try again.
         </p>
         <a
-          href="/payment"
+          href="/dashboard/payment"
           className="mt-6 inline-block bg-red-500 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-red-600"
         >
           Go Back

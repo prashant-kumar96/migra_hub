@@ -8,21 +8,22 @@ export interface IApplicationStatus extends Document {
     documentUpload: string; // "pending", "completed"
     createdAt: Date;
     updatedAt: Date;
-    
-    }
-    
-    
-    const applicationStatusSchema: Schema<IApplicationStatus> = new Schema({
-      userId: { type: Schema.Types.ObjectId, ref: "User" },
-      riskAssessment: { type: String, enum: ["pending", "completed"], default: "pending" },
-      profileCompletion: { type: String, enum: ["pending", "completed"], default: "pending" },
-      payment: { type: String, enum: ["pending", "completed"], default: "pending" },
-      documentUpload: { type: String, enum: ["pending", "completed"], default: "pending" },
-      createdAt: { type: Date, default: Date.now },
-      updatedAt: { type: Date, default: Date.now },
-    });
-    
-    
-    const ApplicationStatus = mongoose.model<IApplicationStatus>("ApplicationStatus", applicationStatusSchema);
-    
-    export default ApplicationStatus
+    applicationId: string // added application id
+}
+
+
+const applicationStatusSchema: Schema<IApplicationStatus> = new Schema({
+    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    riskAssessment: { type: String, enum: ["pending", "completed"], default: "pending" },
+    profileCompletion: { type: String, enum: ["pending", "completed"], default: "pending" },
+    payment: { type: String, enum: ["pending", "completed"], default: "pending" },
+    documentUpload: { type: String, enum: ["pending", "completed"], default: "pending" },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+     applicationId: { type: String, unique: true },
+});
+
+
+const ApplicationStatus = mongoose.model<IApplicationStatus>("ApplicationStatus", applicationStatusSchema);
+
+export default ApplicationStatus

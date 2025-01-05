@@ -64,17 +64,18 @@ const StepsModal: React.FC<Props> = ({
   console.log("destinationCountry@@", destinationCountry);
   const { user } = useAuth();
   console.log(';; user', user);
+  const path = router.asPath
 
   const userId = user?.user?._id
   const [passportCountry, setPassportCountry] =
-    useState<string>(citizenshipCountry);
+  useState<string>(citizenshipCountry);
 
   const [progressBarpercentage, setProgressBarPercentage] = useState(10);
 
   const [step, setStep] = useState(0);
   const [showRiskDecreased, setShowRiskDecreased] = useState(
     citizenshipCountry == "IN" ? true : false
-  );
+  );  
 
   const selectedCitizenshipcountry = countryList()
     .getData()
@@ -150,7 +151,7 @@ const StepsModal: React.FC<Props> = ({
       setSharedState(data);
       localStorage.setItem('assessmentData', JSON.stringify(data))
       setRedirection(true);
-      userId && saveVisaData(data)
+      (userId || path !== '/' ) && saveVisaData(data)
 
       // Add a small delay to allow the loader to render
       setTimeout(() => {
@@ -398,8 +399,8 @@ const StepsModal: React.FC<Props> = ({
                             selected={passportCountry.value}
                             onSelect={handleSelectPassportCountry}
                             // className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
-                            countries={countryCodes}
-                            searchable
+                            // countries={countryCodes}
+                             
                             // selected={data.whereWillYouApplyForYourVisa.value}
                             // onSelect={handleSelectFromWhichCountry}
                             className="w-full px-3 mt-6 border shadow-md bg-white   border-gray-200 rounded-lg text-Indigo "

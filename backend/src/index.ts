@@ -10,7 +10,7 @@ import personalDataRoutes from "./routes/personalDataRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import caseManagerRoutes from "./routes/caseManagerRoutes.js";
 import familyMemberRoutes from './routes/famillyMemberRoutes.js'
-
+import pricingRoutes from './routes/pricingRoutes.js'
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/User.js";
@@ -109,6 +109,9 @@ app.use("/api/personalData", personalDataRoutes);
 app.use("/api/document", documentRoutes);
 app.use("/api/caseManager", caseManagerRoutes);
 app.use('/api/family-member',familyMemberRoutes)
+app.use('/api/pricing',pricingRoutes);
+
+
 const client = new MongoClient(uri);
 app.get("/users", async (req: Request, res: Response) => {
   try {
