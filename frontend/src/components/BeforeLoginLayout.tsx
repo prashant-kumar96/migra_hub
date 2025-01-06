@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Header2 from "./Header";
 import { me } from "@/api/auth";
 import { useAuth } from "@/context/auth-context";
+import MainLoader from "./loaders/mainLoader";
 
 
 const BeforeLoginLayout = (WrappedComponent: any) => {
@@ -55,9 +56,10 @@ const BeforeLoginLayout = (WrappedComponent: any) => {
 
     if (isLoading) {
       return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
+        // <div className="flex items-center justify-center min-h-screen">
+        //   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        // </div>
+        <MainLoader/>
       );
     }
 

@@ -2,24 +2,24 @@ import React from 'react';
 
 const MainLoader = () => {
   return (
-    <div style={styles.loaderContainer}>
+    <div style={styles.loaderContainer} className='text-[10px]'>
       <svg
         className="svg-calLoader"
         xmlns="http://www.w3.org/2000/svg"
-        width="180"
-        height="180"
+        width="150"
+        height="150"
         style={styles.svgLoader}
       >
         <path
           className="cal-loader__path"
           d="M86.429 40c63.616-20.04 101.511 25.08 107.265 61.93 6.487 41.54-18.593 76.99-50.6 87.643-59.46 19.791-101.262-23.577-107.142-62.616C29.398 83.441 59.945 48.343 86.43 40z"
           fill="none"
-          stroke="DarkGray"
-          strokeWidth="2"
+          stroke="#2C415A"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeDasharray="10 10 10 10 10 10 10 432"
-          strokeDashoffset="70"
+          strokeDashoffset="85"
           style={styles.loaderPath}
         />
         <path
@@ -37,17 +37,18 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100vw',
     height: '100vh',
     backgroundColor: 'FloralWhite',
     fontFamily: "'Josefin Sans', sans-serif",
-    color: '#000000',
+    // color: '#000000',
   },
   svgLoader: {
     transformOrigin: '100px 100px',
-    animation: 'loader-spin 3.2s linear infinite',
+    animation: 'loader-spin 4s linear infinite',
   },
   loaderPath: {
-    animation: 'loader-path 3.2s ease-in-out infinite',
+    animation: 'loader-path 4s ease-in-out infinite',
   },
 };
 
