@@ -26,7 +26,7 @@ const Success = () => {
       console.log("result getmedata", result?.data);
 
       // Fetch session details from the backend
-      fetch("http://localhost:5000/retrieve-session", {
+      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}retrieve-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

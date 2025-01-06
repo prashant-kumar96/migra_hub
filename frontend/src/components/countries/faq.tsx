@@ -28,7 +28,8 @@ const FAQSection = () => {
     );
   }
 
-  console.log('selected country',selectedCountry)
+  console.log('selected country',selectedCountry);
+  
 
   const handleAccordionToggle = (index) => {
     setOpenAccordion(openAccordion === index ? null : index);

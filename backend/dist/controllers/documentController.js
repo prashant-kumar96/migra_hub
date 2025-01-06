@@ -16,7 +16,7 @@ export const uploadPassportImages = (req, res) => __awaiter(void 0, void 0, void
     console.log("this is run");
     try {
         const fileUrls = req.files.map((file) => ({
-            url: `http://localhost:5000/uploads/${file.filename}`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploads/${file.filename}`,
         }));
         // Save passport data with passport images in the database.
         const updateData = {
@@ -45,7 +45,7 @@ export const uploadPassportImages = (req, res) => __awaiter(void 0, void 0, void
 export const uploadProofOfFundsImages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const fileUrls = req.files.map((file) => ({
-            url: `http://localhost:5000/uploads/${file.filename}`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploads/${file.filename}`,
         }));
         // Save passport data with passport images in the database.
         const updateData = {
@@ -74,7 +74,7 @@ export const uploadProofOfFundsImages = (req, res) => __awaiter(void 0, void 0, 
 export const uploadProofOfTiesImages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const fileUrls = req.files.map((file) => ({
-            url: `http://localhost:5000/uploads/${file.filename}`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploads/${file.filename}`,
         }));
         // Save passport data with passport images in the database.
         const updateData = {
@@ -104,7 +104,7 @@ export const uploadProofOfTiesImages = (req, res) => __awaiter(void 0, void 0, v
 export const uploadAdditionalDocuments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const fileUrls = req.files.map((file) => ({
-            url: `http://localhost:5000/uploads/${file.filename}`,
+            url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploads/${file.filename}`,
         }));
         // Save passport data with passport images in the database.
         const updateData = {

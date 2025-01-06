@@ -69,7 +69,7 @@ export const uploadPassportImages = async (req: Request, res: Response) => {
   console.log("upload Passport Images", req.body);
   try {
     const fileUrls = req.files.map((file) => ({
-      url: `http://localhost:5000/uploads/${file.filename}`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploads/${file.filename}`,
     }));
 
     // Save passport data with passport images in the database.
@@ -132,7 +132,7 @@ export const uploadProofOfFundsImages = async (req: Request, res: Response) => {
 export const uploadProofOfTiesImages = async (req: Request, res: Response) => {
   try {
     const fileUrls = req.files.map((file) => ({
-      url: `http://localhost:5000/uploads/${file.filename}`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploads/${file.filename}`,
     }));
 
     // Save passport data with passport images in the database.
@@ -168,7 +168,7 @@ export const uploadAdditionalDocuments = async (
 ) => {
   try {
     const fileUrls = req.files.map((file) => ({
-      url: `http://localhost:5000/uploads/${file.filename}`,
+      url: `${process.env.NEXT_PUBLIC_BACKEND_URL}uploads/${file.filename}`,
     }));
 
     // Save passport data with passport images in the database.

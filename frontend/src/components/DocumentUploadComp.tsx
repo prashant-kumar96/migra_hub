@@ -35,7 +35,7 @@ const DocumentUploadComp = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/upload-documents",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}upload-documents`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

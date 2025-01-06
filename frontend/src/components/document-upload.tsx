@@ -1,4 +1,4 @@
-import { me } from "@/api/auth";
+import { checkifPaymentIsDone, me } from "@/api/auth";
 import { getAdditionalDocuments, getSinglePassportData, getSingleProofOfFundsData, getSingleProofOfTiesData } from "@/api/document";
 import AdditionalDocuments from "@/components/AdditionalDocuments";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
@@ -15,13 +15,16 @@ import React, { useEffect, useState } from "react";
 
 const DocumentUpload = ({userId}) => {
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
-    const [uploadedDocuments, setUploadedDocuments] = useState<any>(null);
+  const [uploadedDocuments, setUploadedDocuments] = useState<any>(null);
   const [showUploadComponents, setShowUploadComponents] = useState(true);
 
   console.log(";; user id", typeof userId);
 
+
   const fetchUploadedDocuments = async () => {
     try {
+      const data = await checkifPaymentIsDone(userId);
+      
       console.log("fetchUploadedDocuments");
       console.log(";; user id", typeof userId);
       const response = await getSinglePassportData( userId );
@@ -45,6 +48,7 @@ const DocumentUpload = ({userId}) => {
     }
   };
 
+  
   useEffect(() => {
     if (userId) {
       fetchUploadedDocuments();
