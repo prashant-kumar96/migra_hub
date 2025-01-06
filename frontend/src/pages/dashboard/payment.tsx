@@ -55,7 +55,7 @@ const Home = () => {
 
   return (
       <div className="text-gray-700 p-4">
-          <h1>Visa Payment</h1>
+          {/* <h1>Visa Payment</h1> */}
           {isStripePaymentDone ? (
               <p className="bg-green-500 text-white text-xl w-fit py-2 px-4 rounded ps-2">
                   Stripe payment is Already done

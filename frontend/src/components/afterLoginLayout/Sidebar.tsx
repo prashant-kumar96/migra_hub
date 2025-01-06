@@ -21,22 +21,22 @@ const sidebarData = [
     menu: [
       {
         name: "Dashboard",
-        icon: <MdDashboardCustomize size={28} />,
+        icon: <MdDashboardCustomize size={22} />,
         href: "/dashboard",
       },
       {
         name: "Profile",
-        icon: <RiMapPinUserFill size={28} />,
+        icon: <RiMapPinUserFill size={22} />,
         href: "/dashboard/profile",
       },
       {
         name: "Application",
-        icon: <VscServerProcess size={28} />,
+        icon: <VscServerProcess size={22} />,
         href: "/dashboard/documentupload",
       },
       {
         name: "Payment",
-        icon: <RiSecurePaymentFill size={28} />,
+        icon: <RiSecurePaymentFill size={22} />,
         href: "/dashboard/payment",
       },
     ],
@@ -46,7 +46,7 @@ const sidebarData = [
     menu: [
       {
         name: "Dashboard",
-        icon: <MdDashboardCustomize size={28} />,
+        icon: <MdDashboardCustomize size={22} />,
         href: "/caseManagerDashboard",
       },
       // {
@@ -61,18 +61,18 @@ const sidebarData = [
     menu: [
       {
         name: "Dashboard",
-        icon: <MdDashboardCustomize size={28} />,
+        icon: <MdDashboardCustomize size={22} />,
         href: "/adminDashboard",
       },
       {
         name: "Case Manager",
-        icon: <FaUserShield size={28} />,
+        icon: <FaUserShield size={22} />,
         href: "/caseManagerPage",
       },
-      { name: "User", icon: <ImUser size={28} />, href: "/usersList" },
+      { name: "User", icon: <ImUser size={22} />, href: "/usersList" },
       {
         name: "Assign Case Manager",
-        icon: <ImUser size={28} />,
+        icon: <ImUser size={22} />,
         href: "/assignCaseManager",
       },
     ],
@@ -150,15 +150,15 @@ const Sidebar = () => {
   }, []);
   return (
     <main className="flex">
-      <div className="bg-Indigo sm:w-60 min-h-screen w-14 flex flex-col fixed left-0 top-0">        {/* Logo Section */}
-        <div className="text-center text-white p-6">
+      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex flex-col fixed left-0 top-0 ">        {/* Logo Section */}
+        <div className="text-center text-FloralWhite p-6">
           <Link href="/">
             {isSmallScreen ? (
               // small screen logo
               <Image
                 src="/logo/onlyM.png"
-                width={230}
-                height={60}
+                width={500}
+                height={500}
                 alt="Small Logo"
               />
             ) : (
@@ -179,11 +179,11 @@ const Sidebar = () => {
             menuItems.map((item, index) => (
               <li
                 key={index}
-                className="hover:bg-gray-800 text-white cursor-pointer px-4 h-12 flex items-center justify-center sm:justify-start"
+                className="hover:bg-gray-800 text-FloralWhite cursor-pointer ml-2 px-4 h-12 flex items-center justify-center sm:justify-start"
               >
                 {item.icon}
                 <Link href={item.href} passHref>
-                  <span className="ml-3 hidden sm:block text-gray-400 font-normal uppercase tracking-widest hover:text-white transition-colors">
+                  <span className="ml-2 hidden sm:block text-gray-400 font-normal uppercase tracking-widest hover:text-FloralWhite transition-colors">
                     {item.name}
                   </span>
                 </Link>
