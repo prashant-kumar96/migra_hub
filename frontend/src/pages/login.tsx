@@ -278,7 +278,7 @@ const onSubmit = async (data) => {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="text-gray-700 space-y-6">
             {isSignUpShowing && (
               <div className="relative">
                 <IoPersonSharp className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
