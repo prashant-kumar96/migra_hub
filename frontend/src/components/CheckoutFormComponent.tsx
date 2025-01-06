@@ -22,7 +22,6 @@ export default function CheckoutForm({ items }: Props) {
         setLoading(true);
         const stripe = await stripePromise;
 
-<<<<<<< Updated upstream
       try {
           const response = await fetch(
               `${process.env.NEXT_PUBLIC_API_BASE_URL}create-checkout-session`,
@@ -32,17 +31,6 @@ export default function CheckoutForm({ items }: Props) {
                   body: JSON.stringify({ items }),
               }
           );
-=======
-        try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}create-checkout-session`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ items }),
-                }
-            );
->>>>>>> Stashed changes
 
             if (!response.ok) {
                 const errorData = await response.json();
