@@ -29,6 +29,7 @@ export const assignCaseManagerToUser = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getAssignedUsersToCaseManager = async (
   req: Request,
   res: Response
@@ -59,6 +60,8 @@ export const getAssignedUsersToCaseManager = async (
     res.status(400).json({ message: err });
   }
 };
+
+
 
 export const getAllDetailsOfUser = async (req: Request, res: Response) => {
   try {

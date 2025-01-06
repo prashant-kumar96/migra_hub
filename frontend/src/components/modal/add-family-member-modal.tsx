@@ -6,6 +6,9 @@ import * as yup from 'yup';
 import countryList from "react-select-country-list";
 import Select from "react-select";
 import { addFamilyMember } from "@/api/familyMember";
+import ReactFlagsSelect from 'react-flags-select';
+import { countriesToRemove } from "../TravelPlan";
+
 
 interface Props {
     isOpen: boolean;
@@ -42,59 +45,83 @@ const schema = yup.object().shape({
     whereWillYouApplyForYourVisa:yup.object().required('Where Will You Apply For Your Visa is required'),
     relationship: yup.string().oneOf(["father", "mother", "brother", "sister"], "Relationship must be one of the given options").required("Relationship is required"),
 })
-
 const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
+
     const { register, handleSubmit, formState: { errors },reset, setValue } = useForm<FormData>({
         resolver:yupResolver(schema),
     });
 
-     const countries = useMemo(() => countryList().getData(), []);
+    const countries = useMemo(() => countryList().getData(), []);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] = useState<string | null>(null);
+    const [selectedDestinationCountry, setSelectedDestinationCountry] = useState<string | null>(null);
+    const [selectedPassportCountry, setSelectedPassportCountry] = useState<string | null>(null);
+    const [selectedVisaApplicationCountry, setSelectedVisaApplicationCountry] = useState<string | null>(null);
+    
+    const citizenshipCountries = countryList()
+    .getData()
+    .filter(
+        (country) =>
+            !countriesToRemove.some(
+                (removedCountry) =>
+                    removedCountry.value === country.value
+            )
+    );
+
+    const destinationCountries = countryList()
+    .getData()
+    .filter(c => c.value === "US" || c.value === "CA")
+
+    
+    const citizenshipCountryCodes = citizenshipCountries.map(c => c.value);
+    const destinationCountryCodes = destinationCountries.map(c => c.value);
 
 
-   
-    const handleFormSubmit = async (formData: FormData) => {
+    const handleFormSubmit = async (formData: FormData) => {    
         setIsSubmitting(true);
         try {
            const {
-              name,
+                name,
                 email,
                 relationship,
                 areYouApplyingFromPassportCountry,
-                 citizenshipCountry,
+                citizenshipCountry,
                 deniedVisaToUs,
                 destinationCountry,
                 haveSpouseOrProperty,
                 passportCountry,
-               travelledInternationallyAndReturnedHome,
-               whereWillYouApplyForYourVisa,
+                travelledInternationallyAndReturnedHome,
+                whereWillYouApplyForYourVisa,
             } = formData;
 
 
-              const data = {
+                const data = {
                   name,
                   email,
                   relationship,
                   data: {
                      areYouApplyingFromPassportCountry,
-                     citizenshipCountry,
+                     citizenshipCountry: citizenshipCountry,
                      deniedVisaToUs,
-                     destinationCountry,
+                     destinationCountry: destinationCountry,
                        haveSpouseOrProperty,
-                    passportCountry,
+                    passportCountry: passportCountry,
                        travelledInternationallyAndReturnedHome,
-                      whereWillYouApplyForYourVisa,
+                      whereWillYouApplyForYourVisa: whereWillYouApplyForYourVisa,
                    }
                 }
+
            const response = await addFamilyMember(data);
+
             if (response){
-            reset()
-            onClose()
-            onSubmit()
-            
+                reset()
+                onClose()
+                onSubmit()
             }
-           console.log("data::", response)
+
+           console.log("data::", response);
+
 
         } catch(err){
             console.log("family member submission error:", err)
@@ -127,7 +154,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
 
     return ReactDOM.createPortal(
         <div className="fixed inset-0 text-gray-600 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-8 rounded-lg max-w-lg w-full relative">
+            <div className="bg-white p-8 rounded-lg max-w-4xl w-full relative">
                 <button
                     onClick={onClose}
                     className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -225,20 +252,23 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
 
 
                     {/* Citizenship Country Select */}
-                    <div className="mb-4">
+                     <div className="  mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Citizenship Country
                         </label>
-                        <Select
-                            styles={customStyles}
-                            placeholder='Select Citizenship Country'
-                            options={countries}
-                            onChange={(option:any) => setValue('citizenshipCountry',option) }
-                             getOptionLabel={(option:any) => option.label}
-                            getOptionValue={(option:any) => option.value}
+                         <ReactFlagsSelect
+                            selected={selectedCitizenshipCountry}
+                             onSelect={(code) => {
+                                 const selectedCountry = countries.find((country) => country.value === code);
+                                 setSelectedCitizenshipCountry(code)
+                                 setValue('citizenshipCountry', selectedCountry)
+                             }}
+                             countries={citizenshipCountryCodes}
+                             searchable
+                            placeholder="Select Citizenship Country"
+                            className={`w-full  border rounded ${errors.citizenshipCountry ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                         />
                         {errors.citizenshipCountry && <p className="text-red-500 text-xs mt-1">{errors.citizenshipCountry.message}</p>}
-
                     </div>
                     {/* Previously Denied Visa to US */}
                     <div className="mb-4">
@@ -272,16 +302,21 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Destination Country
                         </label>
-                       <Select
-                            styles={customStyles}
-                           placeholder='Select Destination Country'
-                           options={countries}
-                           onChange={(option:any) => setValue('destinationCountry',option) }
-                           getOptionLabel={(option:any) => option.label}
-                            getOptionValue={(option:any) => option.value}
+                        <ReactFlagsSelect
+                            selected={selectedDestinationCountry}
+                            countries={destinationCountryCodes}
+                             onSelect={(code) => {
+                                 const selectedCountry = countries.find((country) => country.value === code);
+                                 setSelectedDestinationCountry(code)
+                                 setValue('destinationCountry', selectedCountry)
+                             }}
+                            placeholder="Select Destination Country"
+                            searchable
+                            className={`w-full border rounded  ${errors.destinationCountry ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                         />
                         {errors.destinationCountry && <p className="text-red-500 text-xs mt-1">{errors.destinationCountry.message}</p>}
                     </div>
+
 
                     {/* Have Spouse Or Property */}
                     <div className="mb-4">
@@ -309,18 +344,23 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                         </div>
                         {errors.haveSpouseOrProperty && <p className="text-red-500 text-xs mt-1">{errors.haveSpouseOrProperty.message}</p>}
                     </div>
+
+
                     {/* Passport Country Select */}
-                    <div className="mb-4">
+                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Passport Country
                         </label>
-                         <Select
-                            styles={customStyles}
-                            placeholder='Select Passport Country'
-                            options={countries}
-                            onChange={(option:any) => setValue('passportCountry',option) }
-                            getOptionLabel={(option:any) => option.label}
-                            getOptionValue={(option:any) => option.value}
+                        <ReactFlagsSelect
+                            selected={selectedPassportCountry}
+                             onSelect={(code) => {
+                                 const selectedCountry = countries.find((country) => country.value === code);
+                                 setSelectedPassportCountry(code)
+                                 setValue('passportCountry', selectedCountry)
+                             }}
+                             searchable
+                            placeholder="Select Passport Country"
+                            className={`w-full border rounded  ${errors.passportCountry ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                         />
                         {errors.passportCountry && <p className="text-red-500 text-xs mt-1">{errors.passportCountry.message}</p>}
                     </div>
@@ -351,17 +391,20 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                         {errors.travelledInternationallyAndReturnedHome && <p className="text-red-500 text-xs mt-1">{errors.travelledInternationallyAndReturnedHome.message}</p>}
                     </div>
                     {/* Where Will You Apply For Your Visa */}
-                    <div className="mb-4">
+                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                            Where Will You Apply For Your Visa
                         </label>
-                         <Select
-                            styles={customStyles}
-                            placeholder='Select Where Will You Apply For Your Visa'
-                             options={countries}
-                             onChange={(option:any) => setValue('whereWillYouApplyForYourVisa',option) }
-                            getOptionLabel={(option:any) => option.label}
-                            getOptionValue={(option:any) => option.value}
+                         <ReactFlagsSelect
+                            selected={selectedVisaApplicationCountry}
+                             onSelect={(code) => {
+                                 const selectedCountry = countries.find((country) => country.value === code);
+                                 setSelectedVisaApplicationCountry(code)
+                                 setValue('whereWillYouApplyForYourVisa', selectedCountry)
+                             }}
+                             searchable
+                            placeholder="Select Where Will You Apply For Your Visa"
+                            className={`w-full rounded border  ${errors.whereWillYouApplyForYourVisa ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                         />
                         {errors.whereWillYouApplyForYourVisa && <p className="text-red-500 text-xs mt-1">{errors.whereWillYouApplyForYourVisa.message}</p>}
                     </div>

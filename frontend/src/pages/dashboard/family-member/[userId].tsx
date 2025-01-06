@@ -148,10 +148,10 @@ console.log(';; visa assessment details',visaAssessmentDetails)
                                         key={index}
                                         className="bg-gray-50 p-4 rounded-md border border-gray-200"
                                     >
-                                        <h3 className="text-sm font-semibold text-gray-600 mb-2">
+                                        <h3 className="text-sm font-semibold text-gray-800 mb-2">
                                             {detail.title}
                                         </h3>
-                                        <p className="text-lg text-Indigo font-medium">
+                                        <p className="text-lg text-gray-500 font-medium">
                                             {detail.value}
                                         </p>
                                     </div>

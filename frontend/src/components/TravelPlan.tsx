@@ -231,15 +231,15 @@ const TravelPlan = () => {
                                     countries={citizenshipOptions}
                                     searchable
                                 /*showSelectedLabel={showSelectedLabel}
-                            selectedSize={selectedSize}
-                            showOptionLabel={showOptionLabel}
-                            optionsSize={optionsSize}
-                            placeholder={placeholder}
-                            searchable={searchable}
-                            searchPlaceholder={searchPlaceholder}
-                            alignOptionsToRight={alignOptionsToRight}
-                            fullWidth={fullWidth}
-                            disabled={disabled} */
+                                selectedSize={selectedSize}
+                                showOptionLabel={showOptionLabel}
+                                optionsSize={optionsSize}
+                                placeholder={placeholder}
+                                searchable={searchable}
+                                searchPlaceholder={searchPlaceholder}
+                                alignOptionsToRight={alignOptionsToRight}
+                                fullWidth={fullWidth}
+                                disabled={disabled} */
                                 />
                                 <p className="text-red-500 text-sm">
                                     {" "}

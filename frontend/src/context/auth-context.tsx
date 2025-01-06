@@ -51,7 +51,7 @@ import { me } from '@/api/auth';
               const response = await me();
               console.log(';; current user',response)
               if(!response || !response.status) {
-                  console.warn("Error logging in user")
+                  console.log("Error logging in user")
                   logout();
                   return;
               }
