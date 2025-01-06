@@ -40,7 +40,7 @@ const PassportUpload = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}upload-passport-images`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}upload-passport-images`,
         formData,
         {
           headers: {

@@ -33,7 +33,7 @@ const UploadModal = ({userId, isOpen, onClose }) => {
     formData.append("userId", userId);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/document/uploadProofOfTiesImages`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}api/document/uploadProofOfTiesImages`,
         {
           method: "POST",
           body: formData,

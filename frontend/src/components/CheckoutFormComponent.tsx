@@ -24,7 +24,7 @@ export default function CheckoutForm({ items }: Props) {
 
       try {
           const response = await fetch(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}create-checkout-session`,
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}create-checkout-session`,
               {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

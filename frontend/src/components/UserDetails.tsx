@@ -4,7 +4,7 @@ const UserDetails = ({ data }) => {
   const { user, personalData, document } = data;
   
   console.log("UserDetails data", data);
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   
   return (
     <div className="">

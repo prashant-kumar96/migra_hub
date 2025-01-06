@@ -48,7 +48,7 @@ const DocumentUpload = ({userId}) => {
     }
   };
 
-  
+
   useEffect(() => {
     if (userId) {
       fetchUploadedDocuments();
@@ -70,7 +70,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.passportImages.map((doc, index) => (
                   <div key={index} className=" border-2 rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${doc.path}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
                       alt={`passport-${index}`}
                       width={400}
                       height={400}
@@ -93,7 +93,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.proofOfFundsImages.map((doc, index) => (
                   <div key={index} className="border rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${doc.path}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
                       alt={`proof-of-funds-${index}`}
                       width={400}
                       height={400}
@@ -116,7 +116,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.proofOfTiesImages.map((doc, index) => (
                   <div key={index} className="border rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${doc.path}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
                       alt={`proof-of-ties-${index}`}
                       width={400}
                       height={400}
@@ -139,7 +139,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.additionalDocuments.map((doc, index) => (
                   <div key={index} className="border rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${doc.path}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
                       alt={`additional-doc-${index}`}
                       width={400}
                       height={400}
