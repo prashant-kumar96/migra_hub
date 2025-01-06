@@ -34,6 +34,8 @@ async function login(req: any, res: any) {
   }
 }
 
+
+
 async function register(req: any, res: any) {
   const JWT_SECRET: any = process.env.JWT_SECRET;
   console.log("req body", req.body);
@@ -55,41 +57,47 @@ async function register(req: any, res: any) {
       const visadata = new VisaData(data);
       const resultVisadata = await visadata.save();
       console.log("resultVisaData", resultVisadata);
- 
+
       const hashedPassword = await bcrypt.hash(password, 10);
-      const applicationId = uuidv4();
- 
-      const applicationStatus = new ApplicationStatus({ userId: null });
-       const resultApplicationStatus = await applicationStatus.save();
- 
+
+
       const user = new User({
           email,
           password: hashedPassword,
           role,
           name,
           visaDataId: resultVisadata._id,
-          applicationId: role === "USER" ? applicationId : undefined, // Generate only for "USER"
-          isPrimaryApplicant: role === "USER" ? true : false,
-          applicationStatusId: resultApplicationStatus._id,
-         
+
       });
- 
- 
+
         const result = await user.save();
           console.log(result, "result");
-        // update user id in application status table
-          await ApplicationStatus.updateOne({ _id: resultApplicationStatus._id}, { userId: result._id })
- 
- 
- 
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1d" });
+      // create application status and application id
+      const applicationId = uuidv4();
+      const applicationStatus = new ApplicationStatus({ userId: result._id, applicationId: applicationId });
+      const resultApplicationStatus = await applicationStatus.save();
+
+       // Update the user object with application id
+         result.applicationId = applicationId;
+         result.isPrimaryApplicant = true;
+         result.applicationStatusId = resultApplicationStatus._id;
+         await result.save();
+
+         // Update the application status to completed
+          await ApplicationStatus.updateOne(
+            {_id: resultApplicationStatus._id},
+            {$set: { riskAssessment: "completed" }}
+         );
+
+
+      const token = jwt.sign({ id: result._id }, JWT_SECRET, { expiresIn: "1d" });
       res.status(200).json({
           token,
           user: {
-          email: user.email,
-          id: user._id,
+          email: result.email,
+          id: result._id,
           message: "User registered successfully",
-          role: user.role,
+          role: result.role,
           },
       });
       } catch (error) {
@@ -99,7 +107,7 @@ async function register(req: any, res: any) {
   }
   }
 
-  
+
 
   async function googleLogin(req: any, res: any) {
     try {
