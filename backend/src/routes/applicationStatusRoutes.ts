@@ -9,5 +9,7 @@ router.get("/:applicationStatusId", verifyToken, getApplicationStatusDetails);
 
 
 router.post("/document-upload-status/:applicationStatusId", verifyToken, updateDocumentUploadStatus);
+router.post("/payment-status/:applicationStatusId", verifyToken, updateDocumentUploadStatus);
+
 
 export default router;

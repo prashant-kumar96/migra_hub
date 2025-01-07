@@ -4,6 +4,8 @@ import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
 import { me } from "@/api/auth";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
+import { useAuth } from "@/context/auth-context";
+import { updatePaymentStatus } from "@/api/applicationStatus";
 
 const Success = () => {
   const router = useRouter();
@@ -11,7 +13,9 @@ const Success = () => {
   const [sessionDetails, setSessionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [meData] = useAtom(meDataAtom);
-
+  const {user} = useAuth();
+  const applicationStatusId = user?.user?.applicationStatusId
+  console.log('application status id',applicationStatusId)
   const getmedata = async () => {};
 
   useEffect(() => {
@@ -20,13 +24,24 @@ const Success = () => {
 
   console.log(meData);
 
+  const handleStatusUpdate = async () => {
+    try {
+      await updatePaymentStatus(applicationStatusId);
+      console.log('Payment status updated successfully.');
+    } catch (error) {
+      console.log('Error updating payment status:', error.message);
+      // Optionally, you can perform additional error handling here
+    }
+  };
+  
+
   const fun1 = async () => {
     if (session_id) {
       const result = await me();
       console.log("result getmedata", result?.data);
 
       // Fetch session details from the backend
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}retrieve-session`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/retrieve-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -38,6 +53,7 @@ const Success = () => {
         .then((data) => {
           setSessionDetails(data);
           setLoading(false);
+            handleStatusUpdate()
         })
         .catch((error) => {
           console.error("Error fetching session details:", error);
@@ -45,6 +61,7 @@ const Success = () => {
         });
     }
   };
+
   useEffect(() => {
     fun1();
   }, [session_id]);
