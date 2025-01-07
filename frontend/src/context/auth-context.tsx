@@ -40,9 +40,9 @@ import { me } from '@/api/auth';
   
     const logout = () => {
       localStorage.removeItem('token');
-        setUser(null);
+      setUser(null);
       setToken(null);
-      router.push('/login');
+      // router.push('/login');
     };
   
       const fetchUser = async (token: string) => {

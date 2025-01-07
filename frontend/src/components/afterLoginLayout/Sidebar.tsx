@@ -14,6 +14,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
+import Loader from "../loaders/loader";
 
 const sidebarData = [
   {
@@ -86,6 +87,7 @@ const Sidebar = () => {
   const [token, setToken] = useState("");
   const { data: session } = useSession();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false); // Added loading state
 
   const router = useRouter();
 
@@ -101,23 +103,26 @@ const Sidebar = () => {
       console.error("Error fetching user data:", error);
     }
   };
-  
- 
 
   const handleSignout = async () => {
-    try {
-      // Use the context's logout function which handles everything
-      logout();
-      
-      // Handle next-auth session if it exists
-      if (session) {
-        await signOut({ redirect: false });
-      }
-    } catch (error) {
-      console.error("Error during signout:", error);
-    }
+    router.push('/logout')
+    //   setIsLoggingOut(true); // Set loading to true before signout begins
+    // try {
+    //   // Use the context's logout function which handles everything
+    //  await logout();
+
+    //   // Handle next-auth session if it exists
+    //   if (session) {
+    //     await signOut({ redirect: false });
+    //   }
+    //   router.push("/login")
+    //   // Router navigation or any additional cleanup logic goes here if needed
+    // } catch (error) {
+    //   console.log("Error during signout:", error);
+    // } finally {
+    //   setIsLoggingOut(false); // Set loading to false once signout process is completed (successful or not)
+    // }
   };
-  
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -148,9 +153,12 @@ const Sidebar = () => {
       return () => window.removeEventListener("resize", updateScreenSize);
     }
   }, []);
+
   return (
     <main className="flex">
-      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex flex-col fixed left-0 top-0 ">        {/* Logo Section */}
+        {isLoggingOut && <Loader text="logging out" />} {/* Show loader when logging out */}
+      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex flex-col fixed left-0 top-0 ">
+        {/* Logo Section */}
         <div className="text-center text-FloralWhite p-6">
           <Link href="/">
             {isSmallScreen ? (
@@ -201,12 +209,13 @@ const Sidebar = () => {
           {session || token ? (
             <button
               className="bg-FloralWhite text-Indigo border-2 border-FloralWhite p-2 rounded-md w-full flex items-center justify-center hover:bg-transparent hover:text-FloralWhite"
-              onClick={handleSignout}
+              onClick={()=>router.push('/logout')}
             >
               <RiUserReceivedFill size={20} />
-              <span onClick={()=>handleSignout} className="ml-3 hidden sm:block uppercase leading-snug tracking-widest">
+                <span
+              className="ml-3 hidden sm:block uppercase leading-snug tracking-widest">
                 Sign Out
-              </span>
+                </span>
             </button>
           ) : null}
         </div>
