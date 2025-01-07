@@ -57,7 +57,7 @@ const UserDetails = ({ data }) => {
           </p>
           <p>
             <strong className="font-medium">Denied Visa In Last 90 Days:</strong>{" "}
-            {user?.visaDataId?.deniedVisaToUs ? "Yes" : "No"}
+            {user?.visaDataId?.deniedVisaToAnyCountry ? "Yes" : "No"}
           </p>
           <p>
             <strong className="font-medium">Destination Country:</strong>{" "}

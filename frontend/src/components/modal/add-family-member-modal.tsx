@@ -22,7 +22,7 @@ interface FormData {
     email: string;
     areYouApplyingFromPassportCountry:boolean;
     citizenshipCountry: {value: string, label:string};
-    deniedVisaToUs:boolean;
+    deniedVisaToAnyCountry:boolean;
     destinationCountry: {value: string, label:string};
     haveSpouseOrProperty:boolean;
     passportCountry: {value: string, label:string};
@@ -37,7 +37,7 @@ const schema = yup.object().shape({
     email: yup.string().email('Email must be valid').required('Email is required'),
     areYouApplyingFromPassportCountry:yup.boolean().required('Applying From Passport Country is required'),
     citizenshipCountry:yup.object().required('Citizenship Country is required'),
-    deniedVisaToUs:yup.boolean().required('Previously Denied Visa to US is required'),
+    deniedVisaToAnyCountry:yup.boolean().required('Previously Denied Visa to any country is required'),
     destinationCountry:yup.object().required('Destination Country is required'),
     haveSpouseOrProperty:yup.boolean().required('Have Spouse Or Property is required'),
     passportCountry:yup.object().required('Passport Country is required'),
@@ -87,7 +87,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                 relationship,
                 areYouApplyingFromPassportCountry,
                 citizenshipCountry,
-                deniedVisaToUs,
+                deniedVisaToAnyCountry,
                 destinationCountry,
                 haveSpouseOrProperty,
                 passportCountry,
@@ -103,7 +103,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                   data: {
                      areYouApplyingFromPassportCountry,
                      citizenshipCountry: citizenshipCountry,
-                     deniedVisaToUs,
+                     deniedVisaToAnyCountry,
                      destinationCountry: destinationCountry,
                        haveSpouseOrProperty,
                     passportCountry: passportCountry,
@@ -273,13 +273,13 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                     {/* Previously Denied Visa to US */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Previously Denied Visa to US
+                            Previously Denied Visa to Any Country
                         </label>
                         <div className="flex gap-4">
                             <label className="inline-flex items-center">
                                 <input type="radio"
-                                       className={`form-radio h-5 w-5 text-Indigo ${errors.deniedVisaToUs ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
-                                       {...register("deniedVisaToUs")}
+                                       className={`form-radio h-5 w-5 text-Indigo ${errors.deniedVisaToAnyCountry ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
+                                       {...register("deniedVisaToAnyCountry")}
                                        value={true}
                                 />
                                 <span className="ml-2 text-gray-700">Yes</span>
@@ -287,14 +287,14 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             <label className="inline-flex items-center">
                                 <input
                                     type="radio"
-                                    className={`form-radio h-5 w-5 text-Indigo ${errors.deniedVisaToUs ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
-                                    {...register("deniedVisaToUs")}
+                                    className={`form-radio h-5 w-5 text-Indigo ${errors.deniedVisaToAnyCountry ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
+                                    {...register("deniedVisaToAnyCountry")}
                                     value={false}
                                 />
                                 <span className="ml-2 text-gray-700">No</span>
                             </label>
                         </div>
-                        {errors.deniedVisaToUs && <p className="text-red-500 text-xs mt-1">{errors.deniedVisaToUs.message}</p>}
+                        {errors.deniedVisaToAnyCountry && <p className="text-red-500 text-xs mt-1">{errors.deniedVisaToAnyCountry.message}</p>}
                     </div>
 
                     {/* Destination Country Select */}

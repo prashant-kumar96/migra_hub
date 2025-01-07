@@ -3,7 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IVisaData extends Document {
   areYouApplyingFromPassportCountry: Boolean;
   citizenshipCountry: {};
-  deniedVisaToUs: Boolean;
+  deniedVisaToAnyCountry: Boolean;
   destinationCountry: {};
   haveSpouseOrProperty: Boolean;
   passportCountry: {};
@@ -21,7 +21,7 @@ const visaDataSchema: Schema<IVisaData> = new Schema({
     type: {},
     required: [false, "Citizenship Country is required"],
   },
-  deniedVisaToUs: {
+  deniedVisaToAnyCountry: {
     type: Boolean,
     required: [false, "Denied Visa In Last 90 Days is required"],
   },

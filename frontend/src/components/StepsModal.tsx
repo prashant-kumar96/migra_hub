@@ -33,6 +33,7 @@ const StepsModal: React.FC<Props> = ({
   citizenshipCountry,
   setShouldStartjourneyShow,
   setCitizenshipCountry,
+  // handleModalClose,
   onSelectCitizenShipCountry,
   onModalClose,
   countryCodes,
@@ -40,6 +41,7 @@ const StepsModal: React.FC<Props> = ({
 }) => {
   console.log(':: props', citizenshipCountry, destinationCountry)
   const handleCloseModal = () => {
+    onModalClose()
     setShouldStartjourneyShow(false);
   };
   useEffect(() => {
@@ -91,19 +93,20 @@ const StepsModal: React.FC<Props> = ({
     whereWillYouApplyForYourVisa: selectedCitizenshipcountry,
     haveSpouseOrProperty: false,
     travelledInternationallyAndReturnedHome: false,
-    deniedVisaToUs: false,
+    deniedVisaToAnyCountry: false,
   });
 
   const saveVisaData = async (data: any) => {
     // Add userId to the data object
     const visaDataWithUserId = { ...data, userId };
-  
+     console.log(';; visa data',visaDataWithUserId)
     try {
       const response = await createVisaData(visaDataWithUserId);
   
       if (response.status === 200) {
         console.log("Data saved successfully");
         setRedirection(true);
+         handleCloseModal();
       } else {
         console.error("Error saving data:", response.data?.message || "Unknown error");
       }
@@ -113,6 +116,7 @@ const StepsModal: React.FC<Props> = ({
 
       // Ensure modal closes after the API call, whether it succeeds or fails
       handleCloseModal();
+       
       // onModalClose()
     }
   };
@@ -555,19 +559,19 @@ const StepsModal: React.FC<Props> = ({
                 {step === 4 && (
                   <>
                     <div
-                      className={`${data.deniedVisaToUs ? "border-2 border-red-500 rounded-xl " : ""
+                      className={`${data.deniedVisaToAnyCountry ? "border-2 border-red-500 rounded-xl " : ""
                         } `}
                     >
                       <div className="ml-1 bg-transparent">
                         <Radio
                           text="Yes"
                           textColor="white"
-                          onChange={() => handleYes("deniedVisaToUs")}
-                          name="deniedVisaToUs"
-                          checked={data.deniedVisaToUs}
+                          onChange={() => handleYes("deniedVisaToAnyCountry")}
+                          name="deniedVisaToAnyCountry"
+                          checked={data.deniedVisaToAnyCountry}
                         />
                       </div>
-                      {data.deniedVisaToUs && (
+                      {data.deniedVisaToAnyCountry && (
                         <>
                           <div className="p-4 md:p-5 bg-[#F6EFE6] rounded-b-xl">
                             <Increased />
@@ -575,7 +579,7 @@ const StepsModal: React.FC<Props> = ({
                             {/* <Checkbox
                             text="Risk Decreased"
                             textColor="white"
-                            checked={data.deniedVisaToUs}
+                            checked={data.deniedVisaToAnyCountry}
                           /> */}
                             <p className="text-[14.5px] text-Indigo text-justify tracking-wide leading-5">
                               {" "}
@@ -591,25 +595,25 @@ const StepsModal: React.FC<Props> = ({
                     </div>
 
                     <div
-                      className={`${!data.deniedVisaToUs ? "border-2 border-lime-700 rounded-xl " : ""
+                      className={`${!data.deniedVisaToAnyCountry ? "border-2 border-lime-700 rounded-xl " : ""
                         } `}
                     >
                       <div className="ml-1 bg-transparent">
                         <Radio
                           text="No"
                           textColor="white"
-                          onChange={() => handleNo("deniedVisaToUs")}
-                          name="deniedVisaToUs"
-                          checked={!data.deniedVisaToUs}
+                          onChange={() => handleNo("deniedVisaToAnyCountry")}
+                          name="deniedVisaToAnyCountry"
+                          checked={!data.deniedVisaToAnyCountry}
                         />
                       </div>
-                      {!data.deniedVisaToUs && (
+                      {!data.deniedVisaToAnyCountry && (
                         <>
                           <div className="p-4 md:p-5 bg-[#F6EFE6] rounded-b-xl">
                             {/* <Checkbox
                               text="Risk Increased"
                               textColor="white"
-                              checked={!data.deniedVisaToUs}
+                              checked={!data.deniedVisaToAnyCountry}
                             /> */}
                             <Decreased />
                             <p className="text-sm text-Indigo text-justify tracking-wide">{ModalData[step].lineForNo}</p>
