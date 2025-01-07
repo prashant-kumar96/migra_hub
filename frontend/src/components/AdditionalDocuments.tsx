@@ -8,134 +8,24 @@ import {
 } from "@/api/document";
 import CrossIcon from "@/utils/crossIcon";
 import { useAuth } from "@/context/auth-context";
+import UploadModal from "./modal/upload-modal";
+import useDocumentUpload from "@/utils/documentUpload";
 
-const UploadModal = ({ userId, isOpen, onClose }) => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [uploadedImages, setUploadedImages] = useState([]);
-  const [medata] = useAtom(meDataAtom);
- 
+interface AdditionalDocumentsProps {
+  userId: string;
+   onUploadSuccess?: () => void;
+}
 
-  console.log("selectedFiles", selectedFiles);
-  // Fetch uploaded files when modal opens
-
-  // Handle file selection and preview generation
-  const handleFileChange = (e) => {
-    const files = Array.from(event.target.files);
-    setUploadedImages([...uploadedImages, ...files]);
-  };
-
-  // Upload selected files to the backend
-  const handleUpload = async () => {
-    const formData = new FormData();
-    uploadedImages.forEach((file) => {
-      formData.append("images", file);
-    });
-
-    console.log("hello", userId);
-    // return;
-    formData.append("userId", userId);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}api/document/uploadAdditionalDocuments`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (response.ok) {
-        alert("Images uploaded successfully!");
-        setSelectedFiles([]);
-        onClose();
-        // fetchUploadedFiles();
-      } else {
-        console.log("response", response);
-        alert("Failed to upload images.");
-      }
-    } catch (error) {
-      console.error("Error uploading images:", error);
-      alert("An error occurred while uploading.");
-    }
-  };
-
-  // Fetch previously uploaded files
-
-  if (!isOpen) return null;
-
-  const handleRemoveImage = (index) => {
-    console.log("imageIndex", index);
-    setUploadedImages((prev) => prev.filter((element, i) => index !== i));
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-md w-96">
-        <h2 className="text-xl font-bold mb-4 dark:text-gray-700">
-          Upload Additional Documents
-        </h2>
-
-        {/* File Input */}
-        <input
-          type="file"
-          multiple
-          accept="image/jpeg,image/gif,image/png,application/pdf"
-          onChange={handleFileChange}
-          className="mb-4 dark:text-gray-700"
-        />
-
-        {/* Preview Selected Files */}
-        <div className="max-h-96 overflow-auto">
-          {uploadedImages.map((image, index) => (
-            <div key={index} className="mb-4 border relative">
-              <div
-                className="absolute right-0 cursor-pointer"
-                onClick={() => handleRemoveImage(index)}
-              >
-                <CrossIcon />
-              </div>
-              <Image
-                src={URL.createObjectURL(image)}
-                alt={`upload-${index}`}
-                width={300}
-                height={300}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Uploaded Files */}
-
-        {/* Action Buttons */}
-        <div className="flex justify-end space-x-4">
-          <button
-            onClick={onClose}
-            className="bg-gray-300 hover:bg-gray-400 text-black py-2 px-4 rounded"
-          >
-            Close
-          </button>
-          {uploadedImages.length > 0 && (
-            <button
-              onClick={handleUpload}
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-            >
-              Upload
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const AdditionalDocuments = ({userId}) => {
+const AdditionalDocuments: React.FC<AdditionalDocumentsProps> = ({ userId, onUploadSuccess, setFiles, files, uploadStatuses, setUploadStatuses }) => {
   const [isModalOpen, setModalOpen] = useState(false);
- 
+  const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
   const [
     areAdditionalDocumentsPreviouslyUploaded,
     setAreAdditionalDocumentsPreviouslyUploaded,
   ] = useState(false);
 
   const [medata] = useAtom(meDataAtom);
+ const { handleRemoveFile } = useDocumentUpload()
   const fetchUploadedProofOfTies = async () => {
     try {
       console.log("fetchUploadedProofOfFunds");
@@ -157,7 +47,11 @@ const AdditionalDocuments = ({userId}) => {
 
   useEffect(() => {
     fetchUploadedProofOfTies();
-  });
+  },[userId]);
+    const handleFilesLoaded = (loadedFiles: File[]) => {
+        setFiles(loadedFiles);
+        setLoadedFiles(loadedFiles)
+    };
   return (
     <div className="p-6">
       {areAdditionalDocumentsPreviouslyUploaded ? (
@@ -181,14 +75,53 @@ const AdditionalDocuments = ({userId}) => {
           </span>
         </div>
       ) : (
-        <button
-          onClick={() => setModalOpen(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-        >
-          Upload Additional Documents
-        </button>
+          <div>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="bg-gray-100 border text-black hover:text-white hover:bg-blue-600 my-2  py-2 px-4 rounded"
+
+            >
+              Upload Additional Documents
+            </button>
+              {files.map((file, index) => (
+                  <div key={index} className="mb-4 border relative flex justify-between gap-4 items-center">
+                      <div className='w-fit'>
+                          <Image
+                              src={URL.createObjectURL(file)}
+                              alt={`upload-${index}`}
+                              width={150}
+                              height={150}
+                          />
+                      </div>
+                      <div className='flex items-center justify-between gap-4'>
+                            {uploadStatuses[file.name + Date.now()] === "uploading" &&
+                            <span>Uploading</span>}
+                            {uploadStatuses[file.name + Date.now()] === "success" &&
+                            <span>Success</span>}
+                            {uploadStatuses[file.name + Date.now()] === "error" &&
+                            <span>Error</span>}
+                          <div
+                              className="absolute right-0 cursor-pointer "
+                              onClick={() => handleRemoveFile(index)}
+                          >
+
+                          </div>
+                      </div>
+                  </div>
+              ))}
+          </div>
       )}
-      <UploadModal userId={userId} isOpen={isModalOpen} onClose={() => setModalOpen(false)} />
+        <UploadModal
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+          modalTitle="Upload Additional Documents"
+            onFilesLoaded={handleFilesLoaded}
+            loadedFiles={loadedFiles}
+             setLoadedFiles={setLoadedFiles}
+             uploadStatuses={uploadStatuses}
+           handleRemoveFile={handleRemoveFile}
+            setUploadStatuses={setUploadStatuses}
+      />
     </div>
   );
 };

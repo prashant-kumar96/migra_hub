@@ -13,21 +13,32 @@ import React, { useEffect, useState } from "react";
 
 
 
-const DocumentUpload = ({userId}) => {
+
+const DocumentUpload = ({ userId }) => {
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [uploadedDocuments, setUploadedDocuments] = useState<any>(null);
   const [showUploadComponents, setShowUploadComponents] = useState(true);
+  const [isUploadingAll , setIsUploadingAll] = useState(false)
+
+
+  const [passportFiles, setPassportFiles] = useState<File[]>([]);
+  const [proofOfFundsFiles, setProofOfFundsFiles] = useState<File[]>([]);
+  const [proofOfTiesFiles, setProofOfTiesFiles] = useState<File[]>([]);
+  const [additionalDocFiles, setAdditionalDocFiles] = useState<File[]>([]);
+  const [passportUploadStatus, setPassportUploadStatus] = useState<{ [key: string]: string }>({})
+  const [proofOfFundsUploadStatus, setProofOfFundsUploadStatus] = useState<{ [key: string]: string }>({})
+  const [proofOfTiesUploadStatus, setProofOfTiesUploadStatus] = useState<{ [key: string]: string }>({})
+    const [additionalDocUploadStatus, setAdditionalDocUploadStatus] = useState<{ [key: string]: string }>({})
 
   console.log(";; user id", typeof userId);
-
 
   const fetchUploadedDocuments = async () => {
     try {
       const data = await checkifPaymentIsDone(userId);
-      
+
       console.log("fetchUploadedDocuments");
       console.log(";; user id", typeof userId);
-      const response = await getSinglePassportData( userId );
+      const response = await getSinglePassportData(userId);
       console.log(";; response", response?.data);
 
       if (response?.data?.status && response?.data?.result) {
@@ -53,9 +64,53 @@ const DocumentUpload = ({userId}) => {
     if (userId) {
       fetchUploadedDocuments();
     }
-  }, [ userId]);
+  }, [userId]);
 
-  console.log(";; uploaded documents", uploadedDocuments);
+    const handleFileUpload = async (userId:string, uploadUrl:string, files:File[], setUploadStatuses : React.Dispatch<React.SetStateAction<{ [key: string]: string }>>) => {
+
+        setIsUploadingAll(true)
+        const newUploadStatuses = { };
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileId = file.name + Date.now();
+            newUploadStatuses[fileId] = 'uploading';
+            setUploadStatuses(newUploadStatuses)
+
+
+            const formData = new FormData();
+            formData.append('images', file);
+            formData.append('userId', userId);
+
+            try {
+                const response = await fetch(uploadUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    newUploadStatuses[fileId] = 'success';
+                    setUploadStatuses(newUploadStatuses)
+                } else {
+                  newUploadStatuses[fileId] = 'error';
+                    setUploadStatuses(newUploadStatuses)
+                }
+            } catch (error) {
+                newUploadStatuses[fileId] = 'error';
+                setUploadStatuses(newUploadStatuses)
+            }
+        }
+        setIsUploadingAll(false)
+    }
+
+  const handleUploadAll = async () => {
+     await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadPassportImages`, passportFiles, setPassportUploadStatus);
+    await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadproofOfFundsImages`, proofOfFundsFiles, setProofOfFundsUploadStatus);
+    await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadProofOfTiesImages`, proofOfTiesFiles, setProofOfTiesUploadStatus);
+    await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadAdditionalDocuments`, additionalDocFiles, setAdditionalDocUploadStatus);
+
+      fetchUploadedDocuments()
+  };
 
   return (
     <div className="p-6 text-gray-600">
@@ -70,7 +125,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.passportImages.map((doc, index) => (
                   <div key={index} className=" border-2 rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/${doc.path}`}
                       alt={`passport-${index}`}
                       width={400}
                       height={400}
@@ -93,7 +148,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.proofOfFundsImages.map((doc, index) => (
                   <div key={index} className="border rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
+                       src={`${process.env.NEXT_PUBLIC_API_URL}/${doc.path}`}
                       alt={`proof-of-funds-${index}`}
                       width={400}
                       height={400}
@@ -116,7 +171,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.proofOfTiesImages.map((doc, index) => (
                   <div key={index} className="border rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
+                       src={`${process.env.NEXT_PUBLIC_API_URL}/${doc.path}`}
                       alt={`proof-of-ties-${index}`}
                       width={400}
                       height={400}
@@ -139,7 +194,7 @@ const DocumentUpload = ({userId}) => {
                 {uploadedDocuments.additionalDocuments.map((doc, index) => (
                   <div key={index} className="border rounded-md p-2">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${doc.path}`}
+                       src={`${process.env.NEXT_PUBLIC_API_URL}/${doc.path}`}
                       alt={`additional-doc-${index}`}
                       width={400}
                       height={400}
@@ -155,12 +210,49 @@ const DocumentUpload = ({userId}) => {
       )}
       {showUploadComponents && (
         <>
-          <PassportUploadComp userId={userId}  />
-          <ProofOfFundsComp userId={userId} />
-          <ProofOfTiesComp userId={userId} />
-          <AdditionalDocuments userId={userId} />
+          <PassportUploadComp
+            userId={userId}
+            onUploadSuccess={fetchUploadedDocuments}
+            setFiles={setPassportFiles}
+            files={passportFiles}
+            uploadStatuses={passportUploadStatus}
+             setUploadStatuses={setPassportUploadStatus}
+          />
+          <ProofOfFundsComp
+            userId={userId}
+            onUploadSuccess={fetchUploadedDocuments}
+            setFiles={setProofOfFundsFiles}
+            files={proofOfFundsFiles}
+             uploadStatuses={proofOfFundsUploadStatus}
+             setUploadStatuses={setProofOfFundsUploadStatus}
+          />
+          <ProofOfTiesComp
+            userId={userId}
+            onUploadSuccess={fetchUploadedDocuments}
+            setFiles={setProofOfTiesFiles}
+            files={proofOfTiesFiles}
+              uploadStatuses={proofOfTiesUploadStatus}
+                setUploadStatuses={setProofOfTiesUploadStatus}
+          />
+          <AdditionalDocuments
+            userId={userId}
+            onUploadSuccess={fetchUploadedDocuments}
+            setFiles={setAdditionalDocFiles}
+            files={additionalDocFiles}
+             uploadStatuses={additionalDocUploadStatus}
+             setUploadStatuses={setAdditionalDocUploadStatus}
+          />
         </>
       )}
+        {showUploadComponents && (
+              <button
+                  onClick={handleUploadAll}
+                  className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                   disabled={isUploadingAll}
+              >
+                {isUploadingAll ? "Uploading All" : "Upload All"}
+              </button>
+          )}
     </div>
   );
 };

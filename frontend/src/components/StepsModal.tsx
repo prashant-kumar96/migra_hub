@@ -96,6 +96,7 @@ const StepsModal: React.FC<Props> = ({
     deniedVisaToAnyCountry: false,
   });
 
+
   const saveVisaData = async (data: any) => {
     // Add userId to the data object
     const visaDataWithUserId = { ...data, userId };
@@ -119,7 +120,7 @@ const StepsModal: React.FC<Props> = ({
        
       // onModalClose()
     }
-  };
+  };  
   
 
 
