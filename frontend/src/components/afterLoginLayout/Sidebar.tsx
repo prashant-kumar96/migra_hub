@@ -30,7 +30,7 @@ const sidebarData = [
         href: "/dashboard/profile",
       },
       {
-        name: "Application",
+        name: "Documents",
         icon: <VscServerProcess size={22} />,
         href: "/dashboard/documentupload",
       },
