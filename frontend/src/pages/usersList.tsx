@@ -14,7 +14,7 @@ const UsersList = () => {
       const result = await getAllUsersWhoHaveDonePayment();
       console.log("result getAllUsersWhoHaveDonePaymentFunction", result);
       const formattedData =
-        result?.data?.user?.map((user) => ({
+        result?.data?.user?.filter((usr)=>usr?.isPrimaryApplicant).map((user) => ({
           ...user,
           name: user.name ? (
             user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase()

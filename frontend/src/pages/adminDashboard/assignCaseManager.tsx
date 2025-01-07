@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AfterLoginLayout from "../components/afterLoginLayout/AfterLoginLayout";
+import AfterLoginLayout from "../../components/afterLoginLayout/AfterLoginLayout";
 import { getAllUsersWhoHaveDonePayment, getCaseManagers } from "@/api/auth";
 import { assignCaseManagerToUser } from "@/api/caseManager";
 
