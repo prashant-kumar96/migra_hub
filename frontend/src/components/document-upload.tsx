@@ -1,3 +1,4 @@
+import { updateDocumentUploadStatus } from "@/api/applicationStatus";
 import { checkifPaymentIsDone, me } from "@/api/auth";
 import { getAdditionalDocuments, getSinglePassportData, getSingleProofOfFundsData, getSingleProofOfTiesData } from "@/api/document";
 import AdditionalDocuments from "@/components/AdditionalDocuments";
@@ -14,7 +15,7 @@ import React, { useEffect, useState } from "react";
 
 
 
-const DocumentUpload = ({ userId }) => {
+const DocumentUpload = ({ userId,applicationStatusId }) => {
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [uploadedDocuments, setUploadedDocuments] = useState<any>(null);
   const [showUploadComponents, setShowUploadComponents] = useState(true);
@@ -104,12 +105,13 @@ const DocumentUpload = ({ userId }) => {
     }
 
   const handleUploadAll = async () => {
-     await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadPassportImages`, passportFiles, setPassportUploadStatus);
+    await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadPassportImages`, passportFiles, setPassportUploadStatus);
     await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadproofOfFundsImages`, proofOfFundsFiles, setProofOfFundsUploadStatus);
     await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadProofOfTiesImages`, proofOfTiesFiles, setProofOfTiesUploadStatus);
     await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadAdditionalDocuments`, additionalDocFiles, setAdditionalDocUploadStatus);
 
-      fetchUploadedDocuments()
+      fetchUploadedDocuments();
+      await updateDocumentUploadStatus(applicationStatusId)
   };
 
   return (

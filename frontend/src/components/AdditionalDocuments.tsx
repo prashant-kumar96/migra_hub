@@ -89,8 +89,8 @@ const AdditionalDocuments: React.FC<AdditionalDocumentsProps> = ({ userId, onUpl
                           <Image
                               src={URL.createObjectURL(file)}
                               alt={`upload-${index}`}
-                              width={150}
-                              height={150}
+                              width={400}
+                              height={400}
                           />
                       </div>
                       <div className='flex items-center justify-between gap-4'>

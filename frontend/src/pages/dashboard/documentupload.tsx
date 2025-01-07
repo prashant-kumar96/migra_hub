@@ -8,11 +8,12 @@ const router = useRouter();
   const { user, isLoading } = useAuth();
 
 const userId = user?.user?._id;
+const applicationStatusId = user?.user?.applicationStatusId;
 
   return (
 
     <div className=''>
-           <DocumentUpload userId={userId} />
+           <DocumentUpload applicationStatusId={applicationStatusId} userId={userId} />
     </div>
   )
 }
