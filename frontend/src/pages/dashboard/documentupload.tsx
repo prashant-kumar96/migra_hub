@@ -8,7 +8,7 @@ const router = useRouter();
   const { user, isLoading } = useAuth();
 
 const userId = user?.user?._id;
-const applicationStatusId = user?.user?.applicationStatusId;
+const applicationStatusId = user?.user?.applicationId;
 
   return (
 

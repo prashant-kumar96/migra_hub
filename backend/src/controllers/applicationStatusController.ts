@@ -5,14 +5,14 @@ import ApplicationStatus from "../models/applicationStatus.js";
  
 export const getApplicationStatusDetails = async (req: any, res: any) => {
     try {
-        const { applicationStatusId } = req.params;
-        console.log("applicationStatusId::", applicationStatusId);
+        const { applicationId } = req.params;
+        console.log("applicationId::", applicationId);
 
-        if (!applicationStatusId) {
-            return res.status(400).json({ message: "Application status ID is required" });
+        if (!applicationId) {
+            return res.status(400).json({ message: "Application ID is required" });
         }
 
-        const applicationStatus = await ApplicationStatus.findById(applicationStatusId);
+        const applicationStatus = await ApplicationStatus.findOne({applicationId: applicationId});
 
         if (!applicationStatus) {
             return res.status(404).json({ message: "Application status not found" });
@@ -28,17 +28,15 @@ export const getApplicationStatusDetails = async (req: any, res: any) => {
     }
 };
 
-
-
 export const updateDocumentUploadStatus = async (req: any, res: any) => {
     try {
-        const { applicationStatusId } = req.params;
+        const { applicationId } = req.params;
 
-        if (!applicationStatusId) {
-            return res.status(400).json({ message: "Application status ID is required" });
+        if (!applicationId) {
+            return res.status(400).json({ message: "Application  ID is required" });
         }
 
-        const applicationStatus = await ApplicationStatus.findById(applicationStatusId);
+        const applicationStatus = await ApplicationStatus.findOne({applicationId: applicationId});
 
         if (!applicationStatus) {
             return res.status(404).json({ message: "Application status not found" });
@@ -63,17 +61,15 @@ export const updateDocumentUploadStatus = async (req: any, res: any) => {
 };
 
 
-
-
 export const updatePaymentStatus = async (req: any, res: any) => {
     try {
-        const { applicationStatusId } = req.params;
+        const { applicationId } = req.params;
 
-        if (!applicationStatusId) {
-            return res.status(400).json({ message: "Application status ID is required" });
+        if (!applicationId) {
+            return res.status(400).json({ message: "Application ID is required" });
         }
 
-        const applicationStatus = await ApplicationStatus.findById(applicationStatusId);
+         const applicationStatus = await ApplicationStatus.findOne({applicationId: applicationId});
 
         if (!applicationStatus) {
             return res.status(404).json({ message: "Application status not found" });
@@ -96,4 +92,3 @@ export const updatePaymentStatus = async (req: any, res: any) => {
         res.status(500).json({ message: "Internal server error", error: error });
     }
 };
-

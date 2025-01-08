@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import AfterLoginLayout from "../components/afterLoginLayout/AfterLoginLayout";
 import { getAllUsersWhoHaveDonePayment } from "@/api/auth";
 import NATag from "@/components/ui/tags/NATag";
-import Role from "@/components/ui/tags/Role";
+import Role from  "@/components/ui/tags/Role";
 import Table from "@/components/ui/Table";
+
 
 const UsersList = () => {
   const [usersData, setUsersData] = useState();
@@ -38,9 +39,11 @@ const UsersList = () => {
     }
   };
 
+
   useEffect(() => {
     getAllUsersWhoHaveDonePaymentFunction();
   }, []);
+
 
   return (
     <div>
@@ -50,6 +53,7 @@ const UsersList = () => {
       </div>
     </div>
   );
+
 };
 
 export default AfterLoginLayout(UsersList);

@@ -16,7 +16,6 @@ export interface IUser extends Document {
   applicationId?: string; // Add application ID
     primaryApplicationId?: string; // Add primary application ID
   isPrimaryApplicant?: boolean;
-  applicationStatusId?: ObjectId;
   googleId?: string; // Add Google ID for Google login
     relationship?: "father" | "mother" | "brother" | "sister"; // Add the relationship field
 }
@@ -57,7 +56,6 @@ const userSchema: Schema<IUser> = new Schema({
   applicationId: { type: String, unique: true }, // Application ID field
   primaryApplicationId: { type: String }, // Primary Application ID field
   isPrimaryApplicant: { type: Boolean, default: false },
-  applicationStatusId: { type: Schema.Types.ObjectId, ref: "ApplicationStatus" },
   googleId:{type: String},
   relationship: { type: String, enum: ["father", "mother", "brother", "sister"] }, // Relationship field
 });

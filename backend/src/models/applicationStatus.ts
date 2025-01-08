@@ -1,7 +1,7 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
 export interface IApplicationStatus extends Document {
-    userId: ObjectId;
+    applicationId: string; // Link to the primary applicant's application
     riskAssessment: string; // "pending", "completed"
     profileCompletion: string; // "pending", "completed"
     payment: string; // "pending", "completed"
@@ -11,12 +11,11 @@ export interface IApplicationStatus extends Document {
     visaApproved: string; // "pending", "approved", "rejected"
     createdAt: Date;
     updatedAt: Date;
-    applicationId: string; // added application id
     caseManagerNotes?: string; // Case manager notes
 }
 
 const applicationStatusSchema: Schema<IApplicationStatus> = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: "User" },
+    applicationId: { type: String, required: true, unique: true }, // Link to the primary applicant's application
     riskAssessment: { type: String, enum: ["pending", "completed"], default: "pending" },
     profileCompletion: { type: String, enum: ["pending", "completed"], default: "pending" },
     payment: { type: String, enum: ["pending", "completed"], default: "pending" },
@@ -26,7 +25,6 @@ const applicationStatusSchema: Schema<IApplicationStatus> = new Schema({
     visaApproved: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    applicationId: { type: String, unique: true },
     caseManagerNotes: { type: String },
 });
 

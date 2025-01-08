@@ -61,7 +61,7 @@ interface FamilyMember {
     const [applicationStatus, setApplicationStatus] = useState<any>(null);
      const [selectedMemberId, setSelectedMemberId] = useState<string| null>(null);
     const [activeTab, setActiveTab] = useState(0); // Track active tab
-     const applicationStatusId = user?.user?.applicationStatusId;
+     const applicationStatusId = user?.user?.applicationId;
     const userId = user?.user?._id;
     const userDetails = user?.user
 
@@ -205,46 +205,8 @@ interface FamilyMember {
                 <TabPanel>
                     {hasValidVisaData() ? (
                         <>
-                            <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-                                <h2 className="text-2xl font-bold text-Indigo mb-6 text-center">
-                                    Risk Assessment Details
-                                </h2>
-                                <div className="grid md:grid-cols-2 gap-6">
-                                { primaryApplicant && Object.keys(primaryApplicant?.visaDataId || {}).length > 0 && 
-                                    Object.entries(primaryApplicant.visaDataId)?.map(([key, value]) => {
-                                        if (key === 'createdAt' || key === 'updatedAt' || key === '__v' || key === '_id') {
-                                        return null; // Skip these fields
-                                        }
-                                        
-                                        let displayValue;
-                                        if (typeof value === 'object' && value !== null && 'label' in value) {
-                                        displayValue = value.label;
-                                        } else if (typeof value === 'boolean') {
-                                        displayValue = value ? "Yes" : "No";
-                                        } else if (typeof value === 'string' && (value.toLowerCase() === 'true' || value.toLowerCase() === 'false')) {
-                                        displayValue = value.toLowerCase() === 'true' ? "Yes" : "No";
-                                        } else {
-                                        displayValue = value;
-                                        }
-                                        
-                                        const title = key
-                                        .replace(/([A-Z])/g, ' $1')
-                                        .trim()
-                                        .split(' ')
-                                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                        .join(' ');
-
-                                        return (
-                                        <div key={key} className="bg-gray-50 p-4 rounded-md border border-gray-200">
-                                            <h3 className="text-sm font-semibold text-gray-900 mb-2">{title}</h3>
-                                            <p className="text-lg text-gray-600 font-medium">{displayValue}</p>
-                                        </div>
-                                        )
-                                    })
-                                    }
-                                </div>
-                            </div>
-                      {applicationStatus?.applicationStatus?.profileCompletion !== 'pending' && <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+                             
+                           {applicationStatus?.applicationStatus?.profileCompletion !== 'pending' && <div className="bg-white rounded-lg shadow-lg p-6 text-center">
                                 <h2 className="text-2xl font-bold text-Indigo mb-4">
                                     Travel Visa Denial Risk
                                 </h2>

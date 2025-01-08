@@ -14,7 +14,7 @@ const Success = () => {
   const [loading, setLoading] = useState(true);
   const [meData] = useAtom(meDataAtom);
   const {user} = useAuth();
-  const applicationStatusId = user?.user?.applicationStatusId
+  const applicationStatusId = user?.user?.applicationId
   console.log('application status id',applicationStatusId)
   const getmedata = async () => {};
 
