@@ -5,6 +5,7 @@ import ApplicationStatus from "../models/applicationStatus.js";
  
 export const getApplicationStatusDetails = async (req: any, res: any) => {
     try {
+        console.log('application id',req.params)
         const { applicationId } = req.params;
         console.log("applicationId::", applicationId);
 

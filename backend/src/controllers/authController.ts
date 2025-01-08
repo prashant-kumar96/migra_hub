@@ -36,6 +36,8 @@ async function login(req: any, res: any) {
 
 
 
+
+
 async function register(req: any, res: any) {
   const JWT_SECRET: any = process.env.JWT_SECRET;
   console.log("req body", req.body);
@@ -74,20 +76,16 @@ async function register(req: any, res: any) {
           console.log(result, "result");
       // create application status and application id
       const applicationId = uuidv4();
-      const applicationStatus = new ApplicationStatus({ userId: result._id, applicationId: applicationId });
+      const applicationStatus = new ApplicationStatus({
+        applicationId: applicationId,
+        riskAssessment: 'completed'
+      });
       const resultApplicationStatus = await applicationStatus.save();
 
        // Update the user object with application id
          result.applicationId = applicationId;
          result.isPrimaryApplicant = true;
-         result.applicationStatusId = resultApplicationStatus._id;
          await result.save();
-
-         // Update the application status to completed
-          await ApplicationStatus.updateOne(
-            {_id: resultApplicationStatus._id},
-            {$set: { riskAssessment: "completed" }}
-         );
 
 
       const token = jwt.sign({ id: result._id }, JWT_SECRET, { expiresIn: "1d" });
@@ -106,136 +104,131 @@ async function register(req: any, res: any) {
       }
   }
   }
+ 
 
 
-
-  async function googleLogin(req: any, res: any) {
-    const session = await mongoose.startSession(); // Start a session for transaction
+async function googleLogin(req: any, res: any) {
+    
+  const session = await mongoose.startSession(); // Start a session for transaction
   session.startTransaction();
 
-    try {
-        const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
+  try {
+      const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
 
-        if (!accessToken || !email || !name || !googleId) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
+      if (!accessToken || !email || !name || !googleId) {
+          return res.status(400).json({ message: "Missing required fields" });
+      }
 
-        // Verify Google token
-        const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
-        try {
-            const googleRes = await axios.get(googleApiUrl);
-            if (googleRes.data.email !== email) {
-                return res.status(401).json({ message: "Invalid Google token" });
-            }
-        } catch (err) {
-            console.error("Google token verification error:", err);
-            return res.status(401).json({ message: "Invalid Google token" });
-        }
+      // Verify Google token
+      const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
+      try {
+          const googleRes = await axios.get(googleApiUrl);
+          if (googleRes.data.email !== email) {
+              return res.status(401).json({ message: "Invalid Google token" });
+          }
+      } catch (err) {
+          console.error("Google token verification error:", err);
+          return res.status(401).json({ message: "Invalid Google token" });
+      }
 
-        // Attempt to find an existing user by email
-        let user = await User.findOne({ email }).session(session); // Ensure user lookup is part of transaction
+      // Attempt to find an existing user by email
+      let user = await User.findOne({ email }).session(session); // Ensure user lookup is part of transaction
 
-        // Initialize visaDataId and applicationStatusId outside the if blocks
-        let visaDataId = user?.visaDataId;
-        let applicationStatusId = user?.applicationStatusId;
-        let applicationId;
+      // Initialize visaDataId and applicationStatusId outside the if blocks
+      let visaDataId = user?.visaDataId;
+       let applicationId;
 
-        // Handle Visa Data (only if riskAssessmentData is present)
-        if (riskAssessmentData) {
-          
-           if (!visaDataId) {
-               const visaData = new VisaData(riskAssessmentData);
-               const resultVisaData = await visaData.save({ session });
-               visaDataId = resultVisaData._id;
-           } else {
-               // If visaDataId exists, check if visa data is already saved for that id, if not then update
-               const existingVisaData = await VisaData.findById(visaDataId).session(session);
-               if(!existingVisaData) {
-                   const visaData = new VisaData(riskAssessmentData);
-                   const resultVisaData = await visaData.save({ session });
-                   visaDataId = resultVisaData._id;
-               }
-               
-           }
-           
-        }
-
-
-        // Create or Update User
-        if (!user) {
-            const newUser = new User({
-                email,
-                name,
-                googleId,
-                ...(visaDataId && { visaDataId }),
-                isPrimaryApplicant: true,
-                
-            });
-            user = await newUser.save({ session });
-        } else {
-            user.name = name;
-            user.googleId = googleId;
-            user.isPrimaryApplicant = true;
-            if (visaDataId) {
-                user.visaDataId = visaDataId;
-            }
-           await user.save({ session });
-        }
-
-
-          // Handle Application Status (only create if it doesn't exist)
-          if (!applicationStatusId) {
-               applicationId = uuidv4();
-                const applicationStatus = new ApplicationStatus({
-                  userId: user._id,
-                  applicationId,
-                  riskAssessment: riskAssessmentData ? 'completed' : 'pending'
-                });
-                const resultApplicationStatus = await applicationStatus.save({ session });
-            
-                applicationStatusId = resultApplicationStatus._id;
-                user.applicationId = applicationId;
-                user.applicationStatusId = applicationStatusId;
-                await user.save({ session });
+      // Handle Visa Data (only if riskAssessmentData is present)
+      if (riskAssessmentData) {
         
-            } else {
+         if (!visaDataId) {
+             const visaData = new VisaData(riskAssessmentData);
+             const resultVisaData = await visaData.save({ session });
+             visaDataId = resultVisaData._id;
+         } else {
+             // If visaDataId exists, check if visa data is already saved for that id, if not then update
+             const existingVisaData = await VisaData.findById(visaDataId).session(session);
+             if(!existingVisaData) {
+                 const visaData = new VisaData(riskAssessmentData);
+                 const resultVisaData = await visaData.save({ session });
+                 visaDataId = resultVisaData._id;
+             }
+             
+         }
+         
+      }
 
-                 // Check if visa data has been added or not
-                if(riskAssessmentData) {
-                    await ApplicationStatus.findByIdAndUpdate(applicationStatusId,
-                        { riskAssessment: 'completed' },
-                         {session}
-                        );
-                }
-        
-            }
+
+      // Create or Update User
+      if (!user) {
+          const newUser = new User({
+              email,
+              name,
+              googleId,
+              ...(visaDataId && { visaDataId }),
+              isPrimaryApplicant: true,
+              
+          });
+          user = await newUser.save({ session });
+      } else {
+          user.name = name;
+          user.googleId = googleId;
+          user.isPrimaryApplicant = true;
+          if (visaDataId) {
+              user.visaDataId = visaDataId;
+          }
+         await user.save({ session });
+      }
 
 
-        await session.commitTransaction();
-        session.endSession();
+        // Handle Application Status (only create if it doesn't exist)
+          const applicationStatus = await ApplicationStatus.findOne({applicationId: user.applicationId}).session(session);
+
+       if (!applicationStatus) {
+             applicationId = uuidv4();
+              const applicationStatus = new ApplicationStatus({
+                applicationId,
+                riskAssessment: riskAssessmentData ? 'completed' : 'pending'
+              });
+               await applicationStatus.save({ session });
+               user.applicationId = applicationId
+              await user.save({session});
+      
+          } else {
+
+               // Check if visa data has been added or not
+              if(riskAssessmentData) {
+                  applicationStatus.riskAssessment = 'completed';
+                 await applicationStatus.save({session})
+              }
+      
+          }
 
 
-        // Generate JWT
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-            expiresIn: "1d",
-        });
+      await session.commitTransaction();
+      session.endSession();
 
-        res.status(200).json({
-        token,
-        user: {
-            username: user.name,
-            id: user._id,
-            role: user.role,
-        },
-        });
-    } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
-        console.error("Error during Google login:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
+
+      // Generate JWT
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+          expiresIn: "1d",
+      });
+
+      res.status(200).json({
+      token,
+      user: {
+          username: user.name,
+          id: user._id,
+          role: user.role,
+      },
+      });
+  } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      console.error("Error during Google login:", error);
+      res.status(500).json({ message: "Internal server error" });
+  }
 }
-
 
 
   

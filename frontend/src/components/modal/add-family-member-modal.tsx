@@ -206,25 +206,25 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                     </div>
 
                      {/* Relationship  */}
-                     <div className="mb-4">
+                     <div className="mb-4 bg-white ">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Relationship
                         </label>
                         <select
-                                className={`w-full px-3 py-2 border rounded ${errors.relationship ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
+                                className={`w-full px-3 py-3.5 bg-white  border rounded ${errors.relationship ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                                  {...register("relationship")}
                             >
-                                <option value="">Select Relationship</option>
-                                <option value="father">Father</option>
-                                 <option value="mother">Mother</option>
-                                <option value="brother">Brother</option>
-                                 <option value="sister">Sister</option>
+                                <option className="p-3 bg-white" value="">Select Relationship</option>
+                                <option className="p-3 bg-white" value="father">Parent</option>
+                                 <option className="p-3 bg-white" value="mother">Sibling</option>
+                                <option className="p-3 bg-white" value="brother">Spouse</option>
+                                 <option className="p-3 bg-white" value="sister">Children</option>
                             </select>
                             {errors.relationship && <p className="text-red-500 text-xs mt-1">{errors.relationship.message}</p>}
                       </div>
 
                     {/* Applying From Passport Country Select */}
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Applying From Passport Country
                         </label>
@@ -248,7 +248,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             </label>
                         </div>
                         {errors.areYouApplyingFromPassportCountry && <p className="text-red-500 text-xs mt-1">{errors.areYouApplyingFromPassportCountry.message}</p>}
-                    </div>
+                    </div> */}
 
 
                     {/* Citizenship Country Select */}
@@ -298,7 +298,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                     </div>
 
                     {/* Destination Country Select */}
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Destination Country
                         </label>
@@ -315,11 +315,11 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             className={`w-full border rounded  ${errors.destinationCountry ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                         />
                         {errors.destinationCountry && <p className="text-red-500 text-xs mt-1">{errors.destinationCountry.message}</p>}
-                    </div>
+                    </div> */}
 
 
                     {/* Have Spouse Or Property */}
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Have Spouse Or Property
                         </label>
@@ -343,11 +343,11 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             </label>
                         </div>
                         {errors.haveSpouseOrProperty && <p className="text-red-500 text-xs mt-1">{errors.haveSpouseOrProperty.message}</p>}
-                    </div>
+                    </div> */}
 
 
                     {/* Passport Country Select */}
-                     <div className="mb-4">
+                     {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Passport Country
                         </label>
@@ -363,9 +363,9 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             className={`w-full border rounded  ${errors.passportCountry ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                         />
                         {errors.passportCountry && <p className="text-red-500 text-xs mt-1">{errors.passportCountry.message}</p>}
-                    </div>
+                    </div> */}
                     {/* Travelled Internationally And Returned Home */}
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Travelled Internationally And Returned Home
                         </label>
@@ -389,9 +389,9 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             </label>
                         </div>
                         {errors.travelledInternationallyAndReturnedHome && <p className="text-red-500 text-xs mt-1">{errors.travelledInternationallyAndReturnedHome.message}</p>}
-                    </div>
+                    </div> */}
                     {/* Where Will You Apply For Your Visa */}
-                     <div className="mb-4">
+                     {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                            Where Will You Apply For Your Visa
                         </label>
@@ -407,7 +407,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             className={`w-full rounded border  ${errors.whereWillYouApplyForYourVisa ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
                         />
                         {errors.whereWillYouApplyForYourVisa && <p className="text-red-500 text-xs mt-1">{errors.whereWillYouApplyForYourVisa.message}</p>}
-                    </div>
+                    </div> */}
                     <div className="mt-6 flex justify-end gap-4">
                         <button
                             type="button"

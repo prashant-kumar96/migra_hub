@@ -49,7 +49,8 @@ interface FamilyMember {
     isLoading:boolean
   }
 
-  const Dashboard: React.FC<DashboardProps> = () => {
+  
+  const Dashboard: React.FC = () => {
     const [visaData, setVisaData] = useState(""); // restore visaData local state
     const [primaryApplicant, setPrimaryApplicant] = useState<any>(null);
     const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
@@ -61,8 +62,7 @@ interface FamilyMember {
     const [applicationStatus, setApplicationStatus] = useState<any>(null);
      const [selectedMemberId, setSelectedMemberId] = useState<string| null>(null);
     const [activeTab, setActiveTab] = useState(0); // Track active tab
-     const applicationStatusId = user?.user?.applicationId;
-    const userId = user?.user?._id;
+     const userId = user?.user?._id;
     const userDetails = user?.user
 
       const openModal = () => {
@@ -73,13 +73,13 @@ interface FamilyMember {
 
         useEffect(() => {
             const fetchApplicationStatus = async () => {
-                 if(!applicationStatusId){
+                 if(!userDetails?.applicationId){
                    setLoading(false);
                    return
                  }
                 try {
                     setLoading(true);
-                    const response = await getApplicationStatusDetails(applicationStatusId);
+                    const response = await getApplicationStatusDetails(userDetails.applicationId);
                    if (response?.data) {
                         setApplicationStatus(response.data);
                     }
@@ -94,7 +94,7 @@ interface FamilyMember {
               fetchApplicationStatus();
             }
 
-        }, [applicationStatusId, user]);
+        }, [userDetails?.applicationId, user]);
 
 
       const closeModal = () => {
@@ -127,8 +127,11 @@ interface FamilyMember {
 
         try {
             setLoading(true);
-            const response = await getLinkedFamilyMembers(userId);
-            setFamilyMembers(response?.data?.familyMembers || []); // Set empty array if undefined
+            const response = await getDashboard()
+            if(response?.data){
+               setFamilyMembers(response?.data?.familyMembers || []); // Set empty array if undefined
+            }
+
         } catch (err) {
             console.error("Error during family members fetching", err);
         } finally {
@@ -158,7 +161,7 @@ interface FamilyMember {
 
     const handleAddFamilyMember = async () => {
           try {
-              const response = await getLinkedFamilyMembers(userId)
+              const response = await getDashboard();
              if(response.data){
                toast.success(response.data.message)
                Promise.all([fetchPrimaryApplicantData(), fetchFamilyMembers()]).finally(()=> {
@@ -185,19 +188,16 @@ interface FamilyMember {
             </div>
         );
     }
-
-    //  if (!applicationStatus) {
-    //    return <Loader text='Loading Application Status' />;
-    //  }
+ 
 
      return (
         <div className="max-w-5xl mx-auto p-6">
             <Tabs selectedIndex={activeTab} onSelect={handleTabChange}>
                 <TabList className="flex mb-6 border-b border-gray-200">
-                    <Tab className="py-2 text-gray-700 px-4 cursor-pointer border-b-2 border-transparent hover:border-Indigo focus:outline-none">
+                    <Tab className={`py-2 text-gray-700 px-4 cursor-pointer  hover:bg-gray-100 rounded-t-md ${activeTab === 0 ? 'bg-gray-100' : ""}`}>
                         Primary Applicant
                     </Tab>
-                    <Tab className="py-2 px-4 text-gray-700 cursor-pointer border-b-2 border-transparent hover:border-Indigo focus:outline-none">
+                    <Tab className={`py-2 px-4 text-gray-700 cursor-pointer  hover:bg-gray-100 rounded-t-md ${activeTab === 1 ? 'bg-gray-100' : ""}`}>
                         Family Members
                     </Tab>
                 </TabList>
@@ -352,114 +352,114 @@ interface FamilyMember {
                 </TabPanel>
             </Tabs>
             <AddFamilyMemberModal isOpen={isModalOpen} onClose={closeModal} onSubmit={handleAddFamilyMember}/>
-            {(applicationStatus && activeTab == 0) && (
-              <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
-                  <h2 className="text-2xl font-bold text-Indigo mb-4">Application Status</h2>
-                  <div className="overflow-x-auto">
-                      <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm  sm:hidden">
-                          <thead className="bg-gradient-to-r  text-gray-600">
-                              <tr>
-                                  <th className="px-4 py-3 text-left text-sm font-medium">Field</th>
-                                  <th className="px-4 py-3 text-left text-sm font-medium">Value</th>
-                              </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-200 text-gray-800">
-                              {Object.entries(applicationStatus?.applicationStatus || {})
-                                  .filter(([key]) => !["_id",'__v','createdAt','updatedAt', "userId", "applicationId"].includes(key))
-                                  .sort(([keyA], [keyB]) => {
-                                      const order = [
-                                          "riskAssessment",
-                                          "profileCompletion",
-                                          "payment",
-                                          "documentUpload",
-                                          "visaApplied",
-                                          "visaApproved",
-                                      ];
-                                      return order.indexOf(keyA) - order.indexOf(keyB);
-                                  })
-                                  .map(([key, value]) => {
-                                      let displayValue = value;
-                                      if (typeof value === 'boolean') {
-                                          displayValue = value ? "Yes" : "No";
-                                      }
-                                      const title = key.replace(/([A-Z])/g, ' $1').trim();
-                                      const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
-                                      const capitalizedDisplayValue = typeof displayValue === 'string' ? displayValue.charAt(0).toUpperCase() + displayValue.slice(1) : displayValue
-                                      return (
-                                          <tr key={key} className="hover:bg-gray-50">
-                                              <td className="px-4 py-3 text-sm font-semibold text-gray-800">{capitalizedTitle}</td>
-                                              <td className={` ${displayValue === 'pending' ? 'text-yellow-500' : displayValue === 'completed' ? 'text-green-600': ''} px-4 py-3 text-sm text-gray-600`}>{capitalizedDisplayValue}</td>
-                                          </tr>
-                                      );
-                                  })}
-                              <tr className="hover:bg-gray-50">
-                                  <td className="px-4 py-3 text-sm font-semibold text-gray-800">Relationship</td>
-                                  <td className="px-4 py-3 text-sm text-gray-600">{userDetails?.isPrimaryApplicant ? "Primary Applicant" : "Family Member"}</td>
-                              </tr>
-                          </tbody>
-                      </table>
-                      <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm hidden sm:table">
-                          <thead className="bg-gradient-to-r  text-gray-600">
-                              <tr>
-                                  {Object.entries(applicationStatus?.applicationStatus || {})
-                                      .filter(([key]) => !["_id",'__v','createdAt','updatedAt', "userId", "applicationId"].includes(key))
-                                      .sort(([keyA], [keyB]) => {
-                                          const order = [
-                                              "riskAssessment",
-                                              "profileCompletion",
-                                              "payment",
-                                              "documentUpload",
-                                              'assignedCaseManager',
-                                              "visaApplied",
-                                              "visaApproved",
-                                          ];
-                                          return order.indexOf(keyA) - order.indexOf(keyB);
-                                      })
-                                      .map(([key]) => {
-                                          const title = key.replace(/([A-Z])/g, ' $1').trim();
-                                          const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
-                                          return (
-                                              <th key={key} className="px-4 py-3 text-left text-sm font-medium">{capitalizedTitle}</th>
-                                          );
-                                      })}
-                                  <th className="px-4 py-3 text-left text-sm font-medium">Relationship</th>
-                              </tr>
-                          </thead>
-                          <tbody className="divide-y divide-gray-200 text-gray-800">
-                              <tr className="hover:bg-gray-50">
-                                  {Object.entries(applicationStatus?.applicationStatus || {})
-                                      .filter(([key]) => !["_id",'__v','createdAt','updatedAt', "userId", "applicationId"].includes(key))
-                                      .sort(([keyA], [keyB]) => {
-                                          const order = [
-                                              "riskAssessment",
-                                              "profileCompletion",
-                                              "payment",
-                                              "documentUpload",
-                                              'assignedCaseManager',
-                                              "visaApplied",
-                                              "visaApproved",
-                                          ];
-                                          return order.indexOf(keyA) - order.indexOf(keyB);
-                                      })
-                                      .map(([, value]) => {
-                                          let displayValue = value;
-                                          if (typeof value === 'boolean') {
-                                              displayValue = value ? "Yes" : "No";
-                                          }
-                                          const capitalizedDisplayValue = typeof displayValue === 'string' ? displayValue.charAt(0).toUpperCase() + displayValue.slice(1) : displayValue
-                                          return (
-                                              <td key={value} className={` ${displayValue === 'pending' ? 'text-yellow-500' : displayValue === 'completed' ? 'text-green-600': ''} px-4 py-3 text-sm text-gray-600`}>{capitalizedDisplayValue}</td>
-                                          );
-                                      })}
-                                  <td className="px-4 py-3 text-sm text-gray-600">{userDetails?.isPrimaryApplicant ? "Primary Applicant" : "Family Member"}</td>
-                              </tr>
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-          )}
+              {(applicationStatus && activeTab == 0) && (
+                <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
+                    <h2 className="text-2xl font-bold text-Indigo mb-4">Application Status</h2>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm  sm:hidden">
+                            <thead className="bg-gradient-to-r  text-gray-600">
+                                <tr>
+                                    <th className="px-4 py-3 text-left text-sm font-medium">Field</th>
+                                    <th className="px-4 py-3 text-left text-sm font-medium">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200 text-gray-800">
+                                {Object.entries(applicationStatus || {})
+                                    .filter(([key]) => !["_id",'__v','createdAt','updatedAt', "userId", "applicationId"].includes(key))
+                                    .sort(([keyA], [keyB]) => {
+                                        const order = [
+                                            "riskAssessment",
+                                            "profileCompletion",
+                                            "payment",
+                                            "documentUpload",
+                                            "visaApplied",
+                                            "visaApproved",
+                                        ];
+                                        return order.indexOf(keyA) - order.indexOf(keyB);
+                                    })
+                                    .map(([key, value]) => {
+                                        let displayValue = value;
+                                        if (typeof value === 'boolean') {
+                                            displayValue = value ? "Yes" : "No";
+                                        }
+                                        const title = key.replace(/([A-Z])/g, ' $1').trim();
+                                        const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
+                                        const capitalizedDisplayValue = typeof displayValue === 'string' ? displayValue.charAt(0).toUpperCase() + displayValue.slice(1) : displayValue
+                                        return (
+                                            <tr key={key} className="hover:bg-gray-50">
+                                                <td className="px-4 py-3 text-sm font-semibold text-gray-800">{capitalizedTitle}</td>
+                                                <td className={` ${displayValue === 'pending' ? 'text-yellow-500' : displayValue === 'completed' ? 'text-green-600': ''} px-4 py-3 text-sm text-gray-600`}>{capitalizedDisplayValue}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                <tr className="hover:bg-gray-50">
+                                    <td className="px-4 py-3 text-sm font-semibold text-gray-800">Relationship</td>
+                                    <td className="px-4 py-3 text-sm text-gray-600">{userDetails?.isPrimaryApplicant ? "Primary Applicant" : "Family Member"}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm hidden sm:table">
+                            <thead className="bg-gradient-to-r  text-gray-600">
+                                <tr>
+                                    {Object.entries(applicationStatus || {})
+                                        .filter(([key]) => !["_id",'__v','createdAt','updatedAt', "userId", "applicationId"].includes(key))
+                                        .sort(([keyA], [keyB]) => {
+                                            const order = [
+                                                "riskAssessment",
+                                                "profileCompletion",
+                                                "payment",
+                                                "documentUpload",
+                                                'assignedCaseManager',
+                                                "visaApplied",
+                                                "visaApproved",
+                                            ];
+                                            return order.indexOf(keyA) - order.indexOf(keyB);
+                                        })
+                                        .map(([key]) => {
+                                            const title = key.replace(/([A-Z])/g, ' $1').trim();
+                                            const capitalizedTitle = title.charAt(0).toUpperCase() + title.slice(1);
+                                            return (
+                                                <th key={key} className="px-4 py-3 text-left text-sm font-medium">{capitalizedTitle}</th>
+                                            );
+                                        })}
+                                    <th className="px-4 py-3 text-left text-sm font-medium">Relationship</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200 text-gray-800">
+                                <tr className="hover:bg-gray-50">
+                                    {Object.entries(applicationStatus || {})
+                                        .filter(([key]) => !["_id",'__v','createdAt','updatedAt', "userId", "applicationId"].includes(key))
+                                        .sort(([keyA], [keyB]) => {
+                                            const order = [
+                                                "riskAssessment",
+                                                "profileCompletion",
+                                                "payment",
+                                                "documentUpload",
+                                                'assignedCaseManager',
+                                                "visaApplied",
+                                                "visaApproved",
+                                            ];
+                                            return order.indexOf(keyA) - order.indexOf(keyB);
+                                        })
+                                        .map(([, value]) => {
+                                            let displayValue = value;
+                                            if (typeof value === 'boolean') {
+                                                displayValue = value ? "Yes" : "No";
+                                            }
+                                            const capitalizedDisplayValue = typeof displayValue === 'string' ? displayValue.charAt(0).toUpperCase() + displayValue.slice(1) : displayValue
+                                            return (
+                                                <td key={value} className={` ${displayValue === 'pending' ? 'text-yellow-500' : displayValue === 'completed' ? 'text-green-600': ''} px-4 py-3 text-sm text-gray-600`}>{capitalizedDisplayValue}</td>
+                                            );
+                                        })}
+                                    <td className="px-4 py-3 text-sm text-gray-600">{userDetails?.isPrimaryApplicant ? "Primary Applicant" : "Family Member"}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
         </div>
     );
-  };
+};
 
-  export default AfterLoginLayout(Dashboard);
+export default AfterLoginLayout(Dashboard);
