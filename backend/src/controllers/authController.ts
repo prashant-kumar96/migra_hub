@@ -110,6 +110,9 @@ async function register(req: any, res: any) {
 
 
   async function googleLogin(req: any, res: any) {
+    const session = await mongoose.startSession(); // Start a session for transaction
+  session.startTransaction();
+
     try {
         const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
 
@@ -129,21 +132,36 @@ async function register(req: any, res: any) {
             return res.status(401).json({ message: "Invalid Google token" });
         }
 
-        let user = await User.findOne({ email });
+        // Attempt to find an existing user by email
+        let user = await User.findOne({ email }).session(session); // Ensure user lookup is part of transaction
 
-        // Handle visa data
-        let visaDataId = null;
+        // Initialize visaDataId and applicationStatusId outside the if blocks
+        let visaDataId = user?.visaDataId;
+        let applicationStatusId = user?.applicationStatusId;
+        let applicationId;
 
+        // Handle Visa Data (only if riskAssessmentData is present)
         if (riskAssessmentData) {
-            if (user?.visaDataId) {
-                visaDataId = user.visaDataId;
-            } else if (!user || !user.visaDataId) {
-                const visaData = new VisaData(riskAssessmentData);
-                const resultVisaData = await visaData.save();
-                visaDataId = resultVisaData._id;
-            }
+          
+           if (!visaDataId) {
+               const visaData = new VisaData(riskAssessmentData);
+               const resultVisaData = await visaData.save({ session });
+               visaDataId = resultVisaData._id;
+           } else {
+               // If visaDataId exists, check if visa data is already saved for that id, if not then update
+               const existingVisaData = await VisaData.findById(visaDataId).session(session);
+               if(!existingVisaData) {
+                   const visaData = new VisaData(riskAssessmentData);
+                   const resultVisaData = await visaData.save({ session });
+                   visaDataId = resultVisaData._id;
+               }
+               
+           }
+           
         }
 
+
+        // Create or Update User
         if (!user) {
             const newUser = new User({
                 email,
@@ -151,8 +169,9 @@ async function register(req: any, res: any) {
                 googleId,
                 ...(visaDataId && { visaDataId }),
                 isPrimaryApplicant: true,
+                
             });
-            user = await newUser.save();
+            user = await newUser.save({ session });
         } else {
             user.name = name;
             user.googleId = googleId;
@@ -160,37 +179,58 @@ async function register(req: any, res: any) {
             if (visaDataId) {
                 user.visaDataId = visaDataId;
             }
-            await user.save();
+           await user.save({ session });
         }
 
-        if (riskAssessmentData && !user.applicationStatusId) {
-            const applicationId = uuidv4(); // Ensure applicationId is unique
-            const applicationStatus = new ApplicationStatus({
-                userId: user._id,
-                applicationId, // Include generated applicationId
-            });
-            const resultApplicationStatus = await applicationStatus.save();
 
-            user.applicationId = applicationId;
-            user.applicationStatusId = resultApplicationStatus._id;
-            await user.save();
-        }
+          // Handle Application Status (only create if it doesn't exist)
+          if (!applicationStatusId) {
+               applicationId = uuidv4();
+                const applicationStatus = new ApplicationStatus({
+                  userId: user._id,
+                  applicationId,
+                  riskAssessment: riskAssessmentData ? 'completed' : 'pending'
+                });
+                const resultApplicationStatus = await applicationStatus.save({ session });
+            
+                applicationStatusId = resultApplicationStatus._id;
+                user.applicationId = applicationId;
+                user.applicationStatusId = applicationStatusId;
+                await user.save({ session });
+        
+            } else {
 
-        const token = jwt.sign(
-            { id: user._id },
-            process.env.JWT_SECRET as string,
-            { expiresIn: "1d" }
-        );
+                 // Check if visa data has been added or not
+                if(riskAssessmentData) {
+                    await ApplicationStatus.findByIdAndUpdate(applicationStatusId,
+                        { riskAssessment: 'completed' },
+                         {session}
+                        );
+                }
+        
+            }
+
+
+        await session.commitTransaction();
+        session.endSession();
+
+
+        // Generate JWT
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+            expiresIn: "1d",
+        });
 
         res.status(200).json({
-            token,
-            user: {
-                username: user.name,
-                id: user._id,
-                role: user.role,
-            },
+        token,
+        user: {
+            username: user.name,
+            id: user._id,
+            role: user.role,
+        },
         });
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.error("Error during Google login:", error);
         res.status(500).json({ message: "Internal server error" });
     }
