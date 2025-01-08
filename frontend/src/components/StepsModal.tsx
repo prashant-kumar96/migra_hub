@@ -19,6 +19,8 @@ import { RiErrorWarningLine } from "react-icons/ri";
 import Decreased from "./ui/Text/Decreased";
 import Increased from "./ui/Text/Increased";
 import { createVisaData } from "@/api/visaData";
+import Login from "@/pages/login";
+import SignUpModal from "./modal/signup-modal";
 
 interface Props {
   setShouldStartjourneyShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -154,16 +156,30 @@ const StepsModal: React.FC<Props> = ({
 
     if (step === 4) {
       setSharedState(data);
-      localStorage.setItem('assessmentData', JSON.stringify(data))
-      setRedirection(true);
+      localStorage.setItem('assessmentData', JSON.stringify(data));
+      // setRedirection(true);
       (userId || path !== '/' ) && saveVisaData(data)
 
       // Add a small delay to allow the loader to render
-      setTimeout(() => {
-        if (!user) {
-          router.push("/login");
-        }
-      }, 500); // Adjust the delay as needed
+      // setTimeout(() => {
+      //   if (!user) {
+      //     router.push("/login");
+      //   }
+      // }, 500);  
+    } 
+    
+    if (step === 5) {
+      setSharedState(data);
+      localStorage.setItem('assessmentData', JSON.stringify(data));
+      // setRedirection(true);
+      (userId || path !== '/' ) && saveVisaData(data)
+
+      // Add a small delay to allow the loader to render
+      // setTimeout(() => {
+      //   if (!user) {
+      //     router.push("/login");
+      //   }
+      // }, 500);  
     } else if (progressBarpercentage !== 100) {
       setProgressBarPercentage((prev) => prev + 10);
       setStep((prev) => prev + 1);
@@ -171,8 +187,8 @@ const StepsModal: React.FC<Props> = ({
   }
 
 
-
   console.log("progressBarpercentage", progressBarpercentage);
+
 
   const handleBackButtonClick = () => {
     if (progressBarpercentage > 10) {
@@ -624,12 +640,12 @@ const StepsModal: React.FC<Props> = ({
                     </div>
                   </>
                 )}
+
+              {step === 5 && (
+
+                <SignUpModal />
+              )}
               </div>
-
-
-
-
-
 
 
 

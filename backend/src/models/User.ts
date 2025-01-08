@@ -21,7 +21,7 @@ export interface IUser extends Document {
 }
 const roleEnum = ["USER", "SA", "CASE_MANAGER"];
 const userSchema: Schema<IUser> = new Schema({
-  name: { type: String, required: [true, "Name is required"] },
+  name: { type: String, required: [false, "Name is required"] },
   email: {
     type: String,
     unique: true,

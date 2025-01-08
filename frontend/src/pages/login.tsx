@@ -225,33 +225,6 @@ const onSubmit = async (data) => {
     );
   }
 
-  // Error State
-  // if (authState.error || googleAuthStatus.error) {
-  //   return (
-  //     <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
-  //       <div className="text-center p-6 bg-white rounded-lg shadow-lg">
-  //         <div className="text-red-600 mb-4">
-  //           {authState.error || googleAuthStatus.error}
-  //         </div>
-  //         <button 
-  //           onClick={() => {
-  //             setAuthState(prev => ({ ...prev, error: null }));
-  //             setGoogleAuthStatus(prev => ({
-  //               attempted: false,
-  //               completed: false,
-  //               processing: false,
-  //               error: null
-  //             }));
-  //           }}
-  //           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-  //         >
-  //           Try Again
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4 py-12">
       <div className="bg-white shadow-xl rounded-lg w-full max-w-md">
