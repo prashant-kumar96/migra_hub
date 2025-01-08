@@ -21,7 +21,7 @@ const sidebarData = [
     role: "USER",
     menu: [
       {
-        name: "Dashboard",
+        name: "Home",
         icon: <MdDashboardCustomize size={22} />,
         href: "/dashboard",
       },
@@ -31,7 +31,7 @@ const sidebarData = [
         href: "/dashboard/profile",
       },
       {
-        name: "Documents",
+        name: "My Application",
         icon: <VscServerProcess size={22} />,
         href: "/dashboard/documentupload",
       },
