@@ -5,11 +5,11 @@ import verifyToken from "../middleware/authenticate.js";
 
 const router = express.Router();
 
-router.get("/:applicationStatusId", verifyToken, getApplicationStatusDetails);
+router.get("/:applicationId", verifyToken, getApplicationStatusDetails);
 
 
-router.post("/document-upload-status/:applicationStatusId", verifyToken, updateDocumentUploadStatus);
-router.post("/payment-status/:applicationStatusId", verifyToken, updateDocumentUploadStatus);
+router.post("/document-upload-status/:applicationId", verifyToken, updateDocumentUploadStatus);
+router.post("/payment-status/:applicationId", verifyToken, updateDocumentUploadStatus);
 
 
 export default router;
