@@ -1,7 +1,7 @@
 import { checkifPaymentIsDone, me } from "@/api/auth";
 import { getApplicationCharges } from "@/api/pricing";
 import CheckoutForm from "@/components/CheckoutFormComponent";
-import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
+import AfterLoginLayout, { ProgressBar } from "@/components/afterLoginLayout/AfterLoginLayout";
 import Loader from "@/components/loaders/loader";
 import { useAuth } from "@/context/auth-context";
 import { meDataAtom } from "@/store/meDataAtom";
@@ -54,6 +54,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+        <ProgressBar />
       <div className="max-w-3xl mx-auto">
         {isStripePaymentDone && (
           <>

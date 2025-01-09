@@ -1,4 +1,4 @@
-import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
+import AfterLoginLayout, { ProgressBar } from "@/components/afterLoginLayout/AfterLoginLayout";
 import React, { useState } from "react";
 import {
   CitySelect,
@@ -56,6 +56,7 @@ const ProfilePage = () => {
 
   return (
     <div className="w-5/6">
+        <ProgressBar />
       <div className="px-24 py-20">
         <h1 className="text-4xl mb-2">Personal Information</h1>
         <PersonalInfo 

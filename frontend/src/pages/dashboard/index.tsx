@@ -6,7 +6,7 @@ import { meDataAtom } from "@/store/meDataAtom";
 import { TfiControlForward } from "react-icons/tfi";
 import Link from "next/link";
 import { RiSlowDownFill } from "react-icons/ri";
-import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
+import AfterLoginLayout, { ProgressBar } from "@/components/afterLoginLayout/AfterLoginLayout";
 import Loader from "@/components/loaders/loader";
 import Stepper from "@/components/Stepper";
 import { useAuth } from "@/context/auth-context";
@@ -18,7 +18,7 @@ import "react-tabs/style/react-tabs.css";
 import { toast } from "react-toastify";
 import { getLinkedFamilyMembers } from "@/api/familyMember";
 import { getApplicationStatusDetails } from "@/api/applicationStatus";
-
+  
 
 
 
@@ -208,17 +208,19 @@ interface FamilyMember {
     if (loading || isLoading) {
       return (
         <div className="flex justify-center items-center min-h-screen">
-          <Loader text="Loading.." />
+          <Loader text="Loading..." />
         </div>
       );
     }
+
+    console.log(';; application log', applicationStatus?.profileCompletion )
   
     return (
       <div className="max-w-5xl mx-auto p-6">
-        {/* <ProgressBar /> */}
+        <ProgressBar />
         {hasValidVisaData() ? (
           <>
-            {applicationStatus?.profileCompletion !== "pending" && (
+            {applicationStatus?.profileCompletion == "pending" && (
               <div className="bg-white rounded-lg shadow-lg p-6 text-center">
                 <h2 className="text-2xl font-bold text-Indigo mb-4">
                   Travel Visa Denial Risk

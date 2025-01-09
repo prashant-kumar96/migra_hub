@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Stepper from "../Stepper";
 import Dashboard from "@/pages/dashboard";
 import { useAuth } from "@/context/auth-context";
+import { getApplicationStatusDetails } from "@/api/applicationStatus";
 
  
 
@@ -14,36 +15,83 @@ interface WithAuthProps {
     user?: any;
     isLoading: boolean;
 }
+
 // Progress Bar Component
-const ProgressBar = () => {
-    const [currentStep, setCurrentStep] = useState(1);
-    const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  
-    const isStepActive = (step: number) => {
-      return currentStep >= step;
-    };
-  
-    const isStepCompleted = (step: number) => {
-      return completedSteps.includes(step);
-    };
-  
-    // Calculate the width of the progress line based on completed steps
-    const getProgressWidth = () => {
-      const lastCompletedStep = Math.max(...completedSteps, 0);
-      return `${((lastCompletedStep) / 3) * 100}%`;
-    };
-  
-    const getStepStatus = (step: number) => {
-      if (isStepCompleted(step)) {
-        return 'bg-green-500 text-white';
+export const ProgressBar = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [applicationStatus, setApplicationStatus] = useState<any>(null);
+  const { user } = useAuth();
+
+  const applicationId = user?.user?.applicationId;
+
+  useEffect(() => {
+    const fetchApplicationStatus = async () => {
+      if (!applicationId) return; // Exit if no applicationId
+
+      try {
+        const response = await getApplicationStatusDetails(applicationId);
+        setApplicationStatus(response?.data);
+      } catch (error) {
+        console.error('Error fetching application status:', error);
+        setApplicationStatus(null); // Handle errors gracefully
       }
-      if (isStepActive(step)) {
-        return 'bg-blue-600 text-white font-bold';
-      }
-      return 'bg-gray-200 text-gray-600';
     };
-  
-    return (
+
+    fetchApplicationStatus();
+  }, [applicationId]);
+
+  useEffect(() => {
+    if (!applicationStatus) {
+      return; // Exit if applicationStatus is not yet available
+    }
+
+    const steps = [];
+
+    // Set completed steps based on applicationStatus
+    if (applicationStatus?.profileCompletion === 'completed') {
+      steps.push(1);
+    }
+      if (applicationStatus?.visaApplied) {
+       steps.push(2)
+        }
+       if(applicationStatus?.visaApproved){
+        steps.push(3);
+    }
+        if (applicationStatus?.visaApproved) {
+          steps.push(4)
+          }
+      
+        setCompletedSteps(steps);
+
+    
+  }, [applicationStatus]);
+
+  const isStepActive = (step: number) => {
+    return currentStep >= step;
+  };
+
+  const isStepCompleted = (step: number) => {
+    return completedSteps.includes(step);
+  };
+
+  // Calculate the width of the progress line based on completed steps
+  const getProgressWidth = () => {
+    const lastCompletedStep = Math.max(...completedSteps, 0);
+    return `${((lastCompletedStep) / 3) * 100}%`;
+  };
+
+  const getStepStatus = (step: number) => {
+    if (isStepCompleted(step)) {
+      return 'bg-green-500 text-white';
+    }
+    if (isStepActive(step)) {
+      return 'bg-blue-600 text-white font-bold';
+    }
+    return 'bg-gray-200 text-gray-600';
+  };
+
+  return (
       <div className="w-full max-w-4xl mx-auto mt-8 mb-12">
         <div className="relative">
           {/* Base Progress Line */}
@@ -146,88 +194,91 @@ const ProgressBar = () => {
           </div>
         </div>
       </div>
-    );
-  };
-  
-  interface WithAuthProps {
-    user?: any;
-    isLoading: boolean;
-  }
-  
-  const AfterLoginLayout = <P extends WithAuthProps>(WrappedComponent: ComponentType<P>) => {
-    return (props: P) => {
-      const [isOpen, setIsOpen] = useState(false);
-      const [role, setRole] = useState<string | undefined>();
-      const [loading, setLoading] = useState(true);
-      const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-      const [user, setUser] = useState<any>(null);
-      const router = useRouter();
+  );
+};
 
-      const {user:data} = useAuth()
-       const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-      };
-  
-      const meData = async () => {
-        try {
-          if (localStorage.getItem("token")) {
-            const medata = await me();
-            if (!medata || !medata.status) {
-              console.warn("User not authorized, or user data not found.");
-              localStorage.removeItem("token");
-              setIsAuthenticated(false);
-              setUser(null);
-              return;
-            }
-            setRole(data?.user?.role);
-            setUser(data?.user);
-            setIsAuthenticated(true);
-          } else {
-            console.warn("User token not found.");
+interface WithAuthProps {
+  user?: any;
+  isLoading?: boolean;
+}
+
+
+const AfterLoginLayout = <P extends WithAuthProps>(WrappedComponent: ComponentType<P>) => {
+  return (props: P) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [role, setRole] = useState<string | undefined>();
+    const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const [user, setUser] = useState<any>(null);
+    const router = useRouter();
+
+    const {user:data} = useAuth()
+
+    const toggleSidebar = () => {
+      setIsOpen(!isOpen);
+    };
+
+    const meData = async () => {
+      try {
+        if (localStorage.getItem("token")) {
+          const medata = await me();
+          if (!medata || !medata.status) {
+            console.warn("User not authorized, or user data not found.");
             localStorage.removeItem("token");
             setIsAuthenticated(false);
             setUser(null);
+            return;
           }
-        } catch (error) {
-          console.error("Error while fetching user data", error);
+          setRole(data?.user?.role);
+          setUser(data?.user);
+          setIsAuthenticated(true);
+        } else {
+          console.warn("User token not found.");
           localStorage.removeItem("token");
           setIsAuthenticated(false);
           setUser(null);
-        } finally {
-          setLoading(false);
         }
-      };
-  
-      useEffect(() => {
-        meData();
-      }, []);
-  
-      if (loading) {
-        return (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white z-50">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-          </div>
-        );
+      } catch (error) {
+        console.error("Error while fetching user data", error);
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-  
-      if (isAuthenticated === false) {
-        router.push("/login");
-        return null;
-      }
-  
+    };
+
+    useEffect(() => {
+      meData();
+    }, [role]);
+
+    if (loading) {
       return (
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <div className="flex-1 ml-14 sm:ml-60">
-            {/* Show ProgressBar only for users with role "USER" */}
-            {role === "USER" && <ProgressBar /> }
-            <main className="w-full min-h-screen p-4">
-              <WrappedComponent {...props} user={user} isLoading={loading} />
-            </main>
-          </div>
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white z-50">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
         </div>
       );
-    };
+    }
+
+    if (isAuthenticated === false) {
+      router.push("/login");
+      return null;
+    }
+    
+
+    return (
+      <div className="flex h-full">
+        <Sidebar />
+        <div className="flex-1 ml-14 sm:ml-60">
+          {/* Show ProgressBar only for users with role "USER" */}
+          {/* {role === "USER" && <ProgressBar />} */}
+          <main className="w-full min-h-screen p-4">
+            <WrappedComponent {...props} user={user} isLoading={loading} />
+          </main>
+        </div>
+      </div>
+    );
   };
-  
-  export default AfterLoginLayout;
+};
+
+export default AfterLoginLayout;
