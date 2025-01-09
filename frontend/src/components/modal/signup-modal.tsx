@@ -128,7 +128,6 @@ const SignUpModal = () => {
                 name: session?.user?.name,
                 googleId: session?.user?.googleId,
                 riskAssessmentData: assessmentData,
-
             });
     
             if (response?.status === 200 && response?.data?.token) {
@@ -237,7 +236,7 @@ const SignUpModal = () => {
                         />
                     </div>
 
-                    <div className="relative mb-8">
+                    <div className="relative mb-2">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-gray-300"></div>
                         </div>
@@ -245,6 +244,11 @@ const SignUpModal = () => {
                             <span className="px-2 bg-white text-gray-500">Or continue with</span>
                         </div>
                     </div>
+
+                    {isSignUpShowing ? 
+                    <span className="text-center flex items-center py-2 text-gray-500 mx-auto w-full">Register</span > 
+                      :
+                     <span className="text-center flex items-center mx-auto py-2 text-gray-500 w-full">Login</span>}
             <form onSubmit={handleSubmit(onSubmit)} className="text-gray-700 space-y-4">
 
                         <div className="relative">
@@ -329,7 +333,7 @@ const SignUpModal = () => {
                             <button
                               type="submit"
                                 disabled={authState.isLoading}
-                                className="bg-gray-200 text-gray-600 py-2 px-6 rounded-md disabled:opacity-50 disabled:bg-gray-100"
+                                className="bg-indigo-900 text-white py-2 px-6 rounded-md disabled:opacity-50 disabled:bg-gray-100"
                             >
                               View Results
                            </button>
@@ -342,9 +346,9 @@ const SignUpModal = () => {
                           onClick={handleLoginFormShow}
                              className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
                             >
-                             {/* {isSignUpShowing
+                             {isSignUpShowing
                                 ? "Already have an account? Sign in"
-                                 : "Need an account? Sign up"} */}
+                                 : "Need an account? Sign up"}
                         </button>
                     </div>
                     

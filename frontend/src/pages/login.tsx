@@ -6,7 +6,7 @@ import FaceBookLoginButton from "@/components/FacebookLoginButton";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { FaEye, FaLock } from "react-icons/fa";
 import { IoPersonSharp } from "react-icons/io5";
@@ -18,7 +18,6 @@ import Loader from "@/components/loaders/loader";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { FaGoogle } from "react-icons/fa";
 import { useAuth } from "@/context/auth-context";
-
 
 const GoogleLoginButton = ({ onSignIn, onSignOut, session, disabled }) => {
   const handleClick = async () => {
@@ -48,7 +47,7 @@ const LoginPage = () => {
   const router = useRouter();
   const [sharedState] = useAtom(visaDataAtom);
   const { data: session, status } = useSession();
-  const { logout } = useAuth(); // Get the logout function from auth-context
+  const { logout } = useAuth();
 
   // Form States
   const [isSignUpShowing, setIsSignUpFormShowing] = useState(true);
@@ -56,18 +55,11 @@ const LoginPage = () => {
   const [showIndexPage, setShowIndexPage] = useState(false);
 
   // Auth States
-  const [authState, setAuthState] = useState({
+  const [authStatus, setAuthStatus] = useState({
     isLoading: false,
     isProcessing: false,
     error: null,
-    completed: false
-  });
-
-  const [googleAuthStatus, setGoogleAuthStatus] = useState({
-    attempted: false,
     completed: false,
-    processing: false,
-    error: null
   });
 
   const {
@@ -77,104 +69,83 @@ const LoginPage = () => {
     setError,
   } = useForm();
 
-  useEffect(() => {
-    // Handle Google Auth
-    if (status === "authenticated" && 
-        session?.user?.email &&
-        !googleAuthStatus.attempted && 
-        !googleAuthStatus.completed && 
-        !googleAuthStatus.processing) {
-      handleGoogleLogin();
+  const googleAuthAttempted = useRef(false); // Ref to track Google Auth attempt
+
+
+  const handleGoogleAuth = useCallback(async () => {
+    if (authStatus.isProcessing || authStatus.completed) {
+      return;
     }
-  }, [status, session, googleAuthStatus]);
 
-
-// Similarly for Google login
-const handleGoogleLogin = async () => {
- 
-  if (googleAuthStatus.processing || googleAuthStatus.completed) {
-    return;
-  }
-
-  if (!session?.user?.email) {
-    console.error("No valid session found");
-    return;
-  }
-
-  try {
-    setGoogleAuthStatus(prev => ({
-      ...prev,
-      processing: true,
-      attempted: true,
-      error: null
-    }));
-
-    setAuthState(prev => ({
-      ...prev,
-      isLoading: true,
-      error: null
-    }));
-
-    const assessmentData = JSON.parse(localStorage.getItem("assessmentData") || "null");
-    
-    const response = await googleLogin({
-      accessToken: session?.accessToken,
-      email: session?.user?.email,
-      name: session?.user?.name,
-      googleId: session?.user?.googleId,
-      riskAssessmentData: assessmentData,
-    });
-
-    if (response?.status === 200 && response?.data?.token) {
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.removeItem('assessmentData');
-
-      // Don't set states to false/completed before redirect
-      await router.push("/dashboard");
-    } else {
-      throw new Error("Invalid response from server");
+    if (!session?.user?.email) {
+      console.error("No valid session found");
+      googleAuthAttempted.current = false; // Reset on error
+      return;
     }
-  } catch (err) {
-    console.error("Google login error:", err);
-    
-    setGoogleAuthStatus(prev => ({
-      ...prev,
-      processing: false,
-      error: err.message || "Login failed"
-    }));
 
-    setAuthState(prev => ({
-      ...prev,
-      isLoading: false,
-      error: err.message || "Login failed"
-    }));
+    try {
+      setAuthStatus((prev) => ({ ...prev, isProcessing: true, error: null }));
 
-     // Call logout on error
-     logout(); 
-  }
-};
+      const assessmentData = JSON.parse(localStorage.getItem("assessmentData") || "null");
 
-const onSubmit = async (data) => {
-  setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+      const response = await googleLogin({
+        accessToken: session?.accessToken,
+        email: session?.user?.email,
+        name: session?.user?.name,
+        googleId: session?.user?.googleId,
+        riskAssessmentData: assessmentData,
+      });
 
-  try {
-    if (isSignUpShowing) {
-      const newData = { ...data, role: "USER", data: sharedState };
-      const result = await registerUser(newData);
-
-      if (result?.status === 200) {
-        localStorage.setItem("token", result?.data?.token);
-        // Don't set isLoading to false before redirect
+      if (response?.status === 200 && response?.data?.token) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.removeItem('assessmentData');
         await router.push("/dashboard");
+
+      } else {
+        throw new Error("Invalid response from server");
       }
-    } else {
-      const result = await loginUser(data);
+    } catch (err) {
+      console.error("Google login error:", err);
+      setAuthStatus((prev) => ({
+        ...prev,
+        isProcessing: false,
+        error: err.message || "Login failed",
+      }));
+      // Signout on error
+      signOut();
+      googleAuthAttempted.current = false; // Reset on error
+
+    }
+  }, [authStatus.isProcessing, authStatus.completed, session?.user?.email, session?.accessToken, session?.user?.name, session?.user?.googleId, router, logout, setAuthStatus, googleLogin]);
+
+
+    useEffect(() => {
+      // Prevent running if no session or already attempted
+       if (status !== "authenticated" || !session?.user?.email || googleAuthAttempted.current) {
+         return;
+       }
+       
+       googleAuthAttempted.current = true; // Mark Google auth as attempted
+       handleGoogleAuth();
+   }, [status, session, handleGoogleAuth]);
+
+
+  const onSubmit = async (data) => {
+    setAuthStatus((prev) => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      let result;
+      if (isSignUpShowing) {
+        const newData = { ...data, role: "USER", data: sharedState };
+        result = await registerUser(newData);
+      } else {
+        result = await loginUser(data);
+      }
 
       if (result?.status === 200) {
         localStorage.setItem("token", result?.data?.token);
-        
-        // Don't set isLoading to false before redirect
+
         switch (result?.data?.user?.role) {
           case "SA":
             await router.push("/adminDashboard");
@@ -186,35 +157,32 @@ const onSubmit = async (data) => {
             await router.push("/dashboard");
         }
       }
-    }
-  } catch (err) {
-    console.error("Auth error:", err);
-    
-    if (err.status === 400) {
-      setError("password", {
-        type: "manual",
-        message: err?.response?.data?.message,
-      });
+    } catch (err) {
+      console.error("Auth error:", err);
 
-      if (err?.response?.data?.extraInfo === "Info Incomplete") {
-        setShowIndexPage(true);
+      if (err.response?.status === 400) {
+        setError("password", {
+          type: "manual",
+          message: err?.response?.data?.message,
+        });
+
+        if (err?.response?.data?.extraInfo === "Info Incomplete") {
+          setShowIndexPage(true);
+        }
       }
+      setAuthStatus((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: err?.response?.data?.message || "Authentication failed",
+      }));
     }
-
-    setAuthState(prev => ({
-      ...prev,
-      isLoading: false,
-      error: err?.response?.data?.message || "Authentication failed"
-    }));
-  }
-  // Remove the finally block since we want to keep loading state during redirect
-};
+  };
 
   const handleEyeClick = () => setIsPasswordTypePassword(!isPasswordTypePassword);
   const handleLoginFormShow = () => setIsSignUpFormShowing(prev => !prev);
 
   // Loading State
-  if (authState.isLoading || googleAuthStatus.processing) {
+  if (authStatus.isLoading || authStatus.isProcessing) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
         <div className="text-center">
@@ -234,11 +202,11 @@ const onSubmit = async (data) => {
           </h1>
 
           <div className="mb-8">
-            <GoogleLoginButton 
+            <GoogleLoginButton
               onSignIn={() => signIn("google")}
               onSignOut={() => signOut()}
               session={session}
-              disabled={authState.isLoading || googleAuthStatus.processing}
+              disabled={authStatus.isLoading || authStatus.isProcessing}
             />
           </div>
 
@@ -333,7 +301,7 @@ const onSubmit = async (data) => {
 
             <button
               type="submit"
-              disabled={authState.isLoading}
+              disabled={authStatus.isLoading || authStatus.isProcessing}
               className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors disabled:opacity-50"
             >
               {isSignUpShowing ? "Sign Up" : "Sign In"}
@@ -351,6 +319,11 @@ const onSubmit = async (data) => {
             </button>
           </div>
 
+          {authStatus.error && (
+            <p className="mt-4 text-xs text-center text-red-600">
+              {authStatus.error}
+            </p>
+          )}
           <div className="mt-8 pb-8 text-xs text-gray-500">
             <p className="font-medium">Password Requirements:</p>
             <ul className="mt-2 list-disc list-inside">
