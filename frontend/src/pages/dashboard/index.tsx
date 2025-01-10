@@ -27,7 +27,7 @@ interface FamilyMember {
     name:string;
     email: string;
     visaDataId: {};
-    applicationStatusId: {
+    applicationId: {
       riskAssessment: string;
       profileCompletion: string;
       payment: string;

@@ -1,5 +1,5 @@
 import AfterLoginLayout, { ProgressBar } from "@/components/afterLoginLayout/AfterLoginLayout";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CitySelect,
   CountrySelect,
@@ -10,6 +10,10 @@ import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
 import PersonalInfo from "@/components/PersonalInfo";
 import { useAuth } from "@/context/auth-context";
+import { getApplicationStatusDetails } from "@/api/applicationStatus";
+import AddFamilyMemberModal from "@/components/modal/add-family-member-modal";
+import { useAsync } from "react-use";
+import { getLinkedFamilyMembers } from "@/api/familyMember";
 
 
 const ProfilePage = () => {
@@ -19,55 +23,210 @@ const ProfilePage = () => {
   const { user, isLoading } = useAuth();
   const countryCodes = countryList().getData().map((country) => country.value);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] = useState(countryCodes);
-  const [error, setError] = useState({
-    citizenshipCountryError: "",
-    destinationCountryError: "",
-  });
+  const userDetails = user?.user;
+  const [loading, setLoading] = useState<boolean>(true);
+  const [applicationStatus, setApplicationStatus] = useState<any>(null);
+  const [linkedMembers, setLinkedMembers] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
-  console.log(';; user', user?.user?._id)
-
-  const onSelectCitizenShipCountry = (code) => {
-    setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
-    setCitizenshipCountry(code);
+  // Separate API calls into individual functions
+  const fetchApplicationStatus = async () => {
+      try {
+          const response = await getApplicationStatusDetails(userDetails?.applicationId);
+          if (response?.data) {
+              setApplicationStatus(response.data?.applicationStatus);
+          }
+      } catch (error) {
+          console.error("Error fetching application status:", error);
+      }
   };
 
-  // Show loading state while user data is being fetched
+  const fetchLinkedMembers = async () => {
+      try {
+          const response = await getLinkedFamilyMembers(userDetails?._id);
+          if (response?.data) {
+              setLinkedMembers(response?.data);
+          }
+      } catch (error) {
+          console.error("Error fetching linked members:", error);
+      }
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+      const fetchInitialData = async () => {
+          if (!userDetails?.applicationId) {
+              setLoading(false);
+              return;
+          }
+
+          try {
+              setLoading(true);
+              await Promise.all([
+                  fetchApplicationStatus(),
+                  fetchLinkedMembers()
+              ]);
+          } catch (error) {
+              console.error("Error fetching initial data:", error);
+          } finally {
+              setLoading(false);
+          }
+      };
+
+      if (user) {
+          fetchInitialData();
+      }
+  }, [userDetails?.applicationId, user]);
+
+  // Refresh linked members when modal closes
+  useEffect(() => {
+      if (!isOpen && userDetails?._id) {
+          fetchLinkedMembers();
+      }
+  }, [isOpen, userDetails?._id]);
+
+  const [error, setError] = useState({
+      citizenshipCountryError: "",
+      destinationCountryError: "",
+  });
+
+  function onSubmit() {
+      // Handle submit logic
+  }
+
+  function onClose() {
+      setIsOpen(false);
+  }
+
+  const handleModal = () => {
+      setIsOpen(true);
+  };
+
+  const onSelectCitizenShipCountry = (code) => {
+      setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
+      setCitizenshipCountry(code);
+  };
+
+  const renderLinkedMembers = () => {
+    if (!linkedMembers?.familyMembers?.length) return null;
+
+    return (
+        <div className="mb-8 overflow-x-auto">
+            <h2 className="text-2xl text-gray-600 mb-4">Family Members</h2>
+            <table className="min-w-full bg-white shadow-sm rounded-lg">
+                <thead className="bg-gray-50">
+                    <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Email
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Relationship
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Profile Status
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Visa Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                    {linkedMembers?.familyMembers.map((member) => (
+                        <tr key={member._id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {member.name}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {member.email}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {member.relationship}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    ${member.applicationStatus.profileCompletion === 'completed' 
+                                        ? 'bg-green-100 text-green-800' 
+                                        : 'bg-yellow-100 text-yellow-800'}`}>
+                                    {member.applicationStatus.profileCompletion}
+                                </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    ${member.applicationStatus.visaApproved === 'pending' 
+                                        ? 'bg-yellow-100 text-yellow-800'
+                                        : member.applicationStatus.visaApproved 
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-red-100 text-red-800'}`}>
+                                    {member.applicationStatus.visaApproved === 'pending' 
+                                        ? 'Pending'
+                                        : member.applicationStatus.visaApproved 
+                                            ? 'Approved'
+                                            : 'Not Applied'}
+                                </span>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
   if (isLoading) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your profile...</p>
-        </div>
-      </div>
-    );
+      return (
+          <div className="w-full h-screen flex items-center justify-center">
+              <div className="text-center">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-600">Loading your profile...</p>
+              </div>
+          </div>
+      );
   }
 
-  // Check if user and required data are available
   if (!user?.user?._id) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center">
-        <div className="text-center text-red-600">
-          <p>Unable to load profile data. Please try again later.</p>
-        </div>
-      </div>
-    );
+      return (
+          <div className="w-full h-screen flex items-center justify-center">
+              <div className="text-center text-red-600">
+                  <p>Unable to load profile data. Please try again later.</p>
+              </div>
+          </div>
+      );
   }
-
   return (
     <div className="w-5/6">
         <ProgressBar />
-      <div className="px-24 py-20">
-        <h1 className="text-4xl mb-2">Personal Information</h1>
-        <PersonalInfo 
-          visaDataId={user.user.visaDataId}
-          userEmail={user.user.email}
-          userName={user.user.name}
-          userId={user.user._id}
-        />
-      </div>
-    </div>
-  );
-};
+        <div className="px-24 py-20">
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-4xl text-gray-600">Personal Information</h1>
+                {applicationStatus?.profileCompletion === 'completed' && (
+                    <button 
+                        onClick={handleModal}
+                        className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors"
+                    >
+                        Add Family Member
+                    </button>
+                )}
+            </div>
 
+            {renderLinkedMembers()}
+
+            <AddFamilyMemberModal
+                onSubmit={onSubmit} 
+                isOpen={isOpen} 
+                onClose={onClose}
+            />
+
+            <PersonalInfo
+                visaDataId={user.user.visaDataId}
+                userEmail={user.user.email}
+                userName={user.user.name}
+                userId={user.user._id}
+            />
+        </div>
+    </div>
+);
+};
 export default AfterLoginLayout(ProfilePage);

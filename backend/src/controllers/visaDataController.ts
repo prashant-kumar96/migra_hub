@@ -91,12 +91,11 @@ export const addVisaData = async (req: any, res: any) => {
     user.applicationId = applicationId;
     user.visaDataId = resultVisaData._id;
     user.isPrimaryApplicant = true;
-    user.applicationStatusId = applicationStatusId;
-    await user.save();
+     await user.save();
 
     // Update the application status to completed
     await ApplicationStatus.updateOne(
-        { _id: applicationStatusId },
+        { _id: applicationId },
         { $set: { riskAssessment: "completed" } }
     );
 

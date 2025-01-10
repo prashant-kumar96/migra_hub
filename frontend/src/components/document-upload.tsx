@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 
 
 
-const DocumentUpload = ({ userId,applicationStatusId }) => {
+const DocumentUpload = ({ userId,applicationId }) => {
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [uploadedDocuments, setUploadedDocuments] = useState<any>(null);
   const [showUploadComponents, setShowUploadComponents] = useState(true);
@@ -29,7 +29,7 @@ const DocumentUpload = ({ userId,applicationStatusId }) => {
   const [passportUploadStatus, setPassportUploadStatus] = useState<{ [key: string]: string }>({})
   const [proofOfFundsUploadStatus, setProofOfFundsUploadStatus] = useState<{ [key: string]: string }>({})
   const [proofOfTiesUploadStatus, setProofOfTiesUploadStatus] = useState<{ [key: string]: string }>({})
-    const [additionalDocUploadStatus, setAdditionalDocUploadStatus] = useState<{ [key: string]: string }>({})
+  const [additionalDocUploadStatus, setAdditionalDocUploadStatus] = useState<{ [key: string]: string }>({})
 
   console.log(";; user id", typeof userId);
 
@@ -111,11 +111,11 @@ const DocumentUpload = ({ userId,applicationStatusId }) => {
     await handleFileUpload(userId, `${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadAdditionalDocuments`, additionalDocFiles, setAdditionalDocUploadStatus);
 
       fetchUploadedDocuments();
-      await updateDocumentUploadStatus(applicationStatusId)
+      await updateDocumentUploadStatus(applicationId)
   };
 
   return (
-    <div className="p-6 text-gray-600">
+    <div className="p-6 text-gray-600  ">
       <h2 className="text-2xl font-bold mb-4">Uploaded Documents</h2>
       {uploadedDocuments && (
         <div className="grid grid-cols-2 mx-auto">

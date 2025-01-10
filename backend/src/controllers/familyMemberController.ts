@@ -155,7 +155,7 @@ export async function getPrimaryApplicantLinkedFamilyMembers(req: any, res: any)
             const primaryApplicantId = req.user.id; // Get from auth middleware
             console.log(primaryApplicantId)
 
-            const primaryApplicant = await User.findById(primaryApplicantId).populate('visaDataId').populate('applicationStatusId');
+            const primaryApplicant = await User.findById(primaryApplicantId).populate('visaDataId').populate('applicationId');
 
              if(!primaryApplicant){
                return res.status(404).json({ message: "Primary applicant not found" });
@@ -163,7 +163,7 @@ export async function getPrimaryApplicantLinkedFamilyMembers(req: any, res: any)
             const familyMembers = await User.find({
                  primaryApplicationId: primaryApplicant.applicationId,
                 _id: { $ne: primaryApplicantId },
-            }).populate('visaDataId').populate('applicationStatusId');
+            }).populate('visaDataId').populate('applicationId');
 
 
             res.status(200).json({

@@ -14,8 +14,8 @@ const Success = () => {
   const [loading, setLoading] = useState(true);
   const [meData] = useAtom(meDataAtom);
   const {user} = useAuth();
-  const applicationStatusId = user?.user?.applicationId
-  console.log('application status id',applicationStatusId)
+  const applicationId = user?.user?.applicationId
+  console.log('application status id',applicationId)
   const getmedata = async () => {};
 
   useEffect(() => {
@@ -26,7 +26,7 @@ const Success = () => {
 
   const handleStatusUpdate = async () => {
     try {
-      await updatePaymentStatus(applicationStatusId);
+      await updatePaymentStatus(applicationId);
       console.log('Payment status updated successfully.');
     } catch (error) {
       console.log('Error updating payment status:', error.message);

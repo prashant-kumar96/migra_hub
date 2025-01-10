@@ -307,7 +307,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b">
           <div>
-            <h1 className="text-3xl font-bold text-[#333366] mb-2">Profile Overview</h1>
+            <h1 className="text-3xl font-bold text-[#333366] mb-2">My Profile </h1>
             <p className="text-gray-600">Visa Application Details & Risk Assessment</p>
           </div>
           {/* <button className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors">

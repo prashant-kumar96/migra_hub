@@ -35,15 +35,15 @@ interface FormData {
 const schema = yup.object().shape({
     name: yup.string().required('Name is required'),
     email: yup.string().email('Email must be valid').required('Email is required'),
-    areYouApplyingFromPassportCountry:yup.boolean().required('Applying From Passport Country is required'),
+    // areYouApplyingFromPassportCountry:yup.boolean().required('Applying From Passport Country is required'),
     citizenshipCountry:yup.object().required('Citizenship Country is required'),
     deniedVisaToAnyCountry:yup.boolean().required('Previously Denied Visa to any country is required'),
-    destinationCountry:yup.object().required('Destination Country is required'),
-    haveSpouseOrProperty:yup.boolean().required('Have Spouse Or Property is required'),
-    passportCountry:yup.object().required('Passport Country is required'),
-    travelledInternationallyAndReturnedHome:yup.boolean().required('Travelled Internationally And Returned Home is required'),
-    whereWillYouApplyForYourVisa:yup.object().required('Where Will You Apply For Your Visa is required'),
-    relationship: yup.string().oneOf(["father", "mother", "brother", "sister"], "Relationship must be one of the given options").required("Relationship is required"),
+    // destinationCountry:yup.object().required('Destination Country is required'),
+    // haveSpouseOrProperty:yup.boolean().required('Have Spouse Or Property is required'),
+    // passportCountry:yup.object().required('Passport Country is required'),
+    // travelledInternationallyAndReturnedHome:yup.boolean().required('Travelled Internationally And Returned Home is required'),
+    // whereWillYouApplyForYourVisa:yup.object().required('Where Will You Apply For Your Visa is required'),
+    relationship: yup.string().oneOf(["parent", "sibling", "spouse", "children"], "Relationship must be one of the given options").required("Relationship is required"),
 })
 const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
 
@@ -215,10 +215,10 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                                  {...register("relationship")}
                             >
                                 <option className="p-3 bg-white" value="">Select Relationship</option>
-                                <option className="p-3 bg-white" value="father">Parent</option>
-                                 <option className="p-3 bg-white" value="mother">Sibling</option>
-                                <option className="p-3 bg-white" value="brother">Spouse</option>
-                                 <option className="p-3 bg-white" value="sister">Children</option>
+                                <option className="p-3 bg-white" value="parent">Parent</option>
+                                 <option className="p-3 bg-white" value="sibling">Sibling</option>
+                                <option className="p-3 bg-white" value="spouse">Spouse</option>
+                                 <option className="p-3 bg-white" value="children">Children</option>
                             </select>
                             {errors.relationship && <p className="text-red-500 text-xs mt-1">{errors.relationship.message}</p>}
                       </div>

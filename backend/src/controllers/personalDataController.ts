@@ -4,34 +4,36 @@ import PersonalData from "../models/personalData.js";
 import ApplicationStatus from "../models/applicationStatus.js";
 import User from "../models/User.js";
 
+
+
 export const savePersonalData = async (req: any, res: any) => {
   console.log("saveProfileData is run");
   console.log("req.body", req.body);
 
   try {
-    const personalData = new PersonalData(req.body);
-    const result = await personalData.save();
-    console.log("savePersonalData result", result);
+      const personalData = new PersonalData(req.body);
+      const result = await personalData.save();
+      console.log("savePersonalData result", result);
       if(result){
           const userId = req.body.userId;
           const user = await User.findById(userId);
           if(!user){
               return res.status(404).json({ message: "User not found" });
           }
-          if(user && user.applicationStatusId){
-              await ApplicationStatus.updateOne(
-                  {_id: user.applicationStatusId},
-                  {$set: { profileCompletion: "completed" }}
-              )
-          }
+            if(user && user.applicationId){
+                await ApplicationStatus.updateOne(
+                    {applicationId: user.applicationId},
+                    {$set: { profileCompletion: "completed" }}
+                )
+             }
+
       }
       res.status(200).json({ message: "Personal Data saved successfully" });
   } catch (err) {
-    console.log("ERROr=.>", err);
-    res.status(400).json({ message: err });
+      console.log("ERROr=.>", err);
+      res.status(400).json({ message: err });
   }
 };
-
 
 
 export const getSinglePersonalData = async (req: Request, res: Response) => {

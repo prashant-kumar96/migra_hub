@@ -57,7 +57,7 @@ const userSchema: Schema<IUser> = new Schema({
   primaryApplicationId: { type: String }, // Primary Application ID field
   isPrimaryApplicant: { type: Boolean, default: false },
   googleId:{type: String},
-  relationship: { type: String, enum: ["father", "mother", "brother", "sister"] }, // Relationship field
+  relationship: { type: String, enum: ["parent", "sibling", "spouse", "children"] }, // Relationship field
 });
 
 const User = mongoose.model<IUser>("User", userSchema);
