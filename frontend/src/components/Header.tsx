@@ -1,5 +1,6 @@
 // ./src/Header.js
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -38,35 +39,42 @@ function Header2() {
   }, []);
 
   const menuItems = [
-    { label: "Visitor Journey", href: "/" },
-    { label: "Partner", href: "/" },
-    { label: "News", href: "/newsPage" },
+    // { label: "Visitor Journey", href: "/" },
+    // { label: "Partner", href: "/" },
+    // { label: "News", href: "/newsPage" },
     { label: "Help", href: "/help" },
     { label: "Contact", href: "/contact" },
   ];
 
   return (
     <header className="shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
-      <div className="container mx-auto flex items-center justify-between p-4">
+
         {/* Logo or Brand */}
-        <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0 text-center lg:text-left">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <Link href="/" className="flex justify-start lg:justify-start">
+          {/* <span className="text-4xl font-greycliff font-extrabold tracking-tight text-FloralWhite">
+            MigraHub
+          </span> */}
+          <Image width={180} height={100} alt="logo" src ="/logo/MigraHub.png" />
+        </Link>
+        {/* <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0 text-center lg:text-left">
           <Link href="/" className="flex justify-center lg:justify-start">
             <span className="text-4xl font-greycliff font-extrabold tracking-tight text-gray-100 dark:text-gray-100">
               MigraHub
             </span>
           </Link>
-        </div>
+        </div> */}
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex space-x-4">
+        <nav className="hidden md:flex space-x-8">
           {menuItems.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
-              className="text-white  hover:text-blue-500  items-center flex whitespace-nowrap"
+              className="text-FloralWhite hover:text-blue-500  items-center flex whitespace-nowrap"
             >
-              {item.label}
-            </a>
+             <span className="text-lg  tracking-wider">{item.label}</span> 
+            </Link>
           ))}
 
           {session || token ? (
@@ -77,13 +85,13 @@ function Header2() {
               <RiUserReceivedFill />
             </button>
           ) : (
-            <a
+            <Link
               href="#"
               onClick={handleLogin}
-              className="bg-FloralWhite text-Indigo p-1 rounded-md w-full hover:bg-Indigo hover:text-FloralWhite"
+              className="flex bg-transparent border-FloralWhite border-2 px-4 py-1  text-FloralWhite  text-center rounded-full w-full hover:text-Indigo hover:bg-FloralWhite"
             >
-              <RiUserSharedFill size={20} />
-            </a>
+             <span className="tracking-wider">Login</span>
+            </Link>
           )}
         </nav>
 
@@ -91,7 +99,7 @@ function Header2() {
         <div className="md:hidden">
           <button
             onClick={toggleMenu}
-            className="text-white  focus:outline-none"
+            className="text-FloralWhite focus:outline-none"
           >
             <svg
               className="w-6 h-6"
@@ -115,12 +123,12 @@ function Header2() {
 
       {/* Mobile Navigation Menu */}
       {menuOpen && (
-        <nav className="md:hidden bg-white dark:bg-gray-900 p-4">
+        <nav className="md:hidden bg-FloralWhite  p-4">
           {menuItems.map((item) => (
             <a
               key={item.label}
               href={item.href}
-              className="block text-white  hover:text-blue-500  mb-2"
+              className="block text-FloralWhite hover:text-blue-500  mb-2"
             >
               {item.label}
             </a>
@@ -128,19 +136,19 @@ function Header2() {
 
           {session || token ? (
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-md w-full hover:bg-blue-600"
+              className="bg-blue-500 text-FloralWhite  px-4 py-2 rounded-md w-full hover:bg-blue-600"
               onClick={handleSignout}
             >
               Sign out
             </button>
           ) : (
-            <a
+            <Link
               href="#"
               onClick={handleLogin}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md w-full hover:bg-blue-600"
+              className="text-FloralWhite  px-4 py-2 rounded-full w-full hover:bg-blue-600"
             >
               Log in
-            </a>
+            </Link>
           )}
         </nav>
       )}
