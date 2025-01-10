@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactFlagsSelect from "react-flags-select";
 import StepsModal from "./StepsModal";
 import countryList from "react-select-country-list";
-
+import { FaArrowRightLong } from "react-icons/fa6";
 export const countriesToRemove = [
     { label: "Canada", value: "CA" },
     { label: "USA", value: "US" },
@@ -75,7 +75,7 @@ const TravelPlan = () => {
     const handleModalClose = () => {
         // setShouldStartJourneyShow(false); // Close the modal
         window.location.reload(); // Reload the page
-      };
+    };
 
     console.log(':: countries', countryList()
         .getData())
@@ -180,54 +180,34 @@ const TravelPlan = () => {
         };
     }, [shouldStartjourneyShow]);
     return (
-        <section className="bg-Indigo ">
+        <section className="bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-borderborder-gray-200 shadow-xl ">
             <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 grid lg:grid-cols-2 gap-8 lg:gap-16">
                 <div className="flex flex-col justify-center">
-                    <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
+                    <h1 className="mb-4 text-4xl font-bold tracking-tight leading-8 text-FloralWhite  md:text-5xl lg:text-6xl">
                         MigraHub: Your Gateway to a Simplified Visitor Visa Journey
                     </h1>
-                    <p className="mb-6 text-base font-normal text-white lg:text-xl">
+                    <p className="mb-6 text-sm font-normal tracking-wide text-FloralWhite  lg:text-xl">
                         Navigate the complexities of Visitor visa process with ease
                     </p>
-                    <a
-                        href="#"
-                        className="text-blue-600 dark:text-blue-500 hover:underline font-medium text-lg inline-flex items-center"
-                    >
-                        Read more about our app
-                        <svg
-                            className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 10"
-                        >
-                            <path
-                                stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M1 5h12m0 0L9 1m4 4L9 9"
-                            />
-                        </svg>
-                    </a>
+
                 </div>
                 <div>
-                    <div className="w-full lg:max-w-xl p-6 space-y-8 sm:p-8 bg-white rounded-lg shadow-xl dark:bg-gray-800">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            Select Destination for Risk Assessment
+                    <div className="w-full lg:max-w-xl p-5 space-y-6 sm:p-8 bg-FloralWhite rounded-lg shadow-xl">
+                        <h2 className="text-2xl font-bold text-gray-900 ">
+                            Where are you travelling to ?
                         </h2>
-                        <div className="mt-8 space-y-6">
+                        <div className="mt-4 space-y-6">
                             <div>
                                 <label
                                     htmlFor="countries"
-                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Citizenship
                                 </label>
                                 <ReactFlagsSelect
                                     selected={citizenshipCountry}
                                     onSelect={onSelectCitizenShipCountry}
-                                    className="w-full px-3 dark:bg-white border shadow-md border-gray-200 rounded-lg text-gray-800"
+                                    className="w-full px-3 border bg-white shadow-xl items-center border-Indigo rounded-2xl text-Indigo"
                                     countries={citizenshipOptions}
                                     searchable
                                 /*showSelectedLabel={showSelectedLabel}
@@ -249,14 +229,14 @@ const TravelPlan = () => {
                             <div>
                                 <label
                                     htmlFor="countries"
-                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    className="block mb-2 text-sm font-medium text-gray-900 "
                                 >
                                     Destination to
                                 </label>
                                 <ReactFlagsSelect
                                     selected={destinationCountry}
                                     onSelect={onSelectDestinationCountry}
-                                    className="w-full px-3 border dark:bg-white shadow-md border-gray-200 rounded-lg text-gray-800"
+                                    className="w-full px-3 border bg-white shadow-xl border-Indigo rounded-2xl text-Indigo"
                                     countries={destinationOptions}
                                     searchable
                                 /*showSelectedLabel={showSelectedLabel}
@@ -276,10 +256,10 @@ const TravelPlan = () => {
                             </div>
 
                             <button
-                                className="w-full px-5 py-3 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 sm:w-auto dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                className=" flex px-8 py-3 text-lg font-medium text-center text-FloralWhite items-center  bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-borderborder-gray-200 shadow-xl rounded-2xl"
                                 onClick={handleStartjourney}
                             >
-                                Start your journey
+                               <span className="mr-2 ">Start Your Journey</span> < FaArrowRightLong className="mt-1"/> 
                             </button>
                         </div>
                     </div>

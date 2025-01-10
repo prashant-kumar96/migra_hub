@@ -1,14 +1,14 @@
+import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Navbar = () => {
   return (
     <nav className="bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-borderborder-gray-200 shadow-xl">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex justify-start lg:justify-start">
-          <span className="text-4xl font-greycliff font-extrabold tracking-tight text-FloralWhite">
-            MigraHub
-          </span>
-        </a>
+        <Link href="/" className="flex justify-start lg:justify-start">
+           <Image width={180} height={100} alt="logo" src ="/logo/MigraHub.png" />
+        </Link>
 
         <button
           data-collapse-toggle="navbar-default"

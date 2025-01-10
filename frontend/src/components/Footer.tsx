@@ -32,9 +32,7 @@ const Footer = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-8 py-10 max-sm:max-w-sm max-sm:mx-auto gap-y-8">
             <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0 text-center lg:text-left">
               <Link href="/" className="flex justify-center lg:justify-start">
-                <span className="text-4xl font-greycliff font-extrabold tracking-tight text-gray-100 dark:text-gray-100 mb-2 ">
-                  MigraHub
-                </span>
+               <Image width={180} height={100} alt="logo" src ="/logo/MigraHub.png" />
               </Link>
               {/* <p className="py-2 text-lg text-gray-100 dark:text-gray-300 lg:max-w-xs">
                 Trusted in more than 100 countries & 5 million customers. Have
