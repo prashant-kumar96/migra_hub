@@ -13,7 +13,7 @@ const applicationId = user?.user?.applicationId;
 
   return (
 
-    <div className='w-full mx-auto max-w-3xl'>
+    <div className='w-full mx-auto '>
             <ProgressBar />
            <DocumentUpload applicationId={applicationId} userId={userId} />
     </div>

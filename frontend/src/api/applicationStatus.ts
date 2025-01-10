@@ -15,5 +15,5 @@ return result;
 
 export const updatePaymentStatus = async (applicationId:string) => {
     const result  = await axiosInstance.post(`/application-status/payment-status/${applicationId}`);
-return result;
+    return result;
 }
