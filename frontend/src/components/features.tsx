@@ -1,6 +1,6 @@
 import React from "react";
 import { MdOutlineManageHistory } from "react-icons/md";
-
+import { MdOutlineTipsAndUpdates } from "react-icons/md"
 const features = [
   {
     title: "Risk Assessment",
@@ -65,20 +65,10 @@ const features = [
     title: "Real-Time updates",
     description: "Stay informed with real-time status updates, ensuring you’re always up to date on your application progress.",
     icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-        className="absolute left-1 top-1 h-6 w-6 text-Indigo"
-      >
-        <path
-          fillRule="evenodd"
-          d="M14.5 10a4.5 4.5 0 004.284-5.882c-.105-.324-.51-.391-.752-.15L15.34 6.66a.454.454 0 01-.493.11 3.01 3.01 0 01-1.618-1.616.455.455 0 01.11-.494l2.694-2.692c.24-.241.174-.647-.15-.752a4.5 4.5 0 00-5.873 4.575c.055.873-.128 1.808-.8 2.368l-7.23 6.024a2.724 2.724 0 103.837 3.837l6.024-7.23c.56-.672 1.495-.855 2.368-.8.096.007.193.01.291.01zM5 16a1 1 0 11-2 0 1 1 0 012 0z"
-          clipRule="evenodd"
-        ></path>
-        <path d="M14.5 11.5c.173 0 .345-.007.514-.022l3.754 3.754a2.5 2.5 0 01-3.536 3.536l-4.41-4.41 2.172-2.607c.052-.063.147-.138.342-.196.202-.06.469-.087.777-.067.128.008.257.012.387.012zM6 4.586l2.33 2.33a.452.452 0 01-.08.09L6.8 8.214 4.586 6H3.309a.5.5 0 01-.447-.276l-1.7-3.402a.5.5 0 01.093-.577l.49-.49a.5.5 0 01.577-.094l3.402 1.7A.5.5 0 016 3.31v1.277z"></path>
+      <svg className="absolute left-1 top-1 h-6 w-6 text-Indigo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5.464V3.099m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175C19 17.4 19 18 18.462 18H5.538C5 18 5 17.4 5 16.807c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.464ZM6 5 5 4M4 9H3m15-4 1-1m1 5h1M8.54 18a3.48 3.48 0 0 0 6.92 0H8.54Z" />
       </svg>
+
     ),
   },
 ];
@@ -126,12 +116,12 @@ const Features = () => {
         <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
           <div className="lg:pr-8 lg:pt-4">
             <div className="lg:max-w-lg">
-              <h2 className="text-base font-normal tracking-wider leading-7 text-indigo-300">
+              <h2 className="text-base font-normal tracking-wide leading-7 text-indigo-300">
                 Process faster
               </h2>
-              <p className="mt-2 text-2xl font-bold tracking-tight text-DarkGray sm:text-3xl">
+              <h1 className="text-4xl  font-bold tracking-tight md:whitespace-nowrap capitalize text-Indigo font-greycliff">
                 An Eastiest Way to Travel Abroad
-              </p>
+              </h1>
               {/* <p className="mt-6 text-lg leading-8 text-gray-600">
                 We've built an API that allows you to scale your podcast
                 production workflow.
@@ -166,11 +156,12 @@ const Features = () => {
           <img
             // src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw4fHxjb21wdXRlcnxlbnwwfDB8fHwxNjkxODE2NjY3fDA&ixlib=rb-4.0.3&q=80&w=1080"
             // src="https://images.ladbible.com/resize?type=webp&quality=70&width=3840&fit=contain&gravity=auto&url=https://images.ladbiblegroup.com/v3/assets/bltb5d92757ac1ee045/blt864986663773d3e0/665435935939380b65262cb8/AI-creates-what-the-average-person.png%3Fcrop%3D590%2C590%2Cx0%2Cy0"
-            src="https://thumbs.dreamstime.com/b/happy-young-latin-business-man-using-digital-tablet-looking-away-office-smiling-busy-employee-standing-work-male-285560506.jpg"
+            // src="https://thumbs.dreamstime.com/b/happy-young-latin-business-man-using-digital-tablet-looking-away-office-smiling-busy-employee-standing-work-male-285560506.jpg"
+            src="/imgs/family.png"
             alt="Product screenshot"
-            className="w-[450px] max-w-none  sm:w-[450px]  md:-ml-4 lg:-ml-0"
-            // width="2432"
-            // height="1442"
+            className="w-full max-w-none sm:w-[500px] mt-14 md:-ml-6 lg:-ml-0"
+          // width="2432"
+          // height="1442"
           />
         </div>
       </div>
