@@ -192,15 +192,15 @@ const TravelPlan = () => {
 
                 </div>
                 <div>
-                    <div className="w-full lg:max-w-xl p-5 space-y-6 sm:p-8 bg-FloralWhite rounded-lg shadow-xl">
-                        <h2 className="text-2xl font-bold text-gray-900 ">
+                    <div className="w-full lg:max-w-lg p-5 space-y-6 sm:p-8 bg-FloralWhite rounded-lg shadow-xl">
+                        <h2 className="text-3xl font-bold text-Indigo ">
                             Where are you travelling to ?
                         </h2>
                         <div className="mt-4 space-y-6">
                             <div>
                                 <label
                                     htmlFor="countries"
-                                    className="block mb-2 text-sm font-medium text-gray-900 "
+                                    className="block mb-2 text-lg font-medium text-Indigo "
                                 >
                                     Citizenship
                                 </label>
@@ -229,7 +229,7 @@ const TravelPlan = () => {
                             <div>
                                 <label
                                     htmlFor="countries"
-                                    className="block mb-2 text-sm font-medium text-gray-900 "
+                                    className="block mb-2 text-lg font-medium text-Indigo "
                                 >
                                     Destination to
                                 </label>

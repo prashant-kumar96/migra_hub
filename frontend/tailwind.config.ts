@@ -20,6 +20,7 @@ const config: Config = {
       },
       fontFamily: {
         greycliff: ["GreyCliff CF", "sans-serif"],
+        cedarville: ['"Cedarville Cursive"', 'cursive'],
       },
     },
   },
