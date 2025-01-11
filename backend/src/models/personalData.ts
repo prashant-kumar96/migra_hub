@@ -88,10 +88,12 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   },
   phoneNumber: {
     type: String,
-    required: [false, "Phone number is required"],
+    required: false,
+    sparse: true,
     unique: true,
+    default: undefined  // This is important - use undefined instead of null
     // match: [/^\d{10}$/, "Phone number must be exactly 10 digits"],
-  },
+},
   addressLine: {
     type: String,
     required: [false, "Address is required"],

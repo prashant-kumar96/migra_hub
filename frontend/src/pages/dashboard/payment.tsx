@@ -1,3 +1,4 @@
+import { updatePaymentStatus } from "@/api/applicationStatus";
 import { checkifPaymentIsDone, me } from "@/api/auth";
 import { getApplicationCharges } from "@/api/pricing";
 import CheckoutForm from "@/components/CheckoutFormComponent";
@@ -11,40 +12,64 @@ import { useEffect, useState } from "react";
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 
+
+
+
 const Home = () => {
   const { width, height } = useWindowSize();
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
   const [isStripePaymentDone, setIsStripePaymentDone] = useState(false);
   const [applicationCharges, setApplicationCharges] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { user, isLoading } = useAuth();
-
+  const [loading, setLoading] = useState(false); // Removed initial value of true
+  const [error, setError] = useState<string | null>(null);
+  const { user, isLoading, isAuthenticated } = useAuth();
+  const applicationId = user?.user?.applicationId;
+  
   const getmedata = async () => {
     try {
+      if (!applicationId) {
+          console.log("no application ID")
+        return; // Exit early if no application ID
+      }
+        console.log("fetching data...")
       setLoading(true);
       const result = await me();
       setSharedMedata(result?.data?.user);
       const userId = result?.data?.user?._id;
-      
+      await updatePaymentStatus(applicationId);
+
       const paymentResult = await checkifPaymentIsDone(userId);
       setIsStripePaymentDone(paymentResult?.data?.status);
-      
+
+      if (isStripePaymentDone) {
+        try {
+          const updateStatus = await updatePaymentStatus(applicationId);
+          console.log("status update", updateStatus);
+        } catch (error) {
+          console.log("error", error);
+        }
+      }
+
       const charges = await getApplicationCharges(userId);
       if (charges?.data) {
         setApplicationCharges(charges?.data?.applicationCharges);
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error fetching data:", error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    getmedata();
-  }, [user]);
+    if(isAuthenticated) {
+      getmedata();
+    }
+  }, [isAuthenticated, applicationId]);
 
-  if (loading || isLoading) {
+
+  if (loading || isLoading ) { //simplified loading check
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
         <Loader text="Loading..." className="text-primary" />
@@ -52,9 +77,27 @@ const Home = () => {
     );
   }
 
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="text-red-600">Error: {error}</div>
+      </div>
+    );
+  }
+
+  if(!isAuthenticated) {
+      return (
+        <div className="flex justify-center items-center min-h-screen bg-gray-50">
+          <div className="text-gray-600">Not authenticated</div>
+        </div>
+      )
+  }
+
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-        <ProgressBar />
+      <ProgressBar />
       <div className="max-w-3xl mx-auto">
         {isStripePaymentDone && (
           <>
@@ -92,7 +135,6 @@ const Home = () => {
             </div>
           </>
         )}
-
         {!isStripePaymentDone && applicationCharges !== null ? (
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">
@@ -101,7 +143,7 @@ const Home = () => {
             <CheckoutForm
               items={[
                 applicationCharges.primaryApplicant,
-                ...applicationCharges.familyMembers
+                ...applicationCharges.familyMembers,
               ]}
             />
           </div>

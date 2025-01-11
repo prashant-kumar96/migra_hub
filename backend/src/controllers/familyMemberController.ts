@@ -5,13 +5,12 @@ import VisaData from "../models/visadata.js";
 // In your user controller file
 import { v4 as uuidv4 } from "uuid";
 
-
- 
 export async function addFamilyMember(req: any, res: any) {
     try {
         const { name, email, relationship, data, profileData } = req.body;
         const primaryApplicantId = req.user.id;
         console.log("add family member::", req.body, req.user)
+
         // Check if the primary applicant exists
         const primaryApplicant = await User.findById(primaryApplicantId);
         if (!primaryApplicant) {
@@ -21,71 +20,72 @@ export async function addFamilyMember(req: any, res: any) {
         if(!primaryApplicant.applicationId){
             return res.status(400).json({ message: "Primary application id is missing" });
         }
+
         if (!data) {
             res.status(400).json({
                 message:
                     "Please fill all the steps from the index page before adding family member",
                 extraInfo: "Info Incomplete",
             });
-             return;
+            return;
         }
-
-
-         const existingUser = await User.findOne({ email: email });
+        if(!profileData) {
+             res.status(400).json({
+                message:
+                  "Please fill the personal data from the previous step",
+               });
+               return;
+         }
+        const existingUser = await User.findOne({ email: email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
 
-
-       const visadata = new VisaData(data);
-      const resultVisadata = await visadata.save();
-
+        const visadata = new VisaData(data);
+        const resultVisadata = await visadata.save();
         const applicationId = uuidv4();
 
-       // Create the family member user
+        // Create the family member user
         const familyMember = new User({
             name,
             email,
             role: "USER",
             applicationId: applicationId,
-           primaryApplicationId: primaryApplicant.applicationId, // Store primary applicant's ID
+            primaryApplicationId: primaryApplicant.applicationId, // Store primary applicant's ID
             visaDataId: resultVisadata._id,
-             relationship, // save the relationship value
+            relationship, // save the relationship value
             isPrimaryApplicant: false,
         });
         const savedFamilyMember = await familyMember.save();
-
-       // Check if personal data already exists for this user
+        // if phone number is not given in profileData
+         if (!profileData.phoneNumber) {
+            profileData.phoneNumber = 'not provided'
+        }
+        // Check if personal data already exists for this user
         let personalData = await PersonalData.findOne({ userId: savedFamilyMember._id });
         if (personalData) {
-            // If exists, update it
-            await PersonalData.updateOne({ userId: savedFamilyMember._id }, { $set: {...profileData, email: savedFamilyMember.email } });
+            // PersonalDataIf exists, update it
+            await PersonalData.updateOne({ userId: savedFamilyMember._id }, { $set: { ...profileData, email: savedFamilyMember.email } });
         } else {
             // If not, create a new document
-             personalData = new PersonalData({...profileData, userId: savedFamilyMember._id, email: savedFamilyMember.email });
+            personalData = new PersonalData({...profileData, userId: savedFamilyMember._id, email: savedFamilyMember.email });
             await personalData.save()
         }
-
-
         // Fetch the application status record
         const applicationStatus = await ApplicationStatus.findOne({applicationId: primaryApplicant.applicationId})
-
-       if(applicationStatus) {
-          // Update the application status to completed
-         await ApplicationStatus.updateOne(
-              {_id: applicationStatus._id},
-              {$set: { riskAssessment: "completed" }}
-           );
+        if(applicationStatus) {
+            // Update the application status to completed
+            await ApplicationStatus.updateOne(
+                {_id: applicationStatus._id},
+                {$set: { riskAssessment: "completed" }}
+            );
         }
-
-
         res.status(201).json({ message: "Family member added successfully", familyMember: savedFamilyMember });
     } catch (error) {
         console.error("Error adding family member:", error);
         res.status(500).json({ message: "Internal server error", error: error });
     }
 }
-
 
 export async function getFamilyMemberApplicationDetails(req: any, res: any) {
     try {

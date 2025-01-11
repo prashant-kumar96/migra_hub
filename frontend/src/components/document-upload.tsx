@@ -204,7 +204,7 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
       ] : linkedMembers;
   }, [primaryApplicantDetails, linkedMembers]);
 
-  
+  if(primaryApplicantDetails?.applicationStatus?.payment == 'pending') return <span className="text-xl text-black w-full mx-auto">Please Complete Payment first</span>
   return (
       <div className="p-6 text-gray-600 w-full mx-auto">
           <h2 className="text-2xl font-bold mb-4">Application Details</h2>
