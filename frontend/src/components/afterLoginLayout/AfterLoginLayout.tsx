@@ -31,7 +31,7 @@ export const ProgressBar = () => {
 
             try {
                 const response = await getApplicationStatusDetails(applicationId);
-                setApplicationStatus(response?.data);
+                setApplicationStatus(response?.data?.applicationStatus);
             } catch (error) {
                 console.error('Error fetching application status:', error);
                 setApplicationStatus(null);
@@ -49,15 +49,20 @@ export const ProgressBar = () => {
 
         if (applicationStatus?.profileCompletion === 'completed') {
             steps.push(1);
+            current = 1;
+        }
+
+        if (applicationStatus?.payment === 'completed') {
+            steps.push(1,2);
             current = 2;
         }
 
-        if (applicationStatus?.visaApplied) {
-            steps.push(1, 2);
-            current = 3
-        }
+        // if (applicationStatus?.visaApplied) {
+        //     steps.push(1, 2);
+        //     current = 3
+        // }
 
-        if (applicationStatus?.visaApproved) {
+        if (applicationStatus?.visaApproved == 'completed') {
             steps.push(1, 2, 3);
             current = 4;
         }
@@ -81,6 +86,9 @@ export const ProgressBar = () => {
         return `${((lastCompletedStep) / 3) * 100}%`;
     };
 
+    console.log(';; completedSteps',completedSteps)
+    console.log(';; currentStep',currentStep)
+    console.log(';; applicationStatus',applicationStatus)
     const getStepStatus = (step: number) => {
       if (isStepCompleted(step)) {
           return 'bg-green-500 text-white';
@@ -131,7 +139,7 @@ export const ProgressBar = () => {
                             )}
                         </div>
                         <span
-                          className={`mt-2 text-sm  ${isStepCompleted(1) ? 'text-green-600 font-bold' : isStepActive(1) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                          className={`mt-2 text-sm  ${isStepCompleted(1) ? 'text-gray-600 font-bold' : isStepActive(1) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
                         >
                             Complete Profile
                         </span>
@@ -160,7 +168,7 @@ export const ProgressBar = () => {
                             )}
                         </div>
                       <span
-                        className={`mt-2 text-sm  ${isStepCompleted(2) ? 'text-green-600 font-bold' : isStepActive(2) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                        className={`mt-2 text-sm  ${isStepCompleted(2) ? 'text-gray-600 font-bold' : isStepActive(2) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
                         >
                             Review & Submit
                         </span>
@@ -189,7 +197,7 @@ export const ProgressBar = () => {
                             )}
                         </div>
                       <span
-                          className={`mt-2 text-sm  ${isStepCompleted(3) ? 'text-green-600 font-bold' : isStepActive(3) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                          className={`mt-2 text-sm  ${isStepCompleted(3) ? 'text-gray-600 font-bold' : isStepActive(3) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
                       >
                             Visa Applied
                         </span>
@@ -218,7 +226,7 @@ export const ProgressBar = () => {
                             )}
                         </div>
                         <span
-                          className={`mt-2 text-sm  ${isStepCompleted(4) ? 'text-green-600 font-bold' : isStepActive(4) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                          className={`mt-2 text-sm  ${isStepCompleted(4) ? 'text-gray-600 font-bold' : isStepActive(4) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
                        >
                             Completed
                         </span>

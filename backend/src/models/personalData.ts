@@ -26,7 +26,6 @@ interface IPersonalData extends Document {
   userId: ObjectId;
 }
 
-
 // Define the schema with validation
 const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   marital_status: {
@@ -91,9 +90,9 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
     required: false,
     sparse: true,
     unique: true,
-    default: undefined  // This is important - use undefined instead of null
+    // default: undefined, // This is important - use undefined instead of null
     // match: [/^\d{10}$/, "Phone number must be exactly 10 digits"],
-},
+  },
   addressLine: {
     type: String,
     required: [false, "Address is required"],
@@ -132,12 +131,10 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
-
 // Export the model
 const PersonalData = mongoose.model<IPersonalData>(
   "PersonalData",
   PersonalDataSchema
 );
-
 
 export default PersonalData;

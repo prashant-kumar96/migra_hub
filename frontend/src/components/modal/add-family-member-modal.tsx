@@ -37,6 +37,7 @@ interface FormData {
 
 const schema = yup.object().shape({
     name: yup.string().required('Name is required'),
+    // phone_number: yup.string().required('Phone number is required'),
     email: yup.string().email('Email must be valid').required('Email is required'),
     passport_number: yup.string().required('Passport number is required'),
     passport_expiry: yup
