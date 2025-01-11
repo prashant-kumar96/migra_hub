@@ -104,9 +104,9 @@ const Testimonials = () => {
       <div className="container px-4 mx-auto">
         <div className="grid grid-cols-12 gap-6 items-center justify-between mb-6 md:mb-12">
           <div className="col-span-12 md:col-span-6 lg:col-span-4">
-            <h2 className="text-4xl font-semibold tracking-wider capitalize text-Indigo">
+          <h1 className="text-4xl  font-bold tracking-tight capitalize text-Indigo font-greycliff">
               See what our customers are saying
-            </h2>
+            </h1>
           </div>
           <div className="col-span-12 md:col-span-6 lg:col-span-5 lg:col-start-8">
             <p className="text-lg leading-[1.7] opacity-80 text-justify font-greycliff mt-1">
