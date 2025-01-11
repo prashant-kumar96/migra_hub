@@ -91,7 +91,7 @@ interface FamilyMember {
           );
           console.log(';; application status', response?.data)
           if (response?.data) {
-            setApplicationStatus(response.data?.applicationStatus);
+            setApplicationStatus(response.data);
   
             // Update currentStep based on application status
             if (response.data.profileCompletion === "completed") {
@@ -213,14 +213,14 @@ interface FamilyMember {
       );
     }
 
-    console.log(';; application log', applicationStatus?.profileCompletion )
-  
+    // console.log(';; application log', applicationStatus?.profileCompletion )
+  // return  ''
     return (
       <div className="max-w-5xl mx-auto p-6">
         <ProgressBar />
         {hasValidVisaData() ? (
           <>
-            {applicationStatus?.profileCompletion == "pending" && (
+            {applicationStatus?.applicationStatus?.profileCompletion == "pending" && (
               <div className="bg-white rounded-lg shadow-lg p-6 text-center">
                 <h2 className="text-2xl font-bold text-Indigo mb-4">
                   Travel Visa Denial Risk
@@ -257,7 +257,7 @@ interface FamilyMember {
         ) : (
           <TravelPlan />
         )}
-        {applicationStatus && (
+        {applicationStatus?.applicationStatus && (
           <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
             <h2 className="text-2xl font-bold text-Indigo mb-4">
               Application Status
@@ -275,7 +275,7 @@ interface FamilyMember {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-gray-800">
-                  {Object.entries(applicationStatus || {})
+                  {Object.entries(applicationStatus?.applicationStatus || {})
                     .filter(
                       ([key]) =>
                         !["_id", "__v", "createdAt", "updatedAt", "userId", "applicationId"].includes(key)
@@ -338,7 +338,7 @@ interface FamilyMember {
               <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm hidden sm:table">
                 <thead className="bg-gradient-to-r  text-gray-600">
                   <tr>
-                    {Object.entries(applicationStatus || {})
+                    {Object.entries(applicationStatus?.applicationStatus || {})
                       .filter(
                         ([key]) =>
                           !["_id", "__v", "createdAt", "updatedAt", "userId", "applicationId"].includes(
@@ -377,7 +377,7 @@ interface FamilyMember {
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-gray-800">
                   <tr className="hover:bg-gray-50">
-                    {Object.entries(applicationStatus || {})
+                    {Object.entries(applicationStatus?.applicationStatus || {})
                       .filter(
                         ([key]) =>
                           !["_id", "__v", "createdAt", "updatedAt", "userId", "applicationId"].includes(

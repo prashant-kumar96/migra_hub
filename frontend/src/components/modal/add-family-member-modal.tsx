@@ -8,6 +8,7 @@ import Select from "react-select";
 import { addFamilyMember } from "@/api/familyMember";
 import ReactFlagsSelect from 'react-flags-select';
 import { countriesToRemove } from "../TravelPlan";
+import moment from "moment";
 
 
 interface Props {
@@ -20,6 +21,8 @@ interface Props {
 interface FormData {
     name: string;
     email: string;
+    passport_number: string;
+    passport_expiry:Date;
     areYouApplyingFromPassportCountry:boolean;
     citizenshipCountry: {value: string, label:string};
     deniedVisaToAnyCountry:boolean;
@@ -28,13 +31,20 @@ interface FormData {
     passportCountry: {value: string, label:string};
     travelledInternationallyAndReturnedHome:boolean;
     whereWillYouApplyForYourVisa: {value: string, label:string};
-    relationship: "father" | "mother" | "brother" | "sister"
+    relationship: "parent" | "sibling" | "spouse" | "children"
 }
 
 
 const schema = yup.object().shape({
     name: yup.string().required('Name is required'),
     email: yup.string().email('Email must be valid').required('Email is required'),
+    passport_number: yup.string().required('Passport number is required'),
+    passport_expiry: yup
+    .date()
+    .required("Passport Expiry is required")
+    .min(moment().startOf('day').toDate(), "Expiry date must be in the future")
+    .typeError("Invalid date format"),
+  
     // areYouApplyingFromPassportCountry:yup.boolean().required('Applying From Passport Country is required'),
     citizenshipCountry:yup.object().required('Citizenship Country is required'),
     deniedVisaToAnyCountry:yup.boolean().required('Previously Denied Visa to any country is required'),
@@ -47,7 +57,7 @@ const schema = yup.object().shape({
 })
 const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
 
-    const { register, handleSubmit, formState: { errors },reset, setValue } = useForm<FormData>({
+    const { register,watch, handleSubmit, formState: { errors },reset, setValue } = useForm<FormData>({
         resolver:yupResolver(schema),
     });
 
@@ -58,7 +68,8 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
     const [selectedDestinationCountry, setSelectedDestinationCountry] = useState<string | null>(null);
     const [selectedPassportCountry, setSelectedPassportCountry] = useState<string | null>(null);
     const [selectedVisaApplicationCountry, setSelectedVisaApplicationCountry] = useState<string | null>(null);
-    
+    const [expiryDate, setExpiryDate] = useState("");
+
     const citizenshipCountries = countryList()
     .getData()
     .filter(
@@ -76,7 +87,14 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
     
     const citizenshipCountryCodes = citizenshipCountries.map(c => c.value);
     const destinationCountryCodes = destinationCountries.map(c => c.value);
+    
 
+ 
+    const handleDateChange = (e) => {
+      const inputDate = e.target.value; // Input value in YYYY-MM-DD format
+      const formattedDate = moment(inputDate).format("YYYY/MM/DD"); // Convert to YYYY/MM/DD
+      setExpiryDate(formattedDate); // Update the state with the formatted date
+    };
 
     const handleFormSubmit = async (formData: FormData) => {    
         setIsSubmitting(true);
@@ -84,6 +102,8 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
            const {
                 name,
                 email,
+                passport_number,
+                passport_expiry,
                 relationship,
                 areYouApplyingFromPassportCountry,
                 citizenshipCountry,
@@ -97,9 +117,19 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
 
 
                 const data = {
+                  
                   name,
                   email,
                   relationship,
+                  profileData:{
+                    passport_number,
+                    passport_expiry,
+                    citizenshipCountry: {
+                        value:citizenshipCountry?.value,
+                        label:citizenshipCountry?.label,
+                    }
+                  },
+                  
                   data: {
                      areYouApplyingFromPassportCountry,
                      citizenshipCountry: citizenshipCountry,
@@ -223,6 +253,36 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                             {errors.relationship && <p className="text-red-500 text-xs mt-1">{errors.relationship.message}</p>}
                       </div>
 
+                      {/* Passport Number Input */}
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Passport Number
+                        </label>
+                        <input
+                            type="text"
+                            className={`w-full px-3 py-2 border rounded ${errors.passport_number ? "border-red-500" : "border-gray-300" } focus:outline-none focus:border-Indigo`}
+                            {...register("passport_number")}
+                        />
+                        {errors.passport_number && <p className="text-red-500 text-xs mt-1">{errors.passport_number.message}</p>}
+                    </div>
+
+                    <div className="space-y-1">
+                    <p className="text-sm font-medium text-gray-700">Passport Expiry Date</p>
+                    {/* <p className="text-sm font-medium"> </p> */}
+                        <input 
+                            type="date"
+                            className={`w-full px-3 py-3 border rounded ${
+                            errors.passport_number ? "border-red-500" : "border-gray-300"
+                            } focus:outline-none focus:border-Indigo`}
+                            {...register("passport_expiry")}
+                            value={moment(watch("passport_expiry")).format('YYYY-MM-DD')}
+                            onChange={(e) => {
+                            setValue("passport_expiry", moment(e.target.value).format('YYYY/MM/DD'));
+                            }}
+                        />
+                       
+                    </div>
+
                     {/* Applying From Passport Country Select */}
                     {/* <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -252,15 +312,15 @@ const AddFamilyMemberModal: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
 
 
                     {/* Citizenship Country Select */}
-                     <div className="  mb-4">
+                    <div className="  mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Citizenship Country
                         </label>
                          <ReactFlagsSelect
-                            selected={selectedCitizenshipCountry}
+                            selected={selectedCitizenshipCountry?.value}
                              onSelect={(code) => {
                                  const selectedCountry = countries.find((country) => country.value === code);
-                                 setSelectedCitizenshipCountry(code)
+                                 setSelectedCitizenshipCountry(selectedCountry)
                                  setValue('citizenshipCountry', selectedCountry)
                              }}
                              countries={citizenshipCountryCodes}

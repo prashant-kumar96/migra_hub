@@ -1,7 +1,7 @@
 //@ts-nocheck
 import UserDocument from "../models/userDocument.js";
 import Passport from "../models/userDocument.js";
-
+import mongoose from "mongoose";
 
 
 
@@ -244,7 +244,7 @@ export const getUploadedDocuments = async (
   try {
     console.log('Fetching documents...');
     const userId = req?.query?.userId;
-
+    console.log('user id',userId)
     if (!userId) {
       return res.status(400).json({
         status: false,
@@ -252,11 +252,23 @@ export const getUploadedDocuments = async (
       });
     }
 
-    const result = await UserDocument.findOne({ userId: userId });
+    // Convert userId to ObjectId
+    const objectId = mongoose.Types.ObjectId.isValid(userId)
+      ? new mongoose.Types.ObjectId(userId)
+      : null;
+
+    if (!objectId) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid User ID format.",
+      });
+    }
+
+    const result = await UserDocument.findOne({ userId: objectId });
 
     console.log('Found documents:', result);
 
-    if (result?.documents?.length > 0) {
+    if (result) {
       return res.status(200).json({
         status: true,
         message: "Documents fetched successfully.",

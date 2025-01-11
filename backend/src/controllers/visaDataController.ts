@@ -71,7 +71,7 @@ export const addVisaData = async (req: any, res: any) => {
       return res.status(400).json({ message: "Application id already exists" });
     }
 
-    let applicationStatus = null;
+    let applicationStatus = null; 
     let applicationStatusId = null;
 
     // **FIX: Check if an ApplicationStatus already exists for this user**

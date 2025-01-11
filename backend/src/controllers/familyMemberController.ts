@@ -1,15 +1,15 @@
 import ApplicationStatus from "../models/applicationStatus.js";
+import PersonalData from "../models/personalData.js";
 import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
 // In your user controller file
 import { v4 as uuidv4 } from "uuid";
 
 
-
-
+ 
 export async function addFamilyMember(req: any, res: any) {
     try {
-        const { name, email, relationship, ...data } = req.body;
+        const { name, email, relationship, data, profileData } = req.body;
         const primaryApplicantId = req.user.id;
         console.log("add family member::", req.body, req.user)
         // Check if the primary applicant exists
@@ -30,6 +30,7 @@ export async function addFamilyMember(req: any, res: any) {
              return;
         }
 
+
          const existingUser = await User.findOne({ email: email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
@@ -39,10 +40,9 @@ export async function addFamilyMember(req: any, res: any) {
        const visadata = new VisaData(data);
       const resultVisadata = await visadata.save();
 
+        const applicationId = uuidv4();
 
-          const applicationId = uuidv4();
-
-         // Create the family member user
+       // Create the family member user
         const familyMember = new User({
             name,
             email,
@@ -54,6 +54,18 @@ export async function addFamilyMember(req: any, res: any) {
             isPrimaryApplicant: false,
         });
         const savedFamilyMember = await familyMember.save();
+
+       // Check if personal data already exists for this user
+        let personalData = await PersonalData.findOne({ userId: savedFamilyMember._id });
+        if (personalData) {
+            // If exists, update it
+            await PersonalData.updateOne({ userId: savedFamilyMember._id }, { $set: {...profileData, email: savedFamilyMember.email } });
+        } else {
+            // If not, create a new document
+             personalData = new PersonalData({...profileData, userId: savedFamilyMember._id, email: savedFamilyMember.email });
+            await personalData.save()
+        }
+
 
         // Fetch the application status record
         const applicationStatus = await ApplicationStatus.findOne({applicationId: primaryApplicant.applicationId})
@@ -73,6 +85,7 @@ export async function addFamilyMember(req: any, res: any) {
         res.status(500).json({ message: "Internal server error", error: error });
     }
 }
+
 
 export async function getFamilyMemberApplicationDetails(req: any, res: any) {
     try {
@@ -124,18 +137,22 @@ export async function getPrimaryApplicantLinkedFamilyMembers(req: any, res: any)
             primaryApplicationId: primaryApplicant.applicationId,
             _id: { $ne: primaryApplicantId } // Exclude primary applicant
         }).populate('visaDataId') // Populate visaDataId for the risk assessment data
-
+    
          const formattedFamilyMembers = await Promise.all(familyMembers.map(async member => {
-            const applicationStatus = await ApplicationStatus.findOne({applicationId: member.primaryApplicationId});
-            return {
-              _id: member._id,
-               applicationId: member.applicationId,
-                name: member.name,
-               email: member.email,
-                relationship: member.relationship,
-             visaData: member.visaDataId,
-                applicationStatus: applicationStatus
-            };
+           const applicationStatus = await ApplicationStatus.findOne({applicationId: member.primaryApplicationId});
+             const personalData = await PersonalData.findOne({userId: member._id});
+
+             return {
+               _id: member._id,
+                applicationId: member.applicationId,
+                 name: member.name,
+                email: member.email,
+                 relationship: member.relationship,
+              visaData: member.visaDataId,
+                applicationStatus: applicationStatus,
+                passport_number: personalData?.passport_number,
+                citizenshipCountry: personalData?.citizenshipCountry,
+             };
          }));
 
 

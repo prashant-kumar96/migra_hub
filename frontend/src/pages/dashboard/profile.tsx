@@ -78,6 +78,8 @@ const ProfilePage = () => {
       }
   }, [userDetails?.applicationId, user]);
 
+  
+
   // Refresh linked members when modal closes
   useEffect(() => {
       if (!isOpen && userDetails?._id) {

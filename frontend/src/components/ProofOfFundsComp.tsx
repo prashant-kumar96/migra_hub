@@ -81,7 +81,7 @@ const ProofOfFundsComp: React.FC<ProofOfFundsCompProps> = ({ userId, onUploadSuc
               className="bg-gray-100 border text-black hover:text-white hover:bg-blue-600 my-2  py-2 px-4 rounded"
 
             >
-              Upload Proof of Funds
+              Click to Upload Proof of Funds
             </button>
 
               {files.map((file, index) => (

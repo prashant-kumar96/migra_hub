@@ -104,6 +104,7 @@ const StepsModal: React.FC<Props> = ({
     const visaDataWithUserId = { ...data, userId };
      console.log(';; visa data',visaDataWithUserId)
     try {
+      // return ''
       const response = await createVisaData(visaDataWithUserId);
   
       if (response.status === 200) {
@@ -195,15 +196,16 @@ const StepsModal: React.FC<Props> = ({
       setProgressBarPercentage((prev) => prev - 10);
       setStep((prev) => prev - 1);
     }
-  };
+  }; 
 
   const handleSelectPassportCountry = (code) => {
+    console.log(';; code selected',code)
     // onSelectCitizenShipCountry(code);
     const tempCountry: any = countryList()
       .getData()
-      .find((country) => country.value === code);
+      .find((country) => country.value === code || country.label === code);
     setPassportCountry(tempCountry);
-    if (code === "IN") {
+    if (code === "IN" || code === 'India') {
       setShowRiskDecreased(true);
     } else {
       setShowRiskDecreased(false);

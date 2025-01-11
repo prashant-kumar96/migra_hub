@@ -77,7 +77,7 @@ const PassportUploadComp: React.FC<PassportUploadCompProps> = ({ userId, onUploa
             onClick={() => setModalOpen(true)}
             className="bg-gray-100 border text-black hover:text-white hover:bg-blue-600 my-2  py-2 px-4 rounded"
           >
-            Upload passport
+            Click to Upload passport
           </button>
             {files.map((file, index) => (
                 <div key={index} className="mb-4  relative flex justify-between gap-4 items-center">

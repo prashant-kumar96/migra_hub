@@ -77,7 +77,7 @@ const ProofOfTiesComp: React.FC<ProofOfTiesCompProps> = ({ userId, onUploadSucce
                   className="bg-gray-100 border text-black hover:text-white hover:bg-blue-600 my-2  py-2 px-4 rounded"
 
               >
-                  Upload Proof of Ties to Home Country
+                 Click to Upload Proof of Ties to Home Country
               </button>
               {files.map((file, index) => (
                   <div key={index} className="mb-4 border relative flex justify-between gap-4 items-center">
