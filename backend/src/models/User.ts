@@ -53,7 +53,9 @@ const userSchema: Schema<IUser> = new Schema({
   stripePaymentSessionId: { type: String },
   isStripePaymentDone: { type: Boolean },
   assignedCaseManagerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  applicationId: { type: String, unique: true }, // Application ID field
+      
+  applicationId: { type: String, unique: true, sparse:true}, // Application ID field - unique is removed
+
   primaryApplicationId: { type: String }, // Primary Application ID field
   isPrimaryApplicant: { type: Boolean, default: false },
   googleId:{type: String},

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaUserTie } from "react-icons/fa";
 import Button from "./ui/buttons/CreateButton";
+import { toast } from "react-toastify";
 
 const CreateCaseManager = ({ isModalOpen, setIsModalOpen }) => {
   const {
@@ -12,15 +13,37 @@ const CreateCaseManager = ({ isModalOpen, setIsModalOpen }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log("Form Submitted", data);
-    const newData = {
-      ...data,
-      role: "CASE_MANAGER",
-    };
-    const result = await createCaseManager(newData);
-    console.log("CreateCaseManager CreateCaseManager", result);
-    setIsModalOpen(false); // Close the modal after form submission
-  };
+    try {
+        console.log("Form Submitted", data);
+        const newData = {
+            ...data,
+            role: "CASE_MANAGER",
+        };
+
+        const result = await createCaseManager(newData);
+        console.log("Case Manager created successfully:", result);
+        
+        // Close modal and show success message
+        setIsModalOpen(false);
+        toast.success("Case Manager created successfully");
+
+    } catch (error) {
+        // Handle specific error types
+        if (error.response) {
+            // Server responded with an error
+            const errorMessage = error.response.data?.message || "Failed to create Case Manager";
+            toast.error(errorMessage);
+        } else if (error.request) {
+            // Request made but no response received
+            toast.error("Network error. Please check your connection.");
+        } else {
+            // Something else went wrong
+            toast.error("An unexpected error occurred");
+        }
+        
+        console.error("Error creating Case Manager:", error);
+    }
+};
 
   return (
     <div className="p-4">

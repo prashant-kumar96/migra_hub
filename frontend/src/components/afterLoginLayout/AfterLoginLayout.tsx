@@ -167,9 +167,9 @@ export const ProgressBar = () => {
                                 </div>
                             )}
                         </div>
-                      <span
-                        className={`mt-2 text-sm  ${isStepCompleted(2) ? 'text-gray-600 font-bold' : isStepActive(2) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
-                        >
+                        <span
+                         className={`mt-2 text-sm  ${isStepCompleted(2) ? 'text-gray-600 font-bold' : isStepActive(2) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                         >
                             Review & Submit
                         </span>
                     </div>

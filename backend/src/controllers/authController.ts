@@ -38,73 +38,78 @@ async function login(req: any, res: any) {
 
 
 
+const JWT_SECRET: any = process.env.JWT_SECRET;
+
 async function register(req: any, res: any) {
-  const JWT_SECRET: any = process.env.JWT_SECRET;
   console.log("req body", req.body);
-  // return;
   const { email, password, name, role, data } = req.body;
+
   if (!data) {
-      res.status(400).json({
-      message:
-          "Please fill all the steps from the index page before registering",
+    return res.status(400).json({
+      message: "Please fill all the steps from the index page before registering",
       extraInfo: "Info Incomplete",
-      });
-  } else {
-      console.log("/register is run");
-      try {
-      const existingUser = await User.findOne({ email: email });
-      if (existingUser) {
-          return res.status(400).json({ message: "User already exists" });
-      }
-      const visadata = new VisaData(data);
-      const resultVisadata = await visadata.save();
-      console.log("resultVisaData", resultVisadata);
-
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-
-      const user = new User({
-          email,
-          password: hashedPassword,
-          role,
-          name,
-          visaDataId: resultVisadata._id,
-
-      });
-
-        const result = await user.save();
-          console.log(result, "result");
-      // create application status and application id
-      const applicationId = uuidv4();
-      const applicationStatus = new ApplicationStatus({
-        applicationId: applicationId,
-        riskAssessment: 'completed'
-      });
-      const resultApplicationStatus = await applicationStatus.save();
-
-       // Update the user object with application id
-         result.applicationId = applicationId;
-         result.isPrimaryApplicant = true;
-         await result.save();
-
-
-      const token = jwt.sign({ id: result._id }, JWT_SECRET, { expiresIn: "1d" });
-      res.status(200).json({
-          token,
-          user: {
-          email: result.email,
-          id: result._id,
-          message: "User registered successfully",
-          role: result.role,
-          },
-      });
-      } catch (error) {
-      console.log("Error", error);
-      res.status(500).json({ message: "Internal server error", error });
-      }
+    });
   }
+
+  console.log("/register is run");
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const visadata = new VisaData(data);
+    const resultVisadata = await visadata.save();
+    console.log("resultVisaData", resultVisadata);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+      
+    const userPayload: any = { // Define the user payload object
+      email,
+      password: hashedPassword,
+      role,
+      name,
+        visaDataId: resultVisadata._id,
+    };
+
+
+    // Create application status and application id if role is 'USER'
+    if (role === 'USER') {
+       const applicationId = uuidv4();
+       const applicationStatus = new ApplicationStatus({
+           applicationId: applicationId,
+           riskAssessment: 'completed',
+       });
+
+      await applicationStatus.save();
+      userPayload.applicationId = applicationId;
+      userPayload.isPrimaryApplicant = true;
+
+    }
+
+
+    const user = new User(userPayload);
+      
+    const result = await user.save();
+    console.log(result, "result");
+
+    const token = jwt.sign({ id: result._id }, JWT_SECRET, { expiresIn: '1d' });
+
+    res.status(200).json({
+      token,
+      user: {
+        email: result.email,
+        id: result._id,
+        message: "User registered successfully",
+        role: result.role,
+      },
+    });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ message: "Internal server error", error });
   }
- 
+}
 
        
   async function googleLogin(req: any, res: any) {
