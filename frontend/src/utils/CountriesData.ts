@@ -28,48 +28,96 @@ const countriesData = [
     migrahubFee: "$145",
     governmentfee: "$100",
     faq: [
+      // {
+      //   faqButton: "General Information",
+      //   faqHeading: "Frequently Asked Questions about Canadian Visa",
+      //   questions: [
+      //     {
+      //       q: "What is the validity of a Canadian visa?",
+      //       a: "The validity of a Canadian visa is typically 10 years, or until the expiration of your passport, whichever comes first."
+      //     },
+      //     {
+      //       q: "How many entries are allowed on a Canadian visa?",
+      //       a: "Canadian visas can be issued for single or multiple entries depending on the type of visa and purpose of travel."
+      //     }
+      //   ]
+      // },
       {
-        faqButton: "General Information",
-        faqHeading: "Frequently Asked Questions about Canadian Visa",
-        questions: [
+        "faqButton": "Visa Processing",
+        "faqHeading": "Steps to Apply for a Canadian Visa",
+        "questions": [
+
           {
-            q: "What is the validity of a Canadian visa?",
-            a: "The validity of a Canadian visa is typically 10 years, or until the expiration of your passport, whichever comes first."
+            "q": "Can MigraHub guarantee my travel visa will be approved?",
+            "a": "Neither MigraHub nor any third party can guarantee the approval of a travel visa application. The final decision lies solely with the Canadian government. However, every application completed through MigraHub undergoes a thorough review by our dedicated team before submission to the Canadian government. Additionally, all our applications are processed by Licensed Canadian RCIC’s which will reduce your risk."
           },
           {
-            q: "How many entries are allowed on a Canadian visa?",
-            a: "Canadian visas can be issued for single or multiple entries depending on the type of visa and purpose of travel."
+            "q": "How long is the visitor visa valid for?",
+            "a": "The validity of the visa varies and is determined by the consular officer, often ranging from one month to ten years, allowing one time or multiple entries."
+          },
+          {
+            "q": "How long can I stay in Canada on a visitor visa?",
+            "a": "The duration of stay is determined by the officer at the port of entry, typically up to six months."
           }
         ]
       },
       {
-        faqButton: "Application Process",
-        faqHeading: "Steps to Apply for a Canadian Visa",
-        questions: [
+        "faqButton": "General Information",
+        "faqHeading": "Procedures for Obtaining a Canada Visa Using MigraHub",
+        "questions": [
           {
-            q: "What documents are required for a Canadian visa application?",
-            a: "Required documents include a valid passport, completed application form, proof of funds, travel itinerary, and invitation letter (if applicable)."
+            "q": "What are the steps and procedures for obtaining a Canada visa using MigraHub?",
+            "a": "Visit the Canada page at https://migrahub.com/countries/canada?id=1 and select your citizenship. Click on the 'Start your Journey' button."
           },
           {
-            q: "How long does it take to process a Canadian visa?",
-            a: "The processing time for a Canadian visa varies but typically takes between 2-4 weeks."
-          }
-        ]
-      },
-      {
-        faqButton: "Visa Fees",
-        faqHeading: "Information about Canadian Visa Fees",
-        questions: [
-          {
-            q: "What is the fee for a Canadian tourist visa?",
-            a: "The fee for a Canadian tourist visa is $100, with an additional service fee charged by MigraHub of $145."
+            "q": "How can I assess my chances of visa approval?",
+            "a": "Do a Quick Risk Assessment so we can help increase your chances of approval."
           },
           {
-            q: "Are there any additional costs involved?",
-            a: "Additional costs may include biometrics, courier services, or expedited processing fees."
+            "q": "What information is required to start the process?",
+            "a": "Provide your basic personal information and complete your profile."
+          },
+          {
+            "q": "How do I proceed with the payment?",
+            "a": "Proceed to make the payment as instructed on the platform."
+          },
+          {
+            "q": "What happens after making the payment?",
+            "a": "After payment, a dedicated case manager will be assigned to you and guide you in attaching the required documents."
+          },
+          {
+            "q": "Who will review and submit my application?",
+            "a": "Our RCIC immigration consultant will review and submit your application."
+          },
+          {
+            "q": "How will I handle the biometrics appointment?",
+            "a": "Your case manager will help book the biometrics appointment and support you during the process."
+          },
+          {
+            "q": "How will I stay updated on my application?",
+            "a": "We will send timely notifications to provide updates on your application."
+          },
+          {
+            "q": "What is the next step after receiving a decision on the visa?",
+            "a": "Your case manager will help you set up an appointment to submit your passport."
           }
         ]
       }
+      
+      // {
+      //   faqButton: "Visa Fees",
+      //   faqHeading: "Information about Canadian Visa Fees",
+      //   questions: [
+      //     {
+      //       q: "What is the fee for a Canadian tourist visa?",
+      //       a: "The fee for a Canadian tourist visa is $100, with an additional service fee charged by MigraHub of $145."
+      //     },
+      //     {
+      //       q: "Are there any additional costs involved?",
+      //       a: "Additional costs may include biometrics, courier services, or expedited processing fees."
+      //     }
+      //   ]
+      // }
     ]
   },
 
@@ -124,6 +172,70 @@ const countriesData = [
     ],
     migrahubFee: "$145",
     governmentfee: "$185",
+    faq: [
+
+      {
+        "faqButton": "USA Visa Process",
+        "faqHeading": "Steps and Procedures for Obtaining a USA Visa Using MigraHub",
+        "questions": [
+          {
+            "q": "What is the first step to apply for a USA visa through MigraHub?",
+            "a": "Visit the USA page on our website at https://migrahub.com/countries/united-states?id=3, select your citizenship, and click on the 'Start your Journey' button."
+          },
+          {
+            "q": "What should I do after starting my journey?",
+            "a": "Complete a quick risk assessment to help us increase your chances of visa approval."
+          },
+          {
+            "q": "What personal information do I need to provide?",
+            "a": "Provide your basic personal information and complete your profile."
+          },
+          {
+            "q": "What is the next step after completing my profile?",
+            "a": "Proceed to make the payment."
+          },
+          {
+            "q": "What happens after I make the payment?",
+            "a": "A dedicated case manager will be assigned to you to guide you in attaching the required documents."
+          },
+          {
+            "q": "How does MigraHub ensure my application is reviewed properly?",
+            "a": "Our immigration consultant will review your application and attached documents."
+          },
+          {
+            "q": "Who arranges the visa appointment?",
+            "a": "Your case manager will arrange an appointment and upload all required documents."
+          },
+          {
+            "q": "How will MigraHub help me prepare for the visa interview?",
+            "a": "We will help you prepare for the visa interview by providing necessary guidance."
+          },
+          {
+            "q": "What do I need to bring to the visa appointment?",
+            "a": "You can simply download the package and bring it with you to the visa appointment."
+          },
+          {
+            "q": "What happens after the visa appointment?",
+            "a": "After the appointment, you can pick up your passport in person from the given visa office."
+          }
+        ]
+      },      
+      {
+        "faqButton": "General Information",
+        "faqHeading": "Procedures for Obtaining a USA Visa Using MigraHub",
+        "questions": [
+          {
+            "q": "What are the steps and procedures for obtaining a Canada visa using MigraHub?",
+            "a": "Visit the Canada page at https://migrahub.com/countries/usa?id=3 and select your citizenship. Click on the 'Start your Journey' button."
+          },
+          {
+            "q": "What is the next step after receiving a decision on the visa?",
+            "a": "Your case manager will help you set up an appointment to submit your passport."
+          }
+        ]
+      }
+  
+    ]
   },
   {
     id: 4,
