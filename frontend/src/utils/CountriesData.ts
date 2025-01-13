@@ -1,4 +1,5 @@
 import VisaRequirements from "@/components/countries/visaRequirements";
+import VisaTimeline from "@/components/countries/visaTimeline";
 
 const countriesData = [
   {
@@ -181,6 +182,40 @@ const countriesData = [
         logo: "/assets/visaRequirements/noc.png",
       },
     ],
+    VisaTimeline: [
+      {
+        title: "Step - 01",
+        action: "Risk Assessment",
+        description:
+          "Answer a few questions, and we’ll assess your visa denial risk to create a tailored plan for a stronger application.",
+        iconColor: "fill-emerald-500",
+      },
+      {
+        title: "Step - 02",
+        action: "Onboarding",
+        description:
+          "Onboard to MigraHub, process payment and a dedicated case manager will be assigned to you. ",
+        iconColor: "fill-slate-300",
+      },
+      {
+        title: "Step - 03",
+        action: "Application Process",
+        description:
+          "Licensed Canadian RCIC will review and submit your application. Case Manager will help book appointment and support submit Biometrics at visa center.",
+        iconColor: "fill-slate-300",
+        subSteps: [
+          "Application has been sent to the immigration supervisor",
+          "Application has been sent to internal intelligence",
+        ],
+      },
+      {
+        title: "Step - 04",
+        action: "Real-Time Updates",
+        iconColor: "fill-red-500",
+        description: "Receive real-time status updates, keeping you informed throughout the application process",
+        // tags: ["pay on time fee", "on time fee waived", "visa fee refunded"],
+      },
+    ]
   },
 
   {
@@ -378,6 +413,45 @@ const countriesData = [
         logo: "/assets/visaRequirements/confirmation.png",
       },
     ],
+    VisaTimeline: [
+      {
+        title: "Step - 01",
+        action: "Risk Assessment",
+        description:
+          "Answer a few questions, and we’ll assess your visa denial risk to create a tailored plan for a stronger application.",
+        iconColor: "fill-emerald-500",
+      },
+      {
+        title: "Step - 02",
+        action: "Onboarding",
+        description:
+          "Onboard to MigraHub, process payment and a dedicated case manager will be assigned to you. ",
+        iconColor: "fill-slate-300",
+      },
+      {
+        title: "Step - 03",
+        action: "Application Process",
+        description:
+          "Our team of USA visa experts will review and submit your application. (DS-160)",
+        iconColor: "fill-slate-300",
+        
+      },
+      {
+        title: "Step - 04",
+        action: "Interview",
+        description:
+          "Case Manager will help Schedule soonest available interview at US Embassy or Consulate. We will help prepare Supporting Documents and help practice your responses so you can attend interview in full confidence. ",
+        iconColor: "fill-slate-300",
+        
+      },
+      {
+        title: "Step - 05",
+        action: "Real-Time Updates",
+        iconColor: "fill-red-500",
+        description: "Receive real-time status updates, keeping you informed throughout the application process",
+        // tags: ["pay on time fee", "on time fee waived", "visa fee refunded"],
+      },
+    ]
   },
   {
     id: 4,
