@@ -54,7 +54,7 @@ const CaseManagerPage = () => {
         isModalOpen={isModalOpen}
       />
       <div className="relative overflow-auto ">
-        <Table data={caseManagersList} headers={headers} />
+        <Table data={caseManagersList} showActions={false} headers={headers} />
       </div>
     </div>
   );

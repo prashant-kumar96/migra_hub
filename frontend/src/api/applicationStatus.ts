@@ -14,6 +14,12 @@ export const getApplicationDetails = async (applicationId: string) => {
     return result
 }
 
+// Send status update email
+export const sendStatusUpdateEmail = async (data: any) => {
+    const result = await axiosInstance.post(`/application-status/send-status-update`, data);
+    return result;
+};
+
 export const updateDocumentUploadStatus = async (applicationId:string) => {
     const result  = await axiosInstance.post(`/application-status/document-upload-status/${applicationId}`);
 return result;
