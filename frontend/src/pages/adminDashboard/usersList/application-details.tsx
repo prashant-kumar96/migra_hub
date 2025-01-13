@@ -38,12 +38,12 @@ function ApplicationDetails() {
     const { query } = useRouter();
     const [applicationData, setApplicationData] = useState<ApplicationData | null>(null);
     const [loading, setLoading] = useState(true);
-
+    console.log(';; query id', query)
     useEffect(() => {
         const fetchApplicationDetails = async () => {
-            if (!query?.id) return;
+            if (!query?.id && !query?.applicationId) return;
             try {
-                const response = await getApplicationDetails(query.id);
+                const response = await getApplicationDetails(query?.id || query?.applicationId);
                 setApplicationData(response.data);
             } finally {
                 setLoading(false);

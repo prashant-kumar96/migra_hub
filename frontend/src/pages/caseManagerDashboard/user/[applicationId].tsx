@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import { getAllDetailsOfUser } from "@/api/caseManager";
 import UserDetails from "@/components/UserDetails";
+import ApplicationDetails from "@/pages/adminDashboard/usersList/application-details";
+
 
 const User = () => {
   const router = useRouter();
@@ -12,6 +14,8 @@ const User = () => {
     console.log("userDetails", userDetails?.data?.data);
     setData1(userDetails?.data?.data);
   };
+
+  console.log(';; query id',router)
 
   useEffect(() => {
     if (router.query.id) getAllDetailsOfUserfunction(router.query.id);
@@ -23,7 +27,11 @@ const User = () => {
         <h1>User Details</h1>
         <p>User ID: {router.query.id}</p>
       </div>
-      {data1 && <UserDetails data={data1} />}
+     
+      <ApplicationDetails/>
+       {/* <UserDetails data={data1}  */}
+      
+    
     </div>
   );
 };

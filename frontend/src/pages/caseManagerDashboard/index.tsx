@@ -26,8 +26,8 @@ const CaseManagerDashboard = () => {
     getAssignedUsersToCaseManagerfunction();
   }, []);
 
-  const handleView = (userId) => {
-    router.push(`/user/${userId}`);
+  const handleView = (userId,applicationId) => {
+    router.push(`/caseManagerDashboard/user/${userId}?id=${applicationId}`);
     // router.push({
     //   pathname: "/user",
     //   state: { userId },
@@ -70,7 +70,7 @@ const CaseManagerDashboard = () => {
 
               <td
                 className="px-6 py-4 whitespace-nowrap cursor-pointer"
-                onClick={() => handleView(user?._id)}
+                onClick={() => handleView(user?._id,user?.applicationId)}
               >
                 View
               </td>
