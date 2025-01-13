@@ -57,13 +57,13 @@ export const ProgressBar = () => {
             current = 2;
         }
 
-        // if (applicationStatus?.visaApplied) {
-        //     steps.push(1, 2);
-        //     current = 3
-        // }
+        if (applicationStatus?.visaApplied) {
+            steps.push(1, 2,3);
+            current = 3
+        }
 
-        if (applicationStatus?.visaApproved == 'completed') {
-            steps.push(1, 2, 3);
+        if (applicationStatus?.visaApproved == 'completed' || applicationStatus?.visaApproved == 'approved') {
+            steps.push(1, 2, 3, 4);
             current = 4;
         }
 
@@ -83,7 +83,10 @@ export const ProgressBar = () => {
     // Calculate the width of the progress line based on completed steps
     const getProgressWidth = () => {
         const lastCompletedStep = Math.max(...completedSteps, 0);
-        return `${((lastCompletedStep) / 3) * 100}%`;
+        // Ensure the progress doesn't exceed 100%
+        const progress =  Math.min(((lastCompletedStep) / 3) * 100 , 100);
+
+        return `${progress}%`;
     };
 
     console.log(';; completedSteps',completedSteps)
@@ -236,7 +239,6 @@ export const ProgressBar = () => {
         </div>
     );
 };
-
 
 interface WithAuthProps {
   user?: any;

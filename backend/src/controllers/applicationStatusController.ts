@@ -85,22 +85,40 @@ export const updateDocumentUploadStatus = async (req: any, res: any) => {
     }
 };
 
+
+
 export const sendStatusUpdateEmail = async (req: any, res: any) => {
     try {
-        const { userId, status } = req.body;
-         if (!userId || !status) {
-             return res.status(400).json({ message: "User ID and status are required" });
-          }
+        const { userId, status, applicationId } = req.body;
+        if (!userId || !status) {
+            return res.status(400).json({ message: "User ID and status are required" });
+        }
         const user = await User.findById(userId)
         if(!user){
-             return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found" });
         }
 
+         let updateData = {};
+           if(status === 'visa applied'){
+                updateData = {$set: { visaApplied: true }}
+           }
+           else if (status === "visa approved") {
+              updateData = {$set: { visaApproved: "approved" }};
+           } else if (status === "visa rejected"){
+               updateData = {$set: { visaApproved: "rejected" }};
+           }
 
-        const emailBody = {
-          from: process.env.EMAIL_USER,
-          to: user.email,
-          subject: `Application Status Update`,
+         if(applicationId) {
+            const applicationStatus = await ApplicationStatus.findOne({applicationId: applicationId});
+            if (applicationStatus && Object.keys(updateData).length > 0) {
+              await ApplicationStatus.updateOne({ _id: applicationStatus._id }, updateData);
+            }
+         }
+
+         const emailBody = {
+             from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: `Application Status Update`,
             html:`
              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                  <h2 style="color: #333; margin-bottom: 20px;">Visa Application Status Update</h2>
@@ -108,7 +126,7 @@ export const sendStatusUpdateEmail = async (req: any, res: any) => {
                  <p style="color: #555; font-size: 16px; margin-bottom: 20px;">
                    Your Visa application is now under <strong style="font-size: 18px;">${status}</strong>.
                 </p>
-                 <p style="color: #555; font-size: 16px; margin-bottom: 20px;">
+                <p style="color: #555; font-size: 16px; margin-bottom: 20px;">
                      Thank you for using our service.
                  </p>
                  <div style="margin-top: 30px; padding-top: 10px; border-top: 1px solid #ddd; text-align: center; color:#777">
@@ -116,15 +134,14 @@ export const sendStatusUpdateEmail = async (req: any, res: any) => {
                  </div>
              </div>
              `
-          // text:`Dear ${user.name},Your Visa application is now under ${status}.  Thank you for using our service.`
+             // text:`Dear ${user.name},Your Visa application is now under ${status}.  Thank you for using our service.`
         }
 
-        await sendEmail(emailBody, res, true);
-
+        await sendEmail(emailBody, res, "Status email sent successfully");
 
     } catch (error) {
         console.error("Error sending status update email:", error);
-       res.status(500).json({ message: "Internal server error", error: error });
+        res.status(500).json({ message: "Internal server error", error: error });
     }
 };
 

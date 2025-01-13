@@ -42,7 +42,7 @@ const Table: React.FC<TableProps> = ({ headers, data, showActions = true, showVi
         setLoadingRowId(row._id); // Set loading for this row
         try {
              setStatusValues((prev) => ({ ...prev, [row._id]: newStatus }));
-            const response = await sendStatusUpdateEmail({ userId: row._id, status: newStatus });
+            const response = await sendStatusUpdateEmail({ userId: row._id, status: newStatus , applicationId:row?.applicationId});
             console.log(';; reponse', response?.data?.message);
             if (response?.data?.message) {
               // Only show success toast if not loading
