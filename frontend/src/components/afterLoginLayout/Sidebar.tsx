@@ -74,7 +74,7 @@ const sidebarData = [
       {
         name: "Assign Case Manager",
         icon: <ImUser size={22} />,
-        href: "/assignCaseManager",
+        href: "/adminDashboard/assignCaseManager",
       },
     ],
   },
