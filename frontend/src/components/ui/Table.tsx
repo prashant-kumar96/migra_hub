@@ -16,9 +16,10 @@ const Table = ({ headers, data }) => {
   console.log('headers',headers,data)
 
   const handleView = (row, header) => {
-    // Handle view action here
-
-    router.push('');
+    const applicationId= row?.applicationId    // Handle view action here
+    console.log(';; row ',row)
+    console.log(';; headers',header)
+    router.push(`/adminDashboard/usersList/application-details?id=${applicationId}`);
     console.log('Viewing:', row, 'Column:', header);
 
   };

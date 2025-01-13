@@ -17,6 +17,7 @@
     "apexcharts": "^4.2.0",
     "axios": "^1.7.7",
     "browser-image-compression": "^2.0.2",
+    "file-saver": "^2.0.5",
     "jotai": "^2.10.1",
     "next": "14.2.15",
     "next-auth": "^4.24.8",
