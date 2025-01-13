@@ -54,8 +54,8 @@ const CountryPage = ({ }) => {
           <VisaRequirements />
           <VisaItinerary />
           <VisaTimeline />
-          <Concierge />
-          <VisaRejectionReasons />
+          {/* <Concierge /> */}
+          {/* <VisaRejectionReasons /> */}
           <FAQ/>
         </div>
 
