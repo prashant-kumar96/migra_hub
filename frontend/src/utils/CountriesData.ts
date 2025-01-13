@@ -225,12 +225,15 @@ const countriesData = [
         "faqHeading": "Procedures for Obtaining a USA Visa Using MigraHub",
         "questions": [
           {
-            "q": "What are the steps and procedures for obtaining a Canada visa using MigraHub?",
-            "a": "Visit the Canada page at https://migrahub.com/countries/usa?id=3 and select your citizenship. Click on the 'Start your Journey' button."
+            "q": "What are the steps and procedures for obtaining a USA visa using MigraHub?",
+            "a": "Visit the USA page at https://migrahub.com/countries/usa?id=3 and select your citizenship. Click on the 'Start your Journey' button."
           },
           {
             "q": "What is the next step after receiving a decision on the visa?",
             "a": "Your case manager will help you set up an appointment to submit your passport."
+          },
+          {
+            q: "",
           }
         ]
       }
