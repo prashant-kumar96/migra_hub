@@ -6,31 +6,38 @@ import mongoose from "mongoose";
 import VisaData from "../models/visadata.js";
 import PersonalData from "../models/personalData.js";
 import UserDocument from "../models/userDocument.js";
+import ApplicationStatus from "../models/applicationStatus.js";
 
-
-
-export const assignCaseManagerToUser = async (req: Request, res: Response) => {
+export const assignCaseManagerToUser = async (req: any, res: any) => {
   try {
-    console.log("assignCaseManagerToUser is run");
-
+    console.log("assignCaseManagerToUser started");
+     const {applicationId, caseManagerId, userId} = req.body;
     console.log("req.body", req.body);
-    const result = await User.findByIdAndUpdate(
-      { _id: req.body?.userId },
-      { $set: { assignedCaseManagerId: req.body?.caseManagerId } },
-      { new: true }
-    ).select("-password");
+        
+        const result = await User.findByIdAndUpdate(
+            { _id: userId },
+            { $set: { assignedCaseManagerId: caseManagerId } },
+            { new: true }
+            ).select("-password");
+        console.log("assignCaseManagerToUser result", result);
 
-    console.log("assignCaseManagerToUser result", result);
+       const applicationStatus = await ApplicationStatus.findOne({applicationId: applicationId});
+       if(applicationStatus){
+           // Update the application status to assigned case manager
+           await ApplicationStatus.updateOne(
+               {_id: applicationStatus._id},
+               {$set: { assignedCaseManager: true }}
+           );
+       }
 
     if (result) {
       res.status(200).send({ message: "Case Manager assigned successfully" });
     }
   } catch (err) {
     console.log("ERROr=.>", err);
-    res.status(400).json({ message: err });
+    res.status(500).json({ message: "Internal server error", error: err });
   }
 };
-
 
 export const getAssignedUsersToCaseManager = async (
   req: Request,
