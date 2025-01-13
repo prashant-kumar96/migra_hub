@@ -3,9 +3,10 @@
 import ApplicationStatus from "../models/applicationStatus.js";
 import PersonalData from "../models/personalData.js";
 import User from "../models/User.js";
+import UserDocument from "../models/userDocument.js";
 import VisaData from "../models/visadata.js";
-
-
+import sendEmail from '../utils/sender.js'
+ 
 export const getApplicationStatusDetails = async (req: any, res: any) => {
     try {
         const { applicationId } = req.params;
@@ -80,6 +81,143 @@ export const updateDocumentUploadStatus = async (req: any, res: any) => {
 
     } catch (error) {
         console.error("Error updating document upload status:", error);
+        res.status(500).json({ message: "Internal server error", error: error });
+    }
+};
+
+
+
+export const sendStatusUpdateEmail = async (req: any, res: any) => {
+    try {
+        const { userId, status, applicationId } = req.body;
+        if (!userId || !status) {
+            return res.status(400).json({ message: "User ID and status are required" });
+        }
+        const user = await User.findById(userId)
+        if(!user){
+            return res.status(404).json({ message: "User not found" });
+        }
+
+         let updateData = {};
+           if(status === 'visa applied'){
+                updateData = {$set: { visaApplied: true }}
+           }
+           else if (status === "visa approved") {
+              updateData = {$set: { visaApproved: "approved" }};
+           } else if (status === "visa rejected"){
+               updateData = {$set: { visaApproved: "rejected" }};
+           }
+
+         if(applicationId) {
+            const applicationStatus = await ApplicationStatus.findOne({applicationId: applicationId});
+            if (applicationStatus && Object.keys(updateData).length > 0) {
+              await ApplicationStatus.updateOne({ _id: applicationStatus._id }, updateData);
+            }
+         }
+
+         const emailBody = {
+             from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: `Application Status Update`,
+            html:`
+             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                 <h2 style="color: #333; margin-bottom: 20px;">Visa Application Status Update</h2>
+                 <p style="color: #555; font-size: 16px;">Dear ${user.name},</p>
+                 <p style="color: #555; font-size: 16px; margin-bottom: 20px;">
+                   Your Visa application is now under <strong style="font-size: 18px;">${status}</strong>.
+                </p>
+                <p style="color: #555; font-size: 16px; margin-bottom: 20px;">
+                     Thank you for using our service.
+                 </p>
+                 <div style="margin-top: 30px; padding-top: 10px; border-top: 1px solid #ddd; text-align: center; color:#777">
+                   Migra Hub
+                 </div>
+             </div>
+             `
+             // text:`Dear ${user.name},Your Visa application is now under ${status}.  Thank you for using our service.`
+        }
+
+        await sendEmail(emailBody, res, "Status email sent successfully");
+
+    } catch (error) {
+        console.error("Error sending status update email:", error);
+        res.status(500).json({ message: "Internal server error", error: error });
+    }
+};
+
+export const getApplicationDetails = async (req: any, res: any) => {
+    try {
+        const { applicationId } = req.params;
+        console.log("getApplicationDetails::", applicationId);
+
+        if (!applicationId) {
+            return res.status(400).json({ message: "Application ID is required" });
+        }
+
+        // Fetch primary applicant details
+        const primaryApplicant = await User.findOne({ applicationId: applicationId })
+            .populate('visaDataId')
+             .lean();
+
+        if (!primaryApplicant) {
+            return res.status(404).json({ message: "Primary applicant not found" });
+        }
+
+
+        // Fetch linked family members
+        const familyMembers = await User.find({ primaryApplicationId: applicationId, _id: { $ne: primaryApplicant._id } })
+            .populate('visaDataId')
+           .lean();
+
+
+        // Fetch application status
+        const applicationStatus = await ApplicationStatus.findOne({ applicationId: applicationId })
+            .lean();
+
+           const personalDataPromises = [primaryApplicant, ...familyMembers].map(async (member) => {
+              const personalData = await PersonalData.findOne({ userId: member._id }).lean()
+                  return {
+                        ...member,
+                        personalData: personalData || null
+                    };
+          })
+        const personalDataResults = await Promise.all(personalDataPromises)
+
+
+          const documentPromises = [primaryApplicant, ...familyMembers].map(async (member) => {
+              const documents = await UserDocument.findOne({userId: member._id}).lean()
+                 return {
+                     ...member,
+                    documents: documents || null,
+                };
+        });
+
+          const documentResults = await Promise.all(documentPromises)
+
+
+
+
+        const formattedFamilyMembers = personalDataResults.filter(member=> member._id !== primaryApplicant._id).map(member => {
+            return {
+                ...member,
+                documents: documentResults.find(doc => doc._id === member._id )?.documents || null
+            }
+        })
+
+        const response = {
+            message: "Application details fetched successfully",
+            primaryApplicant: {
+                ...personalDataResults.find(member=> member._id === primaryApplicant._id),
+                  documents: documentResults.find(doc => doc._id === primaryApplicant._id )?.documents || null
+
+            },
+            familyMembers: formattedFamilyMembers,
+             applicationStatus: applicationStatus || null
+        };
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.error("Error fetching application details:", error);
         res.status(500).json({ message: "Internal server error", error: error });
     }
 };

@@ -313,7 +313,7 @@ interface FamilyMember {
                             className={` ${
                               displayValue === "pending"
                                 ? "text-yellow-500"
-                                : displayValue === "completed"
+                                : (displayValue === "completed" || displayValue === 'Yes' || displayValue == 'approved') 
                                 ? "text-green-600"
                                 : ""
                             } px-4 py-3 text-sm text-gray-600`}
@@ -412,7 +412,7 @@ interface FamilyMember {
                             className={` ${
                               displayValue === "pending"
                                 ? "text-yellow-500"
-                                : displayValue === "completed"
+                                : (displayValue === "completed" || displayValue === 'Yes' || displayValue == 'approved')
                                 ? "text-green-600"
                                 : ""
                             } px-4 py-3 text-sm text-gray-600`}

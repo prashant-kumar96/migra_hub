@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AfterLoginLayout from "../components/afterLoginLayout/AfterLoginLayout";
+import AfterLoginLayout from "../../components/afterLoginLayout/AfterLoginLayout";
 import CreateCaseManager from "@/components/CreateCaseManager";
 import { getCaseManagers } from "@/api/auth";
 import Table from "@/components/ui/Table";
@@ -54,7 +54,7 @@ const CaseManagerPage = () => {
         isModalOpen={isModalOpen}
       />
       <div className="relative overflow-auto ">
-        <Table data={caseManagersList} headers={headers} />
+        <Table data={caseManagersList} showActions={false} headers={headers} />
       </div>
     </div>
   );

@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import AfterLoginLayout from "../../components/afterLoginLayout/AfterLoginLayout";
 import { getAllUsersWhoHaveDonePayment, getCaseManagers } from "@/api/auth";
 import { assignCaseManagerToUser } from "@/api/caseManager";
+import { useAuth } from "@/context/auth-context";
 
 const UsersList = () => {
   const [usersData, setUsersData] = useState();
   const [selectedOption, setSelectedOption] = useState("");
   const [caseManagersList, setCaseManagersList] = useState();
-
+  const {user} = useAuth()
+  
   const getAllUsersWhoHaveDonePaymentFunction = async () => {
     const result = await getAllUsersWhoHaveDonePayment();
     console.log("result getAllUsersWhoHaveDonePaymentFunction", result);
@@ -23,16 +25,18 @@ const UsersList = () => {
     setCaseManagersList(result?.data?.user);
   };
 
+
   useEffect(() => {
     getCaseManagersFunction();
     getAllUsersWhoHaveDonePaymentFunction();
   }, []);
 
-  const handleSelectChange = async (event, userId) => {
+  const handleSelectChange = async (event, userId, applicationId) => {
     const value = event.target.value; // Get the selected value
     setSelectedOption(value); // Update state (optional)
     console.log("handleSelectChange value", value); // Log the selected value
     const data = {
+      applicationId: applicationId,
       userId: userId,
       caseManagerId: value,
     };
@@ -90,7 +94,7 @@ const UsersList = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
                       value={selectedOption}
-                      onChange={(e) => handleSelectChange(e, user._id)}
+                      onChange={(e) => handleSelectChange(e, user._id, user?.applicationId)}
                       className="border-2 p-2"
                     >
                       {caseManagersList?.map((manager, index) => (
