@@ -105,10 +105,10 @@ const Travel = () => {
         <div className="relative mx-4 -mt-6 h-14 overflow-hidden rounded-xl bg-[#CDE6EC] bg-clip-border text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
           <div className="flex items-center justify-center m-4 gap-2">
             <GoShieldCheck size={28} className="mb-1" />
-            <span className="text-[19px] text-FloralWhite font-greycliff tracking-wide">
-              Visa gurranted by{" "}
+            <span className="text-[16px] text-FloralWhite font-greycliff tracking-wide">
+            On Time Guarantee by{" "}
             </span>
-            <span className="text-[19px] text-FloralWhite font-greycliff tracking-tight font-semibold">
+            <span className="text-[16px] text-FloralWhite font-greycliff tracking-tight font-medium">
               MigraHub
             </span>
           </div>
@@ -215,10 +215,10 @@ const Travel = () => {
               On Time Guarantee
             </span>
             <br />
-            <span className="tracking-wide text-justify">
+            {/* <span className="tracking-wide text-justify">
               Pay our service fee only when we deliver your visa appointment on
               time.
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
