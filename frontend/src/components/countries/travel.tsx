@@ -11,7 +11,7 @@ import { RiGovernmentLine } from "react-icons/ri";
 
 
 const Travel = () => {
-  
+
   const router = useRouter();
   const { country } = router.query;
   const selectedCountry = countriesData.find(
@@ -106,7 +106,7 @@ const Travel = () => {
           <div className="flex items-center justify-center m-4 gap-2">
             <GoShieldCheck size={28} className="mb-1" />
             <span className="text-[16px] text-FloralWhite font-greycliff tracking-wide">
-            On Time Guarantee by{" "}
+              On Time Guarantee by{" "}
             </span>
             <span className="text-[16px] text-FloralWhite font-greycliff tracking-tight font-medium">
               MigraHub
@@ -127,7 +127,7 @@ const Travel = () => {
                     {selectedCountry?.migrahubFee}
                   </span>
                   <div className="absolute left-4 bottom-full mb-2 w-max px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                     MigraHub's Fee
+                    MigraHub's Fee
                   </div>
                 </li>
                 <li className="relative group flex justify-between items-center tracking-wide">
@@ -202,11 +202,11 @@ const Travel = () => {
           />
         )}
       </div>
-      <div className="inline-flex w-[360px] items-center justify-center p-2 rounded-xl bg-transparent text-FloralWhite shadow-lg shadow-blue-gray-500/40 shadow-md mt-3 ml-8 space-x-3">
+      {/* <div className="inline-flex w-[360px] items-center justify-center p-2 rounded-xl bg-transparent text-FloralWhite shadow-lg shadow-blue-gray-500/40 shadow-md mt-3 ml-8 space-x-3">
         <span className="text-[18px] text-Indigo">Get in Touch: </span>
         <IoLogoWhatsapp className="text-[#33CC66]" size={30} />
         <span className="text-Indigo text-[18px]">*********9</span>
-      </div>
+      </div> */}
 
       <div className="relative flex w-[360px] flex-col p-4 rounded-xl bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border shadow-md mt-3 ml-8">
         <div className="inline-flex items-start">
@@ -215,10 +215,9 @@ const Travel = () => {
               On Time Guarantee
             </span>
             <br />
-            {/* <span className="tracking-wide text-justify">
-              Pay our service fee only when we deliver your visa appointment on
-              time.
-            </span> */}
+            <span className="tracking-wide text-justify">
+              With our On-Time Visa Guarantee, we ensure a streamlined and efficient visa application process, so you receive your visa promptly and hassle-free.
+            </span>
           </div>
         </div>
       </div>

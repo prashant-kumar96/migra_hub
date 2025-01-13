@@ -1,4 +1,5 @@
-import { RiGovernmentFill } from "react-icons/ri";
+import VisaRequirements from "@/components/countries/visaRequirements";
+import VisaTimeline from "@/components/countries/visaTimeline";
 
 const countriesData = [
   {
@@ -103,7 +104,7 @@ const countriesData = [
           }
         ]
       }
-      
+
       // {
       //   faqButton: "Visa Fees",
       //   faqHeading: "Information about Canadian Visa Fees",
@@ -118,6 +119,102 @@ const countriesData = [
       //     }
       //   ]
       // }
+    ],
+    VisaRequirements: [
+      {
+        name: "Passport Copy",
+        logo: "/assets/visaRequirements/passport.png",
+        tooltip: [
+          "first and last page of passport",
+          "copy of entry and exity of previous visas held"
+        ],
+      },
+      {
+        name: "Photograph",
+        tooltip: "the photo graph should not be blur!",
+        logo: "/assets/visaRequirements/camera.png",
+      },
+      {
+        tooltip: ["provide bank statement of last 6 months ", "ITR"],
+        name: "Proof of Funds",
+        logo: "/assets/visaRequirements/bank-statement.png",
+      },
+      {
+        name: "Itinerary Planning",
+        logo: "/assets/visaRequirements/itinerary.png",
+        tooltip: ["flight tickets",
+          "Day to Day Itinerary ( Train/ Bus / Rental Car bookings)",
+          "Hotels Bookings"
+        ],
+      },
+      {
+        name: "Cover Letter",
+        tooltip: "Cover Letter",
+        logo: "/assets/visaRequirements/cover.png",
+      },
+      {
+        tooltip: ["leave approval letter",
+          "salary slip of 3 months"
+        ],
+        name: "Employment",
+        logo: "/assets/visaRequirements/employment.png",
+      },
+      {
+        tooltip: ["Sponsorship Letter",
+          "Sponsors 6 months Bank Statement"
+        ],
+        name: "Sponsorship",
+        logo: "/assets/visaRequirements/sponsorship.png",
+      },
+      {
+        tooltip: "Inviatation Letter",
+        name: "Invitation Letter",
+        logo: "/assets/visaRequirements/invitation.png",
+      },
+      {
+        tooltip: "Company Registeration Proof",
+        name: "Self-Employed",
+        logo: "/assets/visaRequirements/company.png",
+      },
+      {
+        tooltip: "Student NOC from Institute",
+        name: "Student",
+        logo: "/assets/visaRequirements/noc.png",
+      },
+    ],
+    VisaTimeline: [
+      {
+        title: "Step - 01",
+        action: "Risk Assessment",
+        description:
+          "Answer a few questions, and we’ll assess your visa denial risk to create a tailored plan for a stronger application.",
+        iconColor: "fill-emerald-500",
+      },
+      {
+        title: "Step - 02",
+        action: "Onboarding",
+        description:
+          "Onboard to MigraHub, process payment and a dedicated case manager will be assigned to you. ",
+        iconColor: "fill-slate-300",
+      },
+      {
+        title: "Step - 03",
+        action: "Application Process",
+        description:
+          "Licensed Canadian RCIC will review and submit your application. Case Manager will help book appointment and support submit Biometrics at visa center.",
+        iconColor: "fill-slate-300",
+        subSteps: [
+          "Application has been sent to the immigration supervisor",
+          "Application has been sent to internal intelligence",
+        ],
+      },
+      {
+        title: "Step - 04",
+        action: "Real-Time Updates",
+        iconColor: "fill-red-500",
+        description: "Receive real-time status updates, keeping you informed throughout the application process",
+        // tags: ["pay on time fee", "on time fee waived", "visa fee refunded"],
+      },
     ]
   },
 
@@ -219,7 +316,7 @@ const countriesData = [
             "a": "After the appointment, you can pick up your passport in person from the given visa office."
           }
         ]
-      },      
+      },
       {
         "faqButton": "General Information",
         "faqHeading": "Procedures for Obtaining a USA Visa Using MigraHub",
@@ -237,7 +334,123 @@ const countriesData = [
           }
         ]
       }
-  
+
+    ],
+    VisaRequirements: [
+      {
+        name: "Original passport",
+        logo: "/assets/visaRequirements/passport.png",
+        tooltip: [
+          "first and last page of passport",
+          "copy of entry and exity of previous visas held"
+        ],
+      },
+      {
+        name: "Photograph",
+        tooltip: "the photo graph should not be blur!",
+        logo: "/assets/visaRequirements/camera.png",
+      },
+      {
+        tooltip: ["provide bank statement of last 6 months ", "ITR"],
+        name: "Proof of Funds",
+        logo: "/assets/visaRequirements/bank-statement.png",
+      },
+      {
+        name: "Itinerary Planning",
+        logo: "/assets/visaRequirements/itinerary.png",
+        tooltip: ["flight tickets",
+          "Day to Day Itinerary ( Train/ Bus / Rental Car bookings)",
+          "Hotels Bookings"
+        ],
+      },
+      {
+        name: "Cover Letter",
+        tooltip: "Cover Letter",
+        logo: "/assets/visaRequirements/cover.png",
+      },
+      {
+        tooltip: ["leave approval letter",
+          "salary slip of 3 months"
+        ],
+        name: "Employment",
+        logo: "/assets/visaRequirements/employment.png",
+      },
+      {
+        tooltip: ["Sponsorship Letter",
+          "Sponsors 6 months Bank Statement"
+        ],
+        name: "Sponsorship",
+        logo: "/assets/visaRequirements/sponsorship.png",
+      },
+      {
+        tooltip: "Inviatation Letter",
+        name: "Invitation Letter",
+        logo: "/assets/visaRequirements/invitation.png",
+      },
+      {
+        tooltip: "Company Registeration Proof",
+        name: "Self-Employed",
+        logo: "/assets/visaRequirements/company.png",
+      },
+      {
+        tooltip: "Student NOC from Institute",
+        name: "Student",
+        logo: "/assets/visaRequirements/noc.png",
+      },
+      {
+        tooltip: "Must have a appoinment letter/confirmation",
+        name: "appointment confirmation",
+        logo: "/assets/visaRequirements/offer.png",
+      },
+      {
+        tooltip: "Fee Reciept",
+        name: "Fee Payment Reciept",
+        logo: "/assets/visaRequirements/reciept.png",
+      },
+      {
+        tooltip: " -90mins application",
+        name: "DS-160 Confirmation",
+        logo: "/assets/visaRequirements/confirmation.png",
+      },
+    ],
+    VisaTimeline: [
+      {
+        title: "Step - 01",
+        action: "Risk Assessment",
+        description:
+          "Answer a few questions, and we’ll assess your visa denial risk to create a tailored plan for a stronger application.",
+        iconColor: "fill-emerald-500",
+      },
+      {
+        title: "Step - 02",
+        action: "Onboarding",
+        description:
+          "Onboard to MigraHub, process payment and a dedicated case manager will be assigned to you. ",
+        iconColor: "fill-slate-300",
+      },
+      {
+        title: "Step - 03",
+        action: "Application Process",
+        description:
+          "Our team of USA visa experts will review and submit your application. (DS-160)",
+        iconColor: "fill-slate-300",
+        
+      },
+      {
+        title: "Step - 04",
+        action: "Interview",
+        description:
+          "Case Manager will help Schedule soonest available interview at US Embassy or Consulate. We will help prepare Supporting Documents and help practice your responses so you can attend interview in full confidence. ",
+        iconColor: "fill-slate-300",
+        
+      },
+      {
+        title: "Step - 05",
+        action: "Real-Time Updates",
+        iconColor: "fill-red-500",
+        description: "Receive real-time status updates, keeping you informed throughout the application process",
+        // tags: ["pay on time fee", "on time fee waived", "visa fee refunded"],
+      },
     ]
   },
   {

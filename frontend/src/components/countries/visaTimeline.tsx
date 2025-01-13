@@ -87,7 +87,7 @@ const VisaTimeline = () => {
                   : "how Visa process works"}
               </h2>
               <div className="border-b-2 border-CGBlue w-24 mb-6 "></div>
-              {timelineData.map((item, index) => (
+              {selectedCountry?.VisaTimeline?.map((item, index) => (
                 <div
                   key={index}
                   className={`timeline-step relative ${
@@ -98,7 +98,7 @@ const VisaTimeline = () => {
                   }}
                 >
                   <div className="flex flex-col md:flex-row items-start md:items-center md:space-x-4 mb-3">
-                    <div className="flex items-center space-x-4 md:space-x-2">
+                    <div className="flex items-center space-x-4 space-y-4 md:space-x-2">
                       <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow">
                         <svg
                           className={item.iconColor}
@@ -110,7 +110,7 @@ const VisaTimeline = () => {
                         </svg>
                       </div>
                     </div>
-                    <div className="tracking-wide mt-2 md:mt-0">
+                    <div className="tracking-wide  md:mt-0">
                       <span className="block text-[19px] text-indigo-200 font-bold tracking-wide">
                         {item.title}
                       </span>
@@ -119,9 +119,9 @@ const VisaTimeline = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="p-6 tracking-wider text-lg bg-white border border-gray-200 rounded-3xl text-Gray shadow ml-0 md:ml-14">
+                  <div className="p-6 tracking-wider text-justify text-lg bg-white border border-gray-200 rounded-3xl text-Gray shadow ml-0 md:ml-14">
                     {item.description}
-                    {item.subSteps && item.tags && (
+                    {/* {item.subSteps && item.tags && (
                       <div className="mt-4 space-y-4">
                         {item.subSteps.map((subStep, subIndex) => (
                           <div
@@ -145,7 +145,7 @@ const VisaTimeline = () => {
                           </div>
                         ))}
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               ))}
