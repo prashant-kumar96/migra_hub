@@ -119,7 +119,7 @@ export const sendStatusUpdateEmail = async (req: any, res: any) => {
           // text:`Dear ${user.name},Your Visa application is now under ${status}.  Thank you for using our service.`
         }
 
-        await sendEmail(emailBody, res, "Status email sent successfully");
+        await sendEmail(emailBody, res, true);
 
 
     } catch (error) {
