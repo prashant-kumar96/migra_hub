@@ -68,9 +68,9 @@ const sidebarData = [
       {
         name: "Case Manager",
         icon: <FaUserShield size={22} />,
-        href: "/caseManagerPage",
+        href: "/adminDashboard/caseManagerPage",
       },
-      { name: "User", icon: <ImUser size={22} />, href: "/usersList" },
+      { name: "User", icon: <ImUser size={22} />, href: "/adminDashboard/usersList" },
       {
         name: "Assign Case Manager",
         icon: <ImUser size={22} />,

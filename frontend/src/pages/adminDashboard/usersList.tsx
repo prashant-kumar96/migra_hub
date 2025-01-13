@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AfterLoginLayout from "../components/afterLoginLayout/AfterLoginLayout";
+import AfterLoginLayout from "../../components/afterLoginLayout/AfterLoginLayout";
 import { getAllUsersWhoHaveDonePayment } from "@/api/auth";
 import NATag from "@/components/ui/tags/NATag";
 import Role from  "@/components/ui/tags/Role";
