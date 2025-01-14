@@ -95,13 +95,13 @@ interface FamilyMember {
             setApplicationStatus(response.data);
   
             // Update currentStep based on application status
-            if (response.data.profileCompletion === "completed") {
+            if (response.data.payment === "completed") {
                 setCurrentStep(2);
             }
 
-            if (response.data.payment === "completed") {
-                setCurrentStep(3);
-            }
+            // if (response.data.payment === "completed") {
+            //     setCurrentStep(3);
+            // }
   
             if(response.data.visaStatus === true){
                setCurrentStep(4);
@@ -143,24 +143,24 @@ interface FamilyMember {
       }
     };
   
-    const fetchFamilyMembers = async () => {
-      if (!userId) {
-        console.error("User ID is not defined");
-        return;
-      }
+    // const fetchFamilyMembers = async () => {
+    //   if (!userId) {
+    //     console.error("User ID is not defined");
+    //     return;
+    //   }
   
-      try {
-        setLoading(true);
-        const response = await getDashboard();
-        if (response?.data) {
-          setFamilyMembers(response?.data?.familyMembers || []); // Set empty array if undefined
-        }
-      } catch (err) {
-        console.error("Error during family members fetching", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    //   try {
+    //     setLoading(true);
+    //     const response = await getLinkedFamilyMembers(userDetails?._id);
+    //     if (response?.data) {
+    //       setFamilyMembers(response?.data?.familyMembers || []); // Set empty array if undefined
+    //     }
+    //   } catch (err) {
+    //     console.error("Error during family members fetching", err);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
   
     useEffect(() => {
       const storedTab = localStorage.getItem("activeTab");
@@ -171,7 +171,9 @@ interface FamilyMember {
   
     useEffect(() => {
       if (user) {
-        Promise.all([fetchPrimaryApplicantData(), fetchFamilyMembers()]).finally(
+        Promise.all([fetchPrimaryApplicantData(), 
+          // fetchFamilyMembers()
+        ]).finally(
           () => {
             setLoading(false);
           }
@@ -179,29 +181,8 @@ interface FamilyMember {
       }
     }, [user]);
   
-    const handleTabChange = (index: number) => {
-      setActiveTab(index);
-      localStorage.setItem("activeTab", String(index));
-    };
-  
-    const handleAddFamilyMember = async () => {
-      try {
-        const response = await getDashboard();
-        if (response.data) {
-          toast.success(response.data.message);
-          Promise.all([fetchPrimaryApplicantData(), fetchFamilyMembers()]).finally(
-            () => {
-              closeModal();
-            }
-          );
-          localStorage.setItem("activeTab", "1");
-          setActiveTab(1);
-        }
-      } catch (err: any) {
-        console.log("error adding family members", err);
-        toast.error(err?.response?.data?.message);
-      }
-    };
+   
+ 
   
     const hasValidVisaData = () => {
       return visaData && Object.keys(visaData).length > 0;
