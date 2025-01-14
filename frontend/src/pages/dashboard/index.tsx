@@ -89,20 +89,22 @@ interface FamilyMember {
           const response = await getApplicationStatusDetails(
             userDetails.applicationId
           );
-          console.log(';; application status', response?.data)
+          console.log(';; application status', response?.data);
+
           if (response?.data) {
             setApplicationStatus(response.data);
   
             // Update currentStep based on application status
             if (response.data.profileCompletion === "completed") {
-                setCurrentStep(2)
+                setCurrentStep(2);
             }
+
             if (response.data.payment === "completed") {
-                setCurrentStep(3)
+                setCurrentStep(3);
             }
   
-            if(response.data.visaApproved === true){
-               setCurrentStep(4)
+            if(response.data.visaStatus === true){
+               setCurrentStep(4);
             }
   
           }
@@ -236,7 +238,7 @@ interface FamilyMember {
                   href="/dashboard/profile"
                   className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
                 >
-                  Complete Profile
+                  Complete Profile and Payment
                   <svg
                     className="w-4 h-4 ml-2"
                     fill="none"
@@ -287,7 +289,7 @@ interface FamilyMember {
                         "payment",
                         "documentUpload",
                         "visaApplied",
-                        "visaApproved",
+                        "visaStatus",
                       ];
                       return order.indexOf(keyA) - order.indexOf(keyB);
                     })
@@ -353,7 +355,7 @@ interface FamilyMember {
                           "documentUpload",
                           "assignedCaseManager",
                           "visaApplied",
-                          "visaApproved",
+                          "visaStatus",
                         ];
                         return order.indexOf(keyA) - order.indexOf(keyB);
                       })
@@ -392,7 +394,7 @@ interface FamilyMember {
                           "documentUpload",
                           "assignedCaseManager",
                           "visaApplied",
-                          "visaApproved",
+                          "visaStatus",
                         ];
                         return order.indexOf(keyA) - order.indexOf(keyB);
                       })

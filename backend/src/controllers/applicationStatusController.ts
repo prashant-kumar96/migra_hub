@@ -103,9 +103,9 @@ export const sendStatusUpdateEmail = async (req: any, res: any) => {
                 updateData = {$set: { visaApplied: true }}
            }
            else if (status === "visa approved") {
-              updateData = {$set: { visaApproved: "approved" }};
+              updateData = {$set: { visaStatus: "approved" }};
            } else if (status === "visa rejected"){
-               updateData = {$set: { visaApproved: "rejected" }};
+               updateData = {$set: { visaStatus: "rejected" }};
            }
 
          if(applicationId) {

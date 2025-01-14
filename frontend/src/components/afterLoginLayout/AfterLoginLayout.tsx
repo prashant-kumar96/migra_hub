@@ -62,7 +62,7 @@ export const ProgressBar = () => {
             current = 3
         }
 
-        if (applicationStatus?.visaApproved == 'completed' || applicationStatus?.visaApproved == 'approved') {
+        if (applicationStatus?.visaStatus == 'completed' || applicationStatus?.visaStatus == 'approved') {
             steps.push(1, 2, 3, 4);
             current = 4;
         }
@@ -119,7 +119,7 @@ export const ProgressBar = () => {
 
                 {/* Steps */}
                 <div className="relative z-10 flex justify-between">
-                    {/* Complete Profile */}
+                    {/* Complete Profile and Payment */}
                     <div className="flex flex-col items-center">
                         <div
                             className={`w-8 h-8 rounded-full flex items-center justify-center relative ${getStepStatus(1)}`}
@@ -144,7 +144,7 @@ export const ProgressBar = () => {
                         <span
                           className={`mt-2 text-sm  ${isStepCompleted(1) ? 'text-gray-600 font-bold' : isStepActive(1) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
                         >
-                            Complete Profile
+                            Complete Profile and Payment
                         </span>
                     </div>
 

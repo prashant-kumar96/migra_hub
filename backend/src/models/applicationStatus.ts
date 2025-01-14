@@ -8,7 +8,7 @@ export interface IApplicationStatus extends Document {
     documentUpload: string; // "pending", "completed"
     assignedCaseManager: boolean; // true if a case manager is assigned
     visaApplied: boolean; // true if the visa application has been submitted
-    visaApproved: string; // "pending", "approved", "rejected"
+    visaStatus: string; // "pending", "approved", "rejected"
     createdAt: Date;
     updatedAt: Date;
     caseManagerNotes?: string; // Case manager notes
@@ -22,7 +22,7 @@ const applicationStatusSchema: Schema<IApplicationStatus> = new Schema({
     documentUpload: { type: String, enum: ["pending", "completed"], default: "pending" },
     assignedCaseManager: { type: Boolean, default: false },
     visaApplied: { type: Boolean, default: false },
-    visaApproved: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    visaStatus: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     caseManagerNotes: { type: String },
