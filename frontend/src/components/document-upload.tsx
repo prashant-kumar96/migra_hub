@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import countryList from "react-select-country-list";
 import { DocumentUploader } from "./uploader/document-uploader";
 import Loader from "./loaders/loader";
+import payment from "@/pages/dashboard/payment";
 
 
 interface Member {
@@ -39,18 +40,30 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
     const [proofOfFundsFiles, setProofOfFundsFiles] = useState<File[]>([]);
     const [proofOfTiesFiles, setProofOfTiesFiles] = useState<File[]>([]);
     const [additionalDocFiles, setAdditionalDocFiles] = useState<File[]>([]);
+    const [paymentStatus,setPaymentStatus] = useState(false)
     const [passportUploadStatus, setPassportUploadStatus] = useState<{ [key: string]: string }>({});
     const [proofOfFundsUploadStatus, setProofOfFundsUploadStatus] = useState<{ [key: string]: string }>({});
     const [proofOfTiesUploadStatus, setProofOfTiesUploadStatus] = useState<{ [key: string]: string }>({});
     const [additionalDocUploadStatus, setAdditionalDocUploadStatus] = useState<{ [key: string]: string }>({});
     const primaryUserId = useMemo(() => user?.user?._id, [user]);
-
+   
     useEffect(() => {
         const fetchPrimaryApplicantDetails = async () => {
             try {
                 const response = await getApplicationStatusDetails(applicationId);
                 if (response?.data) {
                     setPrimaryApplicantDetails(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching primary applicant details:', error);
+            }
+        };
+        const fetchPaymentStatus = async () => {
+            try {
+                const paymentResult = await checkifPaymentIsDone(userId);
+
+                if (paymentResult?.data) {
+                    setPaymentStatus(paymentResult.data);
                 }
             } catch (error) {
                 console.error('Error fetching primary applicant details:', error);
@@ -69,8 +82,10 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
 
         fetchLinkedMembers();
         fetchPrimaryApplicantDetails();
-    }, [userId, applicationId]);
+        fetchPaymentStatus();
+    }, [userId, applicationId]);    
 
+ 
     const options = countryList().getData();
 
     const getCountryLabel = (code: string | null | undefined): string | undefined => {
@@ -192,6 +207,8 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
         return 'Not Added';
     };
 
+ 
+
     const combinedMembers = useMemo(() => {
         return primaryApplicantDetails ? [
             {
@@ -207,8 +224,15 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
             ...(linkedMembers || [])
         ] : linkedMembers;
     }, [primaryApplicantDetails, linkedMembers]);
-
-    if (primaryApplicantDetails?.applicationStatus?.payment == 'pending') return <span className="text-xl text-black w-full mx-auto">Please Complete Payment first</span>;
+    // if (!paymentStatus) return <span className="">Please complete payment first</span>
+   console.log(';; payment status',paymentStatus)
+   if (!paymentStatus?.status || primaryApplicantDetails?.applicationStatus?.payment === 'pending') {
+    return (
+        <span className="text-xl text-white bg-red-500 rounded-md shadow-lg px-6 py-3 flex items-center justify-center h-full w-full mx-auto border border-red-700">
+            Please Complete Payment First
+        </span>
+    );
+}
     return (
         <div className="p-6 text-gray-600 w-full mx-auto">
             <h2 className="text-2xl font-bold mb-4">Application Details</h2>
@@ -222,7 +246,7 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
                         <th className="py-2 px-4 border-b">Destination</th>
                         <th className="py-2 px-4 border-b">Relationship</th>
                         <th className="py-2 px-4 border-b">Actions</th>
-                        <th className="py-2 px-4 border-b">Document Status</th>
+                        {/* <th className="py-2 px-4 border-b">Document Status</th> */}
                     </tr>
                 </thead>
                 <tbody>
@@ -243,7 +267,7 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
                                         {expandedMember === (member._id === 'primary' ? primaryUserId : member._id) ? 'Collapse' : 'Expand'}
                                     </button>
                                 </td>
-                                <td className="py-2 px-4 border-b">{renderDocumentStatus(passportUploadStatus)}</td>
+                                {/* <td className="py-2 px-4 border-b">{renderDocumentStatus(passportUploadStatus)}</td> */}
                             </tr>
                             {expandedMember === (member._id === 'primary' ? primaryUserId : member._id) && (
                                 <tr>

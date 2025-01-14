@@ -615,16 +615,17 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
           <Input
             label="Postal/Zip Code"
             id="zipCode"
-            type="number"
+            type="text"
             register={register}
             placeholder=""
             validation={{
               required: "Postal/Zip Code is required",
               pattern: {
-                value: /^\d{5,6}$/, // Matches 5 digits or 5-4 digit zip codes
+                value: /^[a-zA-Z0-9]{5,6}$/, // Matches 5-6 alphanumeric characters (letters or digits)
                 message:
-                  "Zip code must be 5 or 6 digits or 5+4 format (e.g., 12345 or 12345-6789)",
+                  "Input must be 5 or 6 alphanumeric characters (letters and numbers only, no special characters).",
               },
+              
             }}
             errors={errors.zipCode}
           />
@@ -663,7 +664,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
           register={register}
           placeholder=""
           validation={{
-            required: "Address is required",
+            required:false,
           }}
           errors={errors.Address}
         />

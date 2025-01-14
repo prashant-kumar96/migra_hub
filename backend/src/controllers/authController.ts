@@ -436,39 +436,70 @@ async function createCaseManager(req: any, res: any) {
 }
 
 
-//@ts-ignore
+//@ts-nocheck
+
 async function me(req: Request, res: Response) {
   try {
     //@ts-ignore
-      console.log(req.user, "req.user");
-      //@ts-ignore
-  const decoded = req.user;
-  if (!decoded || !decoded.id) {
-    console.warn("Unauthorized: No valid user in request.");
+    console.log(req.user, "req.user");
     //@ts-ignore
-    return res.status(200).json({ status: false, message: "Unauthorized: No valid user in request." , user: null });
-  }
-
-  const userId = decoded.id;
-  const user = await User.findById(userId).select("-password");
-
-  if (!user) {
-      console.warn(`User not found for ID: ${userId}`)
+    const decoded = req.user;
+    if (!decoded || !decoded.id) {
+      console.warn("Unauthorized: No valid user in request.");
       //@ts-ignore
-      return res.status(200).json({ status: false, message: "User not found", user: null });
-  }
-//@ts-ignore
-  res.status(200).json({
+      return res.status(200).json({
+        status: false,
+        message: "Unauthorized: No valid user in request.",
+        user: null,
+      });
+    }
+
+    const userId = decoded.id;
+    const user = await User.findById(userId).select("-password").lean(); // using .lean() for performance
+    if (!user) {
+      console.warn(`User not found for ID: ${userId}`);
+      //@ts-ignore
+      return res
+        .status(200)
+        .json({ status: false, message: "User not found", user: null });
+    }
+
+      // If the user has an application ID, find the ApplicationStatus
+      let populatedUser = { ...user }; // Create a copy of user
+      if (user.applicationId) {
+        const applicationStatus2 = await ApplicationStatus.findOne({
+          applicationId: user.applicationId})
+          console.log('application status 2',applicationStatus2)
+          const applicationStatus = await ApplicationStatus.findOne({
+            applicationId: user.applicationId,
+        }).select('status').lean();
+
+          if(applicationStatus){
+               populatedUser = { ...user, status: applicationStatus.status };
+            }else{
+                 populatedUser = { ...user, status: 'N/A' };
+            }
+        }
+     else {
+         populatedUser = { ...user, status: 'N/A' };
+
+    }
+
+    //@ts-ignore
+    res.status(200).json({
       status: true,
       message: "User details fetched successfully",
-      user: user,
-  });
-} catch (error: any) {
+      user: populatedUser, // Return the populated user
+    });
+  } catch (error: any) {
     console.error("Error fetching user details:", error);
     //@ts-ignore
-    res.status(500).json({ status: false, message: "Internal server error", user: null });
+    res
+      .status(500)
+      .json({ status: false, message: "Internal server error", user: null });
+  }
 }
-}
+
 
 async function checkifPaymentIsDone(req: any, res: any) {
   try {

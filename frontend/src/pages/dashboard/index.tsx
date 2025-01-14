@@ -77,7 +77,6 @@ interface FamilyMember {
     };
   
    
-  
     useEffect(() => {
       const fetchApplicationStatus = async () => {
         if (!userDetails?.applicationId) {
@@ -89,20 +88,22 @@ interface FamilyMember {
           const response = await getApplicationStatusDetails(
             userDetails.applicationId
           );
-          console.log(';; application status', response?.data)
+          console.log(';; application status', response?.data);
+
           if (response?.data) {
             setApplicationStatus(response.data);
   
             // Update currentStep based on application status
-            if (response.data.profileCompletion === "completed") {
-                setCurrentStep(2)
-            }
             if (response.data.payment === "completed") {
-                setCurrentStep(3)
+                setCurrentStep(2);
             }
+
+            // if (response.data.payment === "completed") {
+            //     setCurrentStep(3);
+            // }
   
-            if(response.data.visaApproved === true){
-               setCurrentStep(4)
+            if(response.data.visaStatus === true){
+               setCurrentStep(4);
             }
   
           }
@@ -118,10 +119,10 @@ interface FamilyMember {
       }
     }, [userDetails?.applicationId, user]);
   
-    const closeModal = () => {
-      setIsModalOpen(false);
-      setSelectedMemberId(null);
-    };
+    // const closeModal = () => {
+    //   setIsModalOpen(false);
+    //   setSelectedMemberId(null);
+    // };
   
     const fetchPrimaryApplicantData = async () => {
       // created a new method to get data
@@ -141,24 +142,24 @@ interface FamilyMember {
       }
     };
   
-    const fetchFamilyMembers = async () => {
-      if (!userId) {
-        console.error("User ID is not defined");
-        return;
-      }
+    // const fetchFamilyMembers = async () => {
+    //   if (!userId) {
+    //     console.error("User ID is not defined");
+    //     return;
+    //   }
   
-      try {
-        setLoading(true);
-        const response = await getDashboard();
-        if (response?.data) {
-          setFamilyMembers(response?.data?.familyMembers || []); // Set empty array if undefined
-        }
-      } catch (err) {
-        console.error("Error during family members fetching", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    //   try {
+    //     setLoading(true);
+    //     const response = await getLinkedFamilyMembers(userDetails?._id);
+    //     if (response?.data) {
+    //       setFamilyMembers(response?.data?.familyMembers || []); // Set empty array if undefined
+    //     }
+    //   } catch (err) {
+    //     console.error("Error during family members fetching", err);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
   
     useEffect(() => {
       const storedTab = localStorage.getItem("activeTab");
@@ -169,7 +170,9 @@ interface FamilyMember {
   
     useEffect(() => {
       if (user) {
-        Promise.all([fetchPrimaryApplicantData(), fetchFamilyMembers()]).finally(
+        Promise.all([fetchPrimaryApplicantData(), 
+          // fetchFamilyMembers()
+        ]).finally(
           () => {
             setLoading(false);
           }
@@ -177,29 +180,8 @@ interface FamilyMember {
       }
     }, [user]);
   
-    const handleTabChange = (index: number) => {
-      setActiveTab(index);
-      localStorage.setItem("activeTab", String(index));
-    };
-  
-    const handleAddFamilyMember = async () => {
-      try {
-        const response = await getDashboard();
-        if (response.data) {
-          toast.success(response.data.message);
-          Promise.all([fetchPrimaryApplicantData(), fetchFamilyMembers()]).finally(
-            () => {
-              closeModal();
-            }
-          );
-          localStorage.setItem("activeTab", "1");
-          setActiveTab(1);
-        }
-      } catch (err: any) {
-        console.log("error adding family members", err);
-        toast.error(err?.response?.data?.message);
-      }
-    };
+   
+ 
   
     const hasValidVisaData = () => {
       return visaData && Object.keys(visaData).length > 0;
@@ -236,7 +218,7 @@ interface FamilyMember {
                   href="/dashboard/profile"
                   className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
                 >
-                  Complete Profile
+                  Complete Profile and Payment
                   <svg
                     className="w-4 h-4 ml-2"
                     fill="none"
@@ -253,10 +235,7 @@ interface FamilyMember {
                 </Link>
               </div>
             )}
-          </>
-        ) : (
-          <TravelPlan />
-        )}
+          
         {applicationStatus?.applicationStatus && (
           <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
             <h2 className="text-2xl font-bold text-Indigo mb-4">
@@ -287,7 +266,7 @@ interface FamilyMember {
                         "payment",
                         "documentUpload",
                         "visaApplied",
-                        "visaApproved",
+                        "visaStatus",
                       ];
                       return order.indexOf(keyA) - order.indexOf(keyB);
                     })
@@ -341,7 +320,7 @@ interface FamilyMember {
                     {Object.entries(applicationStatus?.applicationStatus || {})
                       .filter(
                         ([key]) =>
-                          !["_id", "__v", "createdAt", "updatedAt", "userId", "applicationId"].includes(
+                          !["_id", "__v", "createdAt", "updatedAt",'status','reviewSubmit', "userId", "applicationId"].includes(
                             key
                           )
                       )
@@ -353,7 +332,7 @@ interface FamilyMember {
                           "documentUpload",
                           "assignedCaseManager",
                           "visaApplied",
-                          "visaApproved",
+                          "visaStatus",
                         ];
                         return order.indexOf(keyA) - order.indexOf(keyB);
                       })
@@ -380,7 +359,7 @@ interface FamilyMember {
                     {Object.entries(applicationStatus?.applicationStatus || {})
                       .filter(
                         ([key]) =>
-                          !["_id", "__v", "createdAt", "updatedAt", "userId", "applicationId"].includes(
+                          !["_id", "__v", "createdAt", "updatedAt", "userId",'status','reviewSubmit', "applicationId"].includes(
                             key
                           )
                       )
@@ -392,7 +371,7 @@ interface FamilyMember {
                           "documentUpload",
                           "assignedCaseManager",
                           "visaApplied",
-                          "visaApproved",
+                          "visaStatus",
                         ];
                         return order.indexOf(keyA) - order.indexOf(keyB);
                       })
@@ -431,6 +410,11 @@ interface FamilyMember {
               </table>
             </div>
           </div>
+        )}
+
+</>
+        ) : (
+          <TravelPlan />
         )}
        
       </div>

@@ -35,7 +35,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
 
 
   const [medata] = useAtom(meDataAtom);
-const { handleRemoveFile } = useDocumentUpload()
+  const { handleRemoveFile } = useDocumentUpload();
   const fetchUploadedDocuments = () => {
       if (uploadedDocuments && uploadedDocuments.length > 0) {
           setPreviouslyUploaded(true);

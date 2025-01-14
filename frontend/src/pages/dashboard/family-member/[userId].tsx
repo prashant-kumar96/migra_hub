@@ -173,7 +173,7 @@ console.log(';; visa assessment details',visaAssessmentDetails)
                                 href={`/dashboard/profile?userId=${userId}`}
                                 className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
                            >
-                                Complete Profile
+                                Complete Profile and Payment
                               <svg
                                     className="w-4 h-4 ml-2"
                                     fill="none"
@@ -241,7 +241,7 @@ console.log(';; visa assessment details',visaAssessmentDetails)
                             href={`/dashboard/profile?userId=${userId}`}
                             className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
                        >
-                         Complete Profile
+                         Complete Profile and Payment
                         <svg
                                  className="w-4 h-4 ml-2"
                                   fill="none"

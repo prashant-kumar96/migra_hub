@@ -31,15 +31,16 @@ const sidebarData = [
         href: "/dashboard/profile",
       },
       {
-        name: "My Application",
-        icon: <VscServerProcess size={22} />,
-        href: "/dashboard/documentupload",
-      },
-      {
         name: "Payment",
         icon: <RiSecurePaymentFill size={22} />,
         href: "/dashboard/payment",
       },
+      {
+        name: "My Application",
+        icon: <VscServerProcess size={22} />,
+        href: "/dashboard/documentupload",
+      },
+      
     ],
   },
   {

@@ -84,42 +84,57 @@ export const updateDocumentUploadStatus = async (req: any, res: any) => {
         res.status(500).json({ message: "Internal server error", error: error });
     }
 };
+ 
 
 
+export const sendStatusUpdateEmail = async (req, res) => {
+  try {
+    const { userId, status, applicationId } = req.body;
+    if (!userId || !status) {
+      return res
+        .status(400)
+        .json({ message: "User ID and status are required" });
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-export const sendStatusUpdateEmail = async (req: any, res: any) => {
-    try {
-        const { userId, status, applicationId } = req.body;
-        if (!userId || !status) {
-            return res.status(400).json({ message: "User ID and status are required" });
-        }
-        const user = await User.findById(userId)
-        if(!user){
-            return res.status(404).json({ message: "User not found" });
-        }
+    let updateData = { $set: { status: status } };
 
-         let updateData = {};
-           if(status === 'visa applied'){
-                updateData = {$set: { visaApplied: true }}
-           }
-           else if (status === "visa approved") {
-              updateData = {$set: { visaApproved: "approved" }};
-           } else if (status === "visa rejected"){
-               updateData = {$set: { visaApproved: "rejected" }};
-           }
 
-         if(applicationId) {
-            const applicationStatus = await ApplicationStatus.findOne({applicationId: applicationId});
-            if (applicationStatus && Object.keys(updateData).length > 0) {
+      if (applicationId) {
+        const applicationStatus = await ApplicationStatus.findOne({ applicationId: applicationId });
+        if (applicationStatus) {
+            try {
               await ApplicationStatus.updateOne({ _id: applicationStatus._id }, updateData);
+              console.log("Application status updated successfully");
+            } catch (updateError) {
+              console.error("Error updating application status:", updateError);
+              return res
+                .status(500)
+                .json({ message: "Error updating application status", error: updateError });
             }
-         }
-
-         const emailBody = {
-             from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: `Application Status Update`,
-            html:`
+        } else{
+              try {
+                  await ApplicationStatus.create({
+                    applicationId: applicationId,
+                    status: status,
+                  })
+                  console.log("Application status created successfully");
+               } catch (createError) {
+                    console.error("Error creating application status:", createError);
+                    return res
+                      .status(500)
+                      .json({ message: "Error creating application status", error: createError });
+                  }
+             }
+      }
+    const emailBody = {
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: `Application Status Update`,
+      html: `
              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
                  <h2 style="color: #333; margin-bottom: 20px;">Visa Application Status Update</h2>
                  <p style="color: #555; font-size: 16px;">Dear ${user.name},</p>
@@ -133,17 +148,16 @@ export const sendStatusUpdateEmail = async (req: any, res: any) => {
                    Migra Hub
                  </div>
              </div>
-             `
-             // text:`Dear ${user.name},Your Visa application is now under ${status}.  Thank you for using our service.`
-        }
+             `,
+    };
 
-        await sendEmail(emailBody, res, "Status email sent successfully");
-
-    } catch (error) {
-        console.error("Error sending status update email:", error);
-        res.status(500).json({ message: "Internal server error", error: error });
-    }
+    await sendEmail(emailBody, res, "Status email sent successfully");
+  } catch (error: any) {
+      console.error("Error sending status update email:", error);
+      res.status(500).json({ message: "Internal server error", error: error });
+  }
 };
+
 
 export const getApplicationDetails = async (req: any, res: any) => {
     try {

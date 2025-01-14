@@ -53,17 +53,41 @@ export const getAssignedUsersToCaseManager = async (
       assignedCaseManagerId: new mongoose.Types.ObjectId(
         req.query?.caseManagerId
       ),
-    }).select("-password");
+    })
+      .select("-password")
+      .lean(); // using .lean() for performance
 
-    // const users = await User.find();
-
-    console.log("usrs", users);
-
-    if (users.length > 0) {
-      res.status(200).json({ message: "Users fetched successfully", users });
-    } else {
-      res.status(200).json({ message: "No users found", users });
+    if (!users || users.length === 0) {
+      return res
+        .status(200)
+        .json({ message: "No users found", users: [] });
     }
+    const populatedUsers = await Promise.all(
+      users.map(async (user) => {
+          let populatedUser = { ...user }; // Create a copy of user
+          if (user.applicationId) {
+              const applicationStatus = await ApplicationStatus.findOne({
+                applicationId: user.applicationId,
+              }).select('status').lean();
+            
+              if(applicationStatus){
+                  populatedUser = { ...user, status: applicationStatus.status };
+                }else{
+                     populatedUser = { ...user, status: 'N/A' };
+                }
+          } else{
+               populatedUser = { ...user, status: 'N/A' };
+          }
+        return populatedUser;
+      })
+    );
+
+    console.log("populatedUsers", populatedUsers);
+
+
+    res
+      .status(200)
+      .json({ message: "Users fetched successfully", users: populatedUsers });
   } catch (err) {
     console.log("ERROr=.>", err);
     res.status(400).json({ message: err });
