@@ -76,7 +76,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   zipCode: {
     type: String,
     required: [false, "Zip code is required"],
-    match: [/^\d{5,6}$/, "Zip code must be 5-6 digits"],
+    match: [/^[a-zA-Z0-9]{5,6}$/, "Zip code must be 5-6 digits"],
   },
   email: {
     type: String,
@@ -97,7 +97,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
     type: String,
     required: [false, "Address is required"],
     trim: true,
-    minlength: [5, "Address must be at least 5 characters long"],
+    // minlength: [5, "Address must be at least 5 characters long"],
   },
   addressData: {
     city: {

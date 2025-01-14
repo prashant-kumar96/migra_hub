@@ -4,6 +4,7 @@ import AfterLoginLayout from '@/components/afterLoginLayout/AfterLoginLayout';
 import { getApplicationDetails } from '@/api/applicationStatus';
 import Image from 'next/image';
 import { saveAs } from 'file-saver';
+import Loader from '@/components/loaders/loader';
 
 interface Document {
     fieldname: string;
@@ -52,7 +53,7 @@ function ApplicationDetails() {
         fetchApplicationDetails();
     }, [query?.id]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div><Loader text='' /></div>;
 
     const { primaryApplicant, familyMembers } = applicationData || {};
 

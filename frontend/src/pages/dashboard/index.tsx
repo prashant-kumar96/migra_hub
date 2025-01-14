@@ -235,10 +235,7 @@ interface FamilyMember {
                 </Link>
               </div>
             )}
-          </>
-        ) : (
-          <TravelPlan />
-        )}
+          
         {applicationStatus?.applicationStatus && (
           <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
             <h2 className="text-2xl font-bold text-Indigo mb-4">
@@ -323,7 +320,7 @@ interface FamilyMember {
                     {Object.entries(applicationStatus?.applicationStatus || {})
                       .filter(
                         ([key]) =>
-                          !["_id", "__v", "createdAt", "updatedAt", "userId", "applicationId"].includes(
+                          !["_id", "__v", "createdAt", "updatedAt",'status','reviewSubmit', "userId", "applicationId"].includes(
                             key
                           )
                       )
@@ -362,7 +359,7 @@ interface FamilyMember {
                     {Object.entries(applicationStatus?.applicationStatus || {})
                       .filter(
                         ([key]) =>
-                          !["_id", "__v", "createdAt", "updatedAt", "userId", "applicationId"].includes(
+                          !["_id", "__v", "createdAt", "updatedAt", "userId",'status','reviewSubmit', "applicationId"].includes(
                             key
                           )
                       )
@@ -413,6 +410,11 @@ interface FamilyMember {
               </table>
             </div>
           </div>
+        )}
+
+</>
+        ) : (
+          <TravelPlan />
         )}
        
       </div>

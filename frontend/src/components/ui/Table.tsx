@@ -5,6 +5,7 @@ import { useAuth } from "@/context/auth-context";
 import { sendStatusUpdateEmail } from "@/api/applicationStatus";
 import { toast } from "react-toastify";
 import Loader from "../loaders/loader";
+import { statuses } from "@/pages/caseManagerDashboard";
 interface TableProps {
     headers: string[];
     data: any[];
@@ -60,6 +61,7 @@ const Table: React.FC<TableProps> = ({ headers, data, showActions = true, showVi
             setLoadingRowId(null); // Clear loading for this row
         }
     };
+    
     const statusOptions = ['Visa Processing', 'Visa Applied', 'Visa Approved', 'Visa Rejected'];
 
     return (
@@ -114,8 +116,8 @@ const Table: React.FC<TableProps> = ({ headers, data, showActions = true, showVi
                                         className="p-2 border rounded-md text-sm focus:ring-2 focus:ring-blue-200"
                                         disabled={loadingRowId === row._id}
                                     >
-                                        {statusOptions.map((option) => (
-                                            <option key={option} value={option.toLowerCase()}>{option}</option>
+                                        {statuses.map((option) => (
+                                            <option key={option?.value} value={option?.value.toLowerCase()}>{option?.value}</option>
                                         ))}
                                     </select>
                                       {loadingRowId === row._id && (

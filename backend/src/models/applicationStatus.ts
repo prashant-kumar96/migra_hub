@@ -11,6 +11,7 @@ export interface IApplicationStatus extends Document {
     visaApplied: boolean; // true if the visa application has been submitted
     visaStatus: string; // "pending", "approved", "rejected"
     createdAt: Date;
+    status:String;
     updatedAt: Date;
     caseManagerNotes?: string; // Case manager notes
 }
@@ -24,6 +25,7 @@ const applicationStatusSchema: Schema<IApplicationStatus> = new Schema({
     assignedCaseManager: { type: Boolean, default: false },
     reviewSubmit: { type: Boolean, default: false },
     visaApplied: { type: Boolean, default: false },
+    status :     { type:String, default:'N/A' },
     visaStatus: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

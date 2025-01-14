@@ -22,7 +22,7 @@ export const ProgressBar = () => {
 
     const [applicationStatus, setApplicationStatus] = useState<any>(null);
     const { user } = useAuth();
-
+    const currentStatus = user?.user?.status
     const applicationId = user?.user?.applicationId;
 
     useEffect(() => {
@@ -47,12 +47,12 @@ export const ProgressBar = () => {
         const steps = [];
         let current = 1;
 
-        if (applicationStatus?.profileCompletion === 'completed') {
+        if (applicationStatus?.profileCompletion == 'completed') {
             steps.push(1);
             current = 1;
         }
 
-        if (applicationStatus?.payment === 'completed') {
+        if (applicationStatus?.status == 'In Review' || applicationStatus?.status == 'in review') {
             steps.push(1,2);
             current = 2;
         }
@@ -62,7 +62,7 @@ export const ProgressBar = () => {
             current = 3
         }
 
-        if (applicationStatus?.visaStatus == 'completed' || applicationStatus?.visaStatus == 'approved') {
+        if (applicationStatus?.visaApproved == 'completed' || applicationStatus?.visaApproved == 'approved') {
             steps.push(1, 2, 3, 4);
             current = 4;
         }
@@ -119,7 +119,7 @@ export const ProgressBar = () => {
 
                 {/* Steps */}
                 <div className="relative z-10 flex justify-between">
-                    {/* Complete Profile and Payment */}
+                    {/* Complete Profile */}
                     <div className="flex flex-col items-center">
                         <div
                             className={`w-8 h-8 rounded-full flex items-center justify-center relative ${getStepStatus(1)}`}
@@ -144,7 +144,7 @@ export const ProgressBar = () => {
                         <span
                           className={`mt-2 text-sm  ${isStepCompleted(1) ? 'text-gray-600 font-bold' : isStepActive(1) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
                         >
-                            Complete Profile and Payment
+                            Complete Profile
                         </span>
                     </div>
 
@@ -282,6 +282,7 @@ const AfterLoginLayout = <P extends WithAuthProps>(WrappedComponent: ComponentTy
           setUser(null);
         }
       } catch (error) {
+        alert('error')
         console.error("Error while fetching user data", error);
         localStorage.removeItem("token");
         setIsAuthenticated(false);

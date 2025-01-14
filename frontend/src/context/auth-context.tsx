@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true);
     try {
       const response = await me();
-      console.log(";; current user", response);
+      console.log(";; current user", response?.data);
       if (!response || !response.status) {
         console.log("Error logging in user");
         logout();

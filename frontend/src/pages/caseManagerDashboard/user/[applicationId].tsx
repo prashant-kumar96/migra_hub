@@ -7,32 +7,12 @@ import ApplicationDetails from "@/pages/adminDashboard/usersList/application-det
 
 
 const User = () => {
-  const router = useRouter();
-  const [data1, setData1] = useState();
-  const getAllDetailsOfUserfunction = async (userId) => {
-    const userDetails = await getAllDetailsOfUser(userId);
-    console.log("userDetails", userDetails?.data?.data);
-    setData1(userDetails?.data?.data);
-  };
-
-  console.log(';; query id',router)
-
-  // useEffect(() => {
-  //   if (router.query.id) getAllDetailsOfUserfunction(router.query.id);
-  // }, [router.query.id]);
+  
 
   return (
-    <div className="text-gray-700">
-      <div className="p-4">
-        {/* <h1>User Details</h1>
-        <p>User ID: {router.query.id}</p> */}
-      </div>
-     
-      <ApplicationDetails/>
-       {/* <UserDetails data={data1}  */}
-      
-    
-    </div>
+    <div className="text-gray-700 mx-auto w-full ">
+           <ApplicationDetails/>
+       </div>
   );
 };
 
