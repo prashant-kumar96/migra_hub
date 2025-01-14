@@ -34,45 +34,46 @@ import FAQ from "@/components/countries/faq"
 //   return { props: { countryData } };
 // }
 const CountryPage = ({ }) => {
-  // if (!countryData) return <p>Country data not found</p>;
-
   return (
     <>
-     <Navbar/>
+      <Navbar />
       <div className="p-6 flex flex-col items-center">
-     
-      {/* Centered CountriesGrid */}
-      <div className="mb-8 w-full max-w-screen-2xl">
-        <CountriesGrid />
-      </div>
-
-      {/* Main Content: Left and Right Sections */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
-        {/* Left Column */}
-        <div className="md:col-span-2">
-          <VisaInfo />
-          <VisaRequirements />
-          <VisaItinerary />
-          <VisaTimeline />
-          {/* <Concierge /> */}
-          {/* <VisaRejectionReasons /> */}
-          <FAQ/>
+        {/* Centered CountriesGrid */}
+        <div className="mb-8 w-full max-w-screen-2xl">
+          <CountriesGrid />
         </div>
 
-        {/* Right Column */}
-        <div className="sticky top-20 self-start hidden md:block">
+        {/* Main Content: Left and Right Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+          {/* Left Column */}
+          <div className="lg:col-span-2">
+            <VisaInfo />
+            <VisaRequirements />
+            <VisaItinerary />
+            <VisaTimeline />
+            <FAQ />
+          </div>
+
+          {/* Right Column (Travel Component on Large Screens) */}
+          <div className="sticky top-20 self-start hidden lg:block">
+            <Travel />
+          </div>
+        </div>
+
+        {/* Travel Component for Medium Screens */}
+        <div className="mt-6 hidden md:block lg:hidden w-full">
+          <Travel />
+        </div>
+
+        {/* Travel Component for Mobile Screens */}
+        <div className="mt-6 md:hidden w-full">
           <Travel />
         </div>
       </div>
-      {/* Travel component on smaller screens */}
-      <div className="mt-6 md:hidden w-full">
-          <Travel />
-        </div>
-    </div>
-    <Footer/>
+      <Footer />
     </>
-  
   );
 };
 
 export default CountryPage;
+
