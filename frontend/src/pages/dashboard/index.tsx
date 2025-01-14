@@ -77,7 +77,6 @@ interface FamilyMember {
     };
   
    
-  
     useEffect(() => {
       const fetchApplicationStatus = async () => {
         if (!userDetails?.applicationId) {
@@ -120,10 +119,10 @@ interface FamilyMember {
       }
     }, [userDetails?.applicationId, user]);
   
-    const closeModal = () => {
-      setIsModalOpen(false);
-      setSelectedMemberId(null);
-    };
+    // const closeModal = () => {
+    //   setIsModalOpen(false);
+    //   setSelectedMemberId(null);
+    // };
   
     const fetchPrimaryApplicantData = async () => {
       // created a new method to get data
