@@ -265,7 +265,7 @@ const countriesData = [
       "/assets/countryImgs/images/usa2.jpg",
       "/assets/countryImgs/images/usa3.jpg",
       "/assets/countryImgs/images/usa4.jpg",
-      "/assets/countryImgs/images/usa5.jpg",
+      "/assets/countryImgs/images/usa5.JPG",
     ],
     migrahubFee: "$145",
     governmentfee: "$185",

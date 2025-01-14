@@ -101,15 +101,15 @@ const Travel = () => {
 
   return (
     <>
-      <div className="relative flex w-[360px] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md mt-10 ml-8">
+      <div className="relative flex  flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md mt-10 ml-8">
         <div className="relative mx-4 -mt-6 h-14 overflow-hidden rounded-xl bg-[#CDE6EC] bg-clip-border text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
           <div className="flex items-center justify-center m-4 gap-2">
             <GoShieldCheck size={28} className="mb-1" />
-            <span className="text-[16px] text-FloralWhite font-greycliff tracking-wide">
-              On Time Guarantee by{" "}
+            <span className="text-[16px] text-FloralWhite tracking-wide">
+              On Time Guarantee
             </span>
             <span className="text-[16px] text-FloralWhite font-greycliff tracking-tight font-medium">
-              MigraHub
+              ~ MigraHub
             </span>
           </div>
         </div>
@@ -126,7 +126,7 @@ const Travel = () => {
                   <span className="inline-flex space-x-6 items-end justify-end">
                     {selectedCountry?.migrahubFee}
                   </span>
-                  <div className="absolute left-4 bottom-full mb-2 w-max px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute left-4 bottom-full mb-2 w-max px-2 py-1 text-sm text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
                     MigraHub's Fee
                   </div>
                 </li>
@@ -183,7 +183,7 @@ const Travel = () => {
               </div>
 
               <button
-                className="w-fit bg-yellow-500 text-FloralWhite text-[18px] text-Indigo hover:text-FloralWhite  px-[64px] py-2 whitespace-nowrap tracking-wider rounded-lg font-semibold capitalize  hover:bg-Indigo"
+                className="bg-yellow-500 text-FloralWhite text-[16px] text-Indigo hover:text-FloralWhite   p-2 whitespace-nowrap  rounded-lg font-semibold capitalize  hover:bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border"
                 onClick={handleStartjourney}
               >
                 Start your journey
@@ -208,7 +208,7 @@ const Travel = () => {
         <span className="text-Indigo text-[18px]">*********9</span>
       </div> */}
 
-      <div className="relative flex w-[360px] flex-col p-4 rounded-xl bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border shadow-md mt-3 ml-8">
+      <div className="relative flex flex-col p-4 rounded-xl bg-[#CDE6EC] text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border shadow-md mt-3 ml-8">
         <div className="inline-flex items-start">
           <div className="ml-3 ">
             <span className="text-lg leading-1 font-semibold tracking-wide mb-1">
