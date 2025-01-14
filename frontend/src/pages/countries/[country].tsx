@@ -60,10 +60,14 @@ const CountryPage = ({ }) => {
         </div>
 
         {/* Right Column */}
-        <div className="sticky top-20 self-start">
+        <div className="sticky top-20 self-start hidden md:block">
           <Travel />
         </div>
       </div>
+      {/* Travel component on smaller screens */}
+      <div className="mt-6 md:hidden w-full">
+          <Travel />
+        </div>
     </div>
     <Footer/>
     </>
