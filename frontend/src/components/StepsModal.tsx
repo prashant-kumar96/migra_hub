@@ -269,7 +269,7 @@ const StepsModal: React.FC<Props> = ({
         <div className="relative p-4 w-full max-w-[700px] max-h-[900px]">
           {redirection ?
 
-            <div className='h-screen flex justify-center '><Loader /></div>
+            <div className='h-screen flex justify-center '><Loader text="" /></div>
             :
             <div className="relative bg-FloralWhite rounded-lg shadow ">
               <div className="flex justify-between items-center p-4 md:p-5 border-b rounded-t">
