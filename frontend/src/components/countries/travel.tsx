@@ -11,7 +11,16 @@ import { RiGovernmentLine } from "react-icons/ri";
 
 
 const Travel = () => {
-
+  const [citizenshipCountry, setCitizenshipCountry] = useState({
+    value: "",
+    label: "",
+  });
+  
+  const [destinationCountry, setDestinationCountry] = useState({
+    value: "",
+    label: "",
+  });
+  
   const router = useRouter();
   const { country } = router.query;
   const selectedCountry = countriesData.find(
@@ -28,8 +37,7 @@ const Travel = () => {
   }, [selectedCountry]);
 
 
-  const [citizenshipCountry, setCitizenshipCountry] = useState("");
-  const [destinationCountry, setDestinationCountry] = useState("");
+  
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
   // console.log(countryList());
   const countriesCodes = countryList()
@@ -43,34 +51,41 @@ const Travel = () => {
     citizenshipCountryError: "",
     destinationCountryError: "",
   });
+
   const onSelectCitizenShipCountry = (code: string) => {
-    console.log("This is run");
-    console.log(code);
-    const tempCountry: any = countryList()
+    const tempCountry = countryList()
       .getData()
       .find((country) => country.value === code);
-
-    setCitizenshipCountry(tempCountry);
-    setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
-    let temp = [...countriesCodes];
-    const index = destinationCountryCodes.indexOf(code);
-    if (index > -1) {
-      temp.splice(index, 1);
-      setDestinationCountryCodes(temp);
+  
+    if (tempCountry) {
+      setCitizenshipCountry(tempCountry);
+      setError((prev) => ({ ...prev, citizenshipCountryError: "" }));
+  
+      const temp = [...countriesCodes];
+      const index = destinationCountryCodes.indexOf(code);
+      if (index > -1) {
+        temp.splice(index, 1);
+        setDestinationCountryCodes(temp);
+      }
+    } else {
+      console.error("Country not found for code:", code);
     }
   };
-
+  
   const onSelectDestinationCountry = (countryCode) => {
-    const selectedDestination = countriesData.find(
-      (item) => item.code === countryCode
-    );
-    if (selectedDestination) {
-      setDestinationCountry({
-        value: selectedDestination.code,
-        label: selectedDestination.name,
-      });
-    }
-  };
+  const selectedDestination = countriesData.find(
+    (item) => item.code === countryCode
+  );
+
+  if (selectedDestination) {
+    setDestinationCountry({
+      value: selectedDestination.code,
+      label: selectedDestination.name,
+    });
+  } else {
+    console.error("Destination country not found for code:", countryCode);
+  }
+};
 
   const handleStartjourney = () => {
     console.log("citizenshipCountry", citizenshipCountry);
@@ -172,10 +187,10 @@ const Travel = () => {
                 </label>
                 <ReactFlagsSelect
                   selected={destinationCountry?.value}
-                  onSelect={() => console.log(destinationCountry?.value)}
+                  onSelect={onSelectDestinationCountry}
                   className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-Indigo"
                   countries={destinationCountryCodes}
-                  searchable
+                  // searchable
                 // disabled={isFixed}
                 />
                 <p className="text-red-500 text-sm">
@@ -199,6 +214,7 @@ const Travel = () => {
             setCitizenshipCountry={setCitizenshipCountry}
             onSelectCitizenShipCountry={onSelectCitizenShipCountry}
             countryCodes={countriesCodes}
+            onModalClose={() => console.log('Modal closed')}
             destinationCountry={destinationCountry}
           />
         )}

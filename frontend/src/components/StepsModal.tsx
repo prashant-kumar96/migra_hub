@@ -59,7 +59,7 @@ const StepsModal: React.FC<Props> = ({
       enableScroll(); // Enable scrolling when modal closes
     };
   }, []);
-  
+
   const router = useRouter();
   const [sharedState, setSharedState] = useAtom(visaDataAtom);
   const [error, showError] = useState("");
@@ -71,15 +71,14 @@ const StepsModal: React.FC<Props> = ({
   const path = router.asPath
 
   const userId = user?.user?._id
-  const [passportCountry, setPassportCountry] =
-  useState<string>(citizenshipCountry);
+  const [passportCountry, setPassportCountry] = useState<string>(citizenshipCountry);
 
   const [progressBarpercentage, setProgressBarPercentage] = useState(10);
 
   const [step, setStep] = useState(0);
   const [showRiskDecreased, setShowRiskDecreased] = useState(
     citizenshipCountry == "IN" ? true : false
-  );  
+  );
 
   const selectedCitizenshipcountry = countryList()
     .getData()
@@ -102,15 +101,15 @@ const StepsModal: React.FC<Props> = ({
   const saveVisaData = async (data: any) => {
     // Add userId to the data object
     const visaDataWithUserId = { ...data, userId };
-     console.log(';; visa data',visaDataWithUserId)
+    console.log(';; visa data', visaDataWithUserId)
     try {
       // return ''
       const response = await createVisaData(visaDataWithUserId);
-  
+
       if (response.status === 200) {
         console.log("Data saved successfully");
         setRedirection(true);
-         handleCloseModal();
+        handleCloseModal();
       } else {
         console.error("Error saving data:", response.data?.message || "Unknown error");
       }
@@ -120,11 +119,11 @@ const StepsModal: React.FC<Props> = ({
 
       // Ensure modal closes after the API call, whether it succeeds or fails
       handleCloseModal();
-       
+
       // onModalClose()
     }
-  };  
-  
+  };
+
 
 
   console.log('visa data', data);
@@ -159,7 +158,7 @@ const StepsModal: React.FC<Props> = ({
       setSharedState(data);
       localStorage.setItem('assessmentData', JSON.stringify(data));
       // setRedirection(true);
-      (userId || path !== '/' ) && saveVisaData(data)
+      (userId || path !== '/') && saveVisaData(data)
 
       // Add a small delay to allow the loader to render
       // setTimeout(() => {
@@ -167,13 +166,13 @@ const StepsModal: React.FC<Props> = ({
       //     router.push("/login");
       //   }
       // }, 500);  
-    } 
-    
+    }
+
     if (step === 5) {
       setSharedState(data);
       localStorage.setItem('assessmentData', JSON.stringify(data));
       // setRedirection(true);
-      (userId || path !== '/' ) && saveVisaData(data)
+      (userId || path !== '/') && saveVisaData(data)
 
       // Add a small delay to allow the loader to render
       // setTimeout(() => {
@@ -196,10 +195,10 @@ const StepsModal: React.FC<Props> = ({
       setProgressBarPercentage((prev) => prev - 10);
       setStep((prev) => prev - 1);
     }
-  }; 
+  };
 
   const handleSelectPassportCountry = (code) => {
-    console.log(';; code selected',code)
+    console.log(';; code selected', code)
     // onSelectCitizenShipCountry(code);
     const tempCountry: any = countryList()
       .getData()
@@ -325,21 +324,21 @@ const StepsModal: React.FC<Props> = ({
                       )}
 
                       <ReactFlagsSelect
-                        selected={passportCountry.value}
+                        selected={passportCountry?.value || ''}
                         onSelect={handleSelectPassportCountry}
                         className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
                         countries={countryCodes}
                         searchable
-                        /*showSelectedLabel={showSelectedLabel}
-                        selectedSize={selectedSize}
-                        showOptionLabel={showOptionLabel}
-                        optionsSize={optionsSize}
-                        placeholder={placeholder}
-                        searchable={searchable}
-                        searchPlaceholder={searchPlaceholder}
-                        alignOptionsToRight={alignOptionsToRight}
-                        fullWidth={fullWidth}
-                        disabled={disabled} */
+                      /*showSelectedLabel={showSelectedLabel}
+                      selectedSize={selectedSize}
+                      showOptionLabel={showOptionLabel}
+                      optionsSize={optionsSize}
+                      placeholder={placeholder}
+                      searchable={searchable}
+                      searchPlaceholder={searchPlaceholder}
+                      alignOptionsToRight={alignOptionsToRight}
+                      fullWidth={fullWidth}
+                      disabled={disabled} */
                       />
 
                     </div>
@@ -419,11 +418,11 @@ const StepsModal: React.FC<Props> = ({
                           </h2>
 
                           <ReactFlagsSelect
-                            selected={passportCountry.value}
+                            selected={passportCountry?.value || ''}
                             onSelect={handleSelectPassportCountry}
                             // className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
                             // countries={countryCodes}
-                             
+
                             // selected={data.whereWillYouApplyForYourVisa.value}
                             // onSelect={handleSelectFromWhichCountry}
                             className="w-full px-3 mt-6 border shadow-md bg-white   border-gray-200 rounded-lg text-Indigo "
@@ -643,10 +642,10 @@ const StepsModal: React.FC<Props> = ({
                   </>
                 )}
 
-              {step === 5 && (
+                {step === 5 && (
 
-                <SignUpModal />
-              )}
+                  <SignUpModal />
+                )}
               </div>
 
 
