@@ -17,15 +17,15 @@ const User = () => {
 
   console.log(';; query id',router)
 
-  useEffect(() => {
-    if (router.query.id) getAllDetailsOfUserfunction(router.query.id);
-  }, [router.query.id]);
+  // useEffect(() => {
+  //   if (router.query.id) getAllDetailsOfUserfunction(router.query.id);
+  // }, [router.query.id]);
 
   return (
     <div className="text-gray-700">
       <div className="p-4">
-        <h1>User Details</h1>
-        <p>User ID: {router.query.id}</p>
+        {/* <h1>User Details</h1>
+        <p>User ID: {router.query.id}</p> */}
       </div>
      
       <ApplicationDetails/>
