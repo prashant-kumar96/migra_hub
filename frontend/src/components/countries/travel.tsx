@@ -103,16 +103,17 @@ const Travel = () => {
     <>
       <div className="relative flex  flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-md mt-10 ml-8">
         <div className="relative mx-4 -mt-6 h-14 overflow-hidden rounded-xl bg-[#CDE6EC] bg-clip-border text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
-          <div className="flex items-center justify-center m-4 gap-2">
-            <GoShieldCheck size={28} className="mb-1" />
-            <span className="text-[16px] text-FloralWhite tracking-wide">
+          <div className="flex items-center justify-center m-4 gap-2 p-1">
+            <GoShieldCheck size={24} className="mb-1" />
+            <span className="text-[16px] sm:text-[14px] md:text-[16px] text-FloralWhite tracking-wide whitespace-nowrap">
               On Time Guarantee
             </span>
-            <span className="text-[16px] text-FloralWhite font-greycliff tracking-tight font-medium">
+            <span className="text-[16px] sm:text-[14px] md:text-[16px] text-FloralWhite font-greycliff tracking-tight font-medium whitespace-nowrap">
               ~ MigraHub
             </span>
           </div>
         </div>
+
 
         <div className="p-3">
           <div className="w-full lg:max-w-xl p-6 space-y-8 sm:p-4 ">
@@ -183,7 +184,7 @@ const Travel = () => {
               </div>
 
               <button
-                className="bg-yellow-500 text-FloralWhite text-[16px] text-Indigo hover:text-FloralWhite   p-2 whitespace-nowrap  rounded-lg font-semibold capitalize  hover:bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border"
+                className="bg-yellow-500 w-full px-3 text-FloralWhite text-[15px] text-Indigo hover:text-FloralWhite   p-2 whitespace-nowrap  rounded-lg font-semibold capitalize  hover:bg-gradient-to-r from-[#333366] to-[#2C415A] bg-clip-border"
                 onClick={handleStartjourney}
               >
                 Start your journey
