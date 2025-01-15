@@ -23,30 +23,26 @@ interface Member {
 
 }
 
-
-
-const DocumentUpload = ({ userId, applicationId }: { userId: string; applicationId: string }) => {
+const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }) => {
     const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
-    const [uploadedDocuments, setUploadedDocuments] = useState<Record<string, DocumentUploadData | null>>({}); // Cache by memberId
+    const [uploadedDocuments, setUploadedDocuments] = useState<Record<string, DocumentUploadData>>({});
     const [linkedMembers, setLinkedMembers] = useState<Member[]>([]);
     const [primaryApplicantDetails, setPrimaryApplicantDetails] = useState<PrimaryApplicant | null>(null);
     const [expandedMember, setExpandedMember] = useState<string | null>(null);
     const { user } = useAuth();
-    const [showUploadComponents, setShowUploadComponents] = useState(true);
     const [isUploadingAll, setIsUploadingAll] = useState(false);
     const [loadingDocuments, setLoadingDocuments] = useState(false); // New loading state
-
     const [passportFiles, setPassportFiles] = useState<File[]>([]);
     const [proofOfFundsFiles, setProofOfFundsFiles] = useState<File[]>([]);
     const [proofOfTiesFiles, setProofOfTiesFiles] = useState<File[]>([]);
     const [additionalDocFiles, setAdditionalDocFiles] = useState<File[]>([]);
-    const [paymentStatus,setPaymentStatus] = useState(false)
+    const [paymentStatus, setPaymentStatus] = useState(false)
     const [passportUploadStatus, setPassportUploadStatus] = useState<{ [key: string]: string }>({});
     const [proofOfFundsUploadStatus, setProofOfFundsUploadStatus] = useState<{ [key: string]: string }>({});
     const [proofOfTiesUploadStatus, setProofOfTiesUploadStatus] = useState<{ [key: string]: string }>({});
     const [additionalDocUploadStatus, setAdditionalDocUploadStatus] = useState<{ [key: string]: string }>({});
     const primaryUserId = useMemo(() => user?.user?._id, [user]);
-   
+
     useEffect(() => {
         const fetchPrimaryApplicantDetails = async () => {
             try {
@@ -83,9 +79,8 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
         fetchLinkedMembers();
         fetchPrimaryApplicantDetails();
         fetchPaymentStatus();
-    }, [userId, applicationId]);    
+    }, [userId, applicationId]);
 
- 
     const options = countryList().getData();
 
     const getCountryLabel = (code: string | null | undefined): string | undefined => {
@@ -101,23 +96,20 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
 
 
     const fetchUploadedDocuments = useCallback(async (memberId: string) => {
-        setLoadingDocuments(true); // Start loading
+        setLoadingDocuments(true);
         try {
             const response = await getUploadedDocumentsData(memberId);
             if (response?.data?.result) {
                 setUploadedDocuments((prev) => ({ ...prev, [memberId]: response.data.result }));
-                setShowUploadComponents(false);
             }
             else {
-                setUploadedDocuments((prev) => ({ ...prev, [memberId]: null }));
-                setShowUploadComponents(true);
+                setUploadedDocuments((prev) => ({ ...prev, [memberId]: {} }));// Set empty object if no documents
             }
         } catch (error) {
             console.log("Error fetching files:", error);
-            setUploadedDocuments((prev) => ({ ...prev, [memberId]: null }));
-            setShowUploadComponents(true);
+            setUploadedDocuments((prev) => ({ ...prev, [memberId]: {} })); // Set empty object on error as well
         } finally {
-           setLoadingDocuments(false); // Stop loading regardless of success or error
+            setLoadingDocuments(false);
         }
     }, []);
 
@@ -175,7 +167,6 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
             fetchUploadedDocuments(memberId);
             await updateDocumentUploadStatus(applicationId);
 
-
         } catch (error) {
             console.error("Error during document uploads:", error);
 
@@ -183,21 +174,23 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
             setIsUploadingAll(false);
         }
     };
-    const toggleExpand = async (memberId: string) => {
-
+    console.log(';;; initial expanded member', expandedMember);
+    
+    const toggleExpand = async (memberId) => {
+        console.log(';;; selected member id', memberId);
+        console.log(';;; uploaded docs', uploadedDocuments)
+        console.log(';;; expanded member', expandedMember)
         // If data is already cached, update the expanded state only
-        if (uploadedDocuments[memberId] && expandedMember !== memberId) {
-             setExpandedMember(memberId);
-           return;
+        if (uploadedDocuments[memberId]) {
+            setExpandedMember(expandedMember === memberId ? null : memberId)
+            console.log(';;; setted expanded member', expandedMember)
+            return;
         }
-       
+
         // If data is not cached, then set the expanded state and fetch the document data
-           setExpandedMember(expandedMember === memberId ? null : memberId);
-           if (expandedMember !== memberId) {
-             await fetchUploadedDocuments(memberId);
-           }
-           
-   
+        setExpandedMember(memberId);
+        await fetchUploadedDocuments(memberId);
+
     };
 
     const renderDocumentStatus = (status: { [key: string]: string }) => {
@@ -207,7 +200,6 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
         return 'Not Added';
     };
 
- 
 
     const combinedMembers = useMemo(() => {
         return primaryApplicantDetails ? [
@@ -225,14 +217,15 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
         ] : linkedMembers;
     }, [primaryApplicantDetails, linkedMembers]);
     // if (!paymentStatus) return <span className="">Please complete payment first</span>
-   console.log(';; payment status',paymentStatus)
-   if (!paymentStatus?.status || primaryApplicantDetails?.applicationStatus?.payment === 'pending') {
-    return (
-        <span className="text-xl text-white bg-red-500 rounded-md shadow-lg px-6 py-3 flex items-center justify-center h-full w-full mx-auto border border-red-700">
-            Please Complete Payment First
-        </span>
-    );
-}
+    console.log(';; payment status', paymentStatus)
+    console.log(';; combined members', combinedMembers)
+    if (!paymentStatus?.status || primaryApplicantDetails?.applicationStatus?.payment === 'pending') {
+        return (
+            <span className="text-xl text-white bg-red-500 rounded-md shadow-lg px-6 py-3 flex items-center justify-center h-full w-full mx-auto border border-red-700">
+                Please Complete Payment First
+            </span>
+        );
+    }
     return (
         <div className="p-6 text-gray-600 w-full mx-auto">
             <h2 className="text-2xl font-bold mb-4">Application Details</h2>
@@ -261,82 +254,103 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
                                 <td className="py-2 px-4 border-b">{member.relationship}</td>
                                 <td className="py-2 px-4 border-b">
                                     <button
-                                        onClick={() => toggleExpand(member._id === 'primary' ? primaryUserId : member._id)}
+                                        onClick={() => toggleExpand(member.relationship === 'Primary' ? primaryUserId : member._id)}
                                         className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded"
                                     >
-                                        {expandedMember === (member._id === 'primary' ? primaryUserId : member._id) ? 'Collapse' : 'Expand'}
+                                        {expandedMember === (member?.relationship == 'Primary' ? primaryUserId : member._id) ? 'Collapse' : 'Expand'}
                                     </button>
                                 </td>
                                 {/* <td className="py-2 px-4 border-b">{renderDocumentStatus(passportUploadStatus)}</td> */}
                             </tr>
-                            {expandedMember === (member._id === 'primary' ? primaryUserId : member._id) && (
-                                <tr>
+                            {expandedMember === (member.relationship == 'Primary' ? primaryUserId : member._id) && (
+                                <tr className="">
                                     <td colSpan={9} className="p-4 bg-gray-100">
-                                        <div className="p-6 text-gray-600  ">
+                                        <div className="p-6 text-gray-600">
                                             <h2 className="text-2xl font-bold mb-4">Uploaded Documents</h2>
-                                            {loadingDocuments &&  <div className="flex justify-center items-center">
-                                                    <Loader text={'loading'}/>
-                                                </div>}
-                                            {!loadingDocuments && showUploadComponents && (
-                                                <>
-                                                    <DocumentUploader
-                                                        userId={member.relationship === 'Primary' ? primaryUserId : member._id}
-                                                        onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
-                                                        setFiles={setPassportFiles}
-                                                        files={passportFiles}
-                                                        uploadStatuses={passportUploadStatus}
-                                                        setUploadStatuses={setPassportUploadStatus}
-                                                        title='Passport'
-                                                        uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.passportImages}
-                                                        uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadPassportImages`}
+                                            {loadingDocuments && <div className="flex justify-center items-center">
+                                                <Loader text={'loading'} />
+                                            </div>}
+                                            {
+                                                !loadingDocuments &&
+                                                (!(member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments) ||
+                                                    (member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments &&
+                                                        Object.keys(uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]).length === 0)
+                                                ) && (
+                                                    <>
+                                                        <DocumentUploader
+                                                            userId={member.relationship === 'Primary' ? primaryUserId : member._id}
+                                                            onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
+                                                            setFiles={setPassportFiles}
+                                                            files={passportFiles}
+                                                            uploadStatuses={passportUploadStatus}
+                                                            setUploadStatuses={setPassportUploadStatus}
+                                                            title='Passport'
+                                                            uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.passportImages}
+                                                            uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadPassportImages`}
+                                                            
+                                                        />
+                                                        <DocumentUploader
+                                                            userId={member.relationship === 'Primary' ? primaryUserId : member._id}
+                                                            onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
+                                                            setFiles={setProofOfFundsFiles}
+                                                            files={proofOfFundsFiles}
+                                                            uploadStatuses={proofOfFundsUploadStatus}
+                                                            setUploadStatuses={setProofOfFundsUploadStatus}
+                                                            title='Proof of Funds'
+                                                            uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfFundsImages}
+                                                            uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadproofOfFundsImages`}
 
-                                                    />
-                                                    <DocumentUploader
-                                                        userId={member.relationship === 'Primary' ? primaryUserId : member._id}
-                                                        onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
-                                                        setFiles={setProofOfFundsFiles}
-                                                        files={proofOfFundsFiles}
-                                                        uploadStatuses={proofOfFundsUploadStatus}
-                                                        setUploadStatuses={setProofOfFundsUploadStatus}
-                                                        title='Proof of Funds'
-                                                        uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfFundsImages}
-                                                        uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadproofOfFundsImages`}
+                                                        />
+                                                        <DocumentUploader
+                                                            userId={member.relationship === 'Primary' ? primaryUserId : member._id}
+                                                            onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
+                                                            setFiles={setProofOfTiesFiles}
+                                                            files={proofOfTiesFiles}
+                                                            uploadStatuses={proofOfTiesUploadStatus}
+                                                            setUploadStatuses={setProofOfTiesUploadStatus}
+                                                            title='Proof of Ties'
+                                                            uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfTiesImages}
+                                                            uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadProofOfTiesImages`}
 
-                                                    />
-                                                    <DocumentUploader
-                                                        userId={member.relationship === 'Primary' ? primaryUserId : member._id}
-                                                        onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
-                                                        setFiles={setProofOfTiesFiles}
-                                                        files={proofOfTiesFiles}
-                                                        uploadStatuses={proofOfTiesUploadStatus}
-                                                        setUploadStatuses={setProofOfTiesUploadStatus}
-                                                        title='Proof of Ties'
-                                                        uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfTiesImages}
-                                                        uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadProofOfTiesImages`}
+                                                        />
+                                                        <DocumentUploader
+                                                            userId={member.relationship === 'Primary' ? primaryUserId : member._id}
+                                                            onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
+                                                            setFiles={setAdditionalDocFiles}
+                                                            files={additionalDocFiles}
+                                                            uploadStatuses={additionalDocUploadStatus}
+                                                            setUploadStatuses={setAdditionalDocUploadStatus}
+                                                            title='Additional Documents'
+                                                            uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.additionalDocuments}
+                                                            uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadAdditionalDocuments`}
+                                                        />
+                                                    </>
+                                                )}
 
-                                                    />
-                                                    <DocumentUploader
-                                                        userId={member.relationship === 'Primary' ? primaryUserId : member._id}
-                                                        onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
-                                                        setFiles={setAdditionalDocFiles}
-                                                        files={additionalDocFiles}
-                                                        uploadStatuses={additionalDocUploadStatus}
-                                                        setUploadStatuses={setAdditionalDocUploadStatus}
-                                                        title='Additional Documents'
-                                                        uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.additionalDocuments}
-                                                        uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadAdditionalDocuments`}
-                                                    />
-                                                </>
-                                            )}
-                                           {!loadingDocuments && showUploadComponents && (
-                                                <button
-                                                    onClick={() => handleUploadAll(member.relationship === 'Primary' ? primaryUserId : member._id)}
-                                                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
-                                                    disabled={isUploadingAll}
-                                                >
-                                                    {isUploadingAll ? "Uploading All" : "Upload All"}
-                                                </button>
-                                            )}
+                                            {!loadingDocuments &&
+                                                (member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments) &&
+                                                uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id] &&
+                                                (uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.passportImages?.length > 0 ||
+                                                    uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfFundsImages?.length > 0 ||
+                                                    uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfTiesImages?.length > 0 ||
+                                                    uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.additionalDocuments?.length > 0) && (
+                                                    <span>Documents Uploaded</span>
+                                                )
+                                            }
+
+
+                                            {!loadingDocuments &&
+                                                (!(member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments) ||
+                                                    (member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments &&
+                                                        Object.keys(uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]).length === 0)) && (
+                                                    <button
+                                                        onClick={() => handleUploadAll(member.relationship === 'Primary' ? primaryUserId : member._id)}
+                                                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                                                        disabled={isUploadingAll}
+                                                    >
+                                                        {isUploadingAll ? "Uploading All" : "Upload All"}
+                                                    </button>
+                                                )}
                                         </div>
                                     </td>
                                 </tr>
@@ -350,6 +364,3 @@ const DocumentUpload = ({ userId, applicationId }: { userId: string; application
 };
 
 export default DocumentUpload;
-
-    
-

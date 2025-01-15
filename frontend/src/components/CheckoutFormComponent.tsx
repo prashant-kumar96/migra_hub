@@ -98,7 +98,7 @@ export default function CheckoutForm({ items }: Props) {
                 )}
             </div>
             <div className="flex justify-between items-center mb-4">
-                <span className="font-bold text-[18px] tracking-tight">Total:</span>
+                <span className="font-bold text-Indigo text-[18px] tracking-tight">Total:</span>
                 <span className="text-[18px] font-bold text-Indigo">${calculateTotal()}</span>
             </div>
             <CreateButton

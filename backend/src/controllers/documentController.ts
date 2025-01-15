@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 
 export const uploadDocuments = async (req: Request, res: Response) => {
   try {
-    console.log("req.body", req.body);
+    console.log("upload documents", req.body);
 
       const { files, documentType, userId } = req.body;
 
@@ -48,7 +48,7 @@ export const uploadDocuments = async (req: Request, res: Response) => {
     const result = await UserDocument.findOneAndUpdate(filter, update, options);
       if (result) {
           res.status(200).json({
-              message: "Files uploaded successfully",
+               message: "Files uploaded successfully",
                files: Object.keys(updateData).map(key => updateData[key]),
           });
       } else {
@@ -65,7 +65,7 @@ export const uploadDocuments = async (req: Request, res: Response) => {
 export const uploadPassportImages = async (req: Request, res: Response) => {
   // console.log("req.files", req.files);
   // console.log("req.body", req.body);
-
+  console.log('uploading passport images')
   console.log("upload Passport Images", req.body);
   try {
     const fileUrls = req.files.map((file) => ({
@@ -100,6 +100,7 @@ export const uploadPassportImages = async (req: Request, res: Response) => {
 
 export const uploadProofOfFundsImages = async (req: Request, res: Response) => {
   try {
+    console.log('uploading proof of funds images')
     const fileUrls = req.files.map((file) => ({
       url: `${process.env.API_URL}uploads/${file.filename}`,
     }));
@@ -131,6 +132,7 @@ export const uploadProofOfFundsImages = async (req: Request, res: Response) => {
 };
 export const uploadProofOfTiesImages = async (req: Request, res: Response) => {
   try {
+    console.log('uploading proof of  images')
     const fileUrls = req.files.map((file) => ({
       url: `${process.env.API_URL}uploads/${file.filename}`,
     }));
