@@ -6,6 +6,8 @@ import { sendStatusUpdateEmail } from "@/api/applicationStatus";
 import { toast } from "react-toastify";
 import Loader from "../loaders/loader";
 import { statuses } from "@/pages/caseManagerDashboard";
+ 
+
 interface TableProps {
     headers: string[];
     data: any[];
@@ -13,17 +15,17 @@ interface TableProps {
     showViewButton?: boolean;
     showStatus?: boolean;
     onStatusChange?: (row: any, newStatus: string) => void;
+  caseManagers?: any[];
+  onAssignCaseManager?: (userId: string, applicationId: string, caseManagerId: string) => void;
 }
-
-
-const Table: React.FC<TableProps> = ({ headers, data, showActions = true, showViewButton = true, showStatus = true, onStatusChange }) => {
+ 
+const Table: React.FC<TableProps> = ({ headers, data, showActions = true, showViewButton = true, showStatus = true, onStatusChange, caseManagers = [], onAssignCaseManager }) => {
     const router = useRouter();
     const [statusValues, setStatusValues] = useState<{ [key: string]: string }>({});
     const [loadingRowId, setLoadingRowId] = useState<string | null>(null); // Track loading per row
     const { user } = useAuth();
-
-
     const userId = user?.user?._id;
+
 
     if (!data || data.length === 0) {
         return (
@@ -101,7 +103,25 @@ const Table: React.FC<TableProps> = ({ headers, data, showActions = true, showVi
                                         >
                                             Edit
                                         </a>
-                                    ) : row[header.toLowerCase()] ? (
+                                    ) : header === "Assigned Case Manager" ? (
+                                        row.assignedCaseManager ? (
+                                            row.assignedCaseManager
+                                        ) : (
+                                              <select
+                                                  onChange={(e) => {
+                                                      if (onAssignCaseManager) {
+                                                          onAssignCaseManager(row._id, row.applicationId, e.target.value);
+                                                      }
+                                                  }}
+                                                  className="p-2 border rounded-md text-sm focus:ring-2 focus:ring-blue-200"
+                                              >
+                                                  <option value="">Select Case Manager</option>
+                                                  {caseManagers.map((manager: any) => (
+                                                      <option key={manager._id} value={manager._id}>{manager.name}</option>
+                                                  ))}
+                                              </select>
+                                          )
+                                    ) : typeof row[header.toLowerCase()] !== 'undefined' ? (
                                         row[header.toLowerCase()]
                                     ) : (
                                         <NATag />
@@ -117,7 +137,7 @@ const Table: React.FC<TableProps> = ({ headers, data, showActions = true, showVi
                                         disabled={loadingRowId === row._id}
                                     >
                                         {statuses.map((option) => (
-                                            <option key={option?.value} value={option?.value.toLowerCase()}>{option?.value}</option>
+                                            <option key={option?.value} value={option?.value.toLowerCase()}>{option?.label}</option>
                                         ))}
                                     </select>
                                       {loadingRowId === row._id && (
