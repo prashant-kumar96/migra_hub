@@ -16,6 +16,8 @@ import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
 import Loader from "../loaders/loader";
 
+
+
 const sidebarData = [
   {
     role: "USER",
@@ -40,7 +42,6 @@ const sidebarData = [
         icon: <VscServerProcess size={22} />,
         href: "/dashboard/documentupload",
       },
-      
     ],
   },
   {
@@ -88,7 +89,8 @@ const Sidebar = () => {
   const [token, setToken] = useState("");
   const { data: session } = useSession();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false); // Added loading state
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [activeLink, setActiveLink] = useState(""); // State to track active link
 
   const router = useRouter();
 
@@ -105,24 +107,9 @@ const Sidebar = () => {
     }
   };
 
-  const handleSignout = async () => {
-    router.push('/logout')
-    //   setIsLoggingOut(true); // Set loading to true before signout begins
-    // try {
-    //   // Use the context's logout function which handles everything
-    //  await logout();
 
-    //   // Handle next-auth session if it exists
-    //   if (session) {
-    //     await signOut({ redirect: false });
-    //   }
-    //   router.push("/login")
-    //   // Router navigation or any additional cleanup logic goes here if needed
-    // } catch (error) {
-    //   console.log("Error during signout:", error);
-    // } finally {
-    //   setIsLoggingOut(false); // Set loading to false once signout process is completed (successful or not)
-    // }
+  const handleSignout = async () => {
+        router.push('/logout')
   };
 
   useEffect(() => {
@@ -138,32 +125,30 @@ const Sidebar = () => {
   }, []);
 
   useEffect(() => {
-    // Check if the code is running in the browser
     if (typeof window !== "undefined") {
       const updateScreenSize = () => {
         setIsSmallScreen(window.innerWidth < 640);
       };
 
-      // Set initial value
       updateScreenSize();
-
-      // Add resize listener
       window.addEventListener("resize", updateScreenSize);
-
-      // Cleanup the event listener on unmount
       return () => window.removeEventListener("resize", updateScreenSize);
     }
   }, []);
 
+     useEffect(() => {
+    // When the router changes, update the active link
+    setActiveLink(router.pathname);
+  }, [router.pathname]);
+
   return (
     <main className="flex">
-        {isLoggingOut && <Loader text="logging out" />} {/* Show loader when logging out */}
-      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex flex-col fixed left-0 top-0 ">
+      {isLoggingOut && <Loader text="logging out" />}
+      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex space-x-2 flex-col fixed left-0 top-0 ">
         {/* Logo Section */}
         <div className="text-center text-FloralWhite p-6">
           <Link href="/">
             {isSmallScreen ? (
-              // small screen logo
               <Image
                 src="/logo/onlyM.png"
                 width={500}
@@ -171,7 +156,6 @@ const Sidebar = () => {
                 alt="Small Logo"
               />
             ) : (
-              // large screen logo
               <Image
                 src="/logo/MigraHub.png"
                 width={230}
@@ -188,11 +172,23 @@ const Sidebar = () => {
             menuItems.map((item, index) => (
               <li
                 key={index}
-                className="hover:bg-gray-800 text-FloralWhite cursor-pointer ml-2 px-4 h-12 flex items-center justify-center sm:justify-start"
+                className={`cursor-pointer  px-4 h-12 flex items-center justify-center sm:justify-start
+                ${
+                    activeLink === item.href
+                    ? "bg-white text-Indigo"
+                    : "hover:bg-gray-800 text-FloralWhite"
+                  }
+                 `}
               >
                 {item.icon}
                 <Link href={item.href} passHref>
-                  <span className="ml-2 hidden sm:block text-gray-400 font-normal uppercase tracking-widest hover:text-FloralWhite transition-colors">
+                   <span className={` hidden sm:block  font-normal uppercase tracking-widest transition-colors
+                                    ${
+                                        activeLink === item.href
+                                          ? "text-Indigo"
+                                          : "text-gray-400 hover:text-FloralWhite"
+                                      }`}
+                   >
                     {item.name}
                   </span>
                 </Link>
@@ -210,13 +206,12 @@ const Sidebar = () => {
           {session || token ? (
             <button
               className="bg-FloralWhite text-Indigo border-2 border-FloralWhite p-2 rounded-md w-full flex items-center justify-center hover:bg-transparent hover:text-FloralWhite"
-              onClick={()=>router.push('/logout')}
+              onClick={handleSignout}
             >
               <RiUserReceivedFill size={20} />
-                <span
-              className="ml-3 hidden sm:block uppercase leading-snug tracking-widest">
+              <span className="ml-3 hidden sm:block uppercase leading-snug tracking-widest">
                 Sign Out
-                </span>
+              </span>
             </button>
           ) : null}
         </div>
