@@ -302,7 +302,7 @@ interface FamilyMember {
                         </tr>
                       );
                     })}
-                  <tr className="hover:bg-gray-50">
+                  {/* <tr className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm font-semibold text-gray-800">
                       Relationship
                     </td>
@@ -311,7 +311,7 @@ interface FamilyMember {
                         ? "Primary Applicant"
                         : "Family Member"}
                     </td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
               <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm hidden sm:table">
@@ -349,9 +349,9 @@ interface FamilyMember {
                           </th>
                         );
                       })}
-                    <th className="px-4 py-3 text-left text-sm font-medium">
+                    {/* <th className="px-4 py-3 text-left text-sm font-medium">
                       Relationship
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 text-gray-800">
@@ -400,11 +400,11 @@ interface FamilyMember {
                           </td>
                         );
                       })}
-                    <td className="px-4 py-3 text-sm text-gray-600">
+                    {/* <td className="px-4 py-3 text-sm text-gray-600">
                       {userDetails?.isPrimaryApplicant
                         ? "Primary Applicant"
                         : "Family Member"}
-                    </td>
+                    </td> */}
                   </tr>
                 </tbody>
               </table>

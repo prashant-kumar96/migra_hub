@@ -192,12 +192,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
 
     };
 
-    const renderDocumentStatus = (status: { [key: string]: string }) => {
-        if (!status) return 'Not Added';
-        const allSuccess = Object.values(status).every(s => s === 'success');
-        if (allSuccess) return 'Added';
-        return 'Not Added';
-    };
+    
 
 
     const combinedMembers = useMemo(() => {
