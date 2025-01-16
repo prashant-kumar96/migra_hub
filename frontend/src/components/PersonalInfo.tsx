@@ -250,7 +250,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
         // Navigate to dashboard
         // console.log("we are here");
         // localStorage.setItem("token", result?.data?.token);
-        router.push("/dashboard/payment");
+        // router.push("/dashboard/payment");
         setLoading(false);
       } else {
         console.log("result@@@", result);
