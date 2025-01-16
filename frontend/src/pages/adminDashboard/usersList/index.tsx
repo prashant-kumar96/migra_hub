@@ -93,7 +93,7 @@ const UsersList = () => {
 
   return (
       <div>
-          <span className="text-Indigo ml-6">User List</span>
+          {/* <span className="text-Indigo ml-6 text-xl my-2">Applications</span> */}
           <div className="relative overflow-auto ">
               <Table
                   data={usersData}

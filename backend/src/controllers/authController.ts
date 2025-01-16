@@ -320,57 +320,48 @@ async function changePassword(req: any, res: any) {
     res.status(400).json({ message: err.message, status: 400 });
   }
 }
-
-async function getUsersWhoHaveDonePayment(req: any, res: any) {
+async function getUsersWhoHaveDonePayment(req, res) {
   try {
-    // Assuming the token payload contains the user ID
-    const user = await User.find({ isStripePaymentDone: true })
-      .select("-password")
-      .populate("assignedCaseManagerId");
+      const users = await User.find({ isStripePaymentDone: true })
+          .select("-password")
+          .populate("assignedCaseManagerId");
 
-    console.log("user", user);
+      console.log("Users from DB:", users);
 
-    // const caseManagerData = await User.findById({
-    //   _id: user[0].assignedCaseManagerId,
-    // });
+      if (!users || users.length === 0) {
+          return res.status(404).json({ message: "No users found with stripe payment done" });
+      }
+    
+      const usersWithStatus = await Promise.all(
+          users.map(async (user) => {
+          let status = null;
 
-    // console.log("caseManagerData", caseManagerData);
-    // const user = await User.aggregate([
-    //   {
-    //     $match: {
-    //       isStripePaymentDone: true,
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: "User",
-    //       localField: "assignedCaseManagerId",
-    //       foreignField: "_id",
-    //       as: "caseManagerData",
-    //     },
-    //   },
-    //   {
-    //     $match: {
-    //       _id: Mongoose0.Types.ObjectId("yourOriginalDocumentId"), // Filter for the specific original document
-    //     },
-    //   },
-    // ]);
+           if(user?.applicationId) {
+               const applicationStatus = await ApplicationStatus.findOne({
+                   applicationId: user.applicationId,
+               });
+               status = applicationStatus ? applicationStatus.status : null
+           }
 
-    // console.log("user getUsersWhoHaveDonePayment", user);
-    // return;
+            return {
+                  ...user.toObject(),
+                   status: status,
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.json({
-      message: "Users fetched successfully",
-      user: user,
-    });
+              };
+          })
+      );
+
+      res.json({
+          message: "Users fetched successfully",
+          user: usersWithStatus,
+      });
+
   } catch (error) {
-    console.error("Error fetching user details:", error);
-    res.status(500).json({ message: "Internal server error" });
+      console.error("Error fetching users with status:", error);
+      res.status(500).json({ message: "Internal server error", error: error });
   }
 }
+
 
 async function getCaseManagers(req: any, res: any) {
   try {
