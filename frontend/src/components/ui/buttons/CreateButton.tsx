@@ -1,16 +1,51 @@
+import Loader from "@/components/loaders/loader";
 import React from "react";
+// const Loader = () => {
+//   return (
+//     <div className="flex items-center justify-center space-x-2 animate-pulse">
+//       <div className="w-2 h-2 bg-white rounded-full"></div>
+//       <div className="w-2 h-2 bg-white rounded-full"></div>
+//       <div className="w-2 h-2 bg-white rounded-full"></div>
+//     </div>
+//   );
+// };
 
-const CreateButton = ({  text, onClick, disabled, className}) => {
+ 
+const CreateButton = ({ text, onClick, disabled, loading, className }) => {
   return (
     <button
       onClick={onClick}
-      disabled={disabled}
-      className={`flex w-fit whitespace-nowrap gap-3 cursor-pointer text-FloralWhite font-semibold shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] px-7 py-2 rounded-2xl border border-gray-600 hover:scale-105 duration-200 hover:text-gray-500 hover:border-gray-800 hover:from-black hover:to-gray-900 ${className}`}
+      disabled={disabled || loading}
+      className={`
+        relative flex items-center justify-center w-full px-6 py-3
+        text-sm font-medium text-white
+        bg-indigo-600 hover:bg-indigo-700
+        rounded-md shadow-sm
+        transition-all duration-200 ease-in-out
+        disabled:opacity-70 disabled:cursor-not-allowed
+        ${className}
+      `}
     >
-      {/* <Icon size={18} /> */}
-      <span className="text-[14.5px] font-normal text-FloralWhite uppercase tracking-wider">
-        {text}
-      </span>
+      {loading ? (
+        <Loader className='h-full ' text='' size={6} />
+      ) : (
+        <span className="flex items-center space-x-2">
+          {text}
+          <svg
+            className="w-5 h-5 ml-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            />
+          </svg>
+        </span>
+      )}
     </button>
   );
 };

@@ -78,37 +78,47 @@ export default function CheckoutForm({ items }: Props) {
     }, [numberOfApplications]);
 
 
+   
     return (
-        <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-            <h2 className="text-2xl font-bold text-Indigo tracking-tight font-greycliff mb-4 text-center">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight mb-6 text-center">
                 Order Summary
             </h2>
-            <div className="mb-6">
-                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                    <span className="font-medium text-gray-500">Primary Applicant</span>
-                    <span className="text-gray-600">${primaryApplicantPrice}</span>
+            
+            <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                    <span className="font-medium text-gray-700">Primary Applicant</span>
+                    <span className="text-gray-900 font-semibold">${primaryApplicantPrice}</span>
                 </div>
+                
                 {numberOfFamilyMembers > 0 && (
-                    <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                        <span className="font-medium text-gray-500">Family Member</span>
-                        <span className="text-gray-600">
-                            {numberOfFamilyMembers} x ${familyMemberPrice} = ${numberOfFamilyMembers * familyMemberPrice}
+                    <div className="flex justify-between items-center py-3 border-b border-gray-200">
+                        <span className="font-medium text-gray-700">Family Member</span>
+                        <span className="text-gray-900 font-semibold">
+                            {numberOfFamilyMembers} × ${familyMemberPrice} = ${numberOfFamilyMembers * familyMemberPrice}
                         </span>
                     </div>
                 )}
             </div>
-            <div className="flex justify-between items-center mb-4">
-                <span className="font-bold text-Indigo text-[18px] tracking-tight">Total:</span>
-                <span className="text-[18px] font-bold text-Indigo">${calculateTotal()}</span>
+
+            <div className="flex justify-between items-center mb-8">
+                <span className="text-xl font-bold text-gray-900">Total</span>
+                <span className="text-xl font-bold text-gray-900">${calculateTotal()}</span>
             </div>
+
             <CreateButton
-                text="Proceed to Payment"
+                text="Pay now"
                 onClick={handleCheckout}
-                className="w-full flex justify-center"
-                // className="w-full bg-gradient-to-r from-[#333366] to-[#2C415A] text-white px-4 py-3 rounded-md flex items-center justify-center gap-2 hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={loading}/>
-                {/* {loading && <ButtonLoader />} */}
+                loading={loading}
+                className="w-full"
+            />
             
+            <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 116 0z" clipRule="evenodd" />
+                </svg>
+                <span>Secure payment powered by Stripe</span>
+            </div>
         </div>
     );
 }

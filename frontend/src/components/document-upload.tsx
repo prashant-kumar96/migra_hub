@@ -175,7 +175,6 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
         }
     };
     console.log(';;; initial expanded member', expandedMember);
-    
     const toggleExpand = async (memberId) => {
         console.log(';;; selected member id', memberId);
         console.log(';;; uploaded docs', uploadedDocuments)
@@ -287,7 +286,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
                                                             title='Passport'
                                                             uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.passportImages}
                                                             uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadPassportImages`}
-                                                            
+
                                                         />
                                                         <DocumentUploader
                                                             userId={member.relationship === 'Primary' ? primaryUserId : member._id}
