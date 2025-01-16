@@ -144,7 +144,7 @@ const Sidebar = () => {
   return (
     <main className="flex">
       {isLoggingOut && <Loader text="logging out" />}
-      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex space-x-2 flex-col fixed left-0 top-0 ">
+      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex  flex-col fixed left-0 top-0 ">
         {/* Logo Section */}
         <div className="text-center text-FloralWhite p-6">
           <Link href="/">
