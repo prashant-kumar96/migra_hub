@@ -10,7 +10,7 @@ const ProgressBar: React.FC<props> = ({ progressBarpercentage }) => {
 
   </div> */}
       <div className="mb-1 flex justify-between items-center">
-        <h3 className="text-base  italic opacity-75 text-Indigo">finding match</h3>
+        <h3 className="text-base  italic opacity-75 text-Indigo">Risk Quiz</h3>
         <span className=" rounded-full overflow-hidden text-base text-Indigo ">{progressBarpercentage}%</span>
       </div>
       <div className="w-full  border border-Indigo bg-FloralWhite rounded-full h-4 shadow-md shadow-Indigo overflow-hidden">

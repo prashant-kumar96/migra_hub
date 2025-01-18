@@ -37,8 +37,7 @@ const ModalData = [
       "It can be harder to prove you won't overstay your travel visa if this is your first international trip. Our service will help you talk about your plans in a way that clearly shows you will use your visa properly, and understand the rules",
   },
   {
-    question:
-      "Have you been denied a travel visa in the last 90 days ",
+    question: "Have you been denied a travel visa in the last 90 days ",
     firstlineForYes:
       "You can still get approved, and we'll help you find ways to strengthen your case!",
     secondlineForYes:
@@ -48,7 +47,7 @@ const ModalData = [
   },
   {
     question:
-      "Create an account to see your travel visa denial risk and how we will lower it",
+      "Sign in or Register to assess your travel visa denial risk and discover how we can reduce it.",
   },
 ];
 
