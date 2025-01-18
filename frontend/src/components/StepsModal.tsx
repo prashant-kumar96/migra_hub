@@ -41,9 +41,9 @@ const StepsModal: React.FC<Props> = ({
   countryCodes,
   destinationCountry,
 }) => {
-  console.log(':: props', citizenshipCountry, destinationCountry)
+  console.log(":: props", citizenshipCountry, destinationCountry);
   const handleCloseModal = () => {
-    onModalClose()
+    onModalClose();
     setShouldStartjourneyShow(false);
   };
   useEffect(() => {
@@ -67,13 +67,14 @@ const StepsModal: React.FC<Props> = ({
   console.log("citizenshipCountry@@", citizenshipCountry);
   console.log("destinationCountry@@", destinationCountry);
   const { user } = useAuth();
-  console.log(';; user', user);
-  const path = router.asPath
+  console.log(";; user", user);
+  const path = router.asPath;
 
-  const userId = user?.user?._id
-  const [passportCountry, setPassportCountry] = useState<string>(citizenshipCountry);
+  const userId = user?.user?._id;
+  const [passportCountry, setPassportCountry] =
+    useState<string>(citizenshipCountry);
 
-  const [progressBarpercentage, setProgressBarPercentage] = useState(10);
+  const [progressBarpercentage, setProgressBarPercentage] = useState(0);
 
   const [step, setStep] = useState(0);
   const [showRiskDecreased, setShowRiskDecreased] = useState(
@@ -84,7 +85,7 @@ const StepsModal: React.FC<Props> = ({
     .getData()
     .find((country) => country.value === citizenshipCountry);
 
-  console.log(';; default citizenshipCountry', selectedCitizenshipcountry)
+  console.log(";; default citizenshipCountry", selectedCitizenshipcountry);
 
   const [data, setData] = useState({
     citizenshipCountry,
@@ -97,11 +98,10 @@ const StepsModal: React.FC<Props> = ({
     deniedVisaToAnyCountry: false,
   });
 
-
   const saveVisaData = async (data: any) => {
     // Add userId to the data object
     const visaDataWithUserId = { ...data, userId };
-    console.log(';; visa data', visaDataWithUserId)
+    console.log(";; visa data", visaDataWithUserId);
     try {
       // return ''
       const response = await createVisaData(visaDataWithUserId);
@@ -111,12 +111,14 @@ const StepsModal: React.FC<Props> = ({
         setRedirection(true);
         handleCloseModal();
       } else {
-        console.error("Error saving data:", response.data?.message || "Unknown error");
+        console.error(
+          "Error saving data:",
+          response.data?.message || "Unknown error"
+        );
       }
     } catch (error) {
       console.error("Error saving data:", error.message || error);
     } finally {
-
       // Ensure modal closes after the API call, whether it succeeds or fails
       handleCloseModal();
 
@@ -124,9 +126,7 @@ const StepsModal: React.FC<Props> = ({
     }
   };
 
-
-
-  console.log('visa data', data);
+  console.log("visa data", data);
 
   console.log("step", step);
 
@@ -134,12 +134,17 @@ const StepsModal: React.FC<Props> = ({
     if (!code) return null; // Handle cases where code is not provided
 
     const countries = countryList().getData();
-    const country = countries.find(c => c.value === code);
+    const country = countries.find((c) => c.value === code);
 
     return country ? country.label : null; // Return country name or null if not found
   };
 
   const handleNextButtonClick = () => {
+    // console.log("current step", step);
+    // alert(step);
+
+    if (step > 0 && step < 5)
+      setProgressBarPercentage(progressBarpercentage + 20);
     if (step === 1) {
       if (data?.areYouApplyingFromPassportCountry === true) {
         showError("");
@@ -153,58 +158,56 @@ const StepsModal: React.FC<Props> = ({
       }
     }
 
-
     if (step === 4) {
       setSharedState(data);
-      localStorage.setItem('assessmentData', JSON.stringify(data));
+      localStorage.setItem("assessmentData", JSON.stringify(data));
       // setRedirection(true);
-      (userId || path !== '/') && saveVisaData(data)
+      (userId || path !== "/") && saveVisaData(data);
 
       // Add a small delay to allow the loader to render
       // setTimeout(() => {
       //   if (!user) {
       //     router.push("/login");
       //   }
-      // }, 500);  
+      // }, 500);
     }
 
     if (step === 5) {
       setSharedState(data);
-      localStorage.setItem('assessmentData', JSON.stringify(data));
+      localStorage.setItem("assessmentData", JSON.stringify(data));
       // setRedirection(true);
-      (userId || path !== '/') && saveVisaData(data)
+      (userId || path !== "/") && saveVisaData(data);
 
       // Add a small delay to allow the loader to render
       // setTimeout(() => {
       //   if (!user) {
       //     router.push("/login");
       //   }
-      // }, 500);  
+      // }, 500);
     } else if (progressBarpercentage !== 100) {
-      setProgressBarPercentage((prev) => prev + 10);
+      // setProgressBarPercentage((prev) => prev + 10);
       setStep((prev) => prev + 1);
-    }
-  }
-
-
-  console.log("progressBarpercentage", progressBarpercentage);
-
-
-  const handleBackButtonClick = () => {
-    if (progressBarpercentage > 10) {
-      setProgressBarPercentage((prev) => prev - 10);
-      setStep((prev) => prev - 1);
     }
   };
 
+  console.log("progressBarpercentage", progressBarpercentage);
+
+  const handleBackButtonClick = () => {
+    // if (progressBarpercentage > 10) {
+    //   setProgressBarPercentage((prev) => prev - 10);
+    //   setStep((prev) => prev - 1);
+    // }
+    // setProgressBarPercentage(progressBarpercentage - 20);
+  };
+
   const handleSelectPassportCountry = (code) => {
-    console.log(';; code selected', code)
+    console.log(";; code selected", code);
     // onSelectCitizenShipCountry(code);
     const tempCountry: any = countryList()
       .getData()
       .find((country) => country.value === code || country.label === code);
     setPassportCountry(tempCountry);
-    if (code === "IN" || code === 'India') {
+    if (code === "IN" || code === "India") {
       setShowRiskDecreased(true);
     } else {
       setShowRiskDecreased(false);
@@ -212,14 +215,16 @@ const StepsModal: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    handleSelectPassportCountry(citizenshipCountry)
-  }, [countryCodes])
+    handleSelectPassportCountry(citizenshipCountry);
+  }, [countryCodes]);
 
   const handleYes = (name: string) => {
     setData({
       ...data,
       [name]: true,
     });
+    // if (progressBarpercentage >= 25)
+    //   setProgressBarPercentage(progressBarpercentage - 25);
   };
 
   console.log("data", data);
@@ -229,12 +234,12 @@ const StepsModal: React.FC<Props> = ({
       ...data,
       [name]: false,
     });
+    // setProgressBarPercentage(progressBarpercentage + 25);
   };
 
-
   const handleSelectFromWhichCountry = (code = citizenshipCountry) => {
-    console.log(';; code', code);
-    console.log(';; citizenshipCountry', citizenshipCountry)
+    console.log(";; code", code);
+    console.log(";; citizenshipCountry", citizenshipCountry);
     const tempCountry: any = countryList()
       .getData()
       .find((country) => country.value === code);
@@ -242,11 +247,10 @@ const StepsModal: React.FC<Props> = ({
       ...data,
       whereWillYouApplyForYourVisa: tempCountry.label,
     });
-    console.log(';; temp country', tempCountry)
+    console.log(";; temp country", tempCountry);
   };
 
-
-  console.log(';; citizenshipCountry', citizenshipCountry)
+  console.log(";; citizenshipCountry", citizenshipCountry);
 
   const showFullCountryName = (code: string) => {
     let country: any = countryList()
@@ -254,9 +258,6 @@ const StepsModal: React.FC<Props> = ({
       .find((country) => country.value == code);
     return country.label;
   };
-
-
-
 
   return (
     <div>
@@ -267,14 +268,17 @@ const StepsModal: React.FC<Props> = ({
         className="justify-center flex backdrop-blur-md bg-[#8A775C]/40 overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center  w-screen  md:inset-0 h-screen"
       >
         <div className="relative p-4 w-full max-w-[700px] max-h-[900px]">
-          {redirection ?
-
-            <div className='h-screen flex justify-center '><Loader text="" /></div>
-            :
-            <div className="relative bg-FloralWhite rounded-lg shadow ">
+          {redirection ? (
+            <div className="h-screen flex justify-center ">
+              <Loader text="" />
+            </div>
+          ) : (
+            <div className="relative bg-FloralWhite rounded-lg shadow max-h-[700px] overflow-auto">
               <div className="flex justify-between items-center p-4 md:p-5 border-b rounded-t">
                 {/* Left Section: Risk Assessment */}
-                <span className="font-medium tracking-wide whitesapce-nowrap text-[19px] text-Indigo">Risk Assessment</span>
+                <span className="font-medium tracking-wide whitesapce-nowrap text-[19px] text-Indigo">
+                  Risk Assessment
+                </span>
 
                 {/* Right Section: Close Button */}
                 <button
@@ -302,19 +306,23 @@ const StepsModal: React.FC<Props> = ({
                 </button>
               </div>
 
-
               <div className="m-2 p-4 md:m-5 md:p-5 space-y-2 rounded text-gray-900 ">
                 <ProgressBar progressBarpercentage={progressBarpercentage} />
                 <h2 className="leading-relaxed text-center font-medium text-Indigo text-2xl py-6">
-                  {ModalData[step].question} {' '}
-                  {(step === 1 || step === 2) && getCountryNameByCode(citizenshipCountry)} ?
+                  {ModalData[step].question}
+                  {(step === 1 || step === 2) && (
+                    <>&nbsp;{getCountryNameByCode(citizenshipCountry)} </>
+                  )}
+                  ?
                 </h2>
                 {step === 0 && (
                   <>
                     <div className="">
                       <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
                         <RiErrorWarningLine className="text-lg" />
-                        <p className="text-xs tracking-wide font-semibold  text-Indigo mt-1 uppercase  ">Multiple passports</p>
+                        <p className="text-xs tracking-wide font-semibold  text-Indigo mt-1 uppercase  ">
+                          Multiple passports
+                        </p>
                       </div>
                       {error && (
                         <div className="px-6">
@@ -324,12 +332,12 @@ const StepsModal: React.FC<Props> = ({
                       )}
 
                       <ReactFlagsSelect
-                        selected={passportCountry?.value || ''}
+                        selected={passportCountry?.value || ""}
                         onSelect={handleSelectPassportCountry}
                         className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
                         countries={countryCodes}
                         searchable
-                      /*showSelectedLabel={showSelectedLabel}
+                        /*showSelectedLabel={showSelectedLabel}
                       selectedSize={selectedSize}
                       showOptionLabel={showOptionLabel}
                       optionsSize={optionsSize}
@@ -340,7 +348,6 @@ const StepsModal: React.FC<Props> = ({
                       fullWidth={fullWidth}
                       disabled={disabled} */
                       />
-
                     </div>
 
                     <div className="bg-[#F6EFE6]">
@@ -352,8 +359,13 @@ const StepsModal: React.FC<Props> = ({
                             checked={showRiskDecreased}
                           /> */}
                           <Decreased />
-                          <p className="text-sm"> {ModalData[step].firstLine}</p>
-                          <p className="text-sm">{ModalData[step].secondLine}</p>
+                          <p className="text-sm">
+                            {" "}
+                            {ModalData[step].firstLine}
+                          </p>
+                          <p className="text-sm">
+                            {ModalData[step].secondLine}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -362,10 +374,11 @@ const StepsModal: React.FC<Props> = ({
                 {step === 1 && (
                   <>
                     <div
-                      className={`${data.areYouApplyingFromPassportCountry
-                        ? "border-2 border-lime-600 rounded-xl"
-                        : ""
-                        } ? `}
+                      className={`${
+                        data.areYouApplyingFromPassportCountry
+                          ? "border-2 border-lime-600 rounded-xl"
+                          : ""
+                      } ? `}
                     >
                       {/* <span className="">?</span> */}
                       <div className="ml-1  bg-transparent">
@@ -387,18 +400,22 @@ const StepsModal: React.FC<Props> = ({
                             checked={data.areYouApplyingFromIndia}
                           /> */}
                           <Decreased />
-                          <p className="text-sm text-justify tracking-wide leading-5"> {ModalData[step].firstLine}</p>
+                          <p className="text-sm text-justify tracking-wide leading-5">
+                            {" "}
+                            {ModalData[step].firstLine}
+                          </p>
 
-                          <p className="text-sm text-justify tracking-wide mt-1 leading-5">{ModalData[step].secondLine}</p>
+                          <p className="text-sm text-justify tracking-wide mt-1 leading-5">
+                            {ModalData[step].secondLine}
+                          </p>
                         </div>
                       )}
                     </div>
 
                     <div
-                      className={`${!data.areYouApplyingFromPassportCountry
-                        ? ""
-                        : ""
-                        } `}
+                      className={`${
+                        !data.areYouApplyingFromPassportCountry ? "" : ""
+                      } `}
                     >
                       <div className=" ml-1 bg-transparent">
                         <Radio
@@ -418,7 +435,7 @@ const StepsModal: React.FC<Props> = ({
                           </h2>
 
                           <ReactFlagsSelect
-                            selected={passportCountry?.value || ''}
+                            selected={passportCountry?.value || ""}
                             onSelect={handleSelectPassportCountry}
                             // className="w-full px-3 border shadow-md border-gray-200 rounded-lg text-gray-800 dark:bg-white"
                             // countries={countryCodes}
@@ -430,9 +447,7 @@ const StepsModal: React.FC<Props> = ({
                               (c) => c !== citizenshipCountry
                             )}
                             searchable
-
                           />
-
                         </div>
                       )}
                     </div>
@@ -441,8 +456,11 @@ const StepsModal: React.FC<Props> = ({
                 {step === 2 && (
                   <>
                     <div
-                      className={`${data.haveSpouseOrProperty ? "border-2 border-lime-600 rounded-xl" : ""
-                        } `}
+                      className={`${
+                        data.haveSpouseOrProperty
+                          ? "border-2 border-lime-600 rounded-xl"
+                          : ""
+                      } `}
                     >
                       <div className="ml-1 bg-transparent ">
                         <Radio
@@ -461,14 +479,20 @@ const StepsModal: React.FC<Props> = ({
                             checked={data.haveSpouseOrProperty}
                           /> */}
                           <Decreased />
-                          <p className="text-sm tracking-wide leading-5 text-Indigo text-justify"> {ModalData[step].lineForYes}</p>
+                          <p className="text-sm tracking-wide leading-5 text-Indigo text-justify">
+                            {" "}
+                            {ModalData[step].lineForYes}
+                          </p>
                         </div>
                       )}
                     </div>
 
                     <div
-                      className={`${!data.haveSpouseOrProperty ? "border-2 border-red-500 rounded-xl  rounded-xl" : ""
-                        } `}
+                      className={`${
+                        !data.haveSpouseOrProperty
+                          ? "border-2 border-red-500 rounded-xl  rounded-xl"
+                          : ""
+                      } `}
                     >
                       <div className="ml-1 bg-transparent">
                         <Radio
@@ -503,10 +527,11 @@ const StepsModal: React.FC<Props> = ({
                 {step === 3 && (
                   <>
                     <div
-                      className={`${data.travelledInternationallyAndReturnedHome
-                        ? "border-2 border-lime-600 rounded-xl "
-                        : ""
-                        } `}
+                      className={`${
+                        data.travelledInternationallyAndReturnedHome
+                          ? "border-2 border-lime-600 rounded-xl "
+                          : ""
+                      } `}
                     >
                       <div className="ml-1 bg-transparent">
                         <Radio
@@ -527,16 +552,20 @@ const StepsModal: React.FC<Props> = ({
                             checked={data.travelledInternationallyAndReturnedHome}
                           /> */}
                           <Decreased />
-                          <p className="text-sm text-justify text-Indigo  tracking-wide leading-5"> {ModalData[step].lineForYes}</p>
+                          <p className="text-sm text-justify text-Indigo  tracking-wide leading-5">
+                            {" "}
+                            {ModalData[step].lineForYes}
+                          </p>
                         </div>
                       )}
                     </div>
 
                     <div
-                      className={`${!data.travelledInternationallyAndReturnedHome
-                        ? "border-2 border-red-500 rounded-xl "
-                        : ""
-                        } `}
+                      className={`${
+                        !data.travelledInternationallyAndReturnedHome
+                          ? "border-2 border-red-500 rounded-xl "
+                          : ""
+                      } `}
                     >
                       <div className="ml-1 bg-transparent">
                         <Radio
@@ -547,7 +576,9 @@ const StepsModal: React.FC<Props> = ({
                           }
                           className="rounded-t-xl"
                           name="travelledInternationallyAndReturnedHome"
-                          checked={!data.travelledInternationallyAndReturnedHome}
+                          checked={
+                            !data.travelledInternationallyAndReturnedHome
+                          }
                         />
                       </div>
                       {!data.travelledInternationallyAndReturnedHome && (
@@ -577,8 +608,11 @@ const StepsModal: React.FC<Props> = ({
                 {step === 4 && (
                   <>
                     <div
-                      className={`${data.deniedVisaToAnyCountry ? "border-2 border-red-500 rounded-xl " : ""
-                        } `}
+                      className={`${
+                        data.deniedVisaToAnyCountry
+                          ? "border-2 border-red-500 rounded-xl "
+                          : ""
+                      } `}
                     >
                       <div className="ml-1 bg-transparent">
                         <Radio
@@ -608,13 +642,15 @@ const StepsModal: React.FC<Props> = ({
                             </p>
                           </div>
                         </>
-
                       )}
                     </div>
 
                     <div
-                      className={`${!data.deniedVisaToAnyCountry ? "border-2 border-lime-700 rounded-xl " : ""
-                        } `}
+                      className={`${
+                        !data.deniedVisaToAnyCountry
+                          ? "border-2 border-lime-700 rounded-xl "
+                          : ""
+                      } `}
                     >
                       <div className="ml-1 bg-transparent">
                         <Radio
@@ -634,7 +670,9 @@ const StepsModal: React.FC<Props> = ({
                               checked={!data.deniedVisaToAnyCountry}
                             /> */}
                             <Decreased />
-                            <p className="text-sm text-Indigo text-justify tracking-wide">{ModalData[step].lineForNo}</p>
+                            <p className="text-sm text-Indigo text-justify tracking-wide">
+                              {ModalData[step].lineForNo}
+                            </p>
                           </div>
                         </>
                       )}
@@ -642,13 +680,8 @@ const StepsModal: React.FC<Props> = ({
                   </>
                 )}
 
-                {step === 5 && (
-
-                  <SignUpModal />
-                )}
+                {step === 5 && <SignUpModal />}
               </div>
-
-
 
               {/* {step === 5 && (
               <div className=" bg-gray-100 flex items-center justify-center  bg-white rounded-lg shadow dark:bg-gray-700 mb-2">
@@ -728,7 +761,9 @@ const StepsModal: React.FC<Props> = ({
 
               <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
                 <PiHeadsetFill className="text-xl" />
-                <p className="text-xs tracking-wide font-semibold uppercase  ">Contact Us</p>
+                <p className="text-xs tracking-wide font-semibold uppercase  ">
+                  Contact Us
+                </p>
               </div>
               {error && (
                 <div className="px-6">
@@ -755,10 +790,9 @@ const StepsModal: React.FC<Props> = ({
                 </button>
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
-
     </div>
   );
 };
