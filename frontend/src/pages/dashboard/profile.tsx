@@ -201,7 +201,7 @@ const ProfilePage = () => {
   }
   return (
     <div className="w-5/6">
-        <ProgressBar />
+        {/* <ProgressBar /> */}
         <div className="px-24 py-20">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-4xl text-gray-600">Personal Information</h1>

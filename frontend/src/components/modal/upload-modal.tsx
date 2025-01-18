@@ -33,6 +33,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
         const files = Array.from(e.target.files) as File[];
         setLoadedFiles((prevFiles) => [...prevFiles, ...files]);
           onFilesLoaded(files);
+          onClose()
         }
 
   if (!isOpen) return null;

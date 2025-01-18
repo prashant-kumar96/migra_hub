@@ -193,7 +193,7 @@ const Dashboard: React.FC = () => {
   // return  ''
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <ProgressBar />
+      {/* <ProgressBar /> */}
       {hasValidVisaData() ? (
         <>
           {applicationStatus?.applicationStatus?.profileCompletion ==

@@ -33,6 +33,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
     const [isUploadingAll, setIsUploadingAll] = useState(false);
     const [loadingDocuments, setLoadingDocuments] = useState(false); // New loading state
     const [passportFiles, setPassportFiles] = useState<File[]>([]);
+    const [allDocumentsUploaded, setAllDocumentsUploaded] = useState<Record<string, boolean>>({}); // Track if all docs are uploaded for each member
     const [proofOfFundsFiles, setProofOfFundsFiles] = useState<File[]>([]);
     const [proofOfTiesFiles, setProofOfTiesFiles] = useState<File[]>([]);
     const [additionalDocFiles, setAdditionalDocFiles] = useState<File[]>([]);
@@ -102,22 +103,38 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
 
     const fetchUploadedDocuments = useCallback(async (memberId: string) => {
         setLoadingDocuments(true);
-        console.log(';;; member id',memberId)
+        console.log(';;; member id', memberId)
         try {
             const response = await getUploadedDocumentsData(memberId);
+            console.log("API Response:", response);
             if (response?.data?.result) {
                 setUploadedDocuments((prev) => ({ ...prev, [memberId]: response.data.result }));
+
+                const { passportImages, proofOfFundsImages, proofOfTiesImages, additionalDocuments } = response.data.result;
+
+                 const allUploaded =
+                    Array.isArray(passportImages) && passportImages.length > 0 &&
+                    Array.isArray(proofOfFundsImages) && proofOfFundsImages.length > 0 &&
+                    Array.isArray(proofOfTiesImages) && proofOfTiesImages.length > 0 &&
+                    Array.isArray(additionalDocuments) && additionalDocuments.length > 0;
+                    setAllDocumentsUploaded((prev) => ({ ...prev, [memberId]: allUploaded }));
+                   console.log(';;; allUploaded', allUploaded)
+
             }
             else {
-                setUploadedDocuments((prev) => ({ ...prev, [memberId]: {} }));// Set empty object if no documents
+                setUploadedDocuments((prev) => ({ ...prev, [memberId]: {} }));
+                setAllDocumentsUploaded((prev) => ({ ...prev, [memberId]: false }));
             }
         } catch (error) {
             console.log("Error fetching files:", error);
-            setUploadedDocuments((prev) => ({ ...prev, [memberId]: {} })); // Set empty object on error as well
+             setUploadedDocuments((prev) => ({ ...prev, [memberId]: {} }));
+            setAllDocumentsUploaded((prev) => ({ ...prev, [memberId]: false }));
         } finally {
             setLoadingDocuments(false);
         }
     }, []);
+
+    console.log(';;; allDocumentsUploaded',allDocumentsUploaded)
 
 
     const handleFileUpload = async (userId: string, uploadUrl: string, files: File[], setUploadStatuses: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>) => {
@@ -281,9 +298,10 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
                                                         // && Object.keys(uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]).length === 0
                                                     )
                                                 ) && (
-                                                    <>
+                                                    <div className="flex flex-col lg:flex-row items-center  justify-evenly">
                                                   
                                                         <DocumentUploader
+                                                        allDocumentsUploaded={allDocumentsUploaded}
                                                             userId={member.relationship === 'Primary' ? primaryUserId : member._id}
                                                             onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
                                                             setFiles={setPassportFiles}
@@ -296,6 +314,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
 
                                                         />
                                                         <DocumentUploader
+                                                        allDocumentsUploaded={allDocumentsUploaded}
                                                             userId={member.relationship === 'Primary' ? primaryUserId : member._id}
                                                             onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
                                                             setFiles={setProofOfFundsFiles}
@@ -308,6 +327,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
 
                                                         />
                                                         <DocumentUploader
+                                                        allDocumentsUploaded={allDocumentsUploaded}
                                                             userId={member.relationship === 'Primary' ? primaryUserId : member._id}
                                                             onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
                                                             setFiles={setProofOfTiesFiles}
@@ -320,6 +340,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
 
                                                         />
                                                         <DocumentUploader
+                                                        allDocumentsUploaded={allDocumentsUploaded}
                                                             userId={member.relationship === 'Primary' ? primaryUserId : member._id}
                                                             onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}
                                                             setFiles={setAdditionalDocFiles}
@@ -330,33 +351,37 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
                                                             uploadedDocuments={uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.additionalDocuments}
                                                             uploadUrl={`${process.env.NEXT_PUBLIC_API_BASE_URL}document/uploadAdditionalDocuments`}
                                                         />
-                                                    </>
+                                                    </div>
                                                 )}
 
-                                            {!loadingDocuments &&
+                                           <div className="flex flex-col"> 
+                                             {(!loadingDocuments && allDocumentsUploaded) && 
                                                 (member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments) &&
                                                 uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id] &&
                                                 (uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.passportImages?.length > 0 ||
                                                     uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfFundsImages?.length > 0 ||
                                                     uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.proofOfTiesImages?.length > 0 ||
                                                     uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]?.additionalDocuments?.length > 0) && (
-                                                    <span>Documents Uploaded</span>
+                                                    <span className="m-2">Documents Uploaded</span>
                                                 )
                                             }
 
 
                                             {!loadingDocuments &&
-                                                (!(member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments) ||
-                                                    (member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments &&
-                                                        Object.keys(uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]).length === 0)) && (
+                                                (
+                                                    member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments
+                                                        //  &&
+                                                        // Object.keys(uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]).length === 0)
+                                                    ) && (
                                                     <button
                                                         onClick={() => handleUploadAll(member.relationship === 'Primary' ? primaryUserId : member._id)}
-                                                        className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
+                                                        className="bg-blue-500 hover:bg-blue-600 w-44 text-white py-2 px-4 rounded"
                                                         disabled={isUploadingAll}
                                                     >
-                                                        {isUploadingAll ? "Uploading All" : "Upload All"}
+                                                        {isUploadingAll ? "Uploading All" : "Upload "}
                                                     </button>
                                                 )}
+                                                </div>
                                         </div>
                                     </td>
                                 </tr>

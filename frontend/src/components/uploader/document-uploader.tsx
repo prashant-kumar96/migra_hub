@@ -21,6 +21,7 @@ interface DocumentUploaderProps {
 export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     userId,
     onUploadSuccess,
+    allDocumentsUploaded,
     setFiles,
     files,
     uploadStatuses,
@@ -29,108 +30,110 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     uploadedDocuments,
     uploadUrl,
 }) => {
-
     const [isModalOpen, setModalOpen] = useState(false);
     const [loadedFiles, setLoadedFiles] = useState<File[]>([]);
-
     const [medata] = useAtom(meDataAtom);
     const { handleRemoveFile } = useDocumentUpload();
-    const isPreviouslyUploaded = !!(uploadedDocuments && uploadedDocuments.length > 0)
+    const isPreviouslyUploaded = !!(uploadedDocuments && uploadedDocuments.length > 0);
 
-    console.log(';;; uploaded docs any', uploadedDocuments )
-    console.log(';;; is previously uploade',isPreviouslyUploaded)
 
     const handleFilesLoaded = (loadedFiles: File[]) => {
         setFiles(loadedFiles);
         setLoadedFiles(loadedFiles);
     };
-    console.log(';;; uplaoded documents in uploader', uploadedDocuments);
-    
-    return (
-        <div className="p-6">
-            {isPreviouslyUploaded ? (
-                <div className="flex items-center justify-center p-4 bg-green-100 border border-green-300 rounded-md shadow-md">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 text-green-600 mr-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2l4-4m-6 4V6m8 10H6"
-                        />
-                    </svg>
-                    <span className="text-green-800 font-medium">
-                        {`${title} already uploaded`}
-                    </span>
-                    <div className="flex flex-wrap gap-4">
-                        {uploadedDocuments?.map((doc, index) => (
-                            <div key={index} className="border rounded-md p-2">
-                                <Image
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${doc.path}`}
-                                    alt={`${title}-${index}`}
-                                    width={100}
-                                    height={100}
-                                    className="object-contain"
-                                />
-                                <p className="text-sm mt-2">{doc.originalname}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ) : (
-                <div>
-                    <button
-                        onClick={() => setModalOpen(true)}
-                        className="bg-gray-100 border text-black hover:text-white hover:bg-blue-600 my-2  py-2 px-4 rounded"
-                    >
-                        Click to Upload {title}
-                    </button>
-                    {files.map((file, index) => (
-                        <div key={index} className="mb-4  relative flex justify-between gap-4 items-center">
-                            <div className="w-fit">
-                                <Image
-                                    src={URL.createObjectURL(file)}
-                                    alt={`upload-${index}`}
-                                    width={400}
-                                    height={400}
-                                />
-                            </div>
-                            <div className="flex items-center justify-between gap-4">
-                                {uploadStatuses[file.name + Date.now()] === 'uploading' && (
-                                    <span>Uploading</span>
-                                )}
-                                {uploadStatuses[file.name + Date.now()] === 'success' && (
-                                    <span>Success</span>
-                                )}
-                                {uploadStatuses[file.name + Date.now()] === 'error' && (
-                                    <span>Error</span>
-                                )}
-                                <div
-                                    className="absolute right-0 cursor-pointer"
-                                    onClick={() => handleRemoveFile(index)}
-                                >
 
+    return (
+        <div className="p-2 border rounded-md">
+            <div className="flex items-center mb-2">
+                <span className="text-md font-semibold mr-2">{title}:</span>
+            </div>
+            <div className="flex  overflow-x-auto gap-2">
+                 {isPreviouslyUploaded && (
+                     <div className="flex items-center bg-green-50 border border-green-200 rounded-md shadow-sm p-2">
+                         <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 text-green-600 mr-1"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                           stroke="currentColor"
+                         >
+                           <path
+                               strokeLinecap="round"
+                               strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2l4-4m-6 4V6m8 10H6"
+                           />
+                         </svg>
+                         <span className="text-green-700 font-medium">
+                            Uploaded
+                         </span>
+                        <div className="flex overflow-x-auto gap-2 ml-2">
+                            {uploadedDocuments?.map((doc, index) => (
+                                <div key={index} className="border rounded-md p-1 flex flex-col items-center justify-center w-20 h-20">
+                                    <Image
+                                        src={`${process.env.NEXT_PUBLIC_API_URL}/${doc.path}`}
+                                        alt={`${title}-${index}`}
+                                        width={50}
+                                        height={50}
+                                        className="object-contain"
+                                    />
+                                    <p className="text-xs mt-1 truncate w-full text-center">{doc.originalname}</p>
                                 </div>
-                            </div>
+                            ))}
+                         </div>
+                     </div>
+                 )}
+
+               {!isPreviouslyUploaded && (
+                 <div className="">
+                   <button
+                     onClick={() => setModalOpen(true)}
+                      className="bg-gray-100 border text-gray-700  hover:bg-blue-100 my-1 py-1 px-2 rounded text-sm"
+                     >
+                    Click to Upload
+                  </button>
+                    <div className="flex overflow-x-auto gap-2">
+                     {files.map((file, index) => (
+                        <div key={index} className="border rounded-md p-1 relative flex flex-col items-center justify-center w-20 h-20">
+                           <Image
+                                src={URL.createObjectURL(file)}
+                                 alt={`upload-${index}`}
+                                width={50}
+                                height={50}
+                                className="object-contain"
+                             />
+                            <div className="flex items-center justify-center w-full text-xs">
+                            {uploadStatuses[file.name + Date.now()] === 'uploading' && (
+                                <span className="text-blue-500">Uploading</span>
+                              )}
+                            {uploadStatuses[file.name + Date.now()] === 'success' && (
+                                 <span className="text-green-500">Success</span>
+                              )}
+                            {uploadStatuses[file.name + Date.now()] === 'error' && (
+                                 <span className="text-red-500">Error</span>
+                             )}
+                            <div
+                                 className="absolute top-1 right-1 cursor-pointer"
+                                onClick={() => handleRemoveFile(index)}
+                                >
+                           </div>
+                           </div>
                         </div>
                     ))}
-                </div>
-            )}
-            <UploadModal
-                isOpen={isModalOpen}
-                onClose={() => setModalOpen(false)}
-                modalTitle={`Upload ${title} Images`}
-                onFilesLoaded={handleFilesLoaded}
-                setLoadedFiles={setLoadedFiles}
+                  </div>
+                 </div>
+                )}
+            </div>
+           <UploadModal
+               isOpen={isModalOpen}
+               onClose={() => setModalOpen(false)}
+              modalTitle={`Upload ${title} Images`}
+               onFilesLoaded={handleFilesLoaded}
+               setLoadedFiles={setLoadedFiles}
                 handleRemoveFile={handleRemoveFile}
-                uploadStatuses={uploadStatuses}
-                setUploadStatuses={setUploadStatuses}
-                uploadUrl={uploadUrl}
+               uploadStatuses={uploadStatuses}
+               setUploadStatuses={setUploadStatuses}
+              uploadUrl={uploadUrl}
             />
         </div>
     );
