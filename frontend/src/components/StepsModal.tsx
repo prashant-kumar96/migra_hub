@@ -223,8 +223,8 @@ const StepsModal: React.FC<Props> = ({
       ...data,
       [name]: true,
     });
-    if (progressBarpercentage >= 25)
-      setProgressBarPercentage(progressBarpercentage - 25);
+    // if (progressBarpercentage >= 25)
+    //   setProgressBarPercentage(progressBarpercentage - 25);
   };
 
   console.log("data", data);
@@ -234,7 +234,7 @@ const StepsModal: React.FC<Props> = ({
       ...data,
       [name]: false,
     });
-    setProgressBarPercentage(progressBarpercentage + 25);
+    // setProgressBarPercentage(progressBarpercentage + 25);
   };
 
   const handleSelectFromWhichCountry = (code = citizenshipCountry) => {
