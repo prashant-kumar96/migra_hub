@@ -12,111 +12,113 @@ function generateRandomPhoneNumber(): string {
     return String(Math.floor(1000000000 + Math.random() * 9000000000));
   }
   
-  export async function addFamilyMember(req: any, res: any) {
-      try {
-          const { name, email, relationship, data, profileData } = req.body;
-          const primaryApplicantId = req.user.id;
+export async function addFamilyMember(req: any, res: any) {
+    try {
+      const { name, email, relationship, data, profileData } = req.body;
+      const primaryApplicantId = req.user.id;
+      console.log("add family member::", req.body, req.user);
+      console.log("Primary Applicant ID:", primaryApplicantId);
   
-          console.log("add family member::", req.body, req.user);
-          console.log("Primary Applicant ID:", primaryApplicantId)
+      // Check if the primary applicant exists
+      const primaryApplicant = await User.findById(primaryApplicantId);
+      console.log("Primary Applicant:", primaryApplicant);
+      if (!primaryApplicant) {
+        return res.status(404).json({ message: "Primary applicant not found" });
+      }
   
-          // Check if the primary applicant exists
-          const primaryApplicant = await User.findById(primaryApplicantId);
-          console.log("Primary Applicant:", primaryApplicant);
-          if (!primaryApplicant) {
-              return res.status(404).json({ message: "Primary applicant not found" });
-          }
+      if (!primaryApplicant.applicationId) {
+        return res.status(400).json({ message: "Primary application id is missing" });
+      }
   
-          if (!primaryApplicant.applicationId) {
-              return res.status(400).json({ message: "Primary application id is missing" });
-          }
+      if (!data) {
+        return res.status(400).json({
+          message:
+            "Please fill all the steps from the index page before adding family member",
+          extraInfo: "Info Incomplete",
+        });
+      }
   
-          if (!data) {
-              return res.status(400).json({
-                  message: "Please fill all the steps from the index page before adding family member",
-                  extraInfo: "Info Incomplete",
-              });
-          }
-          if (!profileData) {
-              return res.status(400).json({ message: "Please fill the personal data from the previous step" });
-          }
-  
-          const existingUser = await User.findOne({ email: email });
+      if (!profileData) {
+        return res.status(400).json({ message: "Please fill the personal data from the previous step" });
+      }
+      const existingUser = await User.findOne({ email: email });
           console.log("Existing User:", existingUser);
           if (existingUser) {
               return res.status(400).json({ message: "User already exists" });
           }
   
-          console.log("Visa Data about to be saved:", data);
-          const visadata = new VisaData(data);
-          const resultVisadata = await visadata.save();
-          console.log("Visa Data Saved:", resultVisadata);
+      console.log("Visa Data about to be saved:", data);
+      const visadata = new VisaData(data);
+      const resultVisadata = await visadata.save();
+      console.log("Visa Data Saved:", resultVisadata);
   
-          const applicationId = uuidv4();
+      const applicationId = uuidv4();
   
-          // Create the family member user
-          const familyMember = new User({
-              name,
-              email,
-              role: "USER",
-              applicationId: applicationId,
-              primaryApplicationId: primaryApplicant.applicationId,
-              visaDataId: resultVisadata._id,
-              relationship,
-              isPrimaryApplicant: false,
-          });
-          console.log("Family member about to be saved:", familyMember);
-          const savedFamilyMember = await familyMember.save();
-          console.log("Family member saved:", savedFamilyMember);
+      // Create the family member user
+      const familyMember = new User({
+        name,
+        email,
+        role: "USER",
+        applicationId: applicationId,
+        primaryApplicationId: primaryApplicant.applicationId,
+        visaDataId: resultVisadata._id,
+        relationship,
+        isPrimaryApplicant: false,
+      });
+      console.log("Family member about to be saved:", familyMember);
+      const savedFamilyMember = await familyMember.save();
+      console.log("Family member saved:", savedFamilyMember);
   
-          // Check if personal data already exists for this user
-          let personalData = await PersonalData.findOne({ userId: savedFamilyMember._id });
+        // Check if personal data already exists for this user
+        let personalData = await PersonalData.findOne({ userId: savedFamilyMember._id });
           console.log("Personal data from DB:", personalData);
           console.log("Personal data about to be saved:", profileData)
           // Generate random phone number if not provided
           const phoneNumber = profileData.phoneNumber ? profileData.phoneNumber : generateRandomPhoneNumber();
   
+  
           if (personalData) {
-              // PersonalData exists, update it
-              console.log("Updating personal data");
-              await PersonalData.updateOne(
+             // PersonalData exists, update it
+             console.log("Updating personal data");
+             await PersonalData.updateOne(
                   { userId: savedFamilyMember._id },
-                { $set: { ...profileData, phoneNumber: phoneNumber, email: savedFamilyMember.email } }
+                  { $set: { ...profileData, phoneNumber: phoneNumber, email: savedFamilyMember.email } }
               );
-          } else {
-              // If not, create a new document
-              console.log("Creating new personal data");
+         } else {
+            // If not, create a new document
+            console.log("Creating new personal data");
                personalData = new PersonalData({
-                   ...profileData,
-                   userId: savedFamilyMember._id,
-                   email: savedFamilyMember.email,
+                ...profileData,
+                 userId: savedFamilyMember._id,
+                 email: savedFamilyMember.email,
                    phoneNumber: phoneNumber,
-               });
-               await personalData.save();
+              });
+              await personalData.save();
           }
-          console.log("Personal Data Saved:", personalData);
-          // Fetch the application status record
-          const applicationStatus = await ApplicationStatus.findOne({
-              applicationId: primaryApplicant.applicationId,
-          });
-          console.log("Application Status: ", applicationStatus);
+  
+        console.log("Personal Data Saved:", personalData);
+      // Fetch the application status record
+        const applicationStatus = await ApplicationStatus.findOne({
+          applicationId: primaryApplicant.applicationId,
+        });
+         console.log("Application Status: ", applicationStatus);
           if (applicationStatus) {
               // Update the application status to completed
-              console.log("Updating application status");
+               console.log("Updating application status");
               await ApplicationStatus.updateOne(
                   { _id: applicationStatus._id },
                   { $set: { riskAssessment: "completed" } }
               );
           }
   
-          res.status(201).json({
-              message: "Family member added successfully",
-              familyMember: savedFamilyMember,
-          });
-      } catch (error) {
-          console.error("Error adding family member:", error);
-          res.status(500).json({ message: "Internal server error", error: error });
-      }
+      res.status(201).json({
+          message: "Family member added successfully",
+          familyMember: savedFamilyMember,
+      });
+    } catch (error) {
+      console.error("Error adding family member:", error);
+      res.status(500).json({ message: "Internal server error", error: error });
+    }
   }
 
 export async function getFamilyMemberApplicationDetails(req: any, res: any) {

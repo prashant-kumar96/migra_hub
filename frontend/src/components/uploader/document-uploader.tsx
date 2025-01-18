@@ -44,7 +44,8 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
         setFiles(loadedFiles);
         setLoadedFiles(loadedFiles);
     };
-    console.log(';; uplaoded documents in uploader', uploadedDocuments)
+    console.log(';;; uplaoded documents in uploader', uploadedDocuments);
+    
     return (
         <div className="p-6">
             {isPreviouslyUploaded ? (

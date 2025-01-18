@@ -159,6 +159,89 @@ export const sendStatusUpdateEmail = async (req, res) => {
 };
 
 
+
+
+export const getAllApplicationDetails = async (req: any, res: any) => {
+    try {
+        const { applicationId } = req.params;
+        console.log("getAllApplicationDetails::", applicationId);
+
+        if (!applicationId) {
+            return res.status(400).json({ message: "Application ID is required" });
+        }
+
+        // Fetch primary applicant details
+        const primaryApplicant = await User.findOne({ applicationId: applicationId })
+            .populate('visaDataId')
+            .lean();
+
+        if (!primaryApplicant) {
+            return res.status(404).json({ message: "Primary applicant not found" });
+        }
+
+        // Fetch linked family members
+        const familyMembers = await User.find({ primaryApplicationId: applicationId, _id: { $ne: primaryApplicant._id } })
+            .populate('visaDataId')
+            .lean();
+
+        // Fetch application status
+        const applicationStatus = await ApplicationStatus.findOne({ applicationId: applicationId })
+            .lean();
+
+           const allMembers = [primaryApplicant, ...familyMembers]
+
+            const personalDataPromises = allMembers.map(async (member) => {
+              const personalData = await PersonalData.findOne({ userId: member._id }).lean()
+                  return {
+                        ...member,
+                        personalData: personalData || null
+                    };
+          })
+
+        const personalDataResults = await Promise.all(personalDataPromises)
+
+
+          const documentPromises = allMembers.map(async (member) => {
+              const documents = await UserDocument.findOne({userId: member._id}).lean()
+                 return {
+                     ...member,
+                    documents: documents || null,
+                };
+        });
+
+          const documentResults = await Promise.all(documentPromises)
+
+          const formattedMembers = personalDataResults.map(member => {
+            return {
+                ...member,
+                  documents: documentResults.find(doc => doc._id === member._id )?.documents || null
+            }
+        })
+
+       const allApplications = formattedMembers.map(member => ({
+             name: member.name,
+              email: member.email,
+             relationship: member.relationship,
+            visaData: member.visaDataId,
+              personalData: member.personalData,
+               documents: member.documents,
+               isPrimaryApplicant: member.isPrimaryApplicant,
+               applicationStatus: applicationStatus
+            }));
+
+
+
+        res.status(200).json({
+            message: "All application details fetched successfully",
+           applications:allApplications
+        });
+    } catch (error) {
+        console.error("Error fetching application details:", error);
+        res.status(500).json({ message: "Internal server error", error: error });
+    }
+};
+
+
 export const getApplicationDetails = async (req: any, res: any) => {
     try {
         const { applicationId } = req.params;

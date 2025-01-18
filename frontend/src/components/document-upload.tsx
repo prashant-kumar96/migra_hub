@@ -1,4 +1,4 @@
-import { getApplicationStatusDetails, updateDocumentUploadStatus } from "@/api/applicationStatus";
+import { getAllApplicationStatusDetails, getApplicationStatusDetails, updateDocumentUploadStatus } from "@/api/applicationStatus";
 import { checkifPaymentIsDone, me } from "@/api/auth";
 import { getAdditionalDocuments, getSinglePassportData, getSingleProofOfFundsData, getSingleProofOfTiesData, getUploadedDocumentsData } from "@/api/document";
 import { getLinkedFamilyMembers } from "@/api/familyMember";
@@ -44,9 +44,12 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
     const primaryUserId = useMemo(() => user?.user?._id, [user]);
 
     useEffect(() => {
+
         const fetchPrimaryApplicantDetails = async () => {
             try {
                 const response = await getApplicationStatusDetails(applicationId);
+                const all = await getAllApplicationStatusDetails(applicationId);
+                console.log(';;; all application details', all?.data)
                 if (response?.data) {
                     setPrimaryApplicantDetails(response.data);
                 }
@@ -54,6 +57,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
                 console.error('Error fetching primary applicant details:', error);
             }
         };
+
         const fetchPaymentStatus = async () => {
             try {
                 const paymentResult = await checkifPaymentIsDone(userId);
@@ -65,6 +69,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
                 console.error('Error fetching primary applicant details:', error);
             }
         };
+        
         const fetchLinkedMembers = async () => {
             try {
                 const response = await getLinkedFamilyMembers(userId);
@@ -97,6 +102,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
 
     const fetchUploadedDocuments = useCallback(async (memberId: string) => {
         setLoadingDocuments(true);
+        console.log(';;; member id',memberId)
         try {
             const response = await getUploadedDocumentsData(memberId);
             if (response?.data?.result) {
@@ -211,8 +217,9 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
         ] : linkedMembers;
     }, [primaryApplicantDetails, linkedMembers]);
     // if (!paymentStatus) return <span className="">Please complete payment first</span>
-    console.log(';; payment status', paymentStatus)
-    console.log(';; combined members', combinedMembers)
+    console.log(';; payment status', paymentStatus);
+    console.log(';; combined members', combinedMembers);
+
     if (!paymentStatus?.status || primaryApplicantDetails?.applicationStatus?.payment === 'pending') {
         return (
             <span className="text-xl text-white bg-red-500 rounded-md shadow-lg px-6 py-3 flex items-center justify-center h-full w-full mx-auto border border-red-700">
@@ -220,6 +227,8 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
             </span>
         );
     }
+    console.log(';;; combined members', combinedMembers);
+
     return (
         <div className="p-6 text-gray-600 w-full mx-auto">
             <h2 className="text-2xl font-bold mb-4">Application Details</h2>
@@ -266,11 +275,14 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
                                             </div>}
                                             {
                                                 !loadingDocuments &&
-                                                (!(member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments) ||
-                                                    (member.relationship === 'Primary' ? primaryUserId : member._id in uploadedDocuments &&
-                                                        Object.keys(uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]).length === 0)
+                                                (
+                                                    (member.relationship === 'Primary' ? primaryUserId : member._id 
+                                                         
+                                                        // && Object.keys(uploadedDocuments[member.relationship === 'Primary' ? primaryUserId : member._id]).length === 0
+                                                    )
                                                 ) && (
                                                     <>
+                                                  
                                                         <DocumentUploader
                                                             userId={member.relationship === 'Primary' ? primaryUserId : member._id}
                                                             onUploadSuccess={() => fetchUploadedDocuments(member.relationship === 'Primary' ? primaryUserId : member._id)}

@@ -14,14 +14,13 @@ export const statuses = [
   { value: "Visa Rejected", label: "Visa Rejected" },
 ];
 
+
 const CaseManagerDashboard = () => {
   const router = useRouter();
   const [usersData, setUsersData] = useState([]);
   const [loadingStatusUpdate, setLoadingStatusUpdate] = useState(false);
   const [updatingUserId, setUpdatingUserId] = useState(null);
 
-
-  
 
   const getAssignedUsersToCaseManagerfunction = async () => {
     const medata = await me();

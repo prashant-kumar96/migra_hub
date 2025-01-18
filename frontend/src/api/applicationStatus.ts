@@ -8,6 +8,13 @@ export const getApplicationStatusDetails = async (applicationId: string) => {
     return result;
 };
 
+export const getAllApplicationStatusDetails = async (applicationId: string) => {
+    const result = await axiosInstance.get(`/application-status/all/${applicationId}`);
+    return result;
+};
+
+
+
 
 export const getApplicationDetails = async (applicationId: string) => {
     const result = await axiosInstance.get(`/application-status/application-details/${applicationId}`);
