@@ -6,57 +6,61 @@ import Table from "@/components/ui/Table";
 import NATag from "@/components/ui/tags/NATag";
 import Role from "@/components/ui/tags/Role";
 
+
+
 const CaseManagerPage = () => {
   const [caseManagersList, setCaseManagersList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const headers = ["Name", "Email", "Role"];
+const hiddenColumns = ["Status"];
+
 
   const getCaseManagersFunction = async () => {
-    try {
-      const result = await getCaseManagers();
-      console.log("result getCaseManagers", result?.data?.user);
+      try {
+          const result = await getCaseManagers();
+          console.log("result getCaseManagers", result?.data?.user);
 
-      const formattedData =
-        result?.data?.user?.map((user) => ({
-          ...user,
-          name: user.name ? (
-            user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase()
-          ) : (
-            <NATag />
-          ),
-          role: user.role ? (
-            <Role
-              text={user.role.replace(/[^a-zA-Z0-9 ]/g, " ").toLowerCase()}
-              bgClass="bg-indigo-100"
-              textColor="text-indigo-600"
-            />
-          ) : (
-            <NATag />
-          ),
-        })) || [];
+          const formattedData =
+              result?.data?.user?.map((user) => ({
+                  ...user,
+                  name: user.name ? (
+                      user.name.charAt(0).toUpperCase() + user.name.slice(1).toLowerCase()
+                  ) : (
+                      <NATag />
+                  ),
+                  role: user.role ? (
+                      <Role
+                          text={user.role.replace(/[^a-zA-Z0-9 ]/g, " ").toLowerCase()}
+                          bgClass="bg-indigo-100"
+                          textColor="text-indigo-600"
+                      />
+                  ) : (
+                      <NATag />
+                  ),
+              })) || [];
 
-      setCaseManagersList(formattedData);
-    } catch (error) {
-      console.error("Error fetching case managers:", error);
-      setCaseManagersList([]);
-    }
+          setCaseManagersList(formattedData);
+      } catch (error) {
+          console.error("Error fetching case managers:", error);
+          setCaseManagersList([]);
+      }
   };
 
   // Fetch case managers data on component mount
   useEffect(() => {
-    getCaseManagersFunction();
+      getCaseManagersFunction();
   }, [isModalOpen]);
 
   return (
-    <div>
-      <CreateCaseManager
-        setIsModalOpen={setIsModalOpen}
-        isModalOpen={isModalOpen}
-      />
-      <div className="relative overflow-auto ">
-        <Table data={caseManagersList} showActions={false} headers={headers} />
+      <div>
+          <CreateCaseManager
+              setIsModalOpen={setIsModalOpen}
+              isModalOpen={isModalOpen}
+          />
+          <div className="relative overflow-auto ">
+              <Table data={caseManagersList} showActions={false} headers={headers} hiddenColumns={hiddenColumns} />
+          </div>
       </div>
-    </div>
   );
 };
 

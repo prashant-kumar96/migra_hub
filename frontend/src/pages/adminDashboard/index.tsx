@@ -2,6 +2,7 @@ import SearchForm from "@/components/adminDashboard/serach";
 import AfterLoginLayout from "@/components/afterLoginLayout/AfterLoginLayout";
 import React, { useState } from "react";
 
+
 const counterData = [
   {
     id: 1,
@@ -98,6 +99,7 @@ const CounterCard = ({ id, title, message, count, incrementCount }) => {
     </>
   );
 };
+
 
 const CounterCards = () => {
   const [count, setCount] = useState(counterData);

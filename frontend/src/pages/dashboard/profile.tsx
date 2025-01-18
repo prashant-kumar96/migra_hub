@@ -14,12 +14,14 @@ import { getApplicationStatusDetails } from "@/api/applicationStatus";
 import AddFamilyMemberModal from "@/components/modal/add-family-member-modal";
 import { useAsync } from "react-use";
 import { getLinkedFamilyMembers } from "@/api/familyMember";
+import { useRouter } from "next/router";
 
 
 const ProfilePage = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
+  const router = useRouter();
   const { user, isLoading } = useAuth();
   const countryCodes = countryList().getData().map((country) => country.value);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] = useState(countryCodes);
@@ -206,14 +208,16 @@ const ProfilePage = () => {
                 {applicationStatus?.profileCompletion === 'completed' && (
                     <button 
                         onClick={handleModal}
-                        className="bg-blue-800 text-white px-4 py-2 rounded hover:bg-blue-900 transition-colors"
+                        className="bg-Indigo text-white px-4 py-2 rounded hover:bg-indigo-900 transition-colors"
                     >
                         Add Family Member
                     </button>
                 )}
             </div>
 
-            {renderLinkedMembers()}
+            
+
+           <div className="border shadow-xl my-5 rounded p-4"> {renderLinkedMembers()}</div> 
 
             <AddFamilyMemberModal
                 onSubmit={onSubmit} 
@@ -229,6 +233,7 @@ const ProfilePage = () => {
             />
         </div>
     </div>
+
 );
 };
 export default AfterLoginLayout(ProfilePage);

@@ -8,10 +8,13 @@ import PersonalData from "../models/personalData.js";
 import UserDocument from "../models/userDocument.js";
 import ApplicationStatus from "../models/applicationStatus.js";
 
+
 export const assignCaseManagerToUser = async (req: any, res: any) => {
+  
   try {
+
     console.log("assignCaseManagerToUser started");
-     const {applicationId, caseManagerId, userId} = req.body;
+    const {applicationId, caseManagerId, userId} = req.body;
     console.log("req.body", req.body);
         
         const result = await User.findByIdAndUpdate(

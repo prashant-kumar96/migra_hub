@@ -72,12 +72,12 @@ const sidebarData = [
         icon: <FaUserShield size={22} />,
         href: "/adminDashboard/caseManagerPage",
       },
-      { name: "User", icon: <ImUser size={22} />, href: "/adminDashboard/usersList" },
-      {
-        name: "Assign Case Manager",
-        icon: <ImUser size={22} />,
-        href: "/adminDashboard/assignCaseManager",
-      },
+      { name: "Applications", icon: <ImUser size={22} />, href: "/adminDashboard/usersList" },
+      // {
+      //   name: "Assign Case Manager",
+      //   icon: <ImUser size={22} />,
+      //   href: "/adminDashboard/assignCaseManager",
+      // },
     ],
   },
 ];
@@ -144,9 +144,9 @@ const Sidebar = () => {
   return (
     <main className="flex">
       {isLoggingOut && <Loader text="logging out" />}
-      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex  flex-col fixed left-0 top-0 ">
+      <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex   flex-col fixed left-0 top-0 ">
         {/* Logo Section */}
-        <div className="text-center text-FloralWhite p-6">
+        <div className="text-center  text-FloralWhite  p-6">
           <Link href="/">
             {isSmallScreen ? (
               <Image
