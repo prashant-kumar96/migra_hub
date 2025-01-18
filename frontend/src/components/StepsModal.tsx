@@ -21,8 +21,7 @@ import Increased from "./ui/Text/Increased";
 import { createVisaData } from "@/api/visaData";
 import Login from "@/pages/login";
 import SignUpModal from "./modal/signup-modal";
-import Link
- from "next/link";
+
 interface Props {
   setShouldStartjourneyShow: React.Dispatch<React.SetStateAction<boolean>>;
   citizenshipCountry: string;
@@ -268,12 +267,13 @@ const StepsModal: React.FC<Props> = ({
         aria-hidden="true"
         className="justify-center flex backdrop-blur-md bg-[#8A775C]/40 overflow-auto fixed top-0 right-0 left-0 z-50 justify-center items-center  w-screen  md:inset-0 h-screen"
       >
-        <div className="relative p-2 w-full max-w-[700px] max-h-[900px]">
-          {redirection ?
-
-            <div className='h-screen flex justify-center '><Loader text="Processing...." /></div>
-            :
-            <div className="relative bg-FloralWhite rounded-lg shadow ">
+        <div className="relative p-4 w-full max-w-[700px] max-h-[900px]">
+          {redirection ? (
+            <div className="h-screen flex justify-center ">
+              <Loader text="" />
+            </div>
+          ) : (
+            <div className="relative bg-FloralWhite rounded-lg shadow max-h-[700px] overflow-auto">
               <div className="flex justify-between items-center p-4 md:p-5 border-b rounded-t">
                 {/* Left Section: Risk Assessment */}
                 <span className="font-medium tracking-wide whitesapce-nowrap text-[19px] text-Indigo">
@@ -318,7 +318,7 @@ const StepsModal: React.FC<Props> = ({
                 {step === 0 && (
                   <>
                     <div className="">
-                      {/* <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
+                      <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
                         <RiErrorWarningLine className="text-lg" />
                         <p className="text-xs tracking-wide font-semibold  text-Indigo mt-1 uppercase  ">
                           Multiple passports
@@ -329,7 +329,7 @@ const StepsModal: React.FC<Props> = ({
                           {" "}
                           <p className="text-sm text-red-500">{error}</p>
                         </div>
-                      )} */}
+                      )}
 
                       <ReactFlagsSelect
                         selected={passportCountry?.value || ""}
@@ -761,7 +761,9 @@ const StepsModal: React.FC<Props> = ({
 
               <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
                 <PiHeadsetFill className="text-xl" />
-                <Link href="/contact" className="text-xs tracking-wide font-semibold uppercase  ">Contact Us</Link>
+                <p className="text-xs tracking-wide font-semibold uppercase  ">
+                  Contact Us
+                </p>
               </div>
               {error && (
                 <div className="px-6">

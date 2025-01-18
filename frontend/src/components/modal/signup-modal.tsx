@@ -350,21 +350,16 @@ const SignUpModal = () => {
               </label>
             </div>
 
-                        <div className="mt-4 flex items-start">
-                            <input
-                                type="checkbox"
-                                id="terms"
-                                className="mr-2 mt-1 border-gray-300 rounded focus:ring-indigo-500"
-                                checked={agreedToTerms}
-                                onChange={() => setAgreedToTerms(!agreedToTerms)}
-                            />
-                            <label htmlFor="terms" className="text-sm text-gray-700">
-                                I agree to the MigraHub
-                                <Link href="#" className="text-indigo-600 hover:underline">Privacy Policy</Link>
-                                and
-                                <Link href="#" className="text-indigo-600 hover:underline">Terms of Use.</Link>
-                            </label>
-                        </div>
+            <div className="flex items-center justify-between mt-6">
+              <button
+                type="submit"
+                disabled={authState.isLoading}
+                className="bg-indigo-900 text-white py-2 px-6 rounded-md disabled:opacity-50 disabled:bg-gray-100"
+              >
+                View Results
+              </button>
+            </div>
+          </form>
 
           <div className="mt-6 text-center">
             <button
