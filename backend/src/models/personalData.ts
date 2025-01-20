@@ -9,6 +9,7 @@ interface IPersonalData extends Document {
   first_name: string;
   middle_name: string;
   last_name: string;
+  dob: Date;
   passport_number: string;
   passport_expiry: Date;
   zipCode: string;
@@ -65,6 +66,16 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
     trim: true,
     minlength: [2, "Last name must be at least 2 characters long"],
   },
+  dob: {
+    type: Date,
+    required: [true, "DOB is required"],
+    trim: true,
+    validate: {
+      validator: (value: Date) => value > new Date(),
+      message: "Passport expiry date must be in the future",
+    },
+  },
+
   passport_number: {
     type: String,
     required: [false, "Passport number is required"],

@@ -37,6 +37,15 @@ const PersonalDataSchema = new Schema({
         trim: true,
         minlength: [2, "Last name must be at least 2 characters long"],
     },
+    dob: {
+        type: Date,
+        required: [true, "DOB is required"],
+        trim: true,
+        validate: {
+            validator: (value) => value > new Date(),
+            message: "Passport expiry date must be in the future",
+        },
+    },
     passport_number: {
         type: String,
         required: [true, "Passport number is required"],

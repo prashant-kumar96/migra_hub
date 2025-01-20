@@ -497,6 +497,18 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             placeholder="Doe"
             errors={errors.last_name}
           />
+          <Input
+            label="DOB"
+            type="date"
+            id="dob"
+            register={register}
+            minDate={moment().format("YYYY-MM-DD")}
+            validation={{
+              required: "DOB is required",
+            }}
+            placeholder=""
+            errors={errors.dob}
+          />
           {/* <Input
           label="First Language"
           id="first_language"
