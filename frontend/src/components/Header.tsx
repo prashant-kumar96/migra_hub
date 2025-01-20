@@ -42,20 +42,20 @@ function Header2() {
     { label: "Visitor Journey", href: "/" },
     // { label: "Partner", href: "/" },
     // { label: "News", href: "/newsPage" },
-    { label: "Help", href: "/help" },
+    { label: "Help", href: "/help", externalUrl: "https://appletheory.atlassian.net/servicedesk/customer/portals" },
     { label: "Contact", href: "/contact" },
   ];
 
   return (
     <header className="shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
 
-        {/* Logo or Brand */}
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      {/* Logo or Brand */}
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link href="/" className="flex justify-start lg:justify-start">
           {/* <span className="text-4xl font-greycliff font-extrabold tracking-tight text-FloralWhite">
             MigraHub
           </span> */}
-          <Image width={180} height={100} alt="logo" src ="/logo/MigraHub.png" />
+          <Image width={180} height={100} alt="logo" src="/logo/MigraHub.png" />
         </Link>
         {/* <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0 text-center lg:text-left">
           <Link href="/" className="flex justify-center lg:justify-start">
@@ -71,9 +71,25 @@ function Header2() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-FloralWhite hover:text-blue-500  items-center flex whitespace-nowrap"
+              onClick={(e) => {
+                if (item.externalUrl) {
+                  e.preventDefault(); // Prevent navigation to href
+                  window.history.pushState(null, "", item.href); // Update the browser address bar
+                  // Open the external URL in a new tab or iframe logic here
+                  const iframe = document.createElement("iframe");
+                  iframe.src = item.externalUrl; // Load external content in iframe
+                  iframe.style.width = "100%";
+                  iframe.style.height = "100vh";
+                  iframe.style.border = "none";
+
+                  // Clean up existing content and replace with iframe
+                  document.body.innerHTML = "";
+                  document.body.appendChild(iframe);
+                }
+              }}
+              className="text-FloralWhite hover:text-blue-500 items-center flex whitespace-nowrap"
             >
-             <span className="text-lg  tracking-wider">{item.label}</span> 
+              <span className="text-lg tracking-wider">{item.label}</span>
             </Link>
           ))}
 
@@ -90,7 +106,7 @@ function Header2() {
               onClick={handleLogin}
               className="flex bg-transparent border-FloralWhite border-2 px-4 py-1  text-FloralWhite  text-center rounded-full w-full hover:text-Indigo hover:bg-FloralWhite"
             >
-             <span className="tracking-wider">Login</span>
+              <span className="tracking-wider">Login</span>
             </Link>
           )}
         </nav>
