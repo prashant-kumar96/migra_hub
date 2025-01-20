@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
 // In your user controller file
 import { v4 as uuidv4 } from "uuid";
+import { generateApplicationId } from "./authController.js";
 
 
 
@@ -52,7 +53,9 @@ export async function addFamilyMember(req: any, res: any) {
       const resultVisadata = await visadata.save();
       console.log("Visa Data Saved:", resultVisadata);
   
-      const applicationId = uuidv4();
+      // const applicationId = uuidv4();
+            const applicationId = generateApplicationId();
+
   
       // Create the family member user
       const familyMember = new User({

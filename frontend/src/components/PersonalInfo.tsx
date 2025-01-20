@@ -31,6 +31,8 @@ const options = [
   { code: "hi", label: "Hindi" },
   { code: "zh", label: "Chinese" },
 ];
+
+
 const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
   const {
     register,
@@ -39,6 +41,8 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
     watch,
     formState: { errors },
   }: any = useForm();
+
+  
   const countriesCodes = countryList()
     .getData()
     .map((c) => c.value);

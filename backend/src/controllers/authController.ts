@@ -11,6 +11,13 @@ import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
 dotenv.config();
 
+
+export function generateApplicationId() {
+  const randomNum = Math.floor(1000 + Math.random() * 90000); // generates a number between 1000-99999
+  return `MH${randomNum}`;
+}
+
+ 
 async function login(req: any, res: any) {
   console.log("login is run");
   try {
@@ -74,7 +81,9 @@ async function register(req: any, res: any) {
 
     // Create application status and application id if role is 'USER'
     if (role === "USER") {
-      const applicationId = uuidv4();
+      // const applicationId = uuidv4();
+      const applicationId = generateApplicationId();
+
       const applicationStatus = new ApplicationStatus({
         applicationId: applicationId,
         riskAssessment: "completed",
@@ -158,7 +167,8 @@ async function googleLogin(req: any, res: any) {
       }
       // Create or Update User
       if (!user) {
-        applicationId = uuidv4();
+        // applicationId = uuidv4();
+        applicationId = generateApplicationId();
         const newUser = new User({
           email,
           name,
@@ -170,7 +180,8 @@ async function googleLogin(req: any, res: any) {
         user = await newUser.save({ session });
       } else {
         if (!user.applicationId) {
-          applicationId = uuidv4();
+          // applicationId = uuidv4();
+          applicationId = generateApplicationId();
           user.applicationId = applicationId;
         }
         user.name = name;
@@ -503,6 +514,7 @@ async function checkifPaymentIsDone(req: any, res: any) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
+
 
 export {
   login,

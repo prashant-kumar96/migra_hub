@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import { v4 as uuidv4 } from "uuid";
 import User from "../models/User.js";
 import ApplicationStatus from "../models/applicationStatus.js";
+import { generateApplicationId } from "./authController.js";
  
 
 export const getSingleVisaData = async (req: Request, res: Response) => { 
@@ -59,7 +60,9 @@ export const addVisaData = async (req: any, res: any) => {
     console.log("resultVisaData", resultVisaData);
 
     // Generate ApplicationId only when visa data is created
-    const applicationId = uuidv4();
+    // const applicationId = uuidv4();
+      const applicationId = generateApplicationId();
+       
 
     // Find the user from the user id
     const user = await User.findById(userId);
