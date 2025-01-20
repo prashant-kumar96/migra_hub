@@ -64,13 +64,13 @@ const FlagsComponent = () => {
 
         {/* Slider Container */}
         {/* <Slider {...settings} className="custom-slider"> */}
-        <div className="flex flex-col sm:flex-row items-center justify-center space-x-8">
+        <div className="flex flex-col sm:flex-row items-center justify-center">
           {destinationCountry?.map((country) => (
             // Wrapper div for spacing
-            <div key={country.id} className="px-2 py-12 flex">
+            <div key={country.id} className="p-8 flex">
               <div
                 onClick={() => handleCountryClick(country.name, country.id)}
-                className="relative flex flex-col rounded-2xl gap-x-12 bg-white bg-clip-border text-DarkGray shadow-lg shadow-Indigo/50 p-3">
+                className="relative flex flex-col rounded-2xl bg-white bg-clip-border text-DarkGray shadow-lg shadow-Indigo/50 p-2.5">
                 <div className="relative">
                   <Image
                     className="rounded-t-2xl"

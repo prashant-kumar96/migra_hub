@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import { countriesData } from "@/utils/CountriesData";
 import VisaItinerary from "@/components/countries/visaItinerary";
 import FAQ from "@/components/countries/faq"
+import Header2 from "@/components/Header";
 
 
 
@@ -36,7 +37,7 @@ import FAQ from "@/components/countries/faq"
 const CountryPage = ({ }) => {
   return (
     <>
-      <Navbar />
+      <Header2 />
       <div className="p-6 flex flex-col items-center">
         {/* Centered CountriesGrid */}
         <div className="mb-8 w-full max-w-screen-2xl">

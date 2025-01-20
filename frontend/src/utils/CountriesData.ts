@@ -284,10 +284,6 @@ const countriesData = [
             "a": "Complete a quick risk assessment to help us increase your chances of visa approval."
           },
           {
-            "q": "What personal information do I need to provide?",
-            "a": "Provide your basic personal information and complete your profile."
-          },
-          {
             "q": "What is the next step after completing my profile?",
             "a": "Proceed to make the payment."
           },
