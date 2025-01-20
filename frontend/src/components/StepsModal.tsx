@@ -193,11 +193,12 @@ const StepsModal: React.FC<Props> = ({
   console.log("progressBarpercentage", progressBarpercentage);
 
   const handleBackButtonClick = () => {
-    // if (progressBarpercentage > 10) {
-    //   setProgressBarPercentage((prev) => prev - 10);
-    //   setStep((prev) => prev - 1);
-    // }
-    // setProgressBarPercentage(progressBarpercentage - 20);
+    console.log("current step", step);
+    if (step > 0 && step <= 5) {
+      setStep((prev) => prev - 1);
+    }
+    if (step > 1 && step <= 5)
+      setProgressBarPercentage(progressBarpercentage - 20);
   };
 
   const handleSelectPassportCountry = (code) => {
