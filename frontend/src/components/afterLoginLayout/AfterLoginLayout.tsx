@@ -91,7 +91,7 @@ export const ProgressBar = () => {
             return 'bg-green-500 text-white';
         }
         if (isStepActive(step)) {
-            return 'bg-blue-600 text-white font-bold';
+            return 'shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] text-FloralWhite font-bold';
         }
         return 'bg-gray-200 text-gray-600';
     };
@@ -116,7 +116,7 @@ export const ProgressBar = () => {
                     {/* Complete Profile */}
                     <div className="flex flex-col items-center">
                         <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center relative ${getStepStatus(1)}`}
+                            className={`w-8 h-8 -bottom-4 rounded-full flex items-center justify-center relative ${getStepStatus(1)}`}
                         >
                             {isStepCompleted(1) ? (
                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -130,13 +130,13 @@ export const ProgressBar = () => {
                                 '1'
                             )}
                             {isStepCompleted(1) && (
-                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
+                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
                                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                 </div>
                             )}
                         </div>
                         <span
-                            className={`mt-2 text-sm  ${isStepCompleted(1) ? 'text-gray-600 font-bold' : isStepActive(1) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                            className={`mt-4 font-sans text-base  ${isStepCompleted(1) ? 'text-gray-600 font-bold' : isStepActive(1) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
                         >
                             Complete Profile
                         </span>
@@ -145,7 +145,7 @@ export const ProgressBar = () => {
                     {/* Review & Submit */}
                     <div className="flex flex-col items-center">
                         <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center relative ${getStepStatus(2)}`}
+                            className={`w-8 h-8 -bottom-4 rounded-full flex items-center justify-center relative ${getStepStatus(2)}`}
                         >
                             {isStepCompleted(2) ? (
                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -165,7 +165,7 @@ export const ProgressBar = () => {
                             )}
                         </div>
                         <span
-                            className={`mt-2 text-sm  ${isStepCompleted(2) ? 'text-gray-600 font-bold' : isStepActive(2) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                            className={`mt-4 font-sans text-base  ${isStepCompleted(2) ? 'text-gray-600 font-bold' : isStepActive(2) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
                         >
                             Review & Submit
                         </span>
@@ -174,7 +174,7 @@ export const ProgressBar = () => {
                     {/* Visa Applied */}
                     <div className="flex flex-col items-center">
                         <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center relative ${getStepStatus(3)}`}
+                            className={`w-8 h-8 -bottom-4 rounded-full flex items-center justify-center relative ${getStepStatus(3)}`}
                         >
                             {isStepCompleted(3) ? (
                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -194,7 +194,7 @@ export const ProgressBar = () => {
                             )}
                         </div>
                         <span
-                            className={`mt-2 text-sm  ${isStepCompleted(3) ? 'text-gray-600 font-bold' : isStepActive(3) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                            className={`mt-4 font-sans text-base  ${isStepCompleted(3) ? 'text-gray-600 font-bold' : isStepActive(3) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
                         >
                             Visa Applied
                         </span>
@@ -203,7 +203,7 @@ export const ProgressBar = () => {
                     {/* Completed */}
                     <div className="flex flex-col items-center">
                         <div
-                            className={`w-8 h-8 rounded-full flex items-center justify-center relative ${getStepStatus(4)}`}
+                            className={`w-8 h-8 -bottom-4 rounded-full flex items-center justify-center relative ${getStepStatus(4)}`}
                         >
                             {isStepCompleted(4) ? (
                                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -223,7 +223,7 @@ export const ProgressBar = () => {
                             )}
                         </div>
                         <span
-                            className={`mt-2 text-sm  ${isStepCompleted(4) ? 'text-gray-600 font-bold' : isStepActive(4) ? 'text-blue-600 font-bold' : 'text-gray-600'}`}
+                            className={`mt-4 font-sans text-base  ${isStepCompleted(4) ? 'text-gray-600 font-bold' : isStepActive(4) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
                         >
                             Completed
                         </span>

@@ -217,7 +217,7 @@ const ProfilePage = () => {
 
             
 
-           <div className="border shadow-xl my-5 rounded p-4"> {renderLinkedMembers()}</div> 
+           <div> {renderLinkedMembers()}</div> 
 
             <AddFamilyMemberModal
                 onSubmit={onSubmit} 

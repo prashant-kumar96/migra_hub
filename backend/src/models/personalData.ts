@@ -70,7 +70,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
     type: Date,
     required: [true, "DOB is required"],
     trim: true,
-    validate: {
+     validate: {
       validator: (value: Date) => value > new Date(),
       message: "Passport expiry date must be in the future",
     },

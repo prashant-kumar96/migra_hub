@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import ButtonLoader from "./loaders/buttonLoader";
 import { useAuth } from "@/context/auth-context";
 import { getSingleVisaData } from "@/api/visaData";
+import { Button } from "@headlessui/react";
 
 
 const options = [
@@ -31,7 +32,7 @@ const options = [
   { code: "hi", label: "Hindi" },
   { code: "zh", label: "Chinese" },
 ];
-const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
+const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   const {
     register,
     handleSubmit,
@@ -47,11 +48,11 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
   const router = useRouter();
   const [riskAssessmentData, setRiskAssessmentData] = useState<any>({});
   const [personalDataStatus, setPersonalDataStatus] = useState<any>(null);
-  const [personalData , setPersonalData] = useState()
+  const [personalData, setPersonalData] = useState()
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
   console.log(";; personal visa data", user);
-  
+
   // const userId = user?.user?._id;
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
     };
 
     fetchVisaData();
-  }, [user?.user?.visaDataId]); 
+  }, [user?.user?.visaDataId]);
 
   console.log(";; risk assessment data", riskAssessmentData);
 
@@ -300,8 +301,8 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
 
 
   console.log("moment", moment().format("YYYY-MM-DD"));
-   console.log(';; personal data',personalDataStatus)
-   if (personalDataStatus) {
+  console.log(';; personal data', personalDataStatus)
+  if (personalDataStatus) {
     return (
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         {/* Header Section */}
@@ -310,11 +311,11 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             <h1 className="text-3xl font-bold text-[#333366] mb-2">My Profile </h1>
             <p className="text-gray-600">Visa Application Details & Risk Assessment</p>
           </div>
-          <button onClick={()=>router.push('/dashboard/payment')} className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors">
+          <button onClick={() => router.push('/dashboard/payment')} className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors">
             Proceed to Pay
           </button>
         </div>
-  
+
         {/* Personal Information Section */}
         <div className="mb-12 text-gray-600">
           <div className="flex items-center mb-6">
@@ -325,7 +326,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             </div>
             <h2 className="text-2xl font-bold text-[#333366]">Personal Information</h2>
           </div>
-  
+
           <div className="grid gap-8 text-gray-600 mb-8">
             {/* Basic Info Card */}
             <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
@@ -344,7 +345,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
                 </div>
               </div>
             </div>
-  
+
             {/* Passport Details Card */}
             <div className="bg-gray-50 rounded-xl text-gray-600 p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-[#333366] mb-4">Passport Information</h3>
@@ -365,7 +366,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
                 </div>
               </div>
             </div>
-  
+
             {/* Address Card */}
             <div className="bg-gray-50  text-gray-600 rounded-xl p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-[#333366] mb-4">Address Details</h3>
@@ -388,7 +389,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             </div>
           </div>
         </div>
-  
+
         {/* Risk Assessment Section */}
         <div className="text-gray-600 mt-12">
           <div className="flex items-center mb-6">
@@ -399,7 +400,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             </div>
             <h2 className="text-2xl font-bold text-[#333366]">Risk Assessment</h2>
           </div>
-  
+
           <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
             <div className="grid gap-6 md:grid-cols-2">
               {Object.entries(riskAssessmentData || {}).map(([key, value]) => (
@@ -408,18 +409,18 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
                     {key.split(/(?=[A-Z])/).join(' ')}
                   </p>
                   <p className="text-sm font-medium">
-                    {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : 
-                     typeof value === 'object' ? value?.label :
-                     value === 'true' ? 'Yes' : 
-                     value === 'false' ? 'No' : 
-                     value}
+                    {typeof value === 'boolean' ? (value ? 'Yes' : 'No') :
+                      typeof value === 'object' ? value?.label :
+                        value === 'true' ? 'Yes' :
+                          value === 'false' ? 'No' :
+                            value}
                   </p>
                 </div>
               ))}
             </div>
           </div>
         </div>
-  
+
         {/* Status Banner */}
         <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-4 flex items-center">
           <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
@@ -459,7 +460,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             placeholder="John"
             errors={errors.first_name}
           />
-           <Input
+          <Input
             label="Middle Name"
             type="text"
             id="middle_name"
@@ -504,7 +505,23 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             register={register}
             minDate={moment().format("YYYY-MM-DD")}
             validation={{
-              required: "DOB is required",
+              function(value) {
+                // Ensure the format is YYYY-MM-DD
+                const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+                if (!dateRegex.test(value)) {
+                  return false;
+                }
+                const dob = new Date(value);
+                const now = new Date();
+                // Ensure it's a past date and the user is at least 18 years old
+                const age = now.getFullYear() - dob.getFullYear();
+                const monthDifference = now.getMonth() - dob.getMonth();
+                const dayDifference = now.getDate() - dob.getDate();
+                const isAtLeast18 = age > 18 || (age === 18 && (monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0)));
+                return !isNaN(dob.getTime()) && dob < now && isAtLeast18;
+              },
+              message: (props) =>
+                `Invalid DOB: ${props.value}. Please enter a valid date in YYYY-MM-DD format, and ensure the user is at least 18 years old.`,
             }}
             placeholder=""
             errors={errors.dob}
@@ -656,7 +673,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
                 message:
                   "Input must be 5 or 6 alphanumeric characters (letters and numbers only, no special characters).",
               },
-              
+
             }}
             errors={errors.zipCode}
           />
@@ -695,7 +712,7 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
           register={register}
           placeholder=""
           validation={{
-            required:false,
+            required: false,
           }}
           errors={errors.Address}
         />
@@ -817,13 +834,13 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
 
         <ToastContainer />
 
-        <button
+        <Button
           type="submit"
-          className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 flex items-center gap-2"
+          className="focus:outline-none text-FloralWhite shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 flex items-center gap-2"
         >
           Submit
           {loading && <ButtonLoader />}
-        </button>
+        </Button>
       </form>
     </div>
   );
