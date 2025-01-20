@@ -56,7 +56,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   },
   middle_name: {
     type: String,
-    required: [true, "Middle name is required"],
+    required: [false, "Middle name is required"],
     trim: true,
     minlength: [2, "Middle name must be at least 2 characters long"],
   },
@@ -68,7 +68,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   },
   dob: {
     type: Date,
-    required: [true, "DOB is required"],
+    required: [false, "DOB is required"],
     trim: true,
     validate: {
       validator: (value: Date) => value > new Date(),

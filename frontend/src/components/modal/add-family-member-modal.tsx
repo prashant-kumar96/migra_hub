@@ -201,9 +201,9 @@ const AddFamilyMemberModal: React.FC<Props> = ({
 
   if (!isOpen) return null;
 
-  useEffect(() => {
-    console.log("@@@", member);
-  }, [member]);
+  // useEffect(() => {
+  //   console.log("@@@", member);
+  // }, [member]);
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 text-gray-600 bg-black bg-opacity-50 flex justify-center items-center z-50">

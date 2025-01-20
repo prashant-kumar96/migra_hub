@@ -23,7 +23,6 @@ export const getPricingData = async (req: any, res: any) => {
   };
 
 
-
   export const getApplicationCharges = async (req: any, res: any) => {
     try {
         const primaryApplicantId = req.params.userId; // Get from params
@@ -55,15 +54,18 @@ export const getPricingData = async (req: any, res: any) => {
 
         const applicationCharges = {
             primaryApplicant: {
-                name: "Visa Application",
+                name: primaryApplicant.name,
                 price: primaryApplicantPrice,
                 quantity: 1,
+                payment: primaryApplicant.payment
             },
-            familyMembers: familyMembers.map((member, index) => ({
-                name: "Family Member Application",
-                price: familyMemberPrice,
-                quantity: 1,
-            })),
+            familyMembers: familyMembers.map((member) => ({
+                name: member.name,
+               price: familyMemberPrice,
+                 quantity: 1,
+                 payment: member.payment,
+                  relationship: member.relationship
+             })),
         };
 
         res.status(200).json({
@@ -77,7 +79,6 @@ export const getPricingData = async (req: any, res: any) => {
         res.status(500).json({ message: "Internal server error", error: error });
     }
 };
-
 
 
 // const seedPricing = async () => {

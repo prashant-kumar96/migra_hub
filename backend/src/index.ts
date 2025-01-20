@@ -16,6 +16,7 @@ import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/User.js";
 import Stripe from "stripe";
+import ApplicationStatus from "./models/applicationStatus.js";
 
 dotenv.config();
 
@@ -77,20 +78,37 @@ app.post("/retrieve-session", async (req, res) => {
     console.log(session);
 
     if (session) {
-      const result = await User.findOneAndUpdate(
-        {
-          _id: userId,
-        },
+      const result = await User.findByIdAndUpdate(
+        userId,
         {
           $set: {
             stripePaymentSessionId: sessionId,
             isStripePaymentDone: true,
+             payment: true
           },
         },
         { new: true }
       );
 
-      console.log(result);
+        if(result && result.applicationId){
+           const applicationStatus = await ApplicationStatus.findOne({applicationId: result.applicationId});
+            if(applicationStatus){
+                await ApplicationStatus.updateOne(
+                    {_id: applicationStatus._id},
+                    {$set: { payment: "completed" }}
+                )
+            }
+
+
+            // Update payment status for all linked family members
+            const familyMembers = await User.find({ primaryApplicationId: result.applicationId, _id: { $ne: userId } });
+               for (const familyMember of familyMembers) {
+                   await User.updateOne({_id: familyMember._id}, { $set: { payment: true, isStripePaymentDone: true } })
+               }
+
+        }
+
+        console.log(result, 'result')
     }
 
     res.status(200).json(session);
