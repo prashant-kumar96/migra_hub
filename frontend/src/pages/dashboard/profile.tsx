@@ -15,7 +15,7 @@ import { useAuth } from "@/context/auth-context";
 import { getApplicationStatusDetails } from "@/api/applicationStatus";
 import AddFamilyMemberModal from "@/components/modal/add-family-member-modal";
 import { useAsync } from "react-use";
-import { getLinkedFamilyMembers } from "@/api/familyMember";
+import { deleteFamilyMember, getLinkedFamilyMembers } from "@/api/familyMember";
 import { useRouter } from "next/router";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -107,7 +107,8 @@ const ProfilePage = () => {
   }
 
   const handleModal = () => {
-    setMember((prev) => {});
+    const obj = {};
+    setMember((prev) => obj);
     setIsOpen(true);
   };
 
@@ -125,6 +126,18 @@ const ProfilePage = () => {
       setIsOpen(true);
     };
     console.log("member", member);
+
+    const handleDelete = async (id) => {
+      console.log("handleDelete", id);
+      const deleteResult = await deleteFamilyMember(id);
+      console.log("deleteResult", deleteResult);
+      if (deleteResult.status === 200) {
+        console.log("deleteResult", deleteResult);
+        fetchLinkedMembers();
+      } else {
+        alert("error");
+      }
+    };
 
     return (
       <div className="mb-8 overflow-x-auto">
@@ -202,11 +215,18 @@ const ProfilePage = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <FaEdit
                     className="cursor-pointer"
-                    onClick={() => handleEdit(member)}
+                    onClick={() => {
+                      handleEdit(member);
+                    }}
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <MdDelete className="cursor-pointer" />
+                  <MdDelete
+                    className="cursor-pointer"
+                    onClick={() => {
+                      handleDelete(member._id);
+                    }}
+                  />
                 </td>
               </tr>
             ))}

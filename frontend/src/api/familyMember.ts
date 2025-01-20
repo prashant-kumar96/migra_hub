@@ -16,6 +16,18 @@ export const addFamilyMember = async (familyMemberData: any) => {
       throw err; // Re-throw to handle in the caller
   }
 };
+export const deleteFamilyMember = async (userId) => {
+    try {
+        const result = await axiosInstance.delete(`/family-member/delete/?userId=${userId}`);
+        return result;
+    } catch (err) {
+        console.error("Error fetching linked family members:", err);
+        throw err; // Re-throw to handle in the caller
+    }
+  };
+  
+
+
 
 
   // Get family member application details

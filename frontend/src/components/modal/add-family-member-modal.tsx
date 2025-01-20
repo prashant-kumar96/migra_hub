@@ -14,7 +14,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: any) => Promise<void>;
-  member: {};
+  member: { name: string; email: string; relationship: string };
 }
 
 interface FormData {
@@ -40,7 +40,7 @@ const schema = yup.object().shape({
     .string()
     .email("Email must be valid")
     .required("Email is required"),
-  passport_number: yup.string().required("Passport number is required"),
+  passport_number: yup.string().required("Passport number is required").min(3),
   passport_expiry: yup
     .date()
     .required("Passport Expiry is required")
@@ -65,12 +65,14 @@ const schema = yup.object().shape({
     )
     .required("Relationship is required"),
 });
+
 const AddFamilyMemberModal: React.FC<Props> = ({
   isOpen,
   onClose,
   member,
   onSubmit,
 }) => {
+  console.log("member@@", member);
   const {
     register,
     watch,
@@ -87,7 +89,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] = useState<
     string | null
-  >(null);
+  >(member?.citizenshipCountry ? member?.citizenshipCountry : "");
   const [selectedDestinationCountry, setSelectedDestinationCountry] = useState<
     string | null
   >(null);
@@ -97,6 +99,21 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   const [selectedVisaApplicationCountry, setSelectedVisaApplicationCountry] =
     useState<string | null>(null);
   const [expiryDate, setExpiryDate] = useState("");
+
+  setValue("name", member?.name ? member?.name : "");
+  setValue("email", member?.email ? member?.email : "");
+  setValue("relationship", member?.relationship ? member?.relationship : "");
+  setValue(
+    "passport_number",
+    member?.passport_number ? member?.passport_number : ""
+  );
+  // setValue(
+  //   "citizenshipCountry",
+  //   member?.citizenshipCountry ? member?.citizenshipCountry : ""
+  // );
+  // setSelectedCitizenshipCountry(
+  //   member?.citizenshipCountry ? member?.citizenshipCountry : ""
+  // );
 
   const citizenshipCountries = countryList()
     .getData()
@@ -164,6 +181,9 @@ const AddFamilyMemberModal: React.FC<Props> = ({
         },
       };
 
+      // console.log("data", data);
+      // return;
+
       const response = await addFamilyMember(data);
 
       if (response) {
@@ -174,6 +194,9 @@ const AddFamilyMemberModal: React.FC<Props> = ({
 
       console.log("data::", response);
     } catch (err) {
+      if (err.response.status === 400) {
+        alert(err.response.data?.message);
+      }
       console.log("family member submission error:", err);
     } finally {
       setIsSubmitting(false);
@@ -201,9 +224,9 @@ const AddFamilyMemberModal: React.FC<Props> = ({
 
   if (!isOpen) return null;
 
-  useEffect(() => {
-    console.log("@@@", member);
-  }, [member]);
+  // useEffect(() => {
+  //   console.log("@@@", member);
+  // }, [member]);
 
   return ReactDOM.createPortal(
     <div className="fixed inset-0 text-gray-600 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -331,16 +354,17 @@ const AddFamilyMemberModal: React.FC<Props> = ({
             {/* <p className="text-sm font-medium"> </p> */}
             <input
               type="date"
+              min={moment().add(1, "days").format("YYYY-MM- DD")}
               className={`w-full px-3 py-3 border rounded ${
                 errors.passport_number ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:border-Indigo`}
               {...register("passport_expiry")}
               value={moment(watch("passport_expiry")).format("YYYY-MM-DD")}
               onChange={(e) => {
-                setValue(
-                  "passport_expiry",
-                  moment(e.target.value).format("YYYY/MM/DD")
-                );
+                // setValue(
+                //   "passport_expiry",
+                //   moment(e.target.value).format("YYYY/MM/DD")
+                // );
               }}
             />
           </div>

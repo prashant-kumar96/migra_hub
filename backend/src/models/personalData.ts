@@ -1,6 +1,5 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
 
-
 // Define an interface for the profile data
 interface IPersonalData extends Document {
   marital_status: "Single" | "Married" | "Divorced" | "Widowed";
@@ -56,7 +55,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   },
   middle_name: {
     type: String,
-    required: [true, "Middle name is required"],
+    // required: [true, "Middle name is required"],
     trim: true,
     minlength: [2, "Middle name must be at least 2 characters long"],
   },
@@ -68,9 +67,9 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   },
   dob: {
     type: Date,
-    required: [true, "DOB is required"],
+    // required: [true, "DOB is required"],
     trim: true,
-     validate: {
+    validate: {
       validator: (value: Date) => value > new Date(),
       message: "Passport expiry date must be in the future",
     },
