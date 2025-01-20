@@ -73,9 +73,10 @@ function Header2() {
               href={item.href}
               onClick={(e) => {
                 if (item.externalUrl) {
-                  e.preventDefault(); // Prevent navigation to href
-                  window.history.pushState(null, "", item.href); // Update the browser address bar
-                  // Open the external URL in a new tab or iframe logic here
+                  e.preventDefault(); 
+                  console.log("e: ",e)
+                  window.history.pushState(null, "", item.href); 
+                
                   const iframe = document.createElement("iframe");
                   iframe.src = item.externalUrl; // Load external content in iframe
                   iframe.style.width = "100%";

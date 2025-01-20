@@ -463,6 +463,25 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             placeholder="John"
             errors={errors.first_name}
           />
+           <Input
+            label="Middle Name"
+            type="text"
+            id="middle_name"
+            register={register}
+            validation={{
+              required: "Middle name is required",
+              minLength: {
+                value: 2,
+                message: "Middle name must be at least 2 characters",
+              },
+              maxLength: {
+                value: 20,
+                message: "Middle name must be at most 20 characters",
+              },
+            }}
+            placeholder="Singh"
+            errors={errors.middle_name}
+          />
           <Input
             label="Last Name"
             type="text"
@@ -481,6 +500,18 @@ const PersonalInfo = ({userId,userEmail,userName,visaDataId}) => {
             }}
             placeholder="Doe"
             errors={errors.last_name}
+          />
+          <Input
+            label="DOB"
+            type="date"
+            id="dob"
+            register={register}
+            minDate={moment().format("YYYY-MM-DD")}
+            validation={{
+              required: "DOB is required",
+            }}
+            placeholder=""
+            errors={errors.dob}
           />
           {/* <Input
           label="First Language"
