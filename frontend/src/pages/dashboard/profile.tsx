@@ -132,6 +132,7 @@ const ProfilePage = () => {
       const deleteResult = await deleteFamilyMember(id);
       console.log("deleteResult", deleteResult);
       if (deleteResult.status === 200) {
+        alert(deleteResult?.data?.message);
         console.log("deleteResult", deleteResult);
         fetchLinkedMembers();
       } else {

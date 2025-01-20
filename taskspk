@@ -1,63 +1,7 @@
-work on fetching the personal data if it exists already
+Where will you apply for your visa should be required we should select a country.
 
-display the uploaded documents to the uploader user
+Sign in or Register to assess your travel visa denial risk and discover how we can reduce it.?
 
-show number of case manager and number of users in admin dashboard page
+the font should be small so that it fits the size of the screen vertically without scrollbars.
 
-Scroller should come on modal but not on right side of page
-
-work on stepper
-
-work on document upload api
-
-work on creatin the payment page with stripe payment gateway
-
-work on the authentication of the migrahub login
-
-work on adding validation on all the personal information properties
-
-work on adding a stripe payment to the payment page
-
-work on left menu bar responsiveness
-
-work on facebook login
-
-work on displaying table properly in the dashboard
-
-work on saving steps data in the database when register user by google
-
-when logging in using google, save the details in the mongodb database.
-
-also work on authentication of the token and logout on token expiry.
-
-terms and conditions page
-
-Completed: date - 06/11/2024 (Prashant)
-1 - set error like wrong credentials on login page
-2 - work on language dropdown
-3 - work on saving steps data in the database with registered user by using email password
-4- work on running backend in dev mode
-5- work on displaying collected data in the dashboard;
-
-Completed date - 07/11/2024 (Prashant)
-1- Work on displaying countries properly with full country name in the dashboard
-2- work on making address inside the personal Info page
-
-Completed on date - 08/11/2024 (Prashant)
-1-
-
-list of questions to ask from jimmy sir
-1- how much do we need to pay for the stripe payment
-2-
-
-Date 11/11/2024 (Prashant)
-1 - work on getting the data from the index page and steps modal and display it in the dashboard page
-
-Date 12/11/2024 (Prashant)
-1- worked on meeting and gathering info for further progress
-
-Date 13/11/2024 (Prashant)
-
-1- worked on saving the personal Information
-2- work on displaying the visa data information in the list view format
-3- work on saving the personal Info data to the database by making personal Info data model
+pre select citizeship country in the edit family member form.

@@ -72,7 +72,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   member,
   onSubmit,
 }) => {
-  console.log("member@@", member);
+  console.log("member@@", member?.citizenshipCountry);
   const {
     register,
     watch,
@@ -87,9 +87,10 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   const countries = useMemo(() => countryList().getData(), []);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] = useState<
-    string | null
-  >(member?.citizenshipCountry ? member?.citizenshipCountry : "");
+  const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] =
+    useState<{} | null>(
+      member?.citizenshipCountry ? member?.citizenshipCountry : ""
+    );
   const [selectedDestinationCountry, setSelectedDestinationCountry] = useState<
     string | null
   >(null);
@@ -99,14 +100,27 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   const [selectedVisaApplicationCountry, setSelectedVisaApplicationCountry] =
     useState<string | null>(null);
   const [expiryDate, setExpiryDate] = useState("");
+  console.log("membervisaData", member?.visaData?.deniedVisaToAnyCountry);
+  if (member && Object?.keys(member)?.length > 0) {
+    setValue("name", member?.name ? member?.name : "");
+    setValue("email", member?.email ? member?.email : "");
+    setValue("relationship", member?.relationship ? member?.relationship : "");
+    setValue(
+      "passport_number",
+      member?.passport_number ? member?.passport_number : ""
+    );
+    setValue(
+      "deniedVisaToAnyCountry",
+      member?.visaData?.deniedVisaToAnyCountry === true ? "true" : "false"
+    );
 
-  setValue("name", member?.name ? member?.name : "");
-  setValue("email", member?.email ? member?.email : "");
-  setValue("relationship", member?.relationship ? member?.relationship : "");
-  setValue(
-    "passport_number",
-    member?.passport_number ? member?.passport_number : ""
-  );
+    setValue(
+      "passport_expiry",
+      member?.passport_expiry
+        ? moment(member?.passport_expiry).format("YYYY-MM-DD")
+        : ""
+    );
+  }
   // setValue(
   //   "citizenshipCountry",
   //   member?.citizenshipCountry ? member?.citizenshipCountry : ""
@@ -139,6 +153,8 @@ const AddFamilyMemberModal: React.FC<Props> = ({
 
   const handleFormSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
+    // console.log("handleFormSubmit formData", formData);
+    // return;
     try {
       const {
         name,
@@ -181,11 +197,11 @@ const AddFamilyMemberModal: React.FC<Props> = ({
         },
       };
 
-      // console.log("data", data);
+      console.log("data", data);
       // return;
 
       const response = await addFamilyMember(data);
-
+      console.log("response", response);
       if (response) {
         reset();
         onClose();
@@ -359,13 +375,13 @@ const AddFamilyMemberModal: React.FC<Props> = ({
                 errors.passport_number ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:border-Indigo`}
               {...register("passport_expiry")}
-              value={moment(watch("passport_expiry")).format("YYYY-MM-DD")}
-              onChange={(e) => {
-                // setValue(
-                //   "passport_expiry",
-                //   moment(e.target.value).format("YYYY/MM/DD")
-                // );
-              }}
+              // value={moment(watch("passport_expiry")).format("YYYY-MM-DD")}
+              // onChange={(e) => {
+              // setValue(
+              //   "passport_expiry",
+              //   moment(e.target.value).format("YYYY/MM/DD")
+              // );
+              // }}
             />
           </div>
 
@@ -402,14 +418,16 @@ const AddFamilyMemberModal: React.FC<Props> = ({
               Citizenship Country
             </label>
             <ReactFlagsSelect
-              selected={selectedCitizenshipCountry?.value}
+              selected={selectedCitizenshipCountry}
               onSelect={(code) => {
                 const selectedCountry = countries.find(
                   (country) => country.value === code
                 );
+                console.log("selectedCountry", selectedCountry);
                 setSelectedCitizenshipCountry(selectedCountry);
                 setValue("citizenshipCountry", selectedCountry);
               }}
+              showSelectedLabel={true}
               countries={citizenshipCountryCodes}
               searchable
               placeholder="Select Citizenship Country"
@@ -438,7 +456,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
                       : "border-gray-300"
                   } focus:outline-none focus:border-Indigo`}
                   {...register("deniedVisaToAnyCountry")}
-                  value={true}
+                  value="true"
                 />
                 <span className="ml-2 text-gray-700">Yes</span>
               </label>
@@ -451,7 +469,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
                       : "border-gray-300"
                   } focus:outline-none focus:border-Indigo`}
                   {...register("deniedVisaToAnyCountry")}
-                  value={false}
+                  value="false"
                 />
                 <span className="ml-2 text-gray-700">No</span>
               </label>

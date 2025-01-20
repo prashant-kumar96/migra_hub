@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
 // In your user controller file
 import { v4 as uuidv4 } from "uuid";
+import { generateApplicationId } from "./authController.js";
 
 // Helper function to generate a random 10-digit number as a string
 function generateRandomPhoneNumber(): string {
@@ -13,6 +14,8 @@ function generateRandomPhoneNumber(): string {
 export async function addFamilyMember(req: any, res: any) {
   try {
     const { name, email, relationship, data, profileData } = req.body;
+
+    console.log("req.body", req.body);
     const primaryApplicantId = req.user.id;
     console.log("add family member::", req.body, req.user);
     console.log("Primary Applicant ID:", primaryApplicantId);
@@ -54,7 +57,8 @@ export async function addFamilyMember(req: any, res: any) {
     const resultVisadata = await visadata.save();
     console.log("Visa Data Saved:", resultVisadata);
 
-    const applicationId = uuidv4();
+    // const applicationId = uuidv4();
+    const applicationId = generateApplicationId();
 
     // Create the family member user
     const familyMember = new User({
@@ -195,7 +199,7 @@ export async function getPrimaryApplicantLinkedFamilyMembers(
           applicationId: member.primaryApplicationId,
         });
         const personalData = await PersonalData.findOne({ userId: member._id });
-
+        console.log("personalData", personalData);
         return {
           _id: member._id,
           applicationId: member.applicationId,
@@ -205,6 +209,7 @@ export async function getPrimaryApplicantLinkedFamilyMembers(
           visaData: member.visaDataId,
           applicationStatus: applicationStatus,
           passport_number: personalData?.passport_number,
+          passport_expiry: personalData?.passport_expiry,
           citizenshipCountry: personalData?.citizenshipCountry,
         };
       })

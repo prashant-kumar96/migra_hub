@@ -25,7 +25,7 @@ const Input: React.FC<props> = ({
     <div className="mb-4">
       <label
         htmlFor={id}
-        className="block mb-2 text-base font-medium text-gray-700"
+        className="block mb-2 text-base font-sans font-medium text-gray-700"
       >
         {label}
       </label>
@@ -33,15 +33,14 @@ const Input: React.FC<props> = ({
         type={type}
         id={id}
         {...register(id, validation)}
-        className={`w-full px-3 py-2 border shadow-lg border-gray-200 rounded-lg text-gray-800 placeholder:italic placeholder:text-sm  ${
-          toUpperCase ? "" : ""
-        }`}
+        className={`w-full px-3 py-2 border shadow-lg border-gray-200 rounded-lg text-gray-800 placeholder:italic placeholder:text-sm  ${toUpperCase ? "" : ""
+          }`}
         placeholder={placeholder}
         min={minDate}
         autocomplete="off"
       />
       {errors && (
-        <p className="text-red-500 text-sm font-sans tracking-wide font-normal mt-1">{errors.message}</p>
+        <p className="text-red-500 text-sm font-sans tracking-wide font-normal mt-1">*{errors.message}</p>
       )}
     </div>
   );

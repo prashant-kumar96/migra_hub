@@ -54,8 +54,8 @@ const userSchema: Schema<IUser> = new Schema({
   stripePaymentSessionId: { type: String },
   isStripePaymentDone: { type: Boolean },
   assignedCaseManagerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      
-  applicationId: { type: String, unique: true, sparse:true}, // Application ID field - unique is removed
+    
+  applicationId: { type: String, sparse: true}, // Application ID field - unique is removed
 
   primaryApplicationId: { type: String }, // Primary Application ID field
   isPrimaryApplicant: { type: Boolean, default: false },
@@ -64,6 +64,61 @@ const userSchema: Schema<IUser> = new Schema({
   relationship: { type: String, enum: ["parent", "sibling", "spouse", "children"] }, // Relationship field
 });
 
-const User = mongoose.model<IUser>("User", userSchema);
+//@ts-ignore
+userSchema.pre('remove', async function(next) {
+    try {
+        const appId = this.applicationId;
+        
+        if (appId) {
+            // Find all users with this applicationId first
+            const relatedUsers = await mongoose.model('User').find({ primaryApplicationId: appId });
+            
+            // Delete ApplicationStatus for this applicationId
+            await mongoose.model('ApplicationStatus').deleteOne({ applicationId: appId });
+  
+            // Delete all related data for each user with the same applicationId
+            for (const user of relatedUsers) {
+                // Delete VisaData
+                if (user.visaDataId) {
+                    await mongoose.model('VisaData').deleteOne({ _id: user.visaDataId });
+                }
+                
+                // Delete UserDocument (note the model name is "Document" but collection name might be different)
+                await mongoose.model('Document').deleteMany({ userId: user._id });
+                
+                // Delete PersonalData
+                await mongoose.model('PersonalData').deleteOne({ userId: user._id });
+                
+                // Delete the user if it's not the current user being deleted
+                if (user._id.toString() !== this._id.toString()) {
+                    await mongoose.model('User').deleteOne({ _id: user._id });
+                }
+            }
+        } else {
+            // If no applicationId, just delete the current user's related data
+            if (this.visaDataId) {
+                await mongoose.model('VisaData').deleteOne({ _id: this.visaDataId });
+            }
+            await mongoose.model('Document').deleteMany({ userId: this._id });
+            await mongoose.model('PersonalData').deleteOne({ userId: this._id });
+        }
+        
+        // Clean up any references in other users
+         await mongoose.model('User').updateMany(
+            { primaryApplicationId: this.applicationId },
+            { $unset: { primaryApplicationId: 1 } }
+        );
 
+        next();
+    } catch (error) {
+        next(error as Error);
+    }
+});
+
+// Add an index for faster queries
+// userSchema.index({ email: 1 });
+// userSchema.index({ applicationId: 1 }, { sparse: true });
+userSchema.index({ googleId: 1 }, { sparse: true });
+
+const User = mongoose.model<IUser>("User", userSchema);
 export default User;
