@@ -607,7 +607,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           <div className="text-gray-900">
             <label
               htmlFor="current_country"
-              className="block mb-2 text-base font-medium text-gray-700"
+              className="block mb-2 text-base font-sans font-medium text-gray-700"
             >
               Current Country
             </label>
@@ -625,18 +625,18 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           <div className="text-gray-900">
             <label
               htmlFor="state"
-              className="block mb-2 text-base font-medium text-gray-700"
+              className="block mb-2 text-base font-medium font-sans  text-gray-700"
             >
               Province/State
             </label>
             <StateSelect
               countryid={countryid}
-              className="block mb-2 text-base font-medium text-gray-700"
+              className="block mb-2 text-base font-sans font-medium text-gray-700 placeholder:italic"
               onChange={handleStateSelectChange}
               placeHolder="Select State"
             />
             {error.stateError && (
-              <p className="text-red-500 text-xs font-bold mt-1">
+              <p className="text-red-500 text-sm font-normal mt-1">
                 {error.stateError}
               </p>
             )}
@@ -644,7 +644,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           <div className="text-gray-900">
             <label
               htmlFor="city"
-              className="block mb-2 text-base font-medium text-gray-700"
+              className="block mb-2 text-base font-sans  font-medium text-gray-700"
             >
               City/Town
             </label>
@@ -652,6 +652,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
               countryid={countryid}
               stateid={stateid}
               onChange={handleCitySelectChange}
+              className="font-sans placeholder:italic"
               placeHolder="Select City"
             />
             {error.cityError && (
@@ -719,7 +720,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
         <div className="flex space-between w-full">
           <div className="mb-6 w-1/2">
-            <label className="block mb-2 text-base font-medium text-gray-700">
+            <label className="block mb-2 text-base font-sans font-medium text-gray-700">
               Marital Status
             </label>
 
@@ -735,7 +736,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
               />
               <label
                 htmlFor="single"
-                className="ms-2 text-sm font-medium text-gray-500"
+                className="ms-2 text-base tracking-wide font-medium text-gray-500"
               >
                 Single
               </label>
@@ -753,21 +754,21 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
               />
               <label
                 htmlFor="married"
-                className="ms-2 text-sm font-medium text-gray-500"
+                className="ms-2 text-base tracking-wide font-medium text-gray-500"
               >
                 Married
               </label>
             </div>
 
             {errors.marital_status && (
-              <p className="text-red-500 text-xs font-bold mt-1">
-                {errors.marital_status.message}
+              <p className="text-red-500 text-sm font-sans tracking-wide font-normal mt-1">
+                *{errors.marital_status.message}
               </p>
             )}
           </div>
 
           <div className="mb-6 w-1/2">
-            <label className="block mb-2 text-base font-medium text-gray-700">
+            <label className="block mb-2 text-base font-sans font-medium text-gray-700">
               Gender
             </label>
             <div className="flex items-center mb-4">
@@ -782,7 +783,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
               />
               <label
                 htmlFor="male"
-                className="ms-2 text-sm font-medium text-gray-500"
+                className="ms-2 text-base tracking-wide font-medium text-gray-500"
               >
                 Male
               </label>
@@ -799,14 +800,14 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
               />
               <label
                 htmlFor="female"
-                className="ms-2 text-sm font-medium text-gray-500"
+                className="ms-2 text-base tracking-wide font-medium text-gray-500"
               >
                 Female
               </label>
             </div>
             {errors.gender && (
-              <p className="text-red-500 text-xs font-bold mt-1">
-                {errors.gender.message}
+              <p className="text-red-500 text-sm font-sans tracking-wide font-normal mt-1">
+                *{errors.gender.message}
               </p>
             )}
           </div>
