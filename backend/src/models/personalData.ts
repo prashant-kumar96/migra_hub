@@ -7,6 +7,7 @@ interface IPersonalData extends Document {
   gender: "Male" | "Female" | "Other";
   terms: boolean;
   first_name: string;
+  middle_name: string;
   last_name: string;
   passport_number: string;
   passport_expiry: Date;
@@ -51,6 +52,12 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
     required: [false, "First name is required"],
     trim: true,
     minlength: [2, "First name must be at least 2 characters long"],
+  },
+  middle_name: {
+    type: String,
+    required: [true, "Middle name is required"],
+    trim: true,
+    minlength: [2, "Middle name must be at least 2 characters long"],
   },
   last_name: {
     type: String,

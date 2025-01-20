@@ -25,6 +25,12 @@ const PersonalDataSchema = new Schema({
         trim: true,
         minlength: [2, "First name must be at least 2 characters long"],
     },
+    middle_name: {
+        type: String,
+        required: [true, "Middle name is required"],
+        trim: true,
+        minlength: [2, "Middle name must be at least 2 characters long"],
+    },
     last_name: {
         type: String,
         required: [true, "Last name is required"],
