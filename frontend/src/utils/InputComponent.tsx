@@ -9,6 +9,7 @@ interface props {
   id: string;
   toUpperCase?: boolean;
   minDate?: any;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
 }
 const Input: React.FC<props> = ({
   label,
@@ -20,6 +21,7 @@ const Input: React.FC<props> = ({
   id,
   toUpperCase,
   minDate,
+  onChange,
 }) => {
   return (
     <div className="mb-4">
@@ -38,6 +40,7 @@ const Input: React.FC<props> = ({
         placeholder={placeholder}
         min={minDate}
         autocomplete="off"
+        onChange={onChange}
       />
       {errors && (
         <p className="text-red-500 text-sm font-sans tracking-wide font-normal mt-1">*{errors.message}</p>

@@ -87,6 +87,8 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   member,
   onSubmit,
   isEditMode,
+  setSelectedCitizenshipCountry,
+  selectedCitizenshipCountry,
 }) => {
   const {
     register,
@@ -100,10 +102,10 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   });
 
   const countries = useMemo(() => countryList().getData(), []);
-  console.log("member@@@@", member);
-  console.log("member?.citizenshipCountry ", member?.citizenshipCountry);
+  // console.log("member@@@@", member);
+  // console.log("member?.citizenshipCountry ", member?.citizenshipCountry);
   const [isSubmitting, setIsSubmitting] = useState(false);
- 
+
   // setSelectedCitizenshipCountry(member?.citizenshipCountry);
   // console.log("selectedCitizenshipCountry", selectedCitizenshipCountry);
   const [selectedDestinationCountry, setSelectedDestinationCountry] = useState<
@@ -184,11 +186,11 @@ const AddFamilyMemberModal: React.FC<Props> = ({
         },
       };
 
-      console.log("data", data);
+      // console.log("data", data);
       // return;
       if (isEditMode) {
         const response = await editFamilyMember(data, member._id);
-        console.log("response", response);
+        // console.log("response", response);
         if (response) {
           reset();
           onClose();
@@ -196,20 +198,20 @@ const AddFamilyMemberModal: React.FC<Props> = ({
         }
       } else {
         const response = await addFamilyMember(data);
-        console.log("response", response);
+        // console.log("response", response);
         if (response) {
           reset();
           onClose();
           onSubmit();
         }
 
-        console.log("data::", response);
+        // console.log("data::", response);
       }
     } catch (err) {
       if (err.response.status === 400) {
         alert(err.response.data?.message);
       }
-      console.log("family member submission error:", err);
+      // console.log("family member submission error:", err);
     } finally {
       setIsSubmitting(false);
     }

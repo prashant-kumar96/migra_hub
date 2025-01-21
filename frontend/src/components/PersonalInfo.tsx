@@ -23,6 +23,9 @@ import ButtonLoader from "./loaders/buttonLoader";
 import { useAuth } from "@/context/auth-context";
 import { getSingleVisaData } from "@/api/visaData";
 import { Button } from "@headlessui/react";
+import { FaEdit } from "react-icons/fa";
+import EditPersonalInfo from "./modal/edit-personal-info";
+import CreateButton from "./ui/buttons/CreateButton";
 
 const options = [
   { code: "en", label: "English" },
@@ -51,7 +54,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   const [personalData, setPersonalData] = useState();
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
-  console.log(";; personal visa data", user);
+  // console.log(";; personal visa data", user);
 
   // const userId = user?.user?._id;
 
@@ -76,11 +79,11 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     fetchVisaData();
   }, [user?.user?.visaDataId]);
 
-  console.log(";; risk assessment data", riskAssessmentData);
+  // console.log(";; risk assessment data", riskAssessmentData);
 
-  console.log("me data", sharedMedata);
+  // console.log("me data", sharedMedata);
 
-  console.log("sharedMedata", sharedMedata);
+  // console.log("sharedMedata", sharedMedata);
   const [citizenshipCountryCodes, setCitizenshipCountryCodes] =
     useState(countriesCodes);
   const [citizenshipCountry, setCitizenShipCountry] = useState<any>("");
@@ -145,7 +148,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   }, [riskAssessmentData, userEmail, setValue, userName]);
 
   const handleCountrySelectChange = (e: any) => {
-    console.log("countrySelect", e);
+    // console.log("countrySelect", e);
     setCountryid(e.id);
     setAddressData({ ...addressData, country: e.name });
     setError((prev) => ({
@@ -155,7 +158,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   };
 
   const handleStateSelectChange = (e: any) => {
-    console.log("countrySelect", e);
+    // console.log("countrySelect", e);
     setstateid(e.id);
     setAddressData({ ...addressData, state: e.name });
     setError((prev) => ({
@@ -165,7 +168,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   };
 
   const handleCitySelectChange = (e: any) => {
-    console.log("countrySelect", e);
+    // console.log("countrySelect", e);
     setAddressData({ ...addressData, city: e.name });
     setError((prev) => ({
       ...prev,
@@ -244,12 +247,12 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           userId: userId,
         };
 
-        console.log("newData", newdata);
+        // console.log("newData", newdata);
 
         setLoading(true);
 
         const result = await savePersonalData(newdata);
-        console.log("result loginUser@@@@@@@", result);
+        // console.log("result loginUser@@@@@@@", result);
         if (result?.status === 200) {
           toast(result?.data?.message);
           // Navigate to dashboard
@@ -258,7 +261,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           // router.push("/dashboard/payment");
           setLoading(false);
         } else {
-          console.log("result@@@", result);
+          // console.log("result@@@", result);
           setLoading(false);
         }
       }
@@ -294,14 +297,14 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
   const getPersonalInfofunction = async () => {
     const result = await getPersonalData(userId);
-    console.log(";; getPersonalData", result);
+    // console.log(";; getPersonalData", result);
     if (result?.status) {
       //show the info without form format if the status is true
       setPersonalData(result?.data);
       setPersonalDataStatus(result?.status);
       setLoading(false);
     } else {
-      console.log("result@@@", result);
+      // console.log("result@@@", result);
       setLoading(false);
     }
   };
@@ -341,8 +344,13 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     return true;
   };
 
-  console.log("moment", moment().format("YYYY-MM-DD"));
-  console.log(";; personal data", personalDataStatus);
+  // Edit personal information
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+  // console.log("moment", moment().format("YYYY-MM-DD"));
+  // console.log(";; personal data", personalDataStatus);
   if (personalDataStatus) {
     return (
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8">
@@ -358,7 +366,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           </div>
           <button
             onClick={() => router.push("/dashboard/payment")}
-            className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors"
+            className="px-4 py-2 bg-[#333366] text-FloralWhite rounded-lg hover:bg-[#2C415A] transition-colors"
           >
             Proceed to Pay
           </button>
@@ -366,41 +374,62 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
         {/* Personal Information Section */}
         <div className="mb-12 text-gray-600">
-          <div className="flex items-center mb-6">
-            <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-start">
+              <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
+                <svg
+                  className="w-4 h-4 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-[#333366]">
+                Personal Information
+              </h2>
             </div>
-            <h2 className="text-2xl font-bold text-[#333366]">
-              Personal Information
-            </h2>
+            <FaEdit
+              onClick={toggleModal}
+              className=" flex justify-end text-2xl font-bold text-[#333366] hover:text-blue-200 cursor-pointer"
+            />
           </div>
-
+          <EditPersonalInfo
+            isOpen={isModalOpen}
+            onClose={toggleModal}
+            modalTitle="Edit Personal Information"
+          >
+            <p>Welcome to the personal information modal!</p>
+            <CreateButton className=" mt-4" onClick={toggleModal}>
+              Close
+            </CreateButton>
+          </EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
             {/* Basic Info Card */}
             <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
               <div className="grid gap-6 md:grid-cols-3">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Full Name</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">
+                    Full Name
+                  </p>
                   <p className="text-sm font-medium">{`${personalData?.first_name} ${personalData?.last_name}`}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">
+                    Email
+                  </p>
                   <p className="text-sm font-medium">{personalData?.email}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Phone</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">
+                    Phone
+                  </p>
                   <p className="text-sm font-medium">
                     {personalData?.phoneNumber}
                   </p>
@@ -410,12 +439,12 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
             {/* Passport Details Card */}
             <div className="bg-gray-50 rounded-xl text-gray-600 p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#333366] mb-4">
-                Passport Information
+              <h3 className="text-lg font-bold text-[#333366] mb-4">
+                Passport Information:
               </h3>
               <div className="grid gap-6 md:grid-cols-3">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-base font-semibold font-sans text-Indigo ">
                     Passport Number
                   </p>
                   <p className="text-sm font-medium">
@@ -423,7 +452,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-base font-semibold font-sans text-Indigo ">
                     Citizenship
                   </p>
                   <p className="text-sm font-medium">
@@ -431,7 +460,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-base font-semibold font-sans text-Indigo ">
                     Expiry Date
                   </p>
                   <p className="text-sm font-medium">
@@ -443,12 +472,12 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
             {/* Address Card */}
             <div className="bg-gray-50  text-gray-600 rounded-xl p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#333366] mb-4">
-                Address Details
+              <h3 className="text-lg font-bold text-[#333366] mb-4">
+                Address Details:
               </h3>
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-base font-semibold font-sans text-Indigo ">
                     Street Address
                   </p>
                   <p className="text-sm font-medium">
@@ -457,13 +486,17 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Country</p>
+                    <p className="text-base font-semibold font-sans text-Indigo ">
+                      Country
+                    </p>
                     <p className="text-sm font-medium">
                       {personalData?.addressData?.country}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">State</p>
+                    <p className="text-base font-semibold font-sans text-Indigo ">
+                      State
+                    </p>
                     <p className="text-sm font-medium">
                       {personalData?.addressData?.state}
                     </p>
@@ -501,7 +534,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             <div className="grid gap-6 md:grid-cols-2">
               {Object.entries(riskAssessmentData || {}).map(([key, value]) => (
                 <div key={key} className="border-l-4 border-[#333366] pl-4">
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-base font-semibold font-sans text-Indigo ">
                     {key.split(/(?=[A-Z])/).join(" ")}
                   </p>
                   <p className="text-sm font-medium">

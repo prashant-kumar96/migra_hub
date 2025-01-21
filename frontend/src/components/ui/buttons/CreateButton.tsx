@@ -19,8 +19,8 @@ const CreateButton = ({ text, onClick, disabled, loading, className }) => {
       className={`
         relative flex items-center justify-center w-full px-6 py-3
         text-sm font-medium text-white
-        bg-indigo-600 hover:bg-indigo-700
-        rounded-md shadow-sm
+      shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] hover:bg-indigo-700
+        rounded-lg
         transition-all duration-200 ease-in-out
         disabled:opacity-70 disabled:cursor-not-allowed
         ${className}

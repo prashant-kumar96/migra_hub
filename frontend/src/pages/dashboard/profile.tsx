@@ -305,6 +305,7 @@ const ProfilePage = () => {
           onClose={onClose}
           isEditMode={isEditMode}
           selectedCitizenshipCountry={selectedCitizenshipCountry}
+          setSelectedCitizenshipCountry={setSelectedCitizenshipCountry}
         />
 
         <PersonalInfo
