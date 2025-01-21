@@ -14,70 +14,50 @@ import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
 import moment from "moment";
 import { getPersonalData, savePersonalData } from "@/api/personalData";
+import { ToastContainer, toast } from "react-toastify";
 
-// interface User extends Document {
-//     marital_status: "Single" | "Married" | "Divorced" | "Widowed";
-//     gender: "Male" | "Female" | "Other";
-//     terms: boolean;
-//     first_name: string;
-//     middle_name?: string;
-//     last_name: string;
-//     dob: Date;
-//     passport_number: string;
-//     passport_expiry: Date;
-//     zipCode: string;
-//     email: string;
-//     phoneNumber: string;
-//     addressLine: string;
-//     addressData: {
-//         city: string;
-//         country: string;
-//         state: string;
-//     };
-//     citizenshipCountry: {
-//         value: string;
-//         label: string;
-//     };
-//     // userId: ObjectId;
-// }
+const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, modalTitle }) => {
+    const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm({
+        defaultValues: {
+            first_name: "",
+            middle_name: "",
+            last_name: "",
+            email: "",
+            dob: "",
+            phoneNumber: "",
+            addressLine: "",
+            passport_number: "",
+            gender: "",
+            zipCode: "",
+            firstLanguageError: "",
+            passport_expiry: "",
+            marital_status: "",
+        },
+    });
+    // useEffect(() => {
+    //     if (personalData) {
+    //         setFormData(personalData); // Populate form data when personalData changes
+    //     }
+    // }, [personalData]);
 
-interface ModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    modalTitle: string;
-    children: React.ReactNode;
-    onSave: (formData: any) => void;
-    // user: User;
-    userId: string;
-}
-
-const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClose, modalTitle, children }) => {
-    // Manage body scroll state
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData({ ...formData, [name]: value });
+    // };
 
 
-    if (!isOpen) return null; // Don't render if modal is not open
-    const { register, handleSubmit: handleFormSubmit, setValue, watch, formState: { errors } }: any = useForm();
-    const [formData, setFormData] = useState(userId);
-    const [personalDataStatus, setPersonalDataStatus] = useState<any>(null);
-    const [personalData, setPersonalData] = useState()
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        // Sync form data with user info
-        setFormData(userId);
-    }, [userId]);
-
-    const handleChange = (e) => {
-        console.log(e); // Log to debug
-        if (e && e.preventDefault) e.preventDefault(); // Safeguard
-        const { id, value } = e.target;
-        setFormData({ ...formData, [id]: value });
-      };
-      
-
-    const onFormSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSave(formData);
+    const onSubmit = async (formData) => {
+        try {
+            const result = await savePersonalData(formData);
+            if (result?.status === 200) {
+                toast.success("Information updated successfully!");
+                onClose();
+            } else {
+                toast.error("Failed to update information");
+            }
+        } catch (error) {
+            toast.error("An error occurred");
+        }
     };
 
     const options = [
@@ -87,58 +67,39 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
         { code: "hi", label: "Hindi" },
         { code: "zh", label: "Chinese" },
     ];
-
     useEffect(() => {
-        const getPersonalInfoFunction = async () => {
-            if (!userId) {
-                console.error("userId is undefined");
-                return; // Exit early if userId is not defined
-            }
-    
-            const result = await getPersonalData(userId);
-            console.log(";; getPersonalData", result);
-    
-            if (result?.status) {
-                setPersonalData(result?.data);
-                setPersonalDataStatus(result?.status);
-                setLoading(false);
-    
-                // Pre-fill the form using the fetched data
-                if (result?.data) {
-                    Object.keys(result.data).forEach((key) => {
-                        setValue(key, result.data[key], { shouldValidate: true });
-                    });
-                }
-            } else {
-                console.log("result@@@", result);
-                setLoading(false);
-            }
-        };
-    
-        getPersonalInfoFunction();
-    }, [userId, setValue]);
-    
-      
-
-    useEffect(() => {
-        if (isOpen) {
-            document.body.classList.add("no-scroll");
-        } else {
-            document.body.classList.remove("no-scroll");
+        if (personalData) {
+            reset({
+                first_name: personalData?.first_name || "",
+                middle_name: personalData?.middle_name || "",
+                last_name: personalData?.last_name || "",
+                email: personalData?.email || "",
+                dob: personalData?.dob || "",
+                phoneNumber: personalData?.phoneNumber || "",
+                addressLine: personalData?.addressLine || "",
+                passport_number: personalData?.passport_number || "",
+                gender: personalData?.gender || "",
+                zipCode: personalData?.zipCode || "",
+                firstLanguageError: personalData?.firstLanguageError || "",
+                passport_expiry: personalData?.passport_expiry || "",
+                marital_status: personalData?.marital_status || "",
+            });
         }
+    }, [personalData, reset]);
+    // useEffect(() => {
+    //     document.body.style.overflow = "hidden";
+    //     return () => {
+    //         document.body.style.overflow = "auto";
+    //     };
+    // }, []);
+    useEffect(() => {
+        console.log("Updated personalData:", personalData);
+    }, [personalData]);
+    if (!isOpen) return null; // Don't render if modal is not open
 
-        // Cleanup on unmount
-        return () => {
-            document.body.classList.remove("no-scroll");
-        };
-    }, [isOpen]);
-
-    if (loading) {
-        return <p>Loading...</p>;
-    }
     return (
         <div className="fixed inset-0 backdrop-blur-sm bg-[#807D78]/30 bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-FloralWhite rounded-lg p-6 shadow-lg w-1/2 relative">
+            <div className="bg-FloralWhite rounded-lg p-6 shadow-lg w-[70%] relative">
                 <div className="flex justify-between ">
                     <h3 className="text-xl font-bold font-sans mb-4">{modalTitle}</h3>
                     <button
@@ -147,15 +108,17 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                     >
                         < IoMdClose />
                     </button>
+
                 </div>
+                <hr className="mb-4" />
                 <div className="">
-                    <form onSubmit={handleFormSubmit(onFormSubmit)}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="grid gap-6 md:grid-cols-4  ">
                             <Input
                                 label="First Name"
                                 type="text"
                                 id="first_name"
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
                                 register={register}
                                 validation={{
                                     required: "First name is required",
@@ -175,7 +138,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 label="Middle Name"
                                 type="text"
                                 id="middle_name"
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
                                 register={register}
                                 validation={{
                                     required: "Middle name is required",
@@ -195,7 +158,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 label="Last Name"
                                 type="text"
                                 id="last_name"
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
                                 register={register}
                                 validation={{
                                     required: "Last name is required",
@@ -215,7 +178,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 label="DOB"
                                 type="date"
                                 id="dob"
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
                                 register={register}
                                 minDate={moment().subtract(18, 'years').format("YYYY-MM-DD")}
                                 validation={{
@@ -239,16 +202,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 placeholder=""
                                 errors={errors.dob}
                             />
-                            {/* {/* <Input
-          label="First Language"
-          id="first_language"
-          placeholder="English"
-          register={register}
-          validation={{
-            required: "First Language is required",
-          }}
-          errors={errors.first_language}
-        /> */}
+                           
                             <div>
                                 <label className="block mb-2 text-base font-medium text-gray-700">
                                     First Language
@@ -256,11 +210,11 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 <Select
                                     options={options}
                                     className={`w-full shadow-md rounded-lg text-gray-800`}
-                                    onChange={handleChange}
+                                // onChange={handleInputChange}
                                 />{" "}
                                 {errors.firstLanguageError && (
-                                    <p className="text-red-500 text-xs font-bold mt-1">
-                                        {errors.firstLanguageError}
+                                    <p className="text-red-500 text-xs font-medium mt-1">
+                                        {errors?.firstLanguageError}
                                     </p>
                                 )}
                             </div>
@@ -269,7 +223,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 id="passport_number"
                                 placeholder="Passport Number"
                                 type="text"
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
                                 register={register}
                                 toUpperCase={true}
                                 validation={{
@@ -310,7 +264,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 label="Passport Expiry Date"
                                 id="passport_expiry"
                                 type="date"
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
                                 register={register}
                                 placeholder=""
                                 minDate={moment().format("YYYY-MM-DD")}
@@ -381,7 +335,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 id="zipCode"
                                 type="text"
                                 register={register}
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
 
                                 placeholder=""
                                 validation={{
@@ -399,6 +353,8 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 label="Email"
                                 id="email"
                                 type="email"
+                                // onChange={handleInputChange}
+
                                 register={register}
                                 placeholder=""
                                 validation={{
@@ -414,7 +370,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                 label=" Phone Number"
                                 id="phoneNumber"
                                 type="number"
-                                onChange={handleChange}
+                                // onChange={handleInputChange}
 
                                 register={register}
                                 placeholder=""
@@ -429,14 +385,14 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                             label="Address"
                             id="addressLine"
                             type="text"
-                            onChange={handleChange}
+                            // onChange={handleInputChange}
 
                             register={register}
                             placeholder=""
                             validation={{
                                 required: false,
                             }}
-                            errors={errors.Address}
+                            errors={errors.addressLine}
                         />
 
                         <div className="flex space-between w-full">
@@ -450,7 +406,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                         type="radio"
                                         id="single"
                                         value="Single"
-                                        onChange={handleChange}
+                                        // onChange={handleInputChange}
 
                                         {...register("marital_status", {
                                             required: "Marital status is required",
@@ -470,7 +426,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                         type="radio"
                                         id="married"
                                         value="Married"
-                                        onChange={handleChange}
+                                        // onChange={handleInputChange}
 
                                         {...register("marital_status", {
                                             required: "Marital status is required",
@@ -501,7 +457,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                         type="radio"
                                         id="male"
                                         value="Male"
-                                        onChange={handleChange}
+                                        // onChange={handleInputChange}
 
                                         {...register("gender", {
                                             required: "Gender is required",
@@ -520,7 +476,7 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                                         type="radio"
                                         id="female"
                                         value="Female"
-                                        onChange={handleChange}
+                                        // onChange={handleInputChange}
 
                                         {...register("gender", {
                                             required: "Gender is required",
@@ -557,9 +513,6 @@ const EditPersonalInfo: React.FC<ModalProps> = ({  userId, onSave, isOpen, onClo
                             </button>
                         </div>
                     </form>
-
-
-
                 </div>
 
                 {/* {children} */}

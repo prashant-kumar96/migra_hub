@@ -313,40 +313,13 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     getPersonalInfofunction();
   }, []);
 
-  const validateDOB = (value) => {
-    // Ensure the format is YYYY-MM-DD
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(value)) {
-      return "Invalid date format. Please use YYYY-MM-DD.";
-    }
-
-    const dob = new Date(value);
-    const now = new Date();
-
-    // Ensure it's a past date
-    if (dob >= now) {
-      return "Date of birth must be in the past.";
-    }
-
-    // Calculate age to check if the user is at least 18 years old
-    const age = now.getFullYear() - dob.getFullYear();
-    const monthDifference = now.getMonth() - dob.getMonth();
-    const dayDifference = now.getDate() - dob.getDate();
-    const isAtLeast18 =
-      age >= 18 ||
-      (age === 18 &&
-        (monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0)));
-
-    if (!isAtLeast18) {
-      return "You must be at least 18 years old.";
-    }
-
-    return true;
-  };
-
   // Edit personal information
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const toggleModal = () => {
+
+  const toggleModal = async () => {
+    if (!isModalOpen) {
+      await getPersonalInfofunction(); 
+    }
     setIsModalOpen(!isModalOpen);
   };
   // console.log("moment", moment().format("YYYY-MM-DD"));
@@ -403,6 +376,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           <EditPersonalInfo
             isOpen={isModalOpen}
             onClose={toggleModal}
+            personalData={personalData}
             modalTitle="Edit Personal Information"
           >
             <p>Welcome to the personal information modal!</p>
