@@ -260,6 +260,9 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
         setLoading(false);
       }
     }
+    const formattedDOB = moment(data.dob).format('YYYY-MM-DD');
+    data.dob = formattedDOB
+
   };
 
   const handleSelectcountryOfCitizenship = (countryCode: string) => {
@@ -301,7 +304,34 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     getPersonalInfofunction();
   }, []);
 
+  const validateDOB = (value) => {
+    // Ensure the format is YYYY-MM-DD
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(value)) {
+      return "Invalid date format. Please use YYYY-MM-DD.";
+    }
 
+    const dob = new Date(value);
+    const now = new Date();
+
+    // Ensure it's a past date
+    if (dob >= now) {
+      return "Date of birth must be in the past.";
+    }
+
+    // Calculate age to check if the user is at least 18 years old
+    const age = now.getFullYear() - dob.getFullYear();
+    const monthDifference = now.getMonth() - dob.getMonth();
+    const dayDifference = now.getDate() - dob.getDate();
+    const isAtLeast18 = age >= 18 || (age === 18 && (monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0)));
+
+    if (!isAtLeast18) {
+      return "You must be at least 18 years old.";
+    }
+
+    return true;
+  };
+  
   console.log("moment", moment().format("YYYY-MM-DD"));
   console.log(';; personal data', personalDataStatus)
   if (personalDataStatus) {
@@ -505,30 +535,28 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             type="date"
             id="dob"
             register={register}
-            minDate={moment().format("YYYY-MM-DD")}
+            minDate={moment().subtract(18, 'years').format("YYYY-MM-DD")}
             validation={{
-              function(value) {
-                // Ensure the format is YYYY-MM-DD
-                const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-                if (!dateRegex.test(value)) {
-                  return false;
-                }
-                const dob = new Date(value);
-                const now = new Date();
-                // Ensure it's a past date and the user is at least 18 years old
-                const age = now.getFullYear() - dob.getFullYear();
-                const monthDifference = now.getMonth() - dob.getMonth();
-                const dayDifference = now.getDate() - dob.getDate();
-                const isAtLeast18 = age > 18 || (age === 18 && (monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0)));
-                return !isNaN(dob.getTime()) && dob < now && isAtLeast18;
-              },
-              message: (props) =>
-                `Invalid DOB: ${props.value}. Please enter a valid date in YYYY-MM-DD format, and ensure the user is at least 18 years old.`,
-            }}
+              required: "DOB is required",
+              validate: {
+                // Optional: You can also check if the date is valid and at least 18 years old before submitting
+                isValidDate: (value) => {
+                  const isValid = moment(value, "YYYY-MM-DD", true).isValid();
+                  if (!isValid) {
+                    return "Please enter a valid date in YYYY-MM-DD format";
+                  }
+                  // Optional: Check if the user is 18 years old
+                  const age = moment().diff(moment(value), 'years');
+                  if (age < 18) {
+                    return "User must be at least 18 years old";
+                  }
+                  return true;
+                },
+            }}}
             placeholder=""
             errors={errors.dob}
-          />
-          {/* <Input
+          /> 
+          {/* {/* <Input
           label="First Language"
           id="first_language"
           placeholder="English"

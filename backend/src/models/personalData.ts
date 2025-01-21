@@ -1,4 +1,5 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
+import moment from "moment";
 
 // Define an interface for the profile data
 interface IPersonalData extends Document {
@@ -6,7 +7,7 @@ interface IPersonalData extends Document {
   gender: "Male" | "Female" | "Other";
   terms: boolean;
   first_name: string;
-  middle_name: string;
+  middle_name?: string;
   last_name: string;
   dob: Date;
   passport_number: string;
@@ -67,14 +68,16 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   },
   dob: {
     type: Date,
-    // required: [true, "DOB is required"],
-    trim: true,
+    required: [false, "DOB is required"],
     validate: {
-      validator: (value: Date) => value > new Date(),
-      message: "Passport expiry date must be in the future",
+      validator: function (value: Date) {
+        // Check if the user is at least 18 years old
+        const age = moment().diff(moment(value), "years");
+        return age >= 18;
+      },
+      message: "User must be at least 18 years old",
     },
   },
-
   passport_number: {
     type: String,
     required: [false, "Passport number is required"],
@@ -132,7 +135,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
       required: [false, "State is required"],
       trim: true,
     },
-  },
+  },  
   citizenshipCountry: {
     value: {
       type: String,
