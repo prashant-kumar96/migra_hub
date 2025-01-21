@@ -10,6 +10,7 @@ interface props {
   toUpperCase?: boolean;
   minDate?: any;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
+  readOnly?: boolean;
 }
 const Input: React.FC<props> = ({
   label,
@@ -22,6 +23,7 @@ const Input: React.FC<props> = ({
   toUpperCase,
   minDate,
   onChange,
+  readOnly = false,
 }) => {
   return (
     <div className="mb-4">
@@ -35,12 +37,15 @@ const Input: React.FC<props> = ({
         type={type}
         id={id}
         {...register(id, validation)}
-        className={`w-full px-3 py-2 border shadow-lg border-gray-200 rounded-lg text-gray-800 placeholder:italic placeholder:text-sm  ${toUpperCase ? "" : ""
-          }`}
+        className={`w-full px-3 py-2 border shadow-lg rounded-lg text-gray-800 placeholder:italic placeholder:text-sm ${
+          readOnly ? "bg-gray-200 opacity-50 cursor-not-allowed" : "border-gray-200"
+        }`}
         placeholder={placeholder}
         min={minDate}
         autocomplete="off"
         onChange={onChange}
+        readOnly={readOnly}
+        defaultValue={minDate} 
       />
       {errors && (
         <p className="text-red-500 text-sm font-sans tracking-wide font-normal mt-1">*{errors.message}</p>

@@ -377,12 +377,9 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             isOpen={isModalOpen}
             onClose={toggleModal}
             personalData={personalData}
+            savePersonalData={savePersonalData}
             modalTitle="Edit Personal Information"
           >
-            <p>Welcome to the personal information modal!</p>
-            <CreateButton className=" mt-4" onClick={toggleModal}>
-              Close
-            </CreateButton>
           </EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
             {/* Basic Info Card */}

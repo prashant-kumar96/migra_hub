@@ -1,7 +1,7 @@
 import Input from "@/utils/InputComponent";
 import { Button } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
 import Select from "react-select";
 import {
@@ -17,7 +17,7 @@ import { getPersonalData, savePersonalData } from "@/api/personalData";
 import { ToastContainer, toast } from "react-toastify";
 
 const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, modalTitle }) => {
-    const { register, handleSubmit, setValue, formState: { errors }, reset } = useForm({
+    const { register, handleSubmit, setValue, control, formState: { errors }, reset } = useForm({
         defaultValues: {
             first_name: "",
             middle_name: "",
@@ -47,18 +47,21 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
 
 
     const onSubmit = async (formData) => {
+        console.log("Submitted Data:", formData); // Debug
         try {
-            const result = await savePersonalData(formData);
-            if (result?.status === 200) {
-                toast.success("Information updated successfully!");
-                onClose();
-            } else {
-                toast.error("Failed to update information");
-            }
+          const result = await savePersonalData(formData); // Call API or action
+          if (result?.status === 200) {
+            toast.success("Information updated successfully!");
+            onClose();
+          } else {
+            toast.error("Failed to update information");
+          }
         } catch (error) {
-            toast.error("An error occurred");
+          console.error("Error occurred:", error); // Debug
+          toast.error("An error occurred");
         }
-    };
+      };
+      
 
     const options = [
         { code: "en", label: "English" },
@@ -74,14 +77,14 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                 middle_name: personalData?.middle_name || "",
                 last_name: personalData?.last_name || "",
                 email: personalData?.email || "",
-                dob: personalData?.dob || "",
+                dob: moment(personalData?.dob).format("YYYY-MM-DD"),
                 phoneNumber: personalData?.phoneNumber || "",
                 addressLine: personalData?.addressLine || "",
                 passport_number: personalData?.passport_number || "",
                 gender: personalData?.gender || "",
                 zipCode: personalData?.zipCode || "",
                 firstLanguageError: personalData?.firstLanguageError || "",
-                passport_expiry: personalData?.passport_expiry || "",
+                passport_expiry: moment(personalData?.passport_expiry).format("YYYY-MM-DD"),
                 marital_status: personalData?.marital_status || "",
             });
         }
@@ -120,6 +123,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 id="first_name"
                                 // onChange={handleInputChange}
                                 register={register}
+                                readOnly={true}
                                 validation={{
                                     required: "First name is required",
                                     minLength: {
@@ -138,6 +142,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 label="Middle Name"
                                 type="text"
                                 id="middle_name"
+                                readOnly={true}
                                 // onChange={handleInputChange}
                                 register={register}
                                 validation={{
@@ -160,6 +165,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 id="last_name"
                                 // onChange={handleInputChange}
                                 register={register}
+                                readOnly={true}
                                 validation={{
                                     required: "Last name is required",
                                     minLength: {
@@ -202,19 +208,31 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 placeholder=""
                                 errors={errors.dob}
                             />
-                           
+
                             <div>
                                 <label className="block mb-2 text-base font-medium text-gray-700">
                                     First Language
                                 </label>
-                                <Select
-                                    options={options}
-                                    className={`w-full shadow-md rounded-lg text-gray-800`}
-                                // onChange={handleInputChange}
-                                />{" "}
+                                <Controller
+                                    name="firstLanguageError"
+                                    control={control}
+                                    defaultValue={
+                                        personalData?.firstLanguageError
+                                            ? options.find((opt) => opt.value === personalData.firstLanguageError)
+                                            : null
+                                    }
+                                    rules={{ required: "First Language is required" }}
+                                    render={({ field }) => (
+                                        <Select
+                                            {...field}
+                                            options={options}
+                                            className={`w-full shadow-md rounded-lg text-gray-800`}
+                                        />
+                                    )}
+                                />
                                 {errors.firstLanguageError && (
                                     <p className="text-red-500 text-xs font-medium mt-1">
-                                        {errors?.firstLanguageError}
+                                        {errors.firstLanguageError.message}
                                     </p>
                                 )}
                             </div>
@@ -271,6 +289,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 validation={{
                                     required: "Passport Expiry Date is required",
                                 }}
+                                readOnly={false}
                                 errors={errors.passport_expiry}
                             />
                             {/* <div className="text-gray-900">
@@ -353,6 +372,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 label="Email"
                                 id="email"
                                 type="email"
+                                readOnly={true}
                                 // onChange={handleInputChange}
 
                                 register={register}
