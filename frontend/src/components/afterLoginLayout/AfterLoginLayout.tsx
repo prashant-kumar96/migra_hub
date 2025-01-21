@@ -83,9 +83,9 @@ export const ProgressBar = () => {
         return `${progress}%`;
     };
 
-    console.log(';; completedSteps', completedSteps)
-    console.log(';; currentStep', currentStep)
-    console.log(';; applicationStatus', applicationStatus)
+    // console.log(';; completedSteps', completedSteps)
+    // console.log(';; currentStep', currentStep)
+    // console.log(';; applicationStatus', applicationStatus)
     const getStepStatus = (step: number) => {
         if (isStepCompleted(step)) {
             return 'bg-lime-500 text-white';

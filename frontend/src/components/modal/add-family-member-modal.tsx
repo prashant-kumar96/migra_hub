@@ -4,12 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import countryList from "react-select-country-list";
-import Select from "react-select";
-import {
-  addFamilyMember,
-  editFamilyMember,
-  getSingleFamilyMemberDetails,
-} from "@/api/familyMember";
+import { addFamilyMember, editFamilyMember } from "@/api/familyMember";
 import ReactFlagsSelect from "react-flags-select";
 import { countriesToRemove } from "../TravelPlan";
 import moment from "moment";
@@ -188,19 +183,25 @@ const AddFamilyMemberModal: React.FC<Props> = ({
 
       // console.log("data", data);
       // return;
+      console.log("selectedCitizenshipCountry", selectedCitizenshipCountry);
+      if (Object.keys(selectedCitizenshipCountry).length < 1) {
+        alert("Citizenship Country is required");
+        return;
+      }
+
       if (isEditMode) {
         const response = await editFamilyMember(data, member._id);
-        // console.log("response", response);
+        console.log("response", response);
         if (response) {
-          reset();
+          // reset();
           onClose();
           onSubmit();
         }
       } else {
         const response = await addFamilyMember(data);
-        // console.log("response", response);
+        console.log("response", response);
         if (response) {
-          reset();
+          // reset();
           onClose();
           onSubmit();
         }
@@ -236,58 +237,55 @@ const AddFamilyMemberModal: React.FC<Props> = ({
     }),
   };
 
-  // useEffect(() => {
-  //   console.log("@@@", member);
-  // }, [member]);
+  useEffect(() => {
+    if (member && Object?.keys(member)?.length > 0 && isEditMode) {
+      console.log("Iseditmode is run");
+
+      setValue("name", member?.name ? member?.name : "");
+      setValue("email", member?.email ? member?.email : "");
+      setValue(
+        "relationship",
+        member?.relationship ? member?.relationship : ""
+      );
+      setValue(
+        "passport_number",
+        member?.passport_number ? member?.passport_number : ""
+      );
+      setValue(
+        "deniedVisaToAnyCountry",
+        member?.visaData?.deniedVisaToAnyCountry === true ? "true" : "false"
+      );
+
+      setValue(
+        "passport_expiry",
+        member?.passport_expiry
+          ? moment(member?.passport_expiry).format("YYYY-MM-DD")
+          : ""
+      );
+    } else {
+      console.log("else isEditMode is run ");
+      setValue("name", "");
+      setValue("email", "");
+      setValue("relationship", "");
+      setValue("passport_number", "");
+      setValue("deniedVisaToAnyCountry", "");
+      setValue("passport_expiry", "");
+    }
+  }, [isOpen]);
 
   const handleSelectcountryOfCitizenship = (countryCode: string) => {
-    // setError((prev) => ({
-    //   ...prev,
-    //   citizenshipCountryError: "",
-    // }));
+    const tempCountry: any = countryList()
+      .getData()
+      .find((country) => country.value === countryCode);
+
+    console.log("tempCountry", tempCountry);
+    setSelectedCitizenshipCountry(tempCountry);
   };
 
   // const getMemberDetails = async (id) => {
 
-  if (member && Object?.keys(member)?.length > 0 && isEditMode) {
-    // const tempCountry: any = countryList()
-    //   .getData()
-    //   .find((country) => country.value === member?.citizenshipCountry);
-    // const tempCountry: any = countryList()
-    //   .getData()
-    //   .find((country) => country.value === member?.citizenshipCountry.value);
+  console.log("isEdit mode", isEditMode);
 
-    // console.log("tempCountry", tempCountry);
-    // setSelectedCitizenshipCountry(tempCountry);
-    // setSelectedCitizenshipCountry();
-
-    setValue("name", member?.name ? member?.name : "");
-    setValue("email", member?.email ? member?.email : "");
-    setValue("relationship", member?.relationship ? member?.relationship : "");
-    setValue(
-      "passport_number",
-      member?.passport_number ? member?.passport_number : ""
-    );
-    setValue(
-      "deniedVisaToAnyCountry",
-      member?.visaData?.deniedVisaToAnyCountry === true ? "true" : "false"
-    );
-
-    setValue(
-      "passport_expiry",
-      member?.passport_expiry
-        ? moment(member?.passport_expiry).format("YYYY-MM-DD")
-        : ""
-    );
-  } else {
-    setValue("name", "");
-    setValue("email", "");
-    setValue("relationship", "");
-    setValue("passport_number", "");
-    setValue("deniedVisaToAnyCountry", "");
-
-    setValue("passport_expiry", "");
-  }
   if (!isOpen) return null;
   return ReactDOM.createPortal(
     <div className="fixed inset-0 text-gray-600 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -643,7 +641,9 @@ const AddFamilyMemberModal: React.FC<Props> = ({
               disabled={isSubmitting}
             >
               {isSubmitting
-                ? "Adding..."
+                ? isEditMode
+                  ? "Editing..."
+                  : "Adding..."
                 : isEditMode
                 ? "Edit Family Member"
                 : "Add Family Member"}

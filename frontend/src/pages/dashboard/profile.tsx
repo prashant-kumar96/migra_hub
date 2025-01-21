@@ -112,6 +112,8 @@ const ProfilePage = () => {
   const handleModal = () => {
     console.log("handleModal is run");
     // const emptyObj = {};
+
+    setSelectedCitizenshipCountry({});
     setIsEditMode(false);
     setMember({});
     setIsOpen(true);
@@ -125,6 +127,7 @@ const ProfilePage = () => {
   const [deleteLoader, setDeleteLoader] = useState(false);
   const handleEdit = (tempMember) => {
     console.log("tempMember", tempMember);
+    setSelectedCitizenshipCountry(tempMember.citizenshipCountry);
     setIsEditMode(true);
     setMember(tempMember);
     setIsOpen(true);
@@ -240,14 +243,16 @@ const ProfilePage = () => {
                     }}
                   />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex gap-2 ">
-                  <MdDelete
-                    className="cursor-pointer"
-                    onClick={() => {
-                      handleDelete(member._id);
-                    }}
-                  />
-                  {deleteLoader && <ButtonLoader />}
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900  ">
+                  <p className="flex gap-2">
+                    <MdDelete
+                      className="cursor-pointer"
+                      onClick={() => {
+                        handleDelete(member._id);
+                      }}
+                    />
+                    {deleteLoader && <ButtonLoader />}
+                  </p>
                 </td>
               </tr>
             ))}
