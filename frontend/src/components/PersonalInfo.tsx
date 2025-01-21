@@ -23,7 +23,9 @@ import ButtonLoader from "./loaders/buttonLoader";
 import { useAuth } from "@/context/auth-context";
 import { getSingleVisaData } from "@/api/visaData";
 import { Button } from "@headlessui/react";
-
+import { FaEdit } from "react-icons/fa";
+import EditPersonalInfo from "./modal/edit-personal-info";
+import CreateButton from "./ui/buttons/CreateButton";
 
 const options = [
   { code: "en", label: "English" },
@@ -41,7 +43,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     formState: { errors },
   }: any = useForm();
 
-  
+
   const countriesCodes = countryList()
     .getData()
     .map((c) => c.value);
@@ -304,34 +306,11 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     getPersonalInfofunction();
   }, []);
 
-  const validateDOB = (value) => {
-    // Ensure the format is YYYY-MM-DD
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(value)) {
-      return "Invalid date format. Please use YYYY-MM-DD.";
-    }
-
-    const dob = new Date(value);
-    const now = new Date();
-
-    // Ensure it's a past date
-    if (dob >= now) {
-      return "Date of birth must be in the past.";
-    }
-
-    // Calculate age to check if the user is at least 18 years old
-    const age = now.getFullYear() - dob.getFullYear();
-    const monthDifference = now.getMonth() - dob.getMonth();
-    const dayDifference = now.getDate() - dob.getDate();
-    const isAtLeast18 = age >= 18 || (age === 18 && (monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0)));
-
-    if (!isAtLeast18) {
-      return "You must be at least 18 years old.";
-    }
-
-    return true;
+  // Edit personal information
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
   };
-  
   console.log("moment", moment().format("YYYY-MM-DD"));
   console.log(';; personal data', personalDataStatus)
   if (personalDataStatus) {
@@ -343,36 +322,51 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             <h1 className="text-3xl font-bold text-[#333366] mb-2">My Profile </h1>
             <p className="text-gray-600">Visa Application Details & Risk Assessment</p>
           </div>
-          <button onClick={() => router.push('/dashboard/payment')} className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors">
+          <button onClick={() => router.push('/dashboard/payment')} className="px-4 py-2 bg-[#333366] text-FloralWhite rounded-lg hover:bg-[#2C415A] transition-colors">
             Proceed to Pay
           </button>
         </div>
 
         {/* Personal Information Section */}
         <div className="mb-12 text-gray-600">
-          <div className="flex items-center mb-6">
-            <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-start">
+              <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-[#333366]">Personal Information</h2>
             </div>
-            <h2 className="text-2xl font-bold text-[#333366]">Personal Information</h2>
+            <FaEdit onClick={toggleModal}
+              className=" flex justify-end text-2xl font-bold text-[#333366] hover:text-blue-200 cursor-pointer" />
           </div>
-
+          <EditPersonalInfo
+            isOpen={isModalOpen}
+            onClose={toggleModal}
+            modalTitle="Edit Personal Information">
+            <p>Welcome to the personal information modal!</p>
+            <CreateButton
+              className=" mt-4"
+              onClick={toggleModal}
+            >
+              Close
+            </CreateButton>
+          </EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
             {/* Basic Info Card */}
             <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
               <div className="grid gap-6 md:grid-cols-3">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Full Name</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">Full Name</p>
                   <p className="text-sm font-medium">{`${personalData?.first_name} ${personalData?.last_name}`}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">Email</p>
                   <p className="text-sm font-medium">{personalData?.email}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Phone</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">Phone</p>
                   <p className="text-sm font-medium">{personalData?.phoneNumber}</p>
                 </div>
               </div>
@@ -380,18 +374,18 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
             {/* Passport Details Card */}
             <div className="bg-gray-50 rounded-xl text-gray-600 p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#333366] mb-4">Passport Information</h3>
+              <h3 className="text-lg font-bold text-[#333366] mb-4">Passport Information:</h3>
               <div className="grid gap-6 md:grid-cols-3">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Passport Number</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">Passport Number</p>
                   <p className="text-sm font-medium">{personalData?.passport_number}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Citizenship</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">Citizenship</p>
                   <p className="text-sm font-medium">{personalData?.citizenshipCountry?.label}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Expiry Date</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">Expiry Date</p>
                   <p className="text-sm font-medium">
                     {moment(personalData?.passport_expiry).format("YYYY-MM-DD")}
                   </p>
@@ -401,19 +395,19 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
             {/* Address Card */}
             <div className="bg-gray-50  text-gray-600 rounded-xl p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#333366] mb-4">Address Details</h3>
+              <h3 className="text-lg font-bold text-[#333366] mb-4">Address Details:</h3>
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Street Address</p>
+                  <p className="text-base font-semibold font-sans text-Indigo ">Street Address</p>
                   <p className="text-sm font-medium">{personalData?.addressLine}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Country</p>
+                    <p className="text-base font-semibold font-sans text-Indigo ">Country</p>
                     <p className="text-sm font-medium">{personalData?.addressData?.country}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">State</p>
+                    <p className="text-base font-semibold font-sans text-Indigo ">State</p>
                     <p className="text-sm font-medium">{personalData?.addressData?.state}</p>
                   </div>
                 </div>
@@ -437,7 +431,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             <div className="grid gap-6 md:grid-cols-2">
               {Object.entries(riskAssessmentData || {}).map(([key, value]) => (
                 <div key={key} className="border-l-4 border-[#333366] pl-4">
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-base font-semibold font-sans text-Indigo ">
                     {key.split(/(?=[A-Z])/).join(' ')}
                   </p>
                   <p className="text-sm font-medium">
@@ -552,10 +546,11 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                   }
                   return true;
                 },
-            }}}
+              }
+            }}
             placeholder=""
             errors={errors.dob}
-          /> 
+          />
           {/* {/* <Input
           label="First Language"
           id="first_language"
@@ -873,6 +868,9 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           {loading && <ButtonLoader />}
         </Button>
       </form>
+
+
+
     </div>
   );
 };
