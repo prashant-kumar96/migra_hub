@@ -5,8 +5,6 @@ import VisaData from "../models/visadata.js";
 // In your user controller file
 import { v4 as uuidv4 } from "uuid";
 import { generateApplicationId } from "./authController.js";
-import User from "../models/User";
-
 // Helper function to generate a random 10-digit number as a string
 function generateRandomPhoneNumber(): string {
   return String(Math.floor(1000000000 + Math.random() * 9000000000));
@@ -139,8 +137,57 @@ export async function addFamilyMember(req: any, res: any) {
 
 export async function editFamilyMember(req: any, res: any) {
   try {
+    const { name, email, relationship, data, profileData } = req.body;
+    console.log("EditFamilyMember is run");
     console.log("req.query?.id", req.query?.id);
     console.log("req.body", req.body);
+
+    const userDetails = await User.findByIdAndUpdate(
+      { _id: req.query?.id },
+      {
+        $set: {
+          name: name,
+          email: email,
+          relationship: relationship,
+        },
+      },
+      { new: true }
+    );
+
+    console.log("userDetails", userDetails);
+
+    console.log("Updating personal data");
+
+    const personalData = await PersonalData.updateOne(
+      { userId: userDetails._id },
+      {
+        $set: {
+          ...profileData,
+          email: email,
+        },
+      }
+    );
+    console.log("personalData", personalData);
+
+    const VisaDataResult = await VisaData.findByIdAndUpdate(
+      { _id: userDetails?.visaDataId },
+      {
+        $set: {
+          deniedVisaToAnyCountry: data.deniedVisaToAnyCountry,
+        },
+      }
+    );
+    console.log("VisaDataResult", VisaDataResult);
+
+    if (userDetails && VisaDataResult && personalData) {
+      res.status(200).json({
+        message: "Family member updated successfully",
+      });
+    } else {
+      res.status(400).json({
+        message: "There is some Error",
+      });
+    }
   } catch (err) {
     console.log(err);
   }
