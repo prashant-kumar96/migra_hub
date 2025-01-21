@@ -72,7 +72,7 @@ const StepsModal: React.FC<Props> = ({
 
   const userId = user?.user?._id;
   const [passportCountry, setPassportCountry] =
-    useState<string>(citizenshipCountry);
+    useState<object>(citizenshipCountry);
 
   const [progressBarpercentage, setProgressBarPercentage] = useState(0);
 
@@ -91,7 +91,7 @@ const StepsModal: React.FC<Props> = ({
     citizenshipCountry,
     destinationCountry,
     passportCountry,
-    areYouApplyingFromPassportCountry: false,
+    areYouApplyingFromPassportCountry: true,
     whereWillYouApplyForYourVisa: selectedCitizenshipcountry,
     haveSpouseOrProperty: false,
     travelledInternationallyAndReturnedHome: false,
@@ -142,6 +142,18 @@ const StepsModal: React.FC<Props> = ({
   const handleNextButtonClick = () => {
     // console.log("current step", step);
     // alert(step);
+
+    if (step === 1) {
+      console.log("passportCountry@@", passportCountry);
+      if (data?.areYouApplyingFromPassportCountry === false) {
+        if (Object.keys(passportCountry).length === 0) {
+          alert(
+            "Please select the country from where you want to apply for visa"
+          );
+          return;
+        }
+      }
+    }
 
     if (step > 0 && step < 5)
       setProgressBarPercentage(progressBarpercentage + 20);
@@ -208,6 +220,7 @@ const StepsModal: React.FC<Props> = ({
       .getData()
       .find((country) => country.value === code || country.label === code);
     setPassportCountry(tempCountry);
+    setData({ ...data, passportCountry: tempCountry });
     if (code === "IN" || code === "India") {
       setShowRiskDecreased(true);
     } else {
@@ -231,10 +244,17 @@ const StepsModal: React.FC<Props> = ({
   console.log("data", data);
 
   const handleNo = (name: string) => {
+    console.log("name is ", name);
     setData({
       ...data,
       [name]: false,
     });
+
+    setPassportCountry({});
+    // if (name === "areYouApplyingFromPassportCountry") {
+    //   setData({ ...data, passportCountry: {} });
+    //   // setProgressBarPercentage(progressBarpercentage - 20);
+    // }
     // setProgressBarPercentage(progressBarpercentage + 25);
   };
 
@@ -275,7 +295,11 @@ const StepsModal: React.FC<Props> = ({
             </div>
           ) : (
             <div className="relative bg-FloralWhite rounded-lg shadow max-h-[700px] overflow-auto">
-              <div className="flex justify-between items-center p-4 md:p-5 border-b rounded-t">
+              <div
+                className={`flex justify-between items-center p-4 md:p-5 border-b rounded-t ${
+                  step === 5 && "p-0 md:p-0 md:px-5 md:p-5"
+                }`}
+              >
                 {/* Left Section: Risk Assessment */}
                 <span className="font-medium tracking-wide whitesapce-nowrap text-[19px] text-Indigo">
                   Risk Assessment
@@ -307,9 +331,16 @@ const StepsModal: React.FC<Props> = ({
                 </button>
               </div>
 
-              <div className="m-2 p-4 md:m-5 md:p-5 space-y-2 rounded text-gray-900 ">
+              <div
+                className={`m-2 p-4 md:m-5 md:p-5 space-y-2 rounded text-gray-900 ${
+                  step === 5 ? "m-0 p-0 md:m-5 md:p-0" : ""
+                }`}
+              >
                 <ProgressBar progressBarpercentage={progressBarpercentage} />
-                <h2 className="leading-relaxed text-center font-medium text-Indigo text-2xl py-6">
+                <h2
+                  className={`leading-relaxed text-center font-medium text-Indigo text-2xl py-6 text-base py-0.5
+                  }`}
+                >
                   {ModalData[step].question}
                   {(step === 1 || step === 2) && (
                     <>&nbsp;{getCountryNameByCode(citizenshipCountry)} </>
@@ -772,7 +803,12 @@ const StepsModal: React.FC<Props> = ({
                   <p className="text-sm text-red-500">{error}</p>
                 </div>
               )}
-              <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b ">
+
+              <div
+                className={`flex items-center p-4 md:p-5 ${
+                  step === 5 && "md:p-1 md:px-5"
+                }border-t border-gray-200 rounded-b`}
+              >
                 <button
                   data-modal-hide="default-modal"
                   type="button"
