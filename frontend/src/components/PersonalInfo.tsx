@@ -24,7 +24,6 @@ import { useAuth } from "@/context/auth-context";
 import { getSingleVisaData } from "@/api/visaData";
 import { Button } from "@headlessui/react";
 
-
 const options = [
   { code: "en", label: "English" },
   { code: "es", label: "Spanish" },
@@ -41,7 +40,6 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     formState: { errors },
   }: any = useForm();
 
-  
   const countriesCodes = countryList()
     .getData()
     .map((c) => c.value);
@@ -50,7 +48,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   const router = useRouter();
   const [riskAssessmentData, setRiskAssessmentData] = useState<any>({});
   const [personalDataStatus, setPersonalDataStatus] = useState<any>(null);
-  const [personalData, setPersonalData] = useState()
+  const [personalData, setPersonalData] = useState();
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
   console.log(";; personal visa data", user);
@@ -113,7 +111,8 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
         const tempCountry: any = countryList()
           .getData()
           .find(
-            (country) => country.value === riskAssessmentData?.citizenshipCountry
+            (country) =>
+              country.value === riskAssessmentData?.citizenshipCountry
           );
         setCitizenShipCountry(tempCountry);
       }
@@ -122,7 +121,8 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           .getData()
           .find(
             (country) =>
-              country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value
+              country.value ===
+              riskAssessmentData?.whereWillYouApplyForYourVisa?.value
           );
 
         setAddressData((prev) => ({ ...prev, country: tempCountry?.name }));
@@ -130,7 +130,8 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           .getData()
           .find(
             (country) =>
-              country.value === riskAssessmentData?.whereWillYouApplyForYourVisa?.value
+              country.value ===
+              riskAssessmentData?.whereWillYouApplyForYourVisa?.value
           );
         setCountryid(tempCountryId?.id);
       }
@@ -173,96 +174,103 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   };
 
   const onSubmit = async (data: any) => {
-    if (!citizenshipCountry) {
-      setError((prev) => ({
-        ...prev,
-        citizenshipCountryError: "Please select a citizenship country",
-      }));
-      return;
-    }
-    if (!addressData.country) {
-      setError((prev) => ({
-        ...prev,
-        currentCountryError: "Please select a country",
-      }));
-      return;
-    } else {
-      setError((prev) => ({
-        ...prev,
-        currentCountryError: "",
-      }));
-    }
-
-    if (!addressData?.state) {
-      setError((prev) => ({
-        ...prev,
-        stateError: "Please select a state",
-      }));
-      return;
-    } else {
-      setError((prev) => ({
-        ...prev,
-        stateError: "",
-      }));
-    }
-
-    if (!addressData.city) {
-      setError((prev) => ({
-        ...prev,
-        cityError: "Please select a city",
-      }));
-      return;
-    }
-
-    if (!firstLanguage) {
-      setError((prev) => ({
-        ...prev,
-        firstLanguageError: "Please select a First Language",
-      }));
-    } else {
-      // console.log(data);
-      // console.log("firstLanguage", firstLanguage);
-      // console.log("citizenshipCountry", citizenshipCountry);
-      // console.log("addressData", addressData);
-      // setError((prev) => ({
-      //   ...prev,
-      //   firstLanguageError: "",
-      //   cityError: "",
-      //   stateError: "",
-      //   currentCountryError: "",
-      //   citizenshipCountryError: "",
-      // }));
-
-      setLoading(true);
-      const newdata = {
-        ...data,
-        firstLanguage,
-        citizenshipCountry: citizenshipCountry,
-        addressData,
-        userId: userId,
-      };
-
-      console.log("newData", newdata);
-
-      setLoading(true);
-
-      const result = await savePersonalData(newdata);
-      console.log("result loginUser@@@@@@@", result);
-      if (result?.status === 200) {
-        toast(result?.data?.message);
-        // Navigate to dashboard
-        // console.log("we are here");
-        // localStorage.setItem("token", result?.data?.token);
-        // router.push("/dashboard/payment");
-        setLoading(false);
-      } else {
-        console.log("result@@@", result);
-        setLoading(false);
+    try {
+      if (!citizenshipCountry) {
+        setError((prev) => ({
+          ...prev,
+          citizenshipCountryError: "Please select a citizenship country",
+        }));
+        return;
       }
-    }
-    const formattedDOB = moment(data.dob).format('YYYY-MM-DD');
-    data.dob = formattedDOB
+      if (!addressData.country) {
+        setError((prev) => ({
+          ...prev,
+          currentCountryError: "Please select a country",
+        }));
+        return;
+      } else {
+        setError((prev) => ({
+          ...prev,
+          currentCountryError: "",
+        }));
+      }
 
+      if (!addressData?.state) {
+        setError((prev) => ({
+          ...prev,
+          stateError: "Please select a state",
+        }));
+        return;
+      } else {
+        setError((prev) => ({
+          ...prev,
+          stateError: "",
+        }));
+      }
+
+      if (!addressData.city) {
+        setError((prev) => ({
+          ...prev,
+          cityError: "Please select a city",
+        }));
+        return;
+      }
+
+      if (!firstLanguage) {
+        setError((prev) => ({
+          ...prev,
+          firstLanguageError: "Please select a First Language",
+        }));
+      } else {
+        // console.log(data);
+        // console.log("firstLanguage", firstLanguage);
+        // console.log("citizenshipCountry", citizenshipCountry);
+        // console.log("addressData", addressData);
+        // setError((prev) => ({
+        //   ...prev,
+        //   firstLanguageError: "",
+        //   cityError: "",
+        //   stateError: "",
+        //   currentCountryError: "",
+        //   citizenshipCountryError: "",
+        // }));
+
+        setLoading(true);
+        const newdata = {
+          ...data,
+          firstLanguage,
+          citizenshipCountry: citizenshipCountry,
+          addressData,
+          userId: userId,
+        };
+
+        console.log("newData", newdata);
+
+        setLoading(true);
+
+        const result = await savePersonalData(newdata);
+        console.log("result loginUser@@@@@@@", result);
+        if (result?.status === 200) {
+          toast(result?.data?.message);
+          // Navigate to dashboard
+          // console.log("we are here");
+          // localStorage.setItem("token", result?.data?.token);
+          // router.push("/dashboard/payment");
+          setLoading(false);
+        } else {
+          console.log("result@@@", result);
+          setLoading(false);
+        }
+      }
+      const formattedDOB = moment(data.dob).format("YYYY-MM-DD");
+      data.dob = formattedDOB;
+    } catch (err) {
+      console.error("Error saving personal data", err);
+      setLoading(false);
+      toast(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSelectcountryOfCitizenship = (countryCode: string) => {
@@ -284,13 +292,12 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     setFirstLanguage(event.label);
   };
 
-
   const getPersonalInfofunction = async () => {
     const result = await getPersonalData(userId);
     console.log(";; getPersonalData", result);
     if (result?.status) {
       //show the info without form format if the status is true
-      setPersonalData(result?.data)
+      setPersonalData(result?.data);
       setPersonalDataStatus(result?.status);
       setLoading(false);
     } else {
@@ -298,7 +305,6 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     getPersonalInfofunction();
@@ -323,7 +329,10 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
     const age = now.getFullYear() - dob.getFullYear();
     const monthDifference = now.getMonth() - dob.getMonth();
     const dayDifference = now.getDate() - dob.getDate();
-    const isAtLeast18 = age >= 18 || (age === 18 && (monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0)));
+    const isAtLeast18 =
+      age >= 18 ||
+      (age === 18 &&
+        (monthDifference > 0 || (monthDifference === 0 && dayDifference >= 0)));
 
     if (!isAtLeast18) {
       return "You must be at least 18 years old.";
@@ -331,19 +340,26 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
     return true;
   };
-  
+
   console.log("moment", moment().format("YYYY-MM-DD"));
-  console.log(';; personal data', personalDataStatus)
+  console.log(";; personal data", personalDataStatus);
   if (personalDataStatus) {
     return (
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b">
           <div>
-            <h1 className="text-3xl font-bold text-[#333366] mb-2">My Profile </h1>
-            <p className="text-gray-600">Visa Application Details & Risk Assessment</p>
+            <h1 className="text-3xl font-bold text-[#333366] mb-2">
+              My Profile{" "}
+            </h1>
+            <p className="text-gray-600">
+              Visa Application Details & Risk Assessment
+            </p>
           </div>
-          <button onClick={() => router.push('/dashboard/payment')} className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors">
+          <button
+            onClick={() => router.push("/dashboard/payment")}
+            className="px-4 py-2 bg-[#333366] text-white rounded-lg hover:bg-[#2C415A] transition-colors"
+          >
             Proceed to Pay
           </button>
         </div>
@@ -352,11 +368,23 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
         <div className="mb-12 text-gray-600">
           <div className="flex items-center mb-6">
             <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-[#333366]">Personal Information</h2>
+            <h2 className="text-2xl font-bold text-[#333366]">
+              Personal Information
+            </h2>
           </div>
 
           <div className="grid gap-8 text-gray-600 mb-8">
@@ -373,25 +401,39 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-gray-500">Phone</p>
-                  <p className="text-sm font-medium">{personalData?.phoneNumber}</p>
+                  <p className="text-sm font-medium">
+                    {personalData?.phoneNumber}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Passport Details Card */}
             <div className="bg-gray-50 rounded-xl text-gray-600 p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#333366] mb-4">Passport Information</h3>
+              <h3 className="text-sm font-semibold text-[#333366] mb-4">
+                Passport Information
+              </h3>
               <div className="grid gap-6 md:grid-cols-3">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Passport Number</p>
-                  <p className="text-sm font-medium">{personalData?.passport_number}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    Passport Number
+                  </p>
+                  <p className="text-sm font-medium">
+                    {personalData?.passport_number}
+                  </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Citizenship</p>
-                  <p className="text-sm font-medium">{personalData?.citizenshipCountry?.label}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    Citizenship
+                  </p>
+                  <p className="text-sm font-medium">
+                    {personalData?.citizenshipCountry?.label}
+                  </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-gray-500">Expiry Date</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    Expiry Date
+                  </p>
                   <p className="text-sm font-medium">
                     {moment(personalData?.passport_expiry).format("YYYY-MM-DD")}
                   </p>
@@ -401,20 +443,30 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
             {/* Address Card */}
             <div className="bg-gray-50  text-gray-600 rounded-xl p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-[#333366] mb-4">Address Details</h3>
+              <h3 className="text-sm font-semibold text-[#333366] mb-4">
+                Address Details
+              </h3>
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Street Address</p>
-                  <p className="text-sm font-medium">{personalData?.addressLine}</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    Street Address
+                  </p>
+                  <p className="text-sm font-medium">
+                    {personalData?.addressLine}
+                  </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm font-medium text-gray-500">Country</p>
-                    <p className="text-sm font-medium">{personalData?.addressData?.country}</p>
+                    <p className="text-sm font-medium">
+                      {personalData?.addressData?.country}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-500">State</p>
-                    <p className="text-sm font-medium">{personalData?.addressData?.state}</p>
+                    <p className="text-sm font-medium">
+                      {personalData?.addressData?.state}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -426,11 +478,23 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
         <div className="text-gray-600 mt-12">
           <div className="flex items-center mb-6">
             <div className="w-8 h-8 bg-[#333366] rounded-full flex items-center justify-center mr-3">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-[#333366]">Risk Assessment</h2>
+            <h2 className="text-2xl font-bold text-[#333366]">
+              Risk Assessment
+            </h2>
           </div>
 
           <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
@@ -438,14 +502,20 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
               {Object.entries(riskAssessmentData || {}).map(([key, value]) => (
                 <div key={key} className="border-l-4 border-[#333366] pl-4">
                   <p className="text-sm font-medium text-gray-500">
-                    {key.split(/(?=[A-Z])/).join(' ')}
+                    {key.split(/(?=[A-Z])/).join(" ")}
                   </p>
                   <p className="text-sm font-medium">
-                    {typeof value === 'boolean' ? (value ? 'Yes' : 'No') :
-                      typeof value === 'object' ? value?.label :
-                        value === 'true' ? 'Yes' :
-                          value === 'false' ? 'No' :
-                            value}
+                    {typeof value === "boolean"
+                      ? value
+                        ? "Yes"
+                        : "No"
+                      : typeof value === "object"
+                      ? value?.label
+                      : value === "true"
+                      ? "Yes"
+                      : value === "false"
+                      ? "No"
+                      : value}
                   </p>
                 </div>
               ))}
@@ -456,13 +526,27 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
         {/* Status Banner */}
         <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-4 flex items-center">
           <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            <svg
+              className="w-6 h-6 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
           <div>
-            <h4 className="text-sm font-semibold text-green-800">Profile Complete</h4>
-            <p className="text-green-600">All required information has been provided</p>
+            <h4 className="text-sm font-semibold text-green-800">
+              Profile Complete
+            </h4>
+            <p className="text-green-600">
+              All required information has been provided
+            </p>
           </div>
         </div>
       </div>
@@ -535,7 +619,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             type="date"
             id="dob"
             register={register}
-            minDate={moment().subtract(18, 'years').format("YYYY-MM-DD")}
+            minDate={moment().subtract(18, "years").format("YYYY-MM-DD")}
             validation={{
               required: "DOB is required",
               validate: {
@@ -546,16 +630,17 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                     return "Please enter a valid date in YYYY-MM-DD format";
                   }
                   // Optional: Check if the user is 18 years old
-                  const age = moment().diff(moment(value), 'years');
+                  const age = moment().diff(moment(value), "years");
                   if (age < 18) {
                     return "User must be at least 18 years old";
                   }
                   return true;
                 },
-            }}}
+              },
+            }}
             placeholder=""
             errors={errors.dob}
-          /> 
+          />
           {/* {/* <Input
           label="First Language"
           id="first_language"
@@ -704,7 +789,6 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                 message:
                   "Input must be 5 or 6 alphanumeric characters (letters and numbers only, no special characters).",
               },
-
             }}
             errors={errors.zipCode}
           />

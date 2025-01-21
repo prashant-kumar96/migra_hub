@@ -5,6 +5,7 @@ import VisaData from "../models/visadata.js";
 // In your user controller file
 import { v4 as uuidv4 } from "uuid";
 import { generateApplicationId } from "./authController.js";
+import User from "../models/User";
 
 // Helper function to generate a random 10-digit number as a string
 function generateRandomPhoneNumber(): string {
@@ -136,6 +137,15 @@ export async function addFamilyMember(req: any, res: any) {
   }
 }
 
+export async function editFamilyMember(req: any, res: any) {
+  try {
+    console.log("req.query?.id", req.query?.id);
+    console.log("req.body", req.body);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function getFamilyMemberApplicationDetails(req: any, res: any) {
   try {
     const familyMemberId = req.query.userId; // Get from query params
@@ -219,6 +229,18 @@ export async function getPrimaryApplicantLinkedFamilyMembers(
       familyMembers: formattedFamilyMembers,
       message: "Family members details fetched successfully",
     });
+  } catch (error) {
+    console.error("Error fetching linked family members:", error);
+    res.status(500).json({ message: "Internal server error", error: error });
+  }
+}
+
+export async function getSingleFamilyMemberDetails(req: any, res: any) {
+  try {
+    console.log("getSingleFamilyMemberDetails is run");
+    const userId = req.query.userId;
+    const UserDetails = await User.findOne({ _id: userId });
+    console.log("UserDetails", UserDetails);
   } catch (error) {
     console.error("Error fetching linked family members:", error);
     res.status(500).json({ message: "Internal server error", error: error });

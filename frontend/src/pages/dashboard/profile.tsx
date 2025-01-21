@@ -19,6 +19,8 @@ import { deleteFamilyMember, getLinkedFamilyMembers } from "@/api/familyMember";
 import { useRouter } from "next/router";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import Loader from "@/components/loaders/loader";
+import ButtonLoader from "@/components/loaders/buttonLoader";
 
 const ProfilePage = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
@@ -36,7 +38,8 @@ const ProfilePage = () => {
   const [applicationStatus, setApplicationStatus] = useState<any>(null);
   const [linkedMembers, setLinkedMembers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [member, setMember] = useState();
+  const [member, setMember] = useState({});
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Separate API calls into individual functions
   const fetchApplicationStatus = async () => {
@@ -107,8 +110,10 @@ const ProfilePage = () => {
   }
 
   const handleModal = () => {
-    const obj = {};
-    setMember((prev) => obj);
+    console.log("handleModal is run");
+    // const emptyObj = {};
+    setIsEditMode(false);
+    setMember({});
     setIsOpen(true);
   };
 
@@ -117,18 +122,19 @@ const ProfilePage = () => {
     setCitizenshipCountry(code);
   };
 
-  const renderLinkedMembers = () => {
-    if (!linkedMembers?.familyMembers?.length) return null;
+  const [deleteLoader, setDeleteLoader] = useState(false);
+  const handleEdit = (tempMember) => {
+    console.log("tempMember", tempMember);
+    setIsEditMode(true);
+    setMember(tempMember);
+    setIsOpen(true);
+  };
 
-    const handleEdit = (tempMember) => {
-      console.log("tempMember", tempMember);
-      setMember(tempMember);
-      setIsOpen(true);
-    };
-    console.log("member", member);
-
-    const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
+    try {
+      setDeleteLoader(true);
       console.log("handleDelete", id);
+
       const deleteResult = await deleteFamilyMember(id);
       console.log("deleteResult", deleteResult);
       if (deleteResult.status === 200) {
@@ -138,7 +144,20 @@ const ProfilePage = () => {
       } else {
         alert("error");
       }
-    };
+    } catch (err) {
+      console.log("error");
+    } finally {
+      setDeleteLoader(false);
+    }
+  };
+
+  const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] = useState<{
+    value: string;
+    label: string;
+  } | null>();
+
+  const renderLinkedMembers = () => {
+    if (!linkedMembers?.familyMembers?.length) return null;
 
     return (
       <div className="mb-8 overflow-x-auto">
@@ -221,13 +240,14 @@ const ProfilePage = () => {
                     }}
                   />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 flex gap-2 ">
                   <MdDelete
                     className="cursor-pointer"
                     onClick={() => {
                       handleDelete(member._id);
                     }}
                   />
+                  {deleteLoader && <ButtonLoader />}
                 </td>
               </tr>
             ))}
@@ -283,6 +303,8 @@ const ProfilePage = () => {
           isOpen={isOpen}
           member={member}
           onClose={onClose}
+          isEditMode={isEditMode}
+          selectedCitizenshipCountry={selectedCitizenshipCountry}
         />
 
         <PersonalInfo
