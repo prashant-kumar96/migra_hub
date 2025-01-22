@@ -137,41 +137,41 @@ const EditPersonalInfo = ({
   }, [personalData]);
 
 
-    const onSubmit = async (formData) => {
-        try {
-            // Add the userId to the formData object
-            const updatedFormData = { ...formData, userId };
+    // const onSubmit = async (formData) => {
+    //     try {
+    //         // Add the userId to the formData object
+    //         const updatedFormData = { ...formData, userId };
 
-            // Call the updatePersonalData function with the updated data
-            const result = await updatePersonalData(updatedFormData);
+    //         // Call the updatePersonalData function with the updated data
+    //         const result = await updatePersonalData(updatedFormData);
 
-            if (result?.status === 200) {
-                toast.success("Information updated successfully!");
+    //         if (result?.status === 200) {
+    //             toast.success("Information updated successfully!");
 
-                // Update the parent state with new data
-                setPersonalData(result.data.updatedData);
-                onClose(); // Close the modal or form
-                alert("data updated!")
-            } else {
-                toast.error("Failed to update information");
-            }
-        } catch (error) {
-            console.error("Error occurred:", error);
-            toast.error("An error occurred while updating information.");
-        }
+    //             // Update the parent state with new data
+    //             setPersonalData(result.data.updatedData);
+    //             onClose(); // Close the modal or form
+    //             alert("data updated!")
+    //         } else {
+    //             toast.error("Failed to update information");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error occurred:", error);
+    //         toast.error("An error occurred while updating information.");
+    //     }
 
-        console.log("Updated data after submission: ", formData);
-    };
+    //     console.log("Updated data after submission: ", formData);
+    // };
 
 
 
-    const options = [
-        { code: "en", label: "English" },
-        { code: "es", label: "Spanish" },
-        { code: "fr", label: "French" },
-        { code: "hi", label: "Hindi" },
-        { code: "zh", label: "Chinese" },
-    ];
+    // const options = [
+    //     { code: "en", label: "English" },
+    //     { code: "es", label: "Spanish" },
+    //     { code: "fr", label: "French" },
+    //     { code: "hi", label: "Hindi" },
+    //     { code: "zh", label: "Chinese" },
+    // ];
     useEffect(() => {
         if (personalData) {
             reset({
