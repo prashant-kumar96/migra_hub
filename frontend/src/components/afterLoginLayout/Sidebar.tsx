@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
 import Loader from "../loaders/loader";
-
+import { RiLogoutCircleRLine } from "react-icons/ri";
 
 
 const sidebarData = [
@@ -146,15 +146,16 @@ const Sidebar = () => {
       {isLoggingOut && <Loader text="logging out" />}
       <div className="bg-gradient-to-r from-[#333366] to-[#2C415A] sm:w-[230px] h-screen w-14 flex   flex-col fixed left-0 top-0 ">
         {/* Logo Section */}
-        <div className="text-center  text-FloralWhite  p-6">
+        <div className="text-center text-FloralWhite  p-2 mt-6">
           <Link href="/">
             {isSmallScreen ? (
-              <Image
-                src="/logo/onlyM.png"
-                width={500}
-                height={500}
-                alt="Small Logo"
-              />
+              // <Image
+              //   src="/logo/onlyM.png"
+              //   width={500}
+              //   height={500}
+              //   alt="Small Logo"
+              // />
+              <span className="text-5xl text-FloralWhite font-bold font-sans">M</span>
             ) : (
               <Image
                 src="/logo/MigraHub.png"
@@ -172,17 +173,17 @@ const Sidebar = () => {
             menuItems.map((item, index) => (
               <li
                 key={index}
-                className={`cursor-pointer  px-4 h-12 flex items-center justify-center sm:justify-start
+                className={`cursor-pointer  px-3 py-2 flex items-center justify-center sm:justify-start
                 ${
                     activeLink === item.href
-                    ? "bg-white text-Indigo"
+                    ? "bg-FloralWhite text-Indigo "
                     : "hover:bg-gray-800 text-FloralWhite"
                   }
                  `}
               >
                 {item.icon}
                 <Link href={item.href} passHref>
-                   <span className={` hidden sm:block  font-normal uppercase tracking-widest transition-colors
+                   <span className={` hidden sm:block  px-4 py-1 font-normal uppercase tracking-wide transition-colors
                                     ${
                                         activeLink === item.href
                                           ? "text-Indigo"
@@ -202,14 +203,14 @@ const Sidebar = () => {
         </ul>
 
         {/* Sign Out Button */}
-        <div className="p-3 sticky bottom-0 bg-Indigo">
+        <div className="p-3 sticky bottom-0 shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
           {session || token ? (
             <button
-              className="bg-FloralWhite text-Indigo border-2 border-FloralWhite p-2 rounded-md w-full flex items-center justify-center hover:bg-transparent hover:text-FloralWhite"
+              className="bg-FloralWhite text-Indigo border-2 border-FloralWhite p-2 rounded-md w-full flex items-center justify-center hover:bg-transparent hover:text-FloralWhite hover:scale-75"
               onClick={handleSignout}
             >
-              <RiUserReceivedFill size={20} />
-              <span className="ml-3 hidden sm:block uppercase leading-snug tracking-widest">
+              <RiLogoutCircleRLine size={20} />
+              <span className="ml-3 hidden sm:block uppercase leading-snug tracking-wide">
                 Sign Out
               </span>
             </button>
