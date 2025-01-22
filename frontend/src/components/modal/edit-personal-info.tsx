@@ -156,28 +156,24 @@ const EditPersonalInfo = ({ isOpen, userId, onClose, personalData, updatePersona
                                 register={register}
                                 readOnly={true}
                             />
-                    
+
 
                             <Input
                                 label="DOB"
                                 type="date"
                                 id="dob"
                                 register={register}
-                                mini={moment().subtract(100, 'years').format("YYYY-MM-DD")} 
-                                max={moment().format("YYYY-MM-DD")} 
+                                mini={moment().subtract(100, 'years').format("YYYY-MM-DD")}
+                                max={moment().format("YYYY-MM-DD")}
                                 validation={{
                                     required: "DOB is required!",
-                                    validate: {
-                                        // Custom validation for age
-                                        validator: function (value) {
-                                            const age = moment().diff(moment(value), "years", false); // Calculate age
-                                            if (age < 18) {
-                                                return "User must be at least 18 years old";
-                                            }
-                                            return true; // If age is 18 or greater
-                                        },
-                                        message: "User must be at least 18 years old",
-                                    },
+                                    validate: (value) => {
+                                        const age = moment().diff(moment(value), "years", false); // Calculate age
+                                        if (age < 18) {
+                                          return "User must be at least 18 years old"; // If age is less than 18
+                                        }
+                                        return true; // If age is 18 or greater
+                                      },
                                 }}
                                 placeholder="Enter Date of Birth"
                                 errors={errors.dob}

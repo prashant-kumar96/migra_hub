@@ -376,13 +376,13 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           </div>
           <EditPersonalInfo
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            // onClose={toggleModal}
+            // onClose={() => setIsModalOpen(false)}
+            onClose={toggleModal}
             personalData={personalData}
             updatePersonalData={updatePersonalData}
             modalTitle="Edit Personal Information"
             userId={userId}
-            setPersonalData
+            setPersonalData={setPersonalData}
           >
           </EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
@@ -631,16 +631,12 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             max={moment().format("YYYY-MM-DD")}
             validation={{
               required: "DOB is required",
-              validate: {
-                // Custom validation for age
-                validator: function (value) {
-                  const age = moment().diff(moment(value), "years", false); // Calculate age
-                  if (age < 18) {
-                    return "User must be at least 18 years old";
-                  }
-                  return true; // If age is 18 or greater
-                },
-                message: "User must be at least 18 years old",
+              validate: (value) => {
+                const age = moment().diff(moment(value), "years", false); // Calculate age
+                if (age < 18) {
+                  return "User must be at least 18 years old"; // If age is less than 18
+                }
+                return true; // If age is 18 or greater
               },
             }}
             placeholder="Enter Date of Birth"
