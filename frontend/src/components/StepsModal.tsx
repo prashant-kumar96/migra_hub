@@ -81,6 +81,7 @@ const StepsModal: React.FC<Props> = ({
     citizenshipCountry == "IN" ? true : false
   );
 
+  console.log("step", step);
   const selectedCitizenshipcountry = countryList()
     .getData()
     .find((country) => country.value === citizenshipCountry);
@@ -296,8 +297,8 @@ const StepsModal: React.FC<Props> = ({
           ) : (
             <div className="relative bg-FloralWhite rounded-lg shadow max-h-[700px] overflow-auto">
               <div
-                className={`flex justify-between items-center p-4 md:p-5 border-b rounded-t ${
-                  step === 5 && "p-0 md:p-0 md:px-5 md:p-5"
+                className={`flex justify-between items-center p-4 border-b rounded-t ${
+                  step == 5 ? "p-0 md:p-0 md:px-5 md:p-0" : "md:p-5"
                 }`}
               >
                 {/* Left Section: Risk Assessment */}
@@ -332,13 +333,15 @@ const StepsModal: React.FC<Props> = ({
               </div>
 
               <div
-                className={`m-2 p-4 md:m-5 md:p-5 space-y-2 rounded text-gray-900 ${
-                  step === 5 ? "m-0 p-0 md:m-5 md:p-0" : ""
+                className={`m-2 p-4 md:m-5  space-y-2 rounded text-gray-900 ${
+                  step === 5 ? "m-0 p-0 md:m-5 md:p-0" : "md:p-5"
                 }`}
               >
                 <ProgressBar progressBarpercentage={progressBarpercentage} />
                 <h2
-                  className={`leading-relaxed text-center font-medium text-Indigo text-2xl py-6 text-base py-0.5
+                  className={`leading-relaxed text-center font-medium text-Indigo text-2xl  text-base ${
+                    step === 5 ? "py-0.5" : "py-6"
+                  }
                   }`}
                 >
                   {ModalData[step].question}
@@ -805,9 +808,10 @@ const StepsModal: React.FC<Props> = ({
               )}
 
               <div
-                className={`flex items-center p-4 md:p-5 ${
-                  step === 5 && "md:p-1 md:px-5"
-                }border-t border-gray-200 rounded-b`}
+                className={`flex items-center  ${
+                  step === 5 ? "md:p-1 md:px-5" : "p-4 md:p-5"
+                }
+                border-t border-gray-200 rounded-b`}
               >
                 <button
                   data-modal-hide="default-modal"

@@ -13,7 +13,11 @@ import ReactFlagsSelect from "react-flags-select";
 import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
 import moment from "moment";
-import { getPersonalData, savePersonalData, updatePersonalData } from "@/api/personalData";
+import {
+  getPersonalData,
+  savePersonalData,
+  updatePersonalData,
+} from "@/api/personalData";
 import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
 import { ToastContainer, toast } from "react-toastify";
@@ -34,7 +38,14 @@ const options = [
   { code: "hi", label: "Hindi" },
   { code: "zh", label: "Chinese" },
 ];
-const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
+const PersonalInfo = ({
+  userId,
+  userEmail,
+  userName,
+  visaDataId,
+  text,
+  setText,
+}) => {
   const {
     register,
     handleSubmit,
@@ -54,6 +65,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   const [personalData, setPersonalData] = useState();
   const [sharedMedata] = useAtom(meDataAtom);
   const { user, isLoading } = useAuth();
+
   // console.log(";; personal visa data", user);
 
   // const userId = user?.user?._id;
@@ -259,6 +271,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           // console.log("we are here");
           // localStorage.setItem("token", result?.data?.token);
           // router.push("/dashboard/payment");
+          setText("Saved");
           setLoading(false);
         } else {
           // console.log("result@@@", result);
@@ -312,7 +325,8 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
   useEffect(() => {
     getPersonalInfofunction();
-  }, []);
+    setText("");
+  }, [text]);
 
   // Edit personal information
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -383,8 +397,8 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             modalTitle="Edit Personal Information"
             userId={userId}
             setPersonalData={setPersonalData}
-          >
-          </EditPersonalInfo>
+            setText={setText}
+          ></EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
             {/* Basic Info Card */}
             <div className="bg-gray-50 rounded-xl p-6 shadow-sm">
@@ -518,12 +532,12 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                         ? "Yes"
                         : "No"
                       : typeof value === "object"
-                        ? value?.label
-                        : value === "true"
-                          ? "Yes"
-                          : value === "false"
-                            ? "No"
-                            : value}
+                      ? value?.label
+                      : value === "true"
+                      ? "Yes"
+                      : value === "false"
+                      ? "No"
+                      : value}
                   </p>
                 </div>
               ))}
@@ -627,7 +641,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             type="date"
             id="dob"
             register={register}
-            mini={moment().subtract(100, 'years').format("YYYY-MM-DD")}
+            mini={moment().subtract(100, "years").format("YYYY-MM-DD")}
             max={moment().format("YYYY-MM-DD")}
             validation={{
               required: "DOB is required",
@@ -714,7 +728,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             type="date"
             register={register}
             placeholder=""
-            minDate={moment().format("YYYY-MM-DD")}
+            minDate={moment().add(1, "days").format("YYYY-MM-DD")}
             validation={{
               required: "Passport Expiry Date is required",
             }}

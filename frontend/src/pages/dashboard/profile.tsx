@@ -282,6 +282,7 @@ const ProfilePage = () => {
       </div>
     );
   }
+  const [text, setText] = useState();
   return (
     <div className="w-5/6">
       {/* <ProgressBar /> */}
@@ -318,6 +319,8 @@ const ProfilePage = () => {
           userEmail={user.user.email}
           userName={user.user.name}
           userId={user.user._id}
+          setText={setText}
+          text={text}
         />
       </div>
     </div>
