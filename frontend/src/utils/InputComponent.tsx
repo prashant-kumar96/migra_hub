@@ -1,5 +1,6 @@
 import React from "react";
-interface props {
+
+interface Props {
   label: string;
   type?: string;
   register: any;
@@ -9,10 +10,14 @@ interface props {
   id: string;
   toUpperCase?: boolean;
   minDate?: any;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; 
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
+  mini?: any;
+  min?: string; // New min prop
+  max?: string; // New max prop
 }
-const Input: React.FC<props> = ({
+
+const Input: React.FC<Props> = ({
   label,
   type = "text",
   register,
@@ -24,6 +29,8 @@ const Input: React.FC<props> = ({
   minDate,
   onChange,
   readOnly = false,
+  min,
+  max,
 }) => {
   return (
     <div className="mb-4">
@@ -41,11 +48,13 @@ const Input: React.FC<props> = ({
           readOnly ? "bg-gray-200 opacity-50 cursor-not-allowed" : "border-gray-200"
         }`}
         placeholder={placeholder}
-        min={minDate}
-        autocomplete="off"
+        mini={min}
+        max={max} // Apply the max prop here
+        min={minDate} // minDate will still apply
+        autoComplete="off"
         onChange={onChange}
         readOnly={readOnly}
-        defaultValue={minDate} 
+        defaultValue={minDate}
       />
       {errors && (
         <p className="text-red-500 text-sm font-sans tracking-wide font-normal mt-1">*{errors.message}</p>

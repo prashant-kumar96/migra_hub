@@ -265,7 +265,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           setLoading(false);
         }
       }
-      
+
       const formattedDOB = moment(data.dob).format("YYYY-MM-DD");
       data.dob = formattedDOB;
     } catch (err) {
@@ -318,11 +318,11 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = async () => {
     if (!isModalOpen) {
-      await getPersonalInfofunction(); 
+      await getPersonalInfofunction();
     }
     setIsModalOpen(!isModalOpen);
   };
-  
+
   // console.log("moment", moment().format("YYYY-MM-DD"));
   // console.log(";; personal data", personalDataStatus);
   if (personalDataStatus) {
@@ -382,7 +382,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             updatePersonalData={updatePersonalData}
             modalTitle="Edit Personal Information"
             userId={userId}
-            setPersonalData 
+            setPersonalData
           >
           </EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
@@ -518,12 +518,12 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
                         ? "Yes"
                         : "No"
                       : typeof value === "object"
-                      ? value?.label
-                      : value === "true"
-                      ? "Yes"
-                      : value === "false"
-                      ? "No"
-                      : value}
+                        ? value?.label
+                        : value === "true"
+                          ? "Yes"
+                          : value === "false"
+                            ? "No"
+                            : value}
                   </p>
                 </div>
               ))}
@@ -627,26 +627,23 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             type="date"
             id="dob"
             register={register}
-            minDate={moment().subtract(18, "years").format("YYYY-MM-DD")}
+            mini={moment().subtract(100, 'years').format("YYYY-MM-DD")}
+            max={moment().format("YYYY-MM-DD")}
             validation={{
               required: "DOB is required",
               validate: {
-                validator: function (value: Date) {
-                  // Calculate the age using only the year difference
-                  const age = moment().diff(moment(value), "years", false); 
-                  
-                  // Check if the age is less than 18
+                // Custom validation for age
+                validator: function (value) {
+                  const age = moment().diff(moment(value), "years", false); // Calculate age
                   if (age < 18) {
-                    // Return false to indicate the validation failed
-                    return false;
+                    return "User must be at least 18 years old";
                   }
-                  // If age is 18 or greater, return true
-                  return true;
+                  return true; // If age is 18 or greater
                 },
                 message: "User must be at least 18 years old",
               },
             }}
-            placeholder=""
+            placeholder="Enter Date of Birth"
             errors={errors.dob}
           />
           {/* {/* <Input

@@ -156,33 +156,30 @@ const EditPersonalInfo = ({ isOpen, userId, onClose, personalData, updatePersona
                                 register={register}
                                 readOnly={true}
                             />
+                    
+
                             <Input
                                 label="DOB"
                                 type="date"
                                 id="dob"
-                                // onChange={handleInputChange}
                                 register={register}
-                                minDate={moment().subtract(18, 'years').format("YYYY-MM-DD")}
+                                mini={moment().subtract(100, 'years').format("YYYY-MM-DD")} 
+                                max={moment().format("YYYY-MM-DD")} 
                                 validation={{
                                     required: "DOB is required",
                                     validate: {
-                                        validator: function (value: Date) {
-                                          // Calculate the age using only the year difference
-                                          const age = moment().diff(moment(value), "years", false); 
-                                          
-                                          // Check if the age is less than 18
-                                          if (age < 18) {
-                                            // Return false to indicate the validation failed
-                                            return ("user must be of 18 years age");
-                                          }
-                                          // If age is 18 or greater, return true
-                                          return true;
+                                        // Custom validation for age
+                                        validator: function (value) {
+                                            const age = moment().diff(moment(value), "years", false); // Calculate age
+                                            if (age < 18) {
+                                                return "User must be at least 18 years old";
+                                            }
+                                            return true; // If age is 18 or greater
                                         },
                                         message: "User must be at least 18 years old",
-                                      },
-                                    }
-                                }
-                                placeholder=""
+                                    },
+                                }}
+                                placeholder="Enter Date of Birth"
                                 errors={errors.dob}
                             />
 
