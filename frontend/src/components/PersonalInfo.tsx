@@ -13,7 +13,7 @@ import ReactFlagsSelect from "react-flags-select";
 import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
 import moment from "moment";
-import { getPersonalData, savePersonalData } from "@/api/personalData";
+import { getPersonalData, savePersonalData, updatePersonalData } from "@/api/personalData";
 import { meDataAtom } from "@/store/meDataAtom";
 import { useAtom } from "jotai";
 import { ToastContainer, toast } from "react-toastify";
@@ -265,6 +265,7 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           setLoading(false);
         }
       }
+      
       const formattedDOB = moment(data.dob).format("YYYY-MM-DD");
       data.dob = formattedDOB;
     } catch (err) {
@@ -315,13 +316,13 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
 
   // Edit personal information
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const toggleModal = async () => {
     if (!isModalOpen) {
       await getPersonalInfofunction(); 
     }
     setIsModalOpen(!isModalOpen);
   };
+  
   // console.log("moment", moment().format("YYYY-MM-DD"));
   // console.log(";; personal data", personalDataStatus);
   if (personalDataStatus) {
@@ -375,10 +376,13 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
           </div>
           <EditPersonalInfo
             isOpen={isModalOpen}
-            onClose={toggleModal}
+            onClose={() => setIsModalOpen(false)}
+            // onClose={toggleModal}
             personalData={personalData}
-            savePersonalData={savePersonalData}
+            updatePersonalData={updatePersonalData}
             modalTitle="Edit Personal Information"
+            userId={userId}
+            setPersonalData 
           >
           </EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
@@ -627,19 +631,19 @@ const PersonalInfo = ({ userId, userEmail, userName, visaDataId }) => {
             validation={{
               required: "DOB is required",
               validate: {
-                // Optional: You can also check if the date is valid and at least 18 years old before submitting
-                isValidDate: (value) => {
-                  const isValid = moment(value, "YYYY-MM-DD", true).isValid();
-                  if (!isValid) {
-                    return "Please enter a valid date in YYYY-MM-DD format";
-                  }
-                  // Optional: Check if the user is 18 years old
-                  const age = moment().diff(moment(value), "years");
+                validator: function (value: Date) {
+                  // Calculate the age using only the year difference
+                  const age = moment().diff(moment(value), "years", false); 
+                  
+                  // Check if the age is less than 18
                   if (age < 18) {
-                    return "User must be at least 18 years old";
+                    // Return false to indicate the validation failed
+                    return false;
                   }
+                  // If age is 18 or greater, return true
                   return true;
                 },
+                message: "User must be at least 18 years old",
               },
             }}
             placeholder=""

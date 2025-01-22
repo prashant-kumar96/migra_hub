@@ -13,10 +13,13 @@ import ReactFlagsSelect from "react-flags-select";
 import countryList from "react-select-country-list";
 import "react-country-state-city/dist/react-country-state-city.css";
 import moment from "moment";
-import { getPersonalData, savePersonalData } from "@/api/personalData";
+import { getPersonalData, savePersonalData, updatePersonalData } from "@/api/personalData";
 import { ToastContainer, toast } from "react-toastify";
 
-const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, modalTitle }) => {
+const EditPersonalInfo = ({ isOpen, userId, onClose, personalData, updatePersonalData, modalTitle, setPersonalData }) => {
+    if (!isOpen) {
+        return null;
+    }
     const { register, handleSubmit, setValue, control, formState: { errors }, reset } = useForm({
         defaultValues: {
             first_name: "",
@@ -46,22 +49,34 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
     // };
 
 
+
     const onSubmit = async (formData) => {
-        console.log("Submitted Data:", formData); // Debug
         try {
-          const result = await savePersonalData(formData); // Call API or action
-          if (result?.status === 200) {
-            toast.success("Information updated successfully!");
-            onClose();
-          } else {
-            toast.error("Failed to update information");
-          }
+            // Add the userId to the formData object
+            const updatedFormData = { ...formData, userId };
+
+            // Call the updatePersonalData function with the updated data
+            const result = await updatePersonalData(updatedFormData);
+
+            if (result?.status === 200) {
+                toast.success("Information updated successfully!");
+
+                // Update the parent state with new data
+                setPersonalData(result.data.updatedData);
+                onClose(); // Close the modal or form
+                alert("modal kyo nhi ho rheya!")
+            } else {
+                toast.error("Failed to update information");
+            }
         } catch (error) {
-          console.error("Error occurred:", error); // Debug
-          toast.error("An error occurred");
+            console.error("Error occurred:", error);
+            toast.error("An error occurred while updating information.");
         }
-      };
-      
+
+        console.log("Updated data after submission: ", formData);
+    };
+
+
 
     const options = [
         { code: "en", label: "English" },
@@ -98,10 +113,9 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
     useEffect(() => {
         console.log("Updated personalData:", personalData);
     }, [personalData]);
-    if (!isOpen) return null; // Don't render if modal is not open
 
     return (
-        <div className="fixed inset-0 backdrop-blur-sm bg-[#807D78]/30 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 backdrop-blur-sm bg-[#807D78]/30 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
             <div className="bg-FloralWhite rounded-lg p-6 shadow-lg w-[70%] relative">
                 <div className="flex justify-between ">
                     <h3 className="text-xl font-bold font-sans mb-4">{modalTitle}</h3>
@@ -124,19 +138,6 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 // onChange={handleInputChange}
                                 register={register}
                                 readOnly={true}
-                                validation={{
-                                    required: "First name is required",
-                                    minLength: {
-                                        value: 2,
-                                        message: "First name must be at least 2 characters",
-                                    },
-                                    maxLength: {
-                                        value: 20,
-                                        message: "First name must be at most 20 characters",
-                                    },
-                                }}
-                                placeholder="John"
-                                errors={errors.first_name}
                             />
                             <Input
                                 label="Middle Name"
@@ -145,19 +146,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 readOnly={true}
                                 // onChange={handleInputChange}
                                 register={register}
-                                validation={{
-                                    required: "Middle name is required",
-                                    minLength: {
-                                        value: 2,
-                                        message: "Middle name must be at least 2 characters",
-                                    },
-                                    maxLength: {
-                                        value: 20,
-                                        message: "Middle name must be at most 20 characters",
-                                    },
-                                }}
                                 placeholder="Singh"
-                                errors={errors.middle_name}
                             />
                             <Input
                                 label="Last Name"
@@ -166,19 +155,6 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 // onChange={handleInputChange}
                                 register={register}
                                 readOnly={true}
-                                validation={{
-                                    required: "Last name is required",
-                                    minLength: {
-                                        value: 2,
-                                        message: "Last name must be at least 2 characters",
-                                    },
-                                    maxLength: {
-                                        value: 20,
-                                        message: "Last name must be at most 20 characters",
-                                    },
-                                }}
-                                placeholder="Doe"
-                                errors={errors.last_name}
                             />
                             <Input
                                 label="DOB"
@@ -190,21 +166,22 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 validation={{
                                     required: "DOB is required",
                                     validate: {
-                                        // Optional: You can also check if the date is valid and at least 18 years old before submitting
-                                        isValidDate: (value) => {
-                                            const isValid = moment(value, "YYYY-MM-DD", true).isValid();
-                                            if (!isValid) {
-                                                return "Please enter a valid date in YYYY-MM-DD format";
-                                            }
-                                            // Optional: Check if the user is 18 years old
-                                            const age = moment().diff(moment(value), 'years');
-                                            if (age < 18) {
-                                                return "User must be at least 18 years old";
-                                            }
-                                            return true;
+                                        validator: function (value: Date) {
+                                          // Calculate the age using only the year difference
+                                          const age = moment().diff(moment(value), "years", false); 
+                                          
+                                          // Check if the age is less than 18
+                                          if (age < 18) {
+                                            // Return false to indicate the validation failed
+                                            return ("user must be of 18 years age");
+                                          }
+                                          // If age is 18 or greater, return true
+                                          return true;
                                         },
+                                        message: "User must be at least 18 years old",
+                                      },
                                     }
-                                }}
+                                }
                                 placeholder=""
                                 errors={errors.dob}
                             />
@@ -213,7 +190,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 <label className="block mb-2 text-base font-medium text-gray-700">
                                     First Language
                                 </label>
-                                <Controller
+                                {/* <Controller
                                     name="firstLanguageError"
                                     control={control}
                                     defaultValue={
@@ -222,19 +199,19 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                             : null
                                     }
                                     rules={{ required: "First Language is required" }}
-                                    render={({ field }) => (
-                                        <Select
-                                            {...field}
-                                            options={options}
-                                            className={`w-full shadow-md rounded-lg text-gray-800`}
-                                        />
-                                    )}
+                                    render={({ field }) => ( */}
+                                <Select
+                                    // {...field}
+                                    options={options}
+                                    className={`w-full shadow-md rounded-lg text-gray-800`}
+                                />
+                                {/* )}
                                 />
                                 {errors.firstLanguageError && (
                                     <p className="text-red-500 text-xs font-medium mt-1">
                                         {errors.firstLanguageError.message}
                                     </p>
-                                )}
+                                )} */}
                             </div>
                             <Input
                                 label="Passport Number"
@@ -376,15 +353,6 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                                 // onChange={handleInputChange}
 
                                 register={register}
-                                placeholder=""
-                                validation={{
-                                    required: "Email is required",
-                                    pattern: {
-                                        value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                                        message: "Please enter email in the correct format",
-                                    },
-                                }}
-                                errors={errors.email}
                             />
                             <Input
                                 label=" Phone Number"
@@ -412,6 +380,7 @@ const EditPersonalInfo = ({ isOpen, onClose, personalData, savePersonalData, mod
                             validation={{
                                 required: false,
                             }}
+                            readOnly={true}
                             errors={errors.addressLine}
                         />
 

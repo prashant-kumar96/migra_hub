@@ -71,13 +71,21 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
     required: [false, "DOB is required"],
     validate: {
       validator: function (value: Date) {
-        // Check if the user is at least 18 years old
-        const age = moment().diff(moment(value), "years");
-        return age >= 18;
+        // Calculate the age using only the year difference
+        const age = moment().diff(moment(value), "years", false); 
+        
+        // Check if the age is less than 18
+        if (age < 18) {
+          // Return false to indicate the validation failed
+          return false;
+        }
+        // If age is 18 or greater, return true
+        return true;
       },
       message: "User must be at least 18 years old",
     },
   },
+  
   passport_number: {
     type: String,
     required: [false, "Passport number is required"],
