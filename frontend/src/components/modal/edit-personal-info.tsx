@@ -166,7 +166,7 @@ const EditPersonalInfo = ({ isOpen, userId, onClose, personalData, updatePersona
                                 mini={moment().subtract(100, 'years').format("YYYY-MM-DD")} 
                                 max={moment().format("YYYY-MM-DD")} 
                                 validation={{
-                                    required: "DOB is required",
+                                    required: "DOB is required!",
                                     validate: {
                                         // Custom validation for age
                                         validator: function (value) {
