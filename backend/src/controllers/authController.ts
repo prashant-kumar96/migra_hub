@@ -1,4 +1,4 @@
-//@ts-ignore
+//@ts-nocheck
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -150,6 +150,7 @@ async function googleLogin(req: any, res: any) {
         if (!visaDataId) {
           const visaData = new VisaData(riskAssessmentData);
           const resultVisaData = await visaData.save({ session });
+          //@ts-ignore
           visaDataId = resultVisaData._id;
         } else {
           // If visaDataId exists, check if visa data is already saved for that id, if not then update

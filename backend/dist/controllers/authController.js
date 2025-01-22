@@ -7,13 +7,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-//@ts-ignore
+//@ts-nocheck
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import VisaData from "../models/visadata.js";
-import axios from 'axios';
+import axios from "axios";
+import ApplicationStatus from "../models/applicationStatus.js";
+import dotenv from "dotenv";
+dotenv.config();
+export function generateApplicationId() {
+    const randomNum = Math.floor(1000 + Math.random() * 90000); // generates a number between 1000-99999
+    return `MH${randomNum}`;
+}
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log("login is run");
@@ -21,6 +28,7 @@ function login(req, res) {
             const JWT_SECRET = process.env.JWT_SECRET;
             const { email, password } = req.body;
             const user = yield User.findOne({ email });
+            console.log(user);
             if (!user) {
                 return res.status(400).json({ message: "Invalid credentials" });
             }
@@ -40,102 +48,188 @@ function login(req, res) {
         }
     });
 }
+const JWT_SECRET = process.env.JWT_SECRET;
 function register(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const JWT_SECRET = process.env.JWT_SECRET;
         console.log("req body", req.body);
-        // return;
         const { email, password, name, role, data } = req.body;
         if (!data) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Please fill all the steps from the index page before registering",
                 extraInfo: "Info Incomplete",
             });
         }
-        else {
-            console.log("/register is run");
-            try {
-                const existingUser = yield User.findOne({ email: email });
-                if (existingUser) {
-                    return res.status(400).json({ message: "User already exists" });
-                }
-                const visadata = new VisaData(data);
-                const resultVisadata = yield visadata.save();
-                console.log("resultVisaData", resultVisadata);
-                const hashedPassword = yield bcrypt.hash(password, 10);
-                const user = new User({
-                    email,
-                    password: hashedPassword,
-                    role,
-                    name,
-                    visaDataId: resultVisadata._id,
-                });
-                const result = yield user.save();
-                console.log(result, "result");
-                const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1d" });
-                res.status(200).json({
-                    token,
-                    user: {
-                        email: user.email,
-                        id: user._id,
-                        message: "User registered successfully",
-                        role: user.role,
-                    },
-                });
-            }
-            catch (error) {
-                console.log("Error", error);
-                res.status(500).json({ message: "Internal server error", error });
-            }
-        }
-    });
-}
-// google login
-function googleLogin(req, res) {
-    return __awaiter(this, void 0, void 0, function* () {
+        console.log("/register is run");
         try {
-            const { accessToken, email, name, googleId } = req.body;
-            if (!accessToken || !email || !name || !googleId) {
-                return res.status(400).json({ message: 'Missing required fields' });
+            const existingUser = yield User.findOne({ email });
+            if (existingUser) {
+                return res.status(400).json({ message: "User already exists" });
             }
-            // Verify the Google access token
-            const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
-            try {
-                const googleRes = yield axios.get(googleApiUrl);
-                if (googleRes.data.email !== email) {
-                    return res.status(401).json({ message: 'Invalid Google token' });
-                }
-            }
-            catch (err) {
-                console.log(err, "google error");
-                return res.status(401).json({ message: 'Invalid Google token' });
-            }
-            let user = yield User.findOne({ email: email });
-            console.log('google user', user);
-            if (!user) {
-                // User doesn't exist, create a new user
-                user = new User({
-                    email: email,
-                    name: name,
-                    googleId: googleId,
-                    // set a default password or don't set one
+            const visadata = new VisaData(data);
+            const resultVisadata = yield visadata.save();
+            console.log("resultVisaData", resultVisadata);
+            const hashedPassword = yield bcrypt.hash(password, 10);
+            const userPayload = {
+                // Define the user payload object
+                email,
+                password: hashedPassword,
+                role,
+                name,
+                visaDataId: resultVisadata._id,
+            };
+            // Create application status and application id if role is 'USER'
+            if (role === "USER") {
+                // const applicationId = uuidv4();
+                const applicationId = generateApplicationId();
+                const applicationStatus = new ApplicationStatus({
+                    applicationId: applicationId,
+                    riskAssessment: "completed",
                 });
-                yield user.save();
+                yield applicationStatus.save();
+                userPayload.applicationId = applicationId;
+                userPayload.isPrimaryApplicant = true;
             }
-            // Generate JWT for your application
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+            const user = new User(userPayload);
+            const result = yield user.save();
+            console.log(result, "result");
+            const token = jwt.sign({ id: result._id }, JWT_SECRET, { expiresIn: "1d" });
             res.status(200).json({
                 token,
                 user: {
-                    username: user.name,
-                    id: user._id,
-                    role: user.role, // Assuming you might store roles 
+                    email: result.email,
+                    id: result._id,
+                    message: "User registered successfully",
+                    role: result.role,
                 },
             });
         }
         catch (error) {
-            console.log('Error during Google login', error);
-            res.status(500).json({ message: 'Internal server error' });
+            console.log("Error", error);
+            res.status(500).json({ message: "Internal server error", error });
+        }
+    });
+}
+function googleLogin(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const maxRetries = 3; // Set your maximum retry attempts
+        let retries = 0;
+        while (retries < maxRetries) {
+            const session = yield mongoose.startSession(); // Start a session for transaction
+            session.startTransaction();
+            try {
+                const { accessToken, email, name, googleId, riskAssessmentData } = req.body;
+                if (!accessToken || !email || !name || !googleId) {
+                    return res.status(400).json({ message: "Missing required fields" });
+                }
+                // Verify Google token
+                const googleApiUrl = `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`;
+                try {
+                    const googleRes = yield axios.get(googleApiUrl);
+                    if (googleRes.data.email !== email) {
+                        return res.status(401).json({ message: "Invalid Google token" });
+                    }
+                }
+                catch (err) {
+                    console.error("Google token verification error:", err);
+                    return res.status(401).json({ message: "Invalid Google token" });
+                }
+                // Attempt to find an existing user by email
+                let user = yield User.findOne({ email }).session(session); // Ensure user lookup is part of transaction
+                // Initialize visaDataId and applicationId outside the if blocks
+                let visaDataId = user === null || user === void 0 ? void 0 : user.visaDataId;
+                let applicationId = user === null || user === void 0 ? void 0 : user.applicationId;
+                // Handle Visa Data (only if riskAssessmentData is present)
+                if (riskAssessmentData) {
+                    if (!visaDataId) {
+                        const visaData = new VisaData(riskAssessmentData);
+                        const resultVisaData = yield visaData.save({ session });
+                        //@ts-ignore
+                        visaDataId = resultVisaData._id;
+                    }
+                    else {
+                        // If visaDataId exists, check if visa data is already saved for that id, if not then update
+                        const existingVisaData = yield VisaData.findById(visaDataId).session(session);
+                        if (!existingVisaData) {
+                            const visaData = new VisaData(riskAssessmentData);
+                            const resultVisaData = yield visaData.save({ session });
+                            visaDataId = resultVisaData._id;
+                        }
+                        else {
+                            visaDataId = user.visaDataId;
+                        }
+                    }
+                }
+                // Create or Update User
+                if (!user) {
+                    // applicationId = uuidv4();
+                    applicationId = generateApplicationId();
+                    const newUser = new User(Object.assign(Object.assign({ email,
+                        name,
+                        googleId, isPrimaryApplicant: true }, (visaDataId && { visaDataId })), { applicationId: applicationId }));
+                    user = yield newUser.save({ session });
+                }
+                else {
+                    if (!user.applicationId) {
+                        // applicationId = uuidv4();
+                        applicationId = generateApplicationId();
+                        user.applicationId = applicationId;
+                    }
+                    user.name = name;
+                    user.googleId = googleId;
+                    user.isPrimaryApplicant = true;
+                    if (visaDataId) {
+                        user.visaDataId = visaDataId;
+                    }
+                    yield user.save({ session });
+                }
+                // Handle Application Status (only create if it doesn't exist)
+                let applicationStatus = yield ApplicationStatus.findOne({
+                    applicationId: user.applicationId,
+                }).session(session);
+                if (!applicationStatus) {
+                    const applicationStatus = new ApplicationStatus({
+                        applicationId: user.applicationId,
+                        riskAssessment: riskAssessmentData ? "completed" : "pending",
+                    });
+                    yield applicationStatus.save({ session });
+                }
+                else {
+                    // Check if visa data has been added or not
+                    if (riskAssessmentData) {
+                        applicationStatus.riskAssessment = "completed";
+                        yield applicationStatus.save({ session });
+                    }
+                }
+                yield session.commitTransaction();
+                session.endSession();
+                // Generate JWT
+                const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+                    expiresIn: "1d",
+                });
+                res.status(200).json({
+                    token,
+                    user: {
+                        username: user.name,
+                        id: user._id,
+                        role: user.role,
+                    },
+                });
+                return; // Exit the loop on successful commit
+            }
+            catch (error) {
+                yield session.abortTransaction();
+                session.endSession();
+                if (error.codeName === "WriteConflict" && retries < maxRetries) {
+                    retries++;
+                    console.log(`Transaction failed due to WriteConflict. Retrying ${retries}/${maxRetries}...`);
+                    yield new Promise((resolve) => setTimeout(resolve, 200 * retries)); // Exponential backoff
+                }
+                else {
+                    console.error("Error during Google login:", error);
+                    res.status(500).json({ message: "Internal server error" });
+                    return; // Exit the loop on non-retryable error or max retries reached
+                }
+            }
         }
     });
 }
@@ -230,48 +324,33 @@ function changePassword(req, res) {
 function getUsersWhoHaveDonePayment(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            // Assuming the token payload contains the user ID
-            const user = yield User.find({ isStripePaymentDone: true })
+            const users = yield User.find({ isStripePaymentDone: true })
                 .select("-password")
                 .populate("assignedCaseManagerId");
-            console.log("user", user);
-            // const caseManagerData = await User.findById({
-            //   _id: user[0].assignedCaseManagerId,
-            // });
-            // console.log("caseManagerData", caseManagerData);
-            // const user = await User.aggregate([
-            //   {
-            //     $match: {
-            //       isStripePaymentDone: true,
-            //     },
-            //   },
-            //   {
-            //     $lookup: {
-            //       from: "User",
-            //       localField: "assignedCaseManagerId",
-            //       foreignField: "_id",
-            //       as: "caseManagerData",
-            //     },
-            //   },
-            //   {
-            //     $match: {
-            //       _id: Mongoose0.Types.ObjectId("yourOriginalDocumentId"), // Filter for the specific original document
-            //     },
-            //   },
-            // ]);
-            // console.log("user getUsersWhoHaveDonePayment", user);
-            // return;
-            if (!user) {
-                return res.status(404).json({ message: "User not found" });
+            console.log("Users from DB:", users);
+            if (!users || users.length === 0) {
+                return res
+                    .status(404)
+                    .json({ message: "No users found with stripe payment done" });
             }
+            const usersWithStatus = yield Promise.all(users.map((user) => __awaiter(this, void 0, void 0, function* () {
+                let status = null;
+                if (user === null || user === void 0 ? void 0 : user.applicationId) {
+                    const applicationStatus = yield ApplicationStatus.findOne({
+                        applicationId: user.applicationId,
+                    });
+                    status = applicationStatus ? applicationStatus.status : null;
+                }
+                return Object.assign(Object.assign({}, user.toObject()), { status: status });
+            })));
             res.json({
                 message: "Users fetched successfully",
-                user: user,
+                user: usersWithStatus,
             });
         }
         catch (error) {
-            console.error("Error fetching user details:", error);
-            res.status(500).json({ message: "Internal server error" });
+            console.error("Error fetching users with status:", error);
+            res.status(500).json({ message: "Internal server error", error: error });
         }
     });
 }
@@ -329,7 +408,7 @@ function createCaseManager(req, res) {
         }
     });
 }
-//@ts-ignore
+//@ts-nocheck
 function me(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -340,26 +419,56 @@ function me(req, res) {
             if (!decoded || !decoded.id) {
                 console.warn("Unauthorized: No valid user in request.");
                 //@ts-ignore
-                return res.status(200).json({ status: false, message: "Unauthorized: No valid user in request.", user: null });
+                return res.status(200).json({
+                    status: false,
+                    message: "Unauthorized: No valid user in request.",
+                    user: null,
+                });
             }
             const userId = decoded.id;
-            const user = yield User.findById(userId).select("-password");
+            const user = yield User.findById(userId).select("-password").lean(); // using .lean() for performance
             if (!user) {
                 console.warn(`User not found for ID: ${userId}`);
                 //@ts-ignore
-                return res.status(200).json({ status: false, message: "User not found", user: null });
+                return res
+                    .status(200)
+                    .json({ status: false, message: "User not found", user: null });
+            }
+            // If the user has an application ID, find the ApplicationStatus
+            let populatedUser = Object.assign({}, user); // Create a copy of user
+            if (user.applicationId) {
+                const applicationStatus2 = yield ApplicationStatus.findOne({
+                    applicationId: user.applicationId,
+                });
+                console.log("application status 2", applicationStatus2);
+                const applicationStatus = yield ApplicationStatus.findOne({
+                    applicationId: user.applicationId,
+                })
+                    .select("status")
+                    .lean();
+                if (applicationStatus) {
+                    populatedUser = Object.assign(Object.assign({}, user), { status: applicationStatus.status });
+                }
+                else {
+                    populatedUser = Object.assign(Object.assign({}, user), { status: "N/A" });
+                }
+            }
+            else {
+                populatedUser = Object.assign(Object.assign({}, user), { status: "N/A" });
             }
             //@ts-ignore
             res.status(200).json({
                 status: true,
                 message: "User details fetched successfully",
-                user: user,
+                user: populatedUser, // Return the populated user
             });
         }
         catch (error) {
             console.error("Error fetching user details:", error);
             //@ts-ignore
-            res.status(500).json({ status: false, message: "Internal server error", user: null });
+            res
+                .status(500)
+                .json({ status: false, message: "Internal server error", user: null });
         }
     });
 }

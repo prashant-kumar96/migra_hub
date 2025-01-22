@@ -17,10 +17,14 @@ import visaDataRoutes from "./routes/visaDataRoutes.js";
 import personalDataRoutes from "./routes/personalDataRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import caseManagerRoutes from "./routes/caseManagerRoutes.js";
+import familyMemberRoutes from './routes/famillyMemberRoutes.js';
+import applicationStatusRoutes from './routes/applicationStatusRoutes.js';
+import pricingRoutes from './routes/pricingRoutes.js';
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/User.js";
 import Stripe from "stripe";
+import ApplicationStatus from "./models/applicationStatus.js";
 dotenv.config();
 const uri = process.env.MONGODB_URI;
 if (!uri) {
@@ -68,15 +72,25 @@ app.post("/retrieve-session", (req, res) => __awaiter(void 0, void 0, void 0, fu
         const session = yield stripe.checkout.sessions.retrieve(sessionId);
         console.log(session);
         if (session) {
-            const result = yield User.findOneAndUpdate({
-                _id: userId,
-            }, {
+            const result = yield User.findByIdAndUpdate(userId, {
                 $set: {
                     stripePaymentSessionId: sessionId,
                     isStripePaymentDone: true,
+                    payment: true
                 },
             }, { new: true });
-            console.log(result);
+            if (result && result.applicationId) {
+                const applicationStatus = yield ApplicationStatus.findOne({ applicationId: result.applicationId });
+                if (applicationStatus) {
+                    yield ApplicationStatus.updateOne({ _id: applicationStatus._id }, { $set: { payment: "completed" } });
+                }
+                // Update payment status for all linked family members
+                const familyMembers = yield User.find({ primaryApplicationId: result.applicationId, _id: { $ne: userId } });
+                for (const familyMember of familyMembers) {
+                    yield User.updateOne({ _id: familyMember._id }, { $set: { payment: true, isStripePaymentDone: true } });
+                }
+            }
+            console.log(result, 'result');
         }
         res.status(200).json(session);
     }
@@ -93,6 +107,9 @@ app.use("/api/visaData", visaDataRoutes);
 app.use("/api/personalData", personalDataRoutes);
 app.use("/api/document", documentRoutes);
 app.use("/api/caseManager", caseManagerRoutes);
+app.use('/api/family-member', familyMemberRoutes);
+app.use('/api/pricing', pricingRoutes);
+app.use('/api/application-status', applicationStatusRoutes);
 const client = new MongoClient(uri);
 app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
