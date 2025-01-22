@@ -24,6 +24,7 @@ import ButtonLoader from "@/components/loaders/buttonLoader";
 
 const ProfilePage = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
+  const [text, setText] = useState("");
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
   const router = useRouter();
@@ -282,7 +283,7 @@ const ProfilePage = () => {
       </div>
     );
   }
-  const [text, setText] = useState();
+
   return (
     <div className="w-5/6">
       {/* <ProgressBar /> */}
@@ -321,6 +322,7 @@ const ProfilePage = () => {
           userId={user.user._id}
           setText={setText}
           text={text}
+          
         />
       </div>
     </div>

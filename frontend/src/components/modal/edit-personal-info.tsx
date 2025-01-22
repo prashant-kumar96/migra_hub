@@ -28,7 +28,7 @@ const EditPersonalInfo = ({
   personalData,
   updatePersonalData,
   modalTitle,
-  setPersonalData,
+  // setPersonalData,
   setText,
 }) => {
   if (!isOpen) {
@@ -88,9 +88,19 @@ const EditPersonalInfo = ({
       } else {
         toast.error("Failed to update information");
       }
-    } catch (error) {
-      console.error("Error occurred:", error);
-      toast.error("An error occurred while updating information.");
+    } catch (err) {
+      // console.error("Error occurred:", error);
+      // toast.error("An error occurred while updating information.");
+      console.log(err?.response?.data?.error?.errorResponse?.code);
+      if (err?.response?.data?.error?.errorResponse?.code === 11000) {
+        let str1 = JSON.stringify(
+          err?.response?.data?.error?.errorResponse?.keyValue
+        ).substring(1);
+        console.log(str1);
+        let str2 = str1.substring(0, str1.length - 1);
+        console.log("str2", str2);
+        alert(str2 + " already exists");
+      }
     } finally {
       setLoading(false);
     }
@@ -105,6 +115,70 @@ const EditPersonalInfo = ({
     { code: "hi", label: "Hindi" },
     { code: "zh", label: "Chinese" },
   ];
+  // useEffect(() => {
+  //   if (personalData) {
+  //     reset({
+  //       first_name: personalData?.first_name || "",
+  //       middle_name: personalData?.middle_name || "",
+  //       last_name: personalData?.last_name || "",
+  //       email: personalData?.email || "",
+  //       dob: moment(personalData?.dob).format("YYYY-MM-DD"),
+  //       phoneNumber: personalData?.phoneNumber || "",
+  //       addressLine: personalData?.addressLine || "",
+  //       passport_number: personalData?.passport_number || "",
+  //       gender: personalData?.gender || "",
+  //       zipCode: personalData?.zipCode || "",
+  //       firstLanguageError: personalData?.firstLanguageError || "",
+  //       passport_expiry: moment(personalData?.passport_expiry).format(
+  //         "YYYY-MM-DD"
+  //       ),
+  //       marital_status: personalData?.marital_status || "",
+  //     });
+  //   }
+  // }, [personalData, reset]);
+  // useEffect(() => {
+  //     document.body.style.overflow = "hidden";
+  //     return () => {
+  //         document.body.style.overflow = "auto";
+  //     };
+  // }, []);
+  // useEffect(() => {
+  //   console.log("Updated personalData:", personalData);
+  // }, [personalData]);
+
+  // const onSubmit = async (formData) => {
+  //     try {
+  //         // Add the userId to the formData object
+  //         const updatedFormData = { ...formData, userId };
+
+  //         // Call the updatePersonalData function with the updated data
+  //         const result = await updatePersonalData(updatedFormData);
+
+  //         if (result?.status === 200) {
+  //             toast.success("Information updated successfully!");
+
+  //             // Update the parent state with new data
+  //             setPersonalData(result.data.updatedData);
+  //             onClose(); // Close the modal or form
+  //             alert("data updated!")
+  //         } else {
+  //             toast.error("Failed to update information");
+  //         }
+  //     } catch (error) {
+  //         console.error("Error occurred:", error);
+  //         toast.error("An error occurred while updating information.");
+  //     }
+
+  //     console.log("Updated data after submission: ", formData);
+  // };
+
+  // const options = [
+  //     { code: "en", label: "English" },
+  //     { code: "es", label: "Spanish" },
+  //     { code: "fr", label: "French" },
+  //     { code: "hi", label: "Hindi" },
+  //     { code: "zh", label: "Chinese" },
+  // ];
   useEffect(() => {
     if (personalData) {
       reset({
@@ -132,145 +206,76 @@ const EditPersonalInfo = ({
   //         document.body.style.overflow = "auto";
   //     };
   // }, []);
-  useEffect(() => {
-    console.log("Updated personalData:", personalData);
-  }, [personalData]);
+  // useEffect(() => {
+  //     console.log("Updated personalData:", personalData);
+  // }, [personalData]);
 
-
-    // const onSubmit = async (formData) => {
-    //     try {
-    //         // Add the userId to the formData object
-    //         const updatedFormData = { ...formData, userId };
-
-    //         // Call the updatePersonalData function with the updated data
-    //         const result = await updatePersonalData(updatedFormData);
-
-    //         if (result?.status === 200) {
-    //             toast.success("Information updated successfully!");
-
-    //             // Update the parent state with new data
-    //             setPersonalData(result.data.updatedData);
-    //             onClose(); // Close the modal or form
-    //             alert("data updated!")
-    //         } else {
-    //             toast.error("Failed to update information");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error occurred:", error);
-    //         toast.error("An error occurred while updating information.");
-    //     }
-
-    //     console.log("Updated data after submission: ", formData);
-    // };
-
-
-
-    // const options = [
-    //     { code: "en", label: "English" },
-    //     { code: "es", label: "Spanish" },
-    //     { code: "fr", label: "French" },
-    //     { code: "hi", label: "Hindi" },
-    //     { code: "zh", label: "Chinese" },
-    // ];
-    useEffect(() => {
-        if (personalData) {
-            reset({
-                first_name: personalData?.first_name || "",
-                middle_name: personalData?.middle_name || "",
-                last_name: personalData?.last_name || "",
-                email: personalData?.email || "",
-                dob: moment(personalData?.dob).format("YYYY-MM-DD"),
-                phoneNumber: personalData?.phoneNumber || "",
-                addressLine: personalData?.addressLine || "",
-                passport_number: personalData?.passport_number || "",
-                gender: personalData?.gender || "",
-                zipCode: personalData?.zipCode || "",
-                firstLanguageError: personalData?.firstLanguageError || "",
-                passport_expiry: moment(personalData?.passport_expiry).format("YYYY-MM-DD"),
-                marital_status: personalData?.marital_status || "",
-            });
-        }
-    }, [personalData, reset]);
-    // useEffect(() => {
-    //     document.body.style.overflow = "hidden";
-    //     return () => {
-    //         document.body.style.overflow = "auto";
-    //     };
-    // }, []);
-    useEffect(() => {
-        console.log("Updated personalData:", personalData);
-    }, [personalData]);
-
-    return (
-        <div className="fixed inset-0 backdrop-blur-sm bg-[#807D78]/30 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-            <div className="bg-FloralWhite rounded-lg p-6 shadow-lg w-[70%] relative">
-                <div className="flex justify-between ">
-                    <h3 className="text-xl font-bold font-sans mb-4">{modalTitle}</h3>
-                    <button
-                        className="text-gray-600 mb-8 hover:text-gray-900"
-                        onClick={onClose}
-                    >
-                        < IoMdClose />
-                    </button>
-
-                </div>
-                <hr className="mb-4" />
-                <div className="">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="grid gap-6 md:grid-cols-4  ">
-                            <Input
-                                label="First Name"
-                                type="text"
-                                id="first_name"
-                                // onChange={handleInputChange}
-                                register={register}
-                                readOnly={true}
-                            />
-                            <Input
-                                label="Middle Name"
-                                type="text"
-                                id="middle_name"
-                                readOnly={true}
-                                // onChange={handleInputChange}
-                                register={register}
-                                placeholder="Singh"
-                            />
-                            <Input
-                                label="Last Name"
-                                type="text"
-                                id="last_name"
-                                // onChange={handleInputChange}
-                                register={register}
-                                readOnly={true}
-                            />
-
-
-                            <Input
-                                label="DOB"
-                                type="date"
-                                id="dob"
-                                register={register}
-                                mini={moment().subtract(100, 'years').format("YYYY-MM-DD")}
-                                max={moment().format("YYYY-MM-DD")}
-                                validation={{
-                                    required: "DOB is required!",
-                                    validate: (value) => {
-                                        const age = moment().diff(moment(value), "years", false); // Calculate age
-                                        if (age < 18) {
-                                          return "User must be at least 18 years old"; // If age is less than 18
-                                        }
-                                        return true; // If age is 18 or greater
-                                      },
-                                }}
-                                placeholder="Enter Date of Birth"
-                                errors={errors.dob}
-                            />
-
-                            <div>
-                                <label className="block mb-2 text-base font-medium text-gray-700">
-                                    First Language
-                                </label>
-                                {/* <Controller
+  return (
+    <div className="fixed inset-0 backdrop-blur-sm bg-[#807D78]/30 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+      <div className="bg-FloralWhite rounded-lg p-6 shadow-lg w-[70%] relative">
+        <div className="flex justify-between ">
+          <h3 className="text-xl font-bold font-sans mb-4">{modalTitle}</h3>
+          <button
+            className="text-gray-600 mb-8 hover:text-gray-900"
+            onClick={onClose}
+          >
+            <IoMdClose />
+          </button>
+        </div>
+        <hr className="mb-4" />
+        <div className="">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid gap-6 md:grid-cols-4  ">
+              <Input
+                label="First Name"
+                type="text"
+                id="first_name"
+                // onChange={handleInputChange}
+                register={register}
+                readOnly={true}
+              />
+              <Input
+                label="Middle Name"
+                type="text"
+                id="middle_name"
+                readOnly={true}
+                // onChange={handleInputChange}
+                register={register}
+                placeholder="Singh"
+              />
+              <Input
+                label="Last Name"
+                type="text"
+                id="last_name"
+                // onChange={handleInputChange}
+                register={register}
+                readOnly={true}
+              />
+              <Input
+                label="DOB"
+                type="date"
+                id="dob"
+                register={register}
+                mini={moment().subtract(100, "years").format("YYYY-MM-DD")}
+                max={moment().format("YYYY-MM-DD")}
+                validation={{
+                  required: "DOB is required!",
+                  validate: (value) => {
+                    const age = moment().diff(moment(value), "years", false); // Calculate age
+                    if (age < 18) {
+                      return "User must be at least 18 years old"; // If age is less than 18
+                    }
+                    return true; // If age is 18 or greater
+                  },
+                }}
+                placeholder="Enter Date of Birth"
+                errors={errors.dob}
+              />
+              <div>
+                <label className="block mb-2 text-base font-medium text-gray-700">
+                  First Language
+                </label>
+                {/* <Controller
                                     name="firstLanguageError"
                                     control={control}
                                     defaultValue={

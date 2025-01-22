@@ -8,6 +8,7 @@ import { addFamilyMember, editFamilyMember } from "@/api/familyMember";
 import ReactFlagsSelect from "react-flags-select";
 import { countriesToRemove } from "../TravelPlan";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 interface Props {
   isOpen: boolean;
@@ -209,9 +210,24 @@ const AddFamilyMemberModal: React.FC<Props> = ({
         // console.log("data::", response);
       }
     } catch (err) {
-      if (err.response.status === 400) {
-        alert(err.response.data?.message);
+      console.log("err in catch", err);
+      // console.log(err?.response?.data?.message?.errorResponse?.errmsg);
+      console.log("@@", err?.response?.data?.error?.errorResponse?.code);
+      if (err?.response?.data?.error?.errorResponse?.code == 11000) {
+        let str1 = JSON.stringify(
+          err?.response?.data?.error?.errorResponse?.keyValue
+        ).substring(1);
+        console.log(str1);
+        let str2 = str1.substring(0, str1.length - 1);
+        console.log(str2);
+        // toast(str2 + " already exists");
+        alert(str2 + " already exists");
+      } else {
+        alert(err.response.data.message);
       }
+      // if (err.response.status === 400) {
+      //   alert(err.response.data?.message);
+      // }
       // console.log("family member submission error:", err);
     } finally {
       setIsSubmitting(false);
@@ -413,7 +429,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
             {/* <p className="text-sm font-medium"> </p> */}
             <input
               type="date"
-              min={moment().add(1, "days").format("YYYY-MM- DD")}
+              min={moment().add(1, "days").format("YYYY-MM-DD")}
               className={`w-full px-3 py-3 border rounded ${
                 errors.passport_number ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:border-Indigo`}

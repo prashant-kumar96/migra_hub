@@ -11,6 +11,9 @@ function generateRandomPhoneNumber(): string {
 }
 
 export async function addFamilyMember(req: any, res: any) {
+  const session = await User.startSession(); // Start a session for the transaction
+  session.startTransaction();
+
   try {
     const { name, email, relationship, data, profileData } = req.body;
 
@@ -20,19 +23,24 @@ export async function addFamilyMember(req: any, res: any) {
     console.log("Primary Applicant ID:", primaryApplicantId);
 
     // Check if the primary applicant exists
-    const primaryApplicant = await User.findById(primaryApplicantId);
+    const primaryApplicant = await User.findById(primaryApplicantId).session(
+      session
+    );
     console.log("Primary Applicant:", primaryApplicant);
     if (!primaryApplicant) {
+      await session.abortTransaction();
       return res.status(404).json({ message: "Primary applicant not found" });
     }
 
     if (!primaryApplicant.applicationId) {
+      await session.abortTransaction();
       return res
         .status(400)
         .json({ message: "Primary application id is missing" });
     }
 
     if (!data) {
+      await session.abortTransaction();
       return res.status(400).json({
         message:
           "Please fill all the steps from the index page before adding family member",
@@ -41,22 +49,24 @@ export async function addFamilyMember(req: any, res: any) {
     }
 
     if (!profileData) {
+      await session.abortTransaction();
       return res.status(400).json({
         message: "Please fill the personal data from the previous step",
       });
     }
-    const existingUser = await User.findOne({ email: email });
+
+    const existingUser = await User.findOne({ email: email }).session(session);
     console.log("Existing User:", existingUser);
     if (existingUser) {
+      await session.abortTransaction();
       return res.status(400).json({ message: "User already exists" });
     }
 
     console.log("Visa Data about to be saved:", data);
     const visadata = new VisaData(data);
-    const resultVisadata = await visadata.save();
+    const resultVisadata = await visadata.save({ session });
     console.log("Visa Data Saved:", resultVisadata);
 
-    // const applicationId = uuidv4();
     const applicationId = generateApplicationId();
 
     // Create the family member user
@@ -71,22 +81,21 @@ export async function addFamilyMember(req: any, res: any) {
       isPrimaryApplicant: false,
     });
     console.log("Family member about to be saved:", familyMember);
-    const savedFamilyMember = await familyMember.save();
+    const savedFamilyMember = await familyMember.save({ session });
     console.log("Family member saved:", savedFamilyMember);
 
     // Check if personal data already exists for this user
     let personalData = await PersonalData.findOne({
       userId: savedFamilyMember._id,
-    });
+    }).session(session);
     console.log("Personal data from DB:", personalData);
     console.log("Personal data about to be saved:", profileData);
-    // Generate random phone number if not provided
+
     const phoneNumber = profileData.phoneNumber
       ? profileData.phoneNumber
       : generateRandomPhoneNumber();
 
     if (personalData) {
-      // PersonalData exists, update it
       console.log("Updating personal data");
       await PersonalData.updateOne(
         { userId: savedFamilyMember._id },
@@ -96,10 +105,10 @@ export async function addFamilyMember(req: any, res: any) {
             phoneNumber: phoneNumber,
             email: savedFamilyMember.email,
           },
-        }
+        },
+        { session }
       );
     } else {
-      // If not, create a new document
       console.log("Creating new personal data");
       personalData = new PersonalData({
         ...profileData,
@@ -107,23 +116,27 @@ export async function addFamilyMember(req: any, res: any) {
         email: savedFamilyMember.email,
         phoneNumber: phoneNumber,
       });
-      await personalData.save();
+      await personalData.save({ session });
     }
 
     console.log("Personal Data Saved:", personalData);
-    // Fetch the application status record
+
     const applicationStatus = await ApplicationStatus.findOne({
       applicationId: primaryApplicant.applicationId,
-    });
+    }).session(session);
     console.log("Application Status: ", applicationStatus);
+
     if (applicationStatus) {
-      // Update the application status to completed
       console.log("Updating application status");
       await ApplicationStatus.updateOne(
         { _id: applicationStatus._id },
-        { $set: { riskAssessment: "completed" } }
+        { $set: { riskAssessment: "completed" } },
+        { session }
       );
     }
+
+    await session.commitTransaction(); // Commit the transaction
+    session.endSession();
 
     res.status(201).json({
       message: "Family member added successfully",
@@ -131,6 +144,8 @@ export async function addFamilyMember(req: any, res: any) {
     });
   } catch (error) {
     console.error("Error adding family member:", error);
+    await session.abortTransaction(); // Abort the transaction in case of errors
+    session.endSession();
     res.status(500).json({ message: "Internal server error", error: error });
   }
 }

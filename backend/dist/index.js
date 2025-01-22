@@ -17,9 +17,9 @@ import visaDataRoutes from "./routes/visaDataRoutes.js";
 import personalDataRoutes from "./routes/personalDataRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import caseManagerRoutes from "./routes/caseManagerRoutes.js";
-import familyMemberRoutes from './routes/famillyMemberRoutes.js';
-import applicationStatusRoutes from './routes/applicationStatusRoutes.js';
-import pricingRoutes from './routes/pricingRoutes.js';
+import familyMemberRoutes from "./routes/famillyMemberRoutes.js";
+import applicationStatusRoutes from "./routes/applicationStatusRoutes.js";
+import pricingRoutes from "./routes/pricingRoutes.js";
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/User.js";
@@ -39,6 +39,7 @@ const port = process.env.PORT || 3000;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 app.post("/create-checkout-session", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { items } = req.body;
+    console.log("items", items);
     try {
         const session = yield stripe.checkout.sessions.create({
             payment_method_types: ["card"],
@@ -46,7 +47,7 @@ app.post("/create-checkout-session", (req, res) => __awaiter(void 0, void 0, voi
                 price_data: {
                     currency: "usd",
                     product_data: {
-                        name: item.name,
+                        name: (item === null || item === void 0 ? void 0 : item.name) ? item === null || item === void 0 ? void 0 : item.name : "Primary",
                     },
                     unit_amount: item.price * 100, // Convert dollars to cents
                 },
@@ -76,21 +77,26 @@ app.post("/retrieve-session", (req, res) => __awaiter(void 0, void 0, void 0, fu
                 $set: {
                     stripePaymentSessionId: sessionId,
                     isStripePaymentDone: true,
-                    payment: true
+                    payment: true,
                 },
             }, { new: true });
             if (result && result.applicationId) {
-                const applicationStatus = yield ApplicationStatus.findOne({ applicationId: result.applicationId });
+                const applicationStatus = yield ApplicationStatus.findOne({
+                    applicationId: result.applicationId,
+                });
                 if (applicationStatus) {
                     yield ApplicationStatus.updateOne({ _id: applicationStatus._id }, { $set: { payment: "completed" } });
                 }
                 // Update payment status for all linked family members
-                const familyMembers = yield User.find({ primaryApplicationId: result.applicationId, _id: { $ne: userId } });
+                const familyMembers = yield User.find({
+                    primaryApplicationId: result.applicationId,
+                    _id: { $ne: userId },
+                });
                 for (const familyMember of familyMembers) {
                     yield User.updateOne({ _id: familyMember._id }, { $set: { payment: true, isStripePaymentDone: true } });
                 }
             }
-            console.log(result, 'result');
+            console.log(result, "result");
         }
         res.status(200).json(session);
     }
@@ -107,9 +113,9 @@ app.use("/api/visaData", visaDataRoutes);
 app.use("/api/personalData", personalDataRoutes);
 app.use("/api/document", documentRoutes);
 app.use("/api/caseManager", caseManagerRoutes);
-app.use('/api/family-member', familyMemberRoutes);
-app.use('/api/pricing', pricingRoutes);
-app.use('/api/application-status', applicationStatusRoutes);
+app.use("/api/family-member", familyMemberRoutes);
+app.use("/api/pricing", pricingRoutes);
+app.use("/api/application-status", applicationStatusRoutes);
 const client = new MongoClient(uri);
 app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

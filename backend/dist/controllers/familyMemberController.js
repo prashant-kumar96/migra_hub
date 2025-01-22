@@ -18,6 +18,8 @@ function generateRandomPhoneNumber() {
 }
 export function addFamilyMember(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        const session = yield User.startSession(); // Start a session for the transaction
+        session.startTransaction();
         try {
             const { name, email, relationship, data, profileData } = req.body;
             console.log("req.body", req.body);
@@ -25,37 +27,41 @@ export function addFamilyMember(req, res) {
             console.log("add family member::", req.body, req.user);
             console.log("Primary Applicant ID:", primaryApplicantId);
             // Check if the primary applicant exists
-            const primaryApplicant = yield User.findById(primaryApplicantId);
+            const primaryApplicant = yield User.findById(primaryApplicantId).session(session);
             console.log("Primary Applicant:", primaryApplicant);
             if (!primaryApplicant) {
+                yield session.abortTransaction();
                 return res.status(404).json({ message: "Primary applicant not found" });
             }
             if (!primaryApplicant.applicationId) {
+                yield session.abortTransaction();
                 return res
                     .status(400)
                     .json({ message: "Primary application id is missing" });
             }
             if (!data) {
+                yield session.abortTransaction();
                 return res.status(400).json({
                     message: "Please fill all the steps from the index page before adding family member",
                     extraInfo: "Info Incomplete",
                 });
             }
             if (!profileData) {
+                yield session.abortTransaction();
                 return res.status(400).json({
                     message: "Please fill the personal data from the previous step",
                 });
             }
-            const existingUser = yield User.findOne({ email: email });
+            const existingUser = yield User.findOne({ email: email }).session(session);
             console.log("Existing User:", existingUser);
             if (existingUser) {
+                yield session.abortTransaction();
                 return res.status(400).json({ message: "User already exists" });
             }
             console.log("Visa Data about to be saved:", data);
             const visadata = new VisaData(data);
-            const resultVisadata = yield visadata.save();
+            const resultVisadata = yield visadata.save({ session });
             console.log("Visa Data Saved:", resultVisadata);
-            // const applicationId = uuidv4();
             const applicationId = generateApplicationId();
             // Create the family member user
             const familyMember = new User({
@@ -69,42 +75,39 @@ export function addFamilyMember(req, res) {
                 isPrimaryApplicant: false,
             });
             console.log("Family member about to be saved:", familyMember);
-            const savedFamilyMember = yield familyMember.save();
+            const savedFamilyMember = yield familyMember.save({ session });
             console.log("Family member saved:", savedFamilyMember);
             // Check if personal data already exists for this user
             let personalData = yield PersonalData.findOne({
                 userId: savedFamilyMember._id,
-            });
+            }).session(session);
             console.log("Personal data from DB:", personalData);
             console.log("Personal data about to be saved:", profileData);
-            // Generate random phone number if not provided
             const phoneNumber = profileData.phoneNumber
                 ? profileData.phoneNumber
                 : generateRandomPhoneNumber();
             if (personalData) {
-                // PersonalData exists, update it
                 console.log("Updating personal data");
                 yield PersonalData.updateOne({ userId: savedFamilyMember._id }, {
                     $set: Object.assign(Object.assign({}, profileData), { phoneNumber: phoneNumber, email: savedFamilyMember.email }),
-                });
+                }, { session });
             }
             else {
-                // If not, create a new document
                 console.log("Creating new personal data");
                 personalData = new PersonalData(Object.assign(Object.assign({}, profileData), { userId: savedFamilyMember._id, email: savedFamilyMember.email, phoneNumber: phoneNumber }));
-                yield personalData.save();
+                yield personalData.save({ session });
             }
             console.log("Personal Data Saved:", personalData);
-            // Fetch the application status record
             const applicationStatus = yield ApplicationStatus.findOne({
                 applicationId: primaryApplicant.applicationId,
-            });
+            }).session(session);
             console.log("Application Status: ", applicationStatus);
             if (applicationStatus) {
-                // Update the application status to completed
                 console.log("Updating application status");
-                yield ApplicationStatus.updateOne({ _id: applicationStatus._id }, { $set: { riskAssessment: "completed" } });
+                yield ApplicationStatus.updateOne({ _id: applicationStatus._id }, { $set: { riskAssessment: "completed" } }, { session });
             }
+            yield session.commitTransaction(); // Commit the transaction
+            session.endSession();
             res.status(201).json({
                 message: "Family member added successfully",
                 familyMember: savedFamilyMember,
@@ -112,6 +115,8 @@ export function addFamilyMember(req, res) {
         }
         catch (error) {
             console.error("Error adding family member:", error);
+            yield session.abortTransaction(); // Abort the transaction in case of errors
+            session.endSession();
             res.status(500).json({ message: "Internal server error", error: error });
         }
     });

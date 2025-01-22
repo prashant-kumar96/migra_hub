@@ -38,7 +38,7 @@ export const savePersonalData = (req, res) => __awaiter(void 0, void 0, void 0, 
 export const updatePersonalData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("updatePersonalData is run");
     console.log("req.body", req.body);
-    const { userId, phoneNumber, dob, passport_number, passport_expiry, marital_status, gender } = req.body;
+    const { userId, phoneNumber, dob, passport_number, passport_expiry, marital_status, gender, } = req.body;
     try {
         // Validate required fields
         if (!userId) {
@@ -64,7 +64,9 @@ export const updatePersonalData = (req, res) => __awaiter(void 0, void 0, void 0
         { new: true, upsert: false } // Return the updated document, do not create if not exists
         );
         if (!personalData) {
-            return res.status(404).json({ message: "Personal data not found for the given user" });
+            return res
+                .status(404)
+                .json({ message: "Personal data not found for the given user" });
         }
         console.log("Updated Personal Data:", personalData);
         // Check if the user exists
@@ -81,7 +83,12 @@ export const updatePersonalData = (req, res) => __awaiter(void 0, void 0, void 0
     }
     catch (err) {
         console.error("Error in updatePersonalData:", err);
-        res.status(500).json({ message: "An error occurred while updating personal data", error: err.message });
+        res
+            .status(500)
+            .json({
+            message: "An error occurred while updating personal data",
+            error: err,
+        });
     }
 });
 export const getSinglePersonalData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -92,7 +99,7 @@ export const getSinglePersonalData = (req, res) => __awaiter(void 0, void 0, voi
             return res.status(400).json({
                 status: false,
                 message: "User ID is required",
-                data: null
+                data: null,
             });
         }
         const result = yield PersonalData.findOne({ userId: userId });
@@ -100,14 +107,14 @@ export const getSinglePersonalData = (req, res) => __awaiter(void 0, void 0, voi
             return res.status(200).json({
                 status: true,
                 message: "Personal Data fetched successfully",
-                data: result
+                data: result,
             });
         }
         // If no data found, return 200 with empty data
         return res.status(200).json({
             status: false,
             message: "No personal data found for this user",
-            data: null
+            data: null,
         });
     }
     catch (err) {
@@ -115,7 +122,7 @@ export const getSinglePersonalData = (req, res) => __awaiter(void 0, void 0, voi
         return res.status(500).json({
             status: false,
             message: "Error fetching personal data",
-            error: err instanceof Error ? err.message : "Unknown error occurred"
+            error: err instanceof Error ? err.message : "Unknown error occurred",
         });
     }
 });

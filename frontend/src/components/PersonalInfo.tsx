@@ -264,8 +264,8 @@ const PersonalInfo = ({
         setLoading(true);
 
         const result = await savePersonalData(newdata);
-        // console.log("result loginUser@@@@@@@", result);
         if (result?.status === 200) {
+          console.log("result savePersonalData", result);
           toast(result?.data?.message);
           // Navigate to dashboard
           // console.log("we are here");
@@ -274,7 +274,9 @@ const PersonalInfo = ({
           setText("Saved");
           setLoading(false);
         } else {
-          // console.log("result@@@", result);
+          // if()
+          console.log("result@@@", result);
+          // alert(result);
           setLoading(false);
         }
       }
@@ -283,6 +285,17 @@ const PersonalInfo = ({
       data.dob = formattedDOB;
     } catch (err) {
       console.error("Error saving personal data", err);
+      console.log(err?.response?.data?.message?.errorResponse?.errmsg);
+      if (err?.response?.data?.message?.errorResponse?.code === 11000) {
+        let str1 = JSON.stringify(
+          err?.response?.data?.message?.errorResponse?.keyValue
+        ).substring(1);
+        console.log(str1);
+        let str2 = str1.substring(0, str1.length - 1);
+        console.log(str2);
+        toast(str2 + " already exists");
+      }
+
       setLoading(false);
       toast(err.message);
     } finally {
@@ -396,7 +409,7 @@ const PersonalInfo = ({
             updatePersonalData={updatePersonalData}
             modalTitle="Edit Personal Information"
             userId={userId}
-            setPersonalData={setPersonalData}
+            // setPersonalData={setPersonalData}
             setText={setText}
           ></EditPersonalInfo>
           <div className="grid gap-8 text-gray-600 mb-8">
