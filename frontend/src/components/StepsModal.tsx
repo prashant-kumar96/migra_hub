@@ -41,7 +41,13 @@ const StepsModal: React.FC<Props> = ({
   countryCodes,
   destinationCountry,
 }) => {
-  console.log(":: props", citizenshipCountry, destinationCountry);
+  console.log(
+    ":: props",
+    "citiCoun",
+    citizenshipCountry,
+    "destCoun",
+    destinationCountry
+  );
   const handleCloseModal = () => {
     onModalClose();
     setShouldStartjourneyShow(false);
@@ -85,6 +91,10 @@ const StepsModal: React.FC<Props> = ({
   const selectedCitizenshipcountry = countryList()
     .getData()
     .find((country) => country.value === citizenshipCountry);
+
+  const selectedDestinationcountry = countryList()
+    .getData()
+    .find((country) => country.value === destinationCountry);
 
   console.log(";; default citizenshipCountry", selectedCitizenshipcountry);
 
@@ -441,7 +451,15 @@ const StepsModal: React.FC<Props> = ({
                           </p>
 
                           <p className="text-sm text-justify tracking-wide mt-1 leading-5">
-                            {ModalData[step].secondLine}
+                            {/* {ModalData[step].secondLine} */}
+                            <p>
+                              We will show you the earliest time you should plan
+                              to travel, based on{" "}
+                              {selectedDestinationcountry.label} visa
+                              appointment wait time data for{" "}
+                              {selectedCitizenshipcountry.label} , to help
+                              prevent you from missing your trip
+                            </p>
                           </p>
                         </div>
                       )}
