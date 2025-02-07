@@ -194,8 +194,8 @@ const TravelPlan = () => {
         </div>
         <div>
           <div className="w-full lg:max-w-lg p-5 space-y-6 sm:p-8 bg-FloralWhite rounded-lg shadow-xl">
-            <h2 className="text-3xl font-bold text-Indigo ">
-              Where are you travelling to ?
+            <h2 className="text-4xl font-bold text-Indigo ">
+             Am I Eligible ?
             </h2>
             <div className="mt-4 space-y-6">
               <div>
