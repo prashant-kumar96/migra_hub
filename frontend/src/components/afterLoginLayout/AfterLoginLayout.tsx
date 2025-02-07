@@ -10,7 +10,7 @@ import { useAuth } from "@/context/auth-context";
 import { getApplicationStatusDetails } from "@/api/applicationStatus";
 
 
-export const ProgressBar = () => {
+export const ProgressBar = ({className}) => {
     const [completedSteps, setCompletedSteps] = useState<number[]>([]);
     const [currentStep, setCurrentStep] = useState<number>(1); // set initial value to 1
 
@@ -97,14 +97,14 @@ export const ProgressBar = () => {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto mt-8 mb-12">
+        <div className={`w-full max-w-6xl mx-auto ${className} `}>
             <div className="relative">
                 {/* Base Progress Line */}
-                <div className="h-1 bg-gray-200 absolute w-full top-1/2 -translate-y-1/2 z-0" />
+                <div className="h-1 bg-gray-200 absolute w-full top-1/2 -translate-y-1/2 " />
 
                 {/* Active Progress Line */}
                 <div
-                    className="h-1 absolute top-1/2 -translate-y-1/2 z-0 transition-all duration-300"
+                    className="h-1 absolute top-1/2 -translate-y-1/2  transition-all duration-300"
                     style={{
                         width: getProgressWidth(),
                         background: 'linear-gradient(to right, #bef264, #22c55e)',
@@ -112,7 +112,7 @@ export const ProgressBar = () => {
                 />
 
                 {/* Steps */}
-                <div className="relative z-10 flex justify-between">
+                <div className="relative  flex justify-between">
                     {/* Complete Profile */}
                     <div className="flex flex-col items-center">
                         <div
@@ -300,12 +300,15 @@ const AfterLoginLayout = <P extends WithAuthProps>(WrappedComponent: ComponentTy
 
 
         return (
-            <div className="flex h-full">
+            <div className="flex h-screen">
                 <Sidebar />
-                 <div className="flex-1  sm:ml-60">
-                 <ProgressBar />
-                    <main className="w-full min-h-screen p-4">
+                 <div className="flex-1 ml-12">
+                 <ProgressBar className="mt-4 " />
+                    <main className="w-full max-w-7xl mx-auto min-h-screen p-4">
+                        <div className="w-full max-w-6xl mx-auto">
                          <WrappedComponent {...props} user={user} isLoading={loading} />
+
+                        </div>
                     </main>
                 </div>
             </div>
