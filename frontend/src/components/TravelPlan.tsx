@@ -232,7 +232,7 @@ const TravelPlan = () => {
                   htmlFor="countries"
                   className="block mb-2 text-lg font-medium text-Indigo "
                 >
-                  Destination to
+                  Destination
                 </label>
                 <ReactFlagsSelect
                   selected={destinationCountry}

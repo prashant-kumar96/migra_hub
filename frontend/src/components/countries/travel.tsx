@@ -183,7 +183,7 @@ const Travel = () => {
                   htmlFor="countries"
                   className="block mb-2  font-medium text-Indigo  text-[17px]"
                 >
-                  Destination To
+                  Destination 
                 </label>
                 <ReactFlagsSelect
                   selected={destinationCountry?.value}
