@@ -32,7 +32,7 @@ const Footer = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-8 py-10 max-sm:max-w-sm max-sm:mx-auto gap-y-8">
             <div className="col-span-full mb-10 lg:col-span-2 lg:mb-0 text-center lg:text-left">
               <Link href="/" className="flex justify-center lg:justify-start">
-               <Image width={180} height={100} alt="logo" src ="/logo/MigraHub.png" />
+                <Image width={180} height={100} alt="logo" src="/logo/MigraHub.png" />
               </Link>
               {/* <p className="py-2 text-lg text-gray-100 dark:text-gray-300 lg:max-w-xs">
                 Trusted in more than 100 countries & 5 million customers. Have
@@ -105,7 +105,7 @@ const Footer = () => {
               </h4>
               <ul className="text-lg space-y-4 transition-all duration-500 tracking-wider capitalize">
                 {[
-                  { name: "Privacy Policy", href: "/PrivacyPolicy" },
+                  { name: "Privacy Policy", href: "/privacy-policy" },
                   { name: "Terms of Use", href: "/terms-of-use" },
                 ].map((item) => (
                   <li key={item.name}>
