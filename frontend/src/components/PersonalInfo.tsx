@@ -273,6 +273,7 @@ const PersonalInfo = ({
           // router.push("/dashboard/payment");
           setText("Saved");
           setLoading(false);
+          router.reload();
         } else {
           // if()
           console.log("result@@@", result);
@@ -591,7 +592,7 @@ const PersonalInfo = ({
   return (
     <div className="border-2 p-8 ">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-6 mb-6 md:grid-cols-2  ">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-6 mb-6 md:grid-cols-2  ">
           <Input
             label="First Name"
             type="text"
@@ -669,16 +670,7 @@ const PersonalInfo = ({
             placeholder="Enter Date of Birth"
             errors={errors.dob}
           />
-          {/* {/* <Input
-          label="First Language"
-          id="first_language"
-          placeholder="English"
-          register={register}
-          validation={{
-            required: "First Language is required",
-          }}
-          errors={errors.first_language}
-        /> */}
+          
           <div>
             <label className="block mb-2 text-base font-medium text-gray-700">
               First Language

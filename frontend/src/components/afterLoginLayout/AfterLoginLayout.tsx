@@ -9,7 +9,6 @@ import Dashboard from "@/pages/dashboard";
 import { useAuth } from "@/context/auth-context";
 import { getApplicationStatusDetails } from "@/api/applicationStatus";
 
-
 export const ProgressBar = ({ className }) => {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(1); // set initial value to 1
@@ -99,9 +98,9 @@ export const ProgressBar = ({ className }) => {
   };
 
   return (
-    <div className={`w-full px-4 sm:px-0 sm:max-w-6xl mx-auto ${className}`}>
-      {" "}
-      {/* Added padding for small screens */}
+    <div
+      className={`w-full px-4 sm:px-0 sm:max-w-6xl mx-auto sticky top-0 bg-white z-10 ${className}`}
+    >
       <div className="relative">
         {/* Base Progress Line */}
         <div className="h-1 bg-gray-200 absolute w-full top-1/2 -translate-y-1/2 " />
@@ -119,8 +118,6 @@ export const ProgressBar = ({ className }) => {
         <div className="relative flex justify-between">
           {/* Complete Profile */}
           <div className="flex flex-col items-center w-1/4">
-            {" "}
-            {/* Added width */}
             <div
               className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
                 1
@@ -140,8 +137,7 @@ export const ProgressBar = ({ className }) => {
                 </svg>
               ) : (
                 <span className="text-xs sm:text-base">1</span>
-              )}{" "}
-              {/* Smaller text */}
+              )}
               {isStepCompleted(1) && (
                 <div className="absolute -bottom-1 sm:-bottom-3 left-1/2 transform -translate-x-1/2">
                   <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-300 rounded-full"></div>
@@ -163,8 +159,6 @@ export const ProgressBar = ({ className }) => {
 
           {/* Review & Submit */}
           <div className="flex flex-col items-center w-1/4">
-            {" "}
-            {/* Added width */}
             <div
               className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
                 2
@@ -184,8 +178,7 @@ export const ProgressBar = ({ className }) => {
                 </svg>
               ) : (
                 <span className="text-xs sm:text-base">2</span>
-              )}{" "}
-              {/* Smaller text */}
+              )}
               {isStepCompleted(2) && (
                 <div className="absolute -bottom-1 sm:-bottom-1 left-1/2 transform -translate-x-1/2">
                   <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-400 rounded-full"></div>
@@ -207,8 +200,6 @@ export const ProgressBar = ({ className }) => {
 
           {/* Visa Applied */}
           <div className="flex flex-col items-center w-1/4">
-            {" "}
-            {/* Added width */}
             <div
               className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
                 3
@@ -228,8 +219,7 @@ export const ProgressBar = ({ className }) => {
                 </svg>
               ) : (
                 <span className="text-xs sm:text-base">3</span>
-              )}{" "}
-              {/* Smaller text */}
+              )}
               {isStepCompleted(3) && (
                 <div className="absolute -bottom-1 sm:-bottom-1 left-1/2 transform -translate-x-1/2">
                   <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-500 rounded-full"></div>
@@ -251,8 +241,6 @@ export const ProgressBar = ({ className }) => {
 
           {/* Completed */}
           <div className="flex flex-col items-center w-1/4">
-            {" "}
-            {/* Added width */}
             <div
               className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
                 4
@@ -272,8 +260,7 @@ export const ProgressBar = ({ className }) => {
                 </svg>
               ) : (
                 <span className="text-xs sm:text-base">4</span>
-              )}{" "}
-              {/* Smaller text */}
+              )}
               {isStepCompleted(4) && (
                 <div className="absolute -bottom-1 sm:-bottom-1 left-1/2 transform -translate-x-1/2">
                   <div className="w-1 h-1 sm:w-2 sm:h-2 bg-green-500 rounded-full"></div>
@@ -298,86 +285,88 @@ export const ProgressBar = ({ className }) => {
   );
 };
 
-
 interface WithAuthProps {
-    user?: any;
-    isLoading?: boolean;
+  user?: any;
+  isLoading?: boolean;
 }
 
+const AfterLoginLayout = <P extends WithAuthProps>(
+  WrappedComponent: ComponentType<P>
+) => {
+  return (props: P) => {
+    const [role, setRole] = useState<string | undefined>();
+    const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(
+      null
+    );
+    const [user, setUser] = useState<any>(null);
+    const router = useRouter();
+    const { user: data } = useAuth();
 
-const AfterLoginLayout = <P extends WithAuthProps>(WrappedComponent: ComponentType<P>) => {
-    return (props: P) => {
-        const [role, setRole] = useState<string | undefined>();
-        const [loading, setLoading] = useState(true);
-        const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-        const [user, setUser] = useState<any>(null);
-        const router = useRouter();
-        const { user: data } = useAuth();
-
-        const meData = async () => {
-            try {
-                if (localStorage.getItem("token")) {
-                    const medata = await me();
-                    if (!medata || !medata.status) {
-                        console.warn("User not authorized, or user data not found.");
-                        localStorage.removeItem("token");
-                        setIsAuthenticated(false);
-                        setUser(null);
-                        return;
-                    }
-                    setRole(data?.user?.role);
-                    setUser(data?.user);
-                    setIsAuthenticated(true);
-                } else {
-                    console.warn("User token not found.");
-                    localStorage.removeItem("token");
-                    setIsAuthenticated(false);
-                    setUser(null);
-                }
-            } catch (error) {
-                 alert('error')
-                console.error("Error while fetching user data", error);
-                localStorage.removeItem("token");
-                setIsAuthenticated(false);
-                setUser(null);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        useEffect(() => {
-            meData();
-        }, [role]);
-
-        if (loading) {
-            return (
-                <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white z-50">
-                    <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-                </div>
-            );
+    const meData = async () => {
+      try {
+        if (localStorage.getItem("token")) {
+          const medata = await me();
+          if (!medata || !medata.status) {
+            console.warn("User not authorized, or user data not found.");
+            localStorage.removeItem("token");
+            setIsAuthenticated(false);
+            setUser(null);
+            return;
+          }
+          setRole(data?.user?.role);
+          setUser(data?.user);
+          setIsAuthenticated(true);
+        } else {
+          console.warn("User token not found.");
+          localStorage.removeItem("token");
+          setIsAuthenticated(false);
+          setUser(null);
         }
-
-        if (isAuthenticated === false) {
-            router.push("/login");
-            return null;
-        }
-
-
-        return (
-            <div className="flex h-screen">
-                <Sidebar />
-                 <div className="flex-1 lg:ml-12">
-                 <ProgressBar className="mt-10 " />
-                    <main className="w-full max-w-7xl mx-auto min-h-screen p-4">
-                        <div className="w-full lg:max-w-6xl mx-auto">
-                         <WrappedComponent {...props} user={user} isLoading={loading} />
-
-                        </div>
-                    </main>
-                </div>
-            </div>
-        );
+      } catch (error) {
+        console.error("Error while fetching user data", error);
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    useEffect(() => {
+      meData();
+    }, [role]);
+
+    if (loading) {
+      return (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white z-50">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+        </div>
+      );
+    }
+
+    if (isAuthenticated === false) {
+      router.push("/login");
+      return null;
+    }
+
+    return (
+      <div className="flex h-screen">
+        <Sidebar />
+        <div className="flex-1 lg:ml-12">
+          {/* Sticky Progress Bar */}
+          <div className="sticky top-0 z-10 bg-white">
+            <ProgressBar className="py-4" />  {/* Add padding here */}
+          </div>
+          <main className="w-full max-w-7xl mx-auto min-h-screen p-4">
+            <div className="w-full lg:max-w-6xl mx-auto">
+              <WrappedComponent {...props} user={user} isLoading={loading} />
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  };
 };
 
 export default AfterLoginLayout;

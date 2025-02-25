@@ -22,6 +22,10 @@ import { MdDelete } from "react-icons/md";
 import Loader from "@/components/loaders/loader";
 import ButtonLoader from "@/components/loaders/buttonLoader";
 
+
+
+
+
 const ProfilePage = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
   const [text, setText] = useState("");
@@ -37,7 +41,7 @@ const ProfilePage = () => {
   const userDetails = user?.user;
   const [loading, setLoading] = useState<boolean>(true);
   const [applicationStatus, setApplicationStatus] = useState<any>(null);
-  const [linkedMembers, setLinkedMembers] = useState([]);
+  const [linkedMembers, setLinkedMembers] = useState<any>({ familyMembers: [] }); // Initialize as an object with a familyMembers array.
   const [isOpen, setIsOpen] = useState(false);
   const [member, setMember] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
@@ -45,11 +49,13 @@ const ProfilePage = () => {
   // Separate API calls into individual functions
   const fetchApplicationStatus = async () => {
     try {
-      const response = await getApplicationStatusDetails(
-        userDetails?.applicationId
-      );
-      if (response?.data) {
-        setApplicationStatus(response.data?.applicationStatus);
+      if (userDetails?.applicationId) { // Check for applicationId
+        const response = await getApplicationStatusDetails(
+          userDetails.applicationId
+        );
+        if (response?.data) {
+          setApplicationStatus(response.data?.applicationStatus);
+        }
       }
     } catch (error) {
       console.error("Error fetching application status:", error);
@@ -58,10 +64,14 @@ const ProfilePage = () => {
 
   const fetchLinkedMembers = async () => {
     try {
-      const response = await getLinkedFamilyMembers(userDetails?._id);
-      if (response?.data) {
-        setLinkedMembers(response?.data);
+      if (userDetails?._id) {
+          const response = await getLinkedFamilyMembers(userDetails._id);
+        if (response?.data) {
+          // Ensure the response is what we expect
+          setLinkedMembers(response.data);
+        }
       }
+
     } catch (error) {
       console.error("Error fetching linked members:", error);
     }
@@ -70,11 +80,6 @@ const ProfilePage = () => {
   // Initial data fetch
   useEffect(() => {
     const fetchInitialData = async () => {
-      if (!userDetails?.applicationId) {
-        setLoading(false);
-        return;
-      }
-
       try {
         setLoading(true);
         await Promise.all([fetchApplicationStatus(), fetchLinkedMembers()]);
@@ -84,11 +89,10 @@ const ProfilePage = () => {
         setLoading(false);
       }
     };
-
-    if (user) {
-      fetchInitialData();
-    }
-  }, [userDetails?.applicationId, user]);
+      if (user) {
+        fetchInitialData();
+      }
+  }, [user]);
 
   // Refresh linked members when modal closes
   useEffect(() => {
@@ -111,10 +115,7 @@ const ProfilePage = () => {
   }
 
   const handleModal = () => {
-    console.log("handleModal is run");
-    // const emptyObj = {};
-
-    setSelectedCitizenshipCountry({});
+    setSelectedCitizenshipCountry(null); // Reset to null, not an empty object.
     setIsEditMode(false);
     setMember({});
     setIsOpen(true);
@@ -126,30 +127,27 @@ const ProfilePage = () => {
   };
 
   const [deleteLoader, setDeleteLoader] = useState(false);
-  const handleEdit = (tempMember) => {
-    console.log("tempMember", tempMember);
+  const handleEdit = (tempMember: any) => { // Added type
     setSelectedCitizenshipCountry(tempMember.citizenshipCountry);
     setIsEditMode(true);
     setMember(tempMember);
     setIsOpen(true);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {  // Added type
     try {
       setDeleteLoader(true);
-      console.log("handleDelete", id);
-
       const deleteResult = await deleteFamilyMember(id);
-      console.log("deleteResult", deleteResult);
       if (deleteResult.status === 200) {
         alert(deleteResult?.data?.message);
-        console.log("deleteResult", deleteResult);
-        fetchLinkedMembers();
+        fetchLinkedMembers(); // No need to await here
       } else {
-        alert("error");
+        alert("Error deleting family member.");
       }
     } catch (err) {
-      console.log("error");
+      console.error("Error deleting family member:", err); // More specific error message.
+      alert("Error deleting family member."); // Show error to the user.
+
     } finally {
       setDeleteLoader(false);
     }
@@ -158,118 +156,89 @@ const ProfilePage = () => {
   const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] = useState<{
     value: string;
     label: string;
-  } | null>();
+  } | null>(null);
 
-  const renderLinkedMembers = () => {
+
+    const renderLinkedMembers = () => {
     if (!linkedMembers?.familyMembers?.length) return null;
 
     return (
-      <div className="mb-8 overflow-x-auto">
-        <h2 className="text-2xl text-gray-600 mb-4">Family Members</h2>
-        <table className="min-w-full bg-white shadow-sm rounded-lg">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Relationship
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Profile Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Visa Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Edit
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Delete
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {linkedMembers?.familyMembers.map((member) => (
-              <tr key={member._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {member.name}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {member.email}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {member.relationship}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    ${
-                                      member.applicationStatus
-                                        .profileCompletion === "completed"
+      <div className="mb-4 md:mb-8 overflow-x-auto"> {/* Reduced margin */}
+        <h2 className="text-lg md:text-2xl text-gray-600 mb-2 md:mb-4">
+          Family Members
+        </h2>
+       <div className="flex flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-7 gap-4"> {/* Responsive grid */}
+                <div className="font-medium text-gray-500 uppercase tracking-wider text-xs md:text-sm">Name</div>
+                <div className="font-medium text-gray-500 uppercase tracking-wider text-xs md:text-sm">Email</div>
+                <div className="font-medium text-gray-500 uppercase tracking-wider text-xs md:text-sm">Relationship</div>
+                <div className="font-medium text-gray-500 uppercase tracking-wider text-xs md:text-sm">Profile</div>
+                <div className="font-medium text-gray-500 uppercase tracking-wider text-xs md:text-sm">Visa</div>
+                <div className="font-medium text-gray-500 uppercase tracking-wider text-xs md:text-sm">Edit</div>
+                <div className="font-medium text-gray-500 uppercase tracking-wider text-xs md:text-sm">Delete</div>
+
+                {linkedMembers.familyMembers.map((member: any) => (  // Added type
+                    <React.Fragment key={member._id}>
+                        <div className="py-2 text-sm text-gray-900">{member.name}</div>
+                        <div className="py-2 text-sm text-gray-500">{member.email}</div>
+                        <div className="py-2 text-sm text-gray-500">{member.relationship}</div>
+                        <div className="py-2">
+                            <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.applicationStatus.profileCompletion === "completed"
                                         ? "bg-green-100 text-green-800"
                                         : "bg-yellow-100 text-yellow-800"
                                     }`}
-                  >
-                    {member.applicationStatus.profileCompletion}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    ${
-                                      member.applicationStatus.visaStatus ===
-                                      "pending"
+                            >
+                                {member.applicationStatus.profileCompletion}
+                            </span>
+                        </div>
+                        <div className="py-2">
+                            <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${member.applicationStatus.visaStatus === "pending"
                                         ? "bg-yellow-100 text-yellow-800"
                                         : member.applicationStatus.visaStatus
-                                        ? "bg-green-100 text-green-800"
-                                        : "bg-red-100 text-red-800"
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-red-100 text-red-800"
                                     }`}
-                  >
-                    {member.applicationStatus.visaStatus === "pending"
-                      ? "Pending"
-                      : member.applicationStatus.visaStatus
-                      ? "Approved"
-                      : "Not Applied"}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <FaEdit
-                    className="cursor-pointer"
-                    onClick={() => {
-                      handleEdit(member);
-                    }}
-                  />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900  ">
-                  <p className="flex gap-2">
-                    <MdDelete
-                      className="cursor-pointer"
-                      onClick={() => {
-                        handleDelete(member._id);
-                      }}
-                    />
-                    {deleteLoader && <ButtonLoader />}
-                  </p>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                            >
+                                {member.applicationStatus.visaStatus === "pending"
+                                    ? "Pending"
+                                    : member.applicationStatus.visaStatus
+                                        ? "Approved"
+                                        : "Not Applied"}
+                            </span>
+                        </div>
+                        <div className="py-2 text-sm text-gray-900">
+                            <FaEdit
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    handleEdit(member);
+                                }}
+                            />
+                        </div>
+                        <div className="py-2 text-sm text-gray-900 flex items-center">
+                            <MdDelete
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    handleDelete(member._id);
+                                }}
+                            />
+                            {deleteLoader && <ButtonLoader />}
+                        </div>
+                    </React.Fragment>
+                ))}
+            </div>
+        </div>
+
       </div>
     );
   };
 
-  if (isLoading) {
+
+  if (isLoading || loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your profile...</p>
-        </div>
+        <Loader className="text-Indigo" text="Loading..." />
       </div>
     );
   }
@@ -285,46 +254,45 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="w-5/6">
-      {/* <ProgressBar /> */}
-      <div className="px-24 py-20">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl text-gray-600">Personal Information</h1>
-          {applicationStatus?.profileCompletion === "completed" && (
-            <button
-              onClick={handleModal}
-              className="bg-Indigo text-white px-4 py-2 rounded hover:bg-indigo-900 transition-colors"
-            >
-              Add Family Member
-            </button>
-          )}
-        </div>
-
-        <div className="border shadow-xl my-5 rounded p-4">
-          {" "}
-          {renderLinkedMembers()}
-        </div>
-
-        <AddFamilyMemberModal
-          onSubmit={onSubmit}
-          isOpen={isOpen}
-          member={member}
-          onClose={onClose}
-          isEditMode={isEditMode}
-          selectedCitizenshipCountry={selectedCitizenshipCountry}
-          setSelectedCitizenshipCountry={setSelectedCitizenshipCountry}
-        />
-
-        <PersonalInfo
-          visaDataId={user.user.visaDataId}
-          userEmail={user.user.email}
-          userName={user.user.name}
-          userId={user.user._id}
-          setText={setText}
-          text={text}
-          
-        />
+    <div className="p-4 md:p-6"> {/* Reduced padding for smaller screens */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-8"> {/* Responsive layout */}
+        <h1 className="text-2xl md:text-4xl text-gray-600 mb-2 md:mb-0">
+          Personal Information
+        </h1>
+        {/* Conditionally render the button */}
+        {applicationStatus?.profileCompletion === "completed" ? (
+          <button
+            onClick={handleModal}
+            className="bg-Indigo text-white px-3 py-1 md:px-4 md:py-2 rounded hover:bg-indigo-900 transition-colors text-sm md:text-base"
+          >
+            Add Family Member
+          </button>
+        ) : null}
       </div>
+
+    {  linkedMembers?.familyMembers?.length && <div className="border shadow-xl my-2 md:my-5 rounded p-2 md:p-4">
+        {renderLinkedMembers()}
+      </div>
+}
+
+      <AddFamilyMemberModal
+        onSubmit={onSubmit}
+        isOpen={isOpen}
+        member={member}
+        onClose={onClose}
+        isEditMode={isEditMode}
+        selectedCitizenshipCountry={selectedCitizenshipCountry}
+        setSelectedCitizenshipCountry={setSelectedCitizenshipCountry}
+      />
+
+      <PersonalInfo
+        visaDataId={user.user.visaDataId}
+        userEmail={user.user.email}
+        userName={user.user.name}
+        userId={user.user._id}
+        setText={setText}
+        text={text}
+      />
     </div>
   );
 };
