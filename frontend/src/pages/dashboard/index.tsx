@@ -221,7 +221,7 @@ const Dashboard: React.FC = () => {
                   href="/dashboard/profile"
                   className="inline-flex items-center tracking-widest px-4 py-2 md:px-6 md:py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
                 >
-                  Complete Profile and Payment
+                  Complete Profile 
                   <svg
                     className="w-3 h-3 md:w-4 md:h-4 ml-2"
                     fill="none"
