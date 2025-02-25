@@ -1,4 +1,4 @@
-import { me } from "@/api/auth";
+import { checkifPaymentIsDone, me } from "@/api/auth";
 import React, { useEffect, useState, useRef } from "react"; // Added useRef
 import { MdDashboardCustomize } from "react-icons/md";
 import { FaUserShield, FaBars } from "react-icons/fa6"; // Added FaBars
@@ -16,6 +16,11 @@ import Image from "next/image";
 import { useAuth } from "@/context/auth-context";
 import Loader from "../loaders/loader";
 import { RiLogoutCircleRLine } from "react-icons/ri";
+import { getApplicationStatusDetails } from "@/api/applicationStatus";
+import { meDataAtom } from "@/store/meDataAtom";
+import { useAtom } from "jotai";
+import { getApplicationCharges } from "@/api/pricing";
+import { useAppContext } from "@/context/app-context";
 
 const sidebarData = [
   {
@@ -35,11 +40,13 @@ const sidebarData = [
         name: "Payment",
         icon: <RiSecurePaymentFill size={22} />,
         href: "/dashboard/payment",
+        disabled: false, // Initial state, will be updated
       },
       {
         name: "My Application",
         icon: <VscServerProcess size={22} />,
         href: "/dashboard/documentupload",
+        disabled: false, // Initial state, will be updated
       },
     ],
   },
@@ -51,11 +58,6 @@ const sidebarData = [
         icon: <MdDashboardCustomize size={22} />,
         href: "/caseManagerDashboard",
       },
-      // {
-      //   name: "Assigned Users",
-      //   icon: <ImUsers size={28} />,
-      //   href: "/assignedUsers",
-      // },
     ],
   },
   {
@@ -76,11 +78,6 @@ const sidebarData = [
         icon: <ImUser size={22} />,
         href: "/adminDashboard/usersList",
       },
-      // {
-      //   name: "Assign Case Manager",
-      //   icon: <ImUser size={22} />,
-      //   href: "/adminDashboard/assignCaseManager",
-      // },
     ],
   },
 ];
@@ -88,29 +85,76 @@ const sidebarData = [
 const Sidebar = () => {
   const [role, setRole] = useState(null);
   const { logout } = useAuth();
-  const [menuItems, setMenuItems] = useState([]);
+  const [menuItems, setMenuItems] = useState<any>([]); // Type the menuItems
   const [token, setToken] = useState("");
   const { data: session } = useSession();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
+
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [activeLink, setActiveLink] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar open/close
-  const sidebarRef = useRef<HTMLDivElement>(null); // Ref for the sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const { user, isLoading, isAuthenticated } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+//   const [isStripePaymentDone, setIsStripePaymentDone] = useState(false); // No longer needed
+  const [applicationCharges, setApplicationCharges] = useState<any>(null);
+//   const [profileCompleteStatus, setProfileCompleteStatus] = useState(""); // No longer needed
+  const [loading, setLoading] = useState(false);
+
+  const applicationId = user?.user?.applicationId;
 
   const router = useRouter();
 
-  const meData = async () => {
-    try {
-      const medata = await me();
-      const userRole = medata?.data?.user?.role?.toUpperCase().trim();
-      setRole(userRole);
+  // Use the context
+  const { profileCompletionStatus, isPaymentDone, appLoading, appError, refreshAppStatus } = useAppContext();
 
-      const roleMenu = sidebarData?.find((item) => item.role === userRole);
-      setMenuItems(roleMenu?.menu || []);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  };
+
+    const getmedata = async () => {
+        if (!applicationId) {
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+
+            const result = await me();
+            const userId = result?.data?.user?._id;
+            const userRole = result?.data?.user?.role?.toUpperCase().trim(); //get the role here to correctly render the menu
+            setSharedMedata(result?.data?.user);
+
+            const charges = await getApplicationCharges(userId); // You probably still need this
+            setApplicationCharges(charges?.data?.applicationCharges || null);
+
+
+            // Set menu items based on fetched data and user role:
+            const userMenu = sidebarData.find((item) => item.role === userRole)?.menu || [];
+            const updatedMenuItems = userMenu.map((item: any) => {
+                if (item.name === "Payment" || item.name === "My Application") {
+                     return { ...item, disabled: profileCompletionStatus !== "completed" };
+                }
+                return item;
+            });
+            setMenuItems(updatedMenuItems);
+
+
+        } catch (error: any) {
+            console.error("Error fetching data:", error);
+            setError(error.message || "An unexpected error occurred.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            getmedata();
+        }
+    }, [isAuthenticated, applicationId, profileCompletionStatus]); // Depend on profileCompletionStatus
+
+
 
   const handleSignout = async () => {
     router.push("/logout");
@@ -120,28 +164,26 @@ const Sidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-   // Close sidebar on outside click
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-          if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-                setIsSidebarOpen(false);
-          }
-      };
+  // Close sidebar on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        setIsSidebarOpen(false);
+      }
+    };
 
-    if(isSidebarOpen){
-      document.addEventListener('mousedown', handleClickOutside);
+    if (isSidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
     }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isSidebarOpen]);
 
 
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      meData();
-    }
-  }, []);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -167,6 +209,39 @@ const Sidebar = () => {
   useEffect(() => {
     setActiveLink(router.pathname);
   }, [router.pathname]);
+
+  const renderLink = (item: any) => {
+    if (item.disabled) {
+      return (
+        <span
+          className={`px-4 py-1 font-normal uppercase tracking-wide text-gray-400 cursor-not-allowed`}
+        >
+          {item.name}
+        </span>
+      );
+    } else {
+      return (
+        <Link href={item.href} passHref>
+          <span
+            className={`px-4 py-1 font-normal uppercase tracking-wide transition-colors ${
+              activeLink === item.href
+                ? "text-Indigo"
+                : "text-gray-400 hover:text-FloralWhite"
+            }`}
+          >
+            {item.name}
+          </span>
+        </Link>
+      );
+    }
+  };
+
+  // if (appLoading || loading) {
+  //       return <Loader text="Loading App Data..." />;  // Or some other loading indicator
+  // }
+  //   if (appError) {
+  //   return <div>Error: {appError}</div>; // Or more sophisticated error handling
+  // }
 
   return (
     <main className="flex min-h-screen">
@@ -219,30 +294,20 @@ const Sidebar = () => {
           {/* Sidebar Menu */}
           <ul className="flex-1">
             {menuItems.length > 0 ? (
-              menuItems.map((item, index) => (
+              menuItems.map((item: any, index: number) => (
                 <li
                   key={index}
                   className={`cursor-pointer px-3 py-2 flex items-center
                       ${
-                        activeLink === item.href
+                        activeLink === item.href && !item.disabled
                           ? "bg-FloralWhite text-Indigo"
                           : "hover:bg-gray-800 text-FloralWhite"
                       }
+                     ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}
                      `}
                 >
                   {item.icon}
-                  <Link href={item.href} passHref>
-                    <span
-                      className={`px-4 py-1 font-normal uppercase tracking-wide transition-colors
-                            ${
-                              activeLink === item.href
-                                ? "text-Indigo"
-                                : "text-gray-400 hover:text-FloralWhite"
-                            }`}
-                    >
-                      {item.name}
-                    </span>
-                  </Link>
+                  {renderLink(item)}
                 </li>
               ))
             ) : (
@@ -274,7 +339,7 @@ const Sidebar = () => {
         <div className="sm:ml-[230px] w-[calc(100%-230px)]"></div>
       )}
       {/* Overlay for mobile sidebar */}
-            {isSmallScreen && isSidebarOpen && (
+      {isSmallScreen && isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30"
           onClick={toggleSidebar}

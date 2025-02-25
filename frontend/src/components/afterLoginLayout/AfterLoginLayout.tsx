@@ -1,5 +1,5 @@
 // components/AfterLoginLayout.tsx
-import React, { useEffect, useState, ComponentType } from "react";
+import React, { useEffect, useState, ComponentType, memo } from "react";
 import { me } from "@/api/auth";
 import Header2 from "../Header";
 import Sidebar from "./Sidebar";
@@ -290,6 +290,9 @@ interface WithAuthProps {
   isLoading?: boolean;
 }
 
+// Memoize the Sidebar component
+const MemoizedSidebar = memo(Sidebar);
+
 const AfterLoginLayout = <P extends WithAuthProps>(
   WrappedComponent: ComponentType<P>
 ) => {
@@ -301,7 +304,7 @@ const AfterLoginLayout = <P extends WithAuthProps>(
     );
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
-    const { user: data } = useAuth();
+    const { user: data, isLoading: authLoading } = useAuth(); // Get isLoading from useAuth
 
     const meData = async () => {
       try {
@@ -314,7 +317,7 @@ const AfterLoginLayout = <P extends WithAuthProps>(
             setUser(null);
             return;
           }
-          setRole(data?.user?.role);
+          setRole(data?.user?.role); // Consider if you really need role in this component.
           setUser(data?.user);
           setIsAuthenticated(true);
         } else {
@@ -335,9 +338,11 @@ const AfterLoginLayout = <P extends WithAuthProps>(
 
     useEffect(() => {
       meData();
-    }, [role]);
+        // Removed role from dependencies.  This is VERY important.
+    }, []);
 
-    if (loading) {
+
+    if (loading || authLoading) { // Check authLoading as well
       return (
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-white z-50">
           <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
@@ -352,11 +357,12 @@ const AfterLoginLayout = <P extends WithAuthProps>(
 
     return (
       <div className="flex h-screen">
-        <Sidebar />
+        {/* Use MemoizedSidebar instead of Sidebar */}
+        <MemoizedSidebar />
         <div className="flex-1 lg:ml-12">
           {/* Sticky Progress Bar */}
           <div className="sticky top-0 z-10 bg-white">
-            <ProgressBar className="py-4" />  {/* Add padding here */}
+            <ProgressBar className="py-4" />
           </div>
           <main className="w-full max-w-7xl mx-auto min-h-screen p-4">
             <div className="w-full lg:max-w-6xl mx-auto">

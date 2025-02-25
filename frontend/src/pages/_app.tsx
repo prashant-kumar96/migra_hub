@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AuthProvider } from "@/context/auth-context";
+import { AppProvider } from "@/context/app-context";
 
 // Define the ErrorBoundary component
 interface ErrorBoundaryProps {
@@ -80,7 +81,9 @@ export default function App({
       <ErrorBoundary>
         <SessionProvider session={session}>
         <AuthProvider>
+        <AppProvider> 
           <Component {...pageProps} />
+          </AppProvider>
           </AuthProvider>
         </SessionProvider>
       </ErrorBoundary>
