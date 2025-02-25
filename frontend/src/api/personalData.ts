@@ -8,6 +8,14 @@ export const savePersonalData = async (personalData: {}) => {
   return result;
 };
 
+export const updatePersonalData = async (personalData: {}) => {
+  const result = await axiosInstance.put(
+    `/personalData/updatePersonalData`,
+    personalData
+  );
+  return result;
+};
+
 export const getPersonalData = async (userId: {}) => {
   const result = await axiosInstance.get(
     `/personalData/getSinglePersonalData?userId=${userId}`

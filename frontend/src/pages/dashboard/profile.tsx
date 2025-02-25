@@ -15,13 +15,16 @@ import { useAuth } from "@/context/auth-context";
 import { getApplicationStatusDetails } from "@/api/applicationStatus";
 import AddFamilyMemberModal from "@/components/modal/add-family-member-modal";
 import { useAsync } from "react-use";
-import { getLinkedFamilyMembers } from "@/api/familyMember";
+import { deleteFamilyMember, getLinkedFamilyMembers } from "@/api/familyMember";
 import { useRouter } from "next/router";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import Loader from "@/components/loaders/loader";
+import ButtonLoader from "@/components/loaders/buttonLoader";
 
 const ProfilePage = () => {
   const [citizenshipCountry, setCitizenshipCountry] = useState("");
+  const [text, setText] = useState("");
   const [countryid, setCountryid] = useState(0);
   const [stateid, setstateid] = useState(0);
   const router = useRouter();
@@ -36,7 +39,8 @@ const ProfilePage = () => {
   const [applicationStatus, setApplicationStatus] = useState<any>(null);
   const [linkedMembers, setLinkedMembers] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [member, setMember] = useState();
+  const [member, setMember] = useState({});
+  const [isEditMode, setIsEditMode] = useState(false);
 
   // Separate API calls into individual functions
   const fetchApplicationStatus = async () => {
@@ -107,7 +111,12 @@ const ProfilePage = () => {
   }
 
   const handleModal = () => {
-    setMember((prev) => {});
+    console.log("handleModal is run");
+    // const emptyObj = {};
+
+    setSelectedCitizenshipCountry({});
+    setIsEditMode(false);
+    setMember({});
     setIsOpen(true);
   };
 
@@ -116,15 +125,43 @@ const ProfilePage = () => {
     setCitizenshipCountry(code);
   };
 
+  const [deleteLoader, setDeleteLoader] = useState(false);
+  const handleEdit = (tempMember) => {
+    console.log("tempMember", tempMember);
+    setSelectedCitizenshipCountry(tempMember.citizenshipCountry);
+    setIsEditMode(true);
+    setMember(tempMember);
+    setIsOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      setDeleteLoader(true);
+      console.log("handleDelete", id);
+
+      const deleteResult = await deleteFamilyMember(id);
+      console.log("deleteResult", deleteResult);
+      if (deleteResult.status === 200) {
+        alert(deleteResult?.data?.message);
+        console.log("deleteResult", deleteResult);
+        fetchLinkedMembers();
+      } else {
+        alert("error");
+      }
+    } catch (err) {
+      console.log("error");
+    } finally {
+      setDeleteLoader(false);
+    }
+  };
+
+  const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] = useState<{
+    value: string;
+    label: string;
+  } | null>();
+
   const renderLinkedMembers = () => {
     if (!linkedMembers?.familyMembers?.length) return null;
-
-    const handleEdit = (tempMember) => {
-      console.log("tempMember", tempMember);
-      setMember(tempMember);
-      setIsOpen(true);
-    };
-    console.log("member", member);
 
     return (
       <div className="mb-8 overflow-x-auto">
@@ -202,11 +239,21 @@ const ProfilePage = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   <FaEdit
                     className="cursor-pointer"
-                    onClick={() => handleEdit(member)}
+                    onClick={() => {
+                      handleEdit(member);
+                    }}
                   />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <MdDelete className="cursor-pointer" />
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900  ">
+                  <p className="flex gap-2">
+                    <MdDelete
+                      className="cursor-pointer"
+                      onClick={() => {
+                        handleDelete(member._id);
+                      }}
+                    />
+                    {deleteLoader && <ButtonLoader />}
+                  </p>
                 </td>
               </tr>
             ))}
@@ -236,6 +283,7 @@ const ProfilePage = () => {
       </div>
     );
   }
+
   return (
     <div className="w-5/6">
       {/* <ProgressBar /> */}
@@ -262,6 +310,9 @@ const ProfilePage = () => {
           isOpen={isOpen}
           member={member}
           onClose={onClose}
+          isEditMode={isEditMode}
+          selectedCitizenshipCountry={selectedCitizenshipCountry}
+          setSelectedCitizenshipCountry={setSelectedCitizenshipCountry}
         />
 
         <PersonalInfo
@@ -269,6 +320,9 @@ const ProfilePage = () => {
           userEmail={user.user.email}
           userName={user.user.name}
           userId={user.user._id}
+          setText={setText}
+          text={text}
+          
         />
       </div>
     </div>

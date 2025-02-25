@@ -4,17 +4,28 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import countryList from "react-select-country-list";
-import Select from "react-select";
-import { addFamilyMember } from "@/api/familyMember";
+import { addFamilyMember, editFamilyMember } from "@/api/familyMember";
 import ReactFlagsSelect from "react-flags-select";
 import { countriesToRemove } from "../TravelPlan";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: any) => Promise<void>;
-  member: {};
+  member: {
+    name: string;
+    email: string;
+    relationship: string;
+    isEditMode: boolean;
+    citizenshipCountry:
+      | {
+          value: string;
+          label: string;
+        }
+      | {};
+  };
 }
 
 interface FormData {
@@ -40,7 +51,7 @@ const schema = yup.object().shape({
     .string()
     .email("Email must be valid")
     .required("Email is required"),
-  passport_number: yup.string().required("Passport number is required"),
+  passport_number: yup.string().required("Passport number is required").min(3),
   passport_expiry: yup
     .date()
     .required("Passport Expiry is required")
@@ -48,7 +59,7 @@ const schema = yup.object().shape({
     .typeError("Invalid date format"),
 
   // areYouApplyingFromPassportCountry:yup.boolean().required('Applying From Passport Country is required'),
-  citizenshipCountry: yup.object().required("Citizenship Country is required"),
+  // citizenshipCountry: yup.object().required("Citizenship Country is required"),
   deniedVisaToAnyCountry: yup
     .boolean()
     .required("Previously Denied Visa to any country is required"),
@@ -65,11 +76,15 @@ const schema = yup.object().shape({
     )
     .required("Relationship is required"),
 });
+
 const AddFamilyMemberModal: React.FC<Props> = ({
   isOpen,
   onClose,
   member,
   onSubmit,
+  isEditMode,
+  setSelectedCitizenshipCountry,
+  selectedCitizenshipCountry,
 }) => {
   const {
     register,
@@ -83,11 +98,12 @@ const AddFamilyMemberModal: React.FC<Props> = ({
   });
 
   const countries = useMemo(() => countryList().getData(), []);
-
+  // console.log("member@@@@", member);
+  // console.log("member?.citizenshipCountry ", member?.citizenshipCountry);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCitizenshipCountry, setSelectedCitizenshipCountry] = useState<
-    string | null
-  >(null);
+
+  // setSelectedCitizenshipCountry(member?.citizenshipCountry);
+  // console.log("selectedCitizenshipCountry", selectedCitizenshipCountry);
   const [selectedDestinationCountry, setSelectedDestinationCountry] = useState<
     string | null
   >(null);
@@ -122,6 +138,8 @@ const AddFamilyMemberModal: React.FC<Props> = ({
 
   const handleFormSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
+    // console.log("handleFormSubmit formData", formData);
+    // return;
     try {
       const {
         name,
@@ -147,8 +165,8 @@ const AddFamilyMemberModal: React.FC<Props> = ({
           passport_number,
           passport_expiry,
           citizenshipCountry: {
-            value: citizenshipCountry?.value,
-            label: citizenshipCountry?.label,
+            value: selectedCitizenshipCountry?.value,
+            label: selectedCitizenshipCountry?.label,
           },
         },
 
@@ -164,17 +182,53 @@ const AddFamilyMemberModal: React.FC<Props> = ({
         },
       };
 
-      const response = await addFamilyMember(data);
-
-      if (response) {
-        reset();
-        onClose();
-        onSubmit();
+      // console.log("data", data);
+      // return;
+      console.log("selectedCitizenshipCountry", selectedCitizenshipCountry);
+      if (Object.keys(selectedCitizenshipCountry).length < 1) {
+        alert("Citizenship Country is required");
+        return;
       }
 
-      console.log("data::", response);
+      if (isEditMode) {
+        const response = await editFamilyMember(data, member._id);
+        console.log("response", response);
+        if (response) {
+          // reset();
+          onClose();
+          onSubmit();
+        }
+      } else {
+        const response = await addFamilyMember(data);
+        console.log("response", response);
+        if (response) {
+          // reset();
+          onClose();
+          onSubmit();
+        }
+
+        // console.log("data::", response);
+      }
     } catch (err) {
-      console.log("family member submission error:", err);
+      console.log("err in catch", err);
+      // console.log(err?.response?.data?.message?.errorResponse?.errmsg);
+      console.log("@@", err?.response?.data?.error?.errorResponse?.code);
+      if (err?.response?.data?.error?.errorResponse?.code == 11000) {
+        let str1 = JSON.stringify(
+          err?.response?.data?.error?.errorResponse?.keyValue
+        ).substring(1);
+        console.log(str1);
+        let str2 = str1.substring(0, str1.length - 1);
+        console.log(str2);
+        // toast(str2 + " already exists");
+        alert(str2 + " already exists");
+      } else {
+        alert(err.response.data.message);
+      }
+      // if (err.response.status === 400) {
+      //   alert(err.response.data?.message);
+      // }
+      // console.log("family member submission error:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -199,12 +253,56 @@ const AddFamilyMemberModal: React.FC<Props> = ({
     }),
   };
 
+  useEffect(() => {
+    if (member && Object?.keys(member)?.length > 0 && isEditMode) {
+      console.log("Iseditmode is run");
+
+      setValue("name", member?.name ? member?.name : "");
+      setValue("email", member?.email ? member?.email : "");
+      setValue(
+        "relationship",
+        member?.relationship ? member?.relationship : ""
+      );
+      setValue(
+        "passport_number",
+        member?.passport_number ? member?.passport_number : ""
+      );
+      setValue(
+        "deniedVisaToAnyCountry",
+        member?.visaData?.deniedVisaToAnyCountry === true ? "true" : "false"
+      );
+
+      setValue(
+        "passport_expiry",
+        member?.passport_expiry
+          ? moment(member?.passport_expiry).format("YYYY-MM-DD")
+          : ""
+      );
+    } else {
+      console.log("else isEditMode is run ");
+      setValue("name", "");
+      setValue("email", "");
+      setValue("relationship", "");
+      setValue("passport_number", "");
+      setValue("deniedVisaToAnyCountry", "");
+      setValue("passport_expiry", "");
+    }
+  }, [isOpen]);
+
+  const handleSelectcountryOfCitizenship = (countryCode: string) => {
+    const tempCountry: any = countryList()
+      .getData()
+      .find((country) => country.value === countryCode);
+
+    console.log("tempCountry", tempCountry);
+    setSelectedCitizenshipCountry(tempCountry);
+  };
+
+  // const getMemberDetails = async (id) => {
+
+  console.log("isEdit mode", isEditMode);
+
   if (!isOpen) return null;
-
-  // useEffect(() => {
-  //   console.log("@@@", member);
-  // }, [member]);
-
   return ReactDOM.createPortal(
     <div className="fixed inset-0 text-gray-600 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-8 rounded-lg max-w-4xl w-full relative">
@@ -229,7 +327,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
         </button>
 
         <h2 className="text-2xl font-bold mb-6 text-center text-Indigo">
-          Add Family Member
+          {isEditMode ? "Edit" : "Add"} Family Member
         </h2>
         <form
           className="grid grid-cols-2 gap-4"
@@ -331,17 +429,18 @@ const AddFamilyMemberModal: React.FC<Props> = ({
             {/* <p className="text-sm font-medium"> </p> */}
             <input
               type="date"
+              min={moment().add(1, "days").format("YYYY-MM-DD")}
               className={`w-full px-3 py-3 border rounded ${
                 errors.passport_number ? "border-red-500" : "border-gray-300"
               } focus:outline-none focus:border-Indigo`}
               {...register("passport_expiry")}
-              value={moment(watch("passport_expiry")).format("YYYY-MM-DD")}
-              onChange={(e) => {
-                setValue(
-                  "passport_expiry",
-                  moment(e.target.value).format("YYYY/MM/DD")
-                );
-              }}
+              // value={moment(watch("passport_expiry")).format("YYYY-MM-DD")}
+              // onChange={(e) => {
+              // setValue(
+              //   "passport_expiry",
+              //   moment(e.target.value).format("YYYY/MM/DD")
+              // );
+              // }}
             />
           </div>
 
@@ -379,13 +478,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
             </label>
             <ReactFlagsSelect
               selected={selectedCitizenshipCountry?.value}
-              onSelect={(code) => {
-                const selectedCountry = countries.find(
-                  (country) => country.value === code
-                );
-                setSelectedCitizenshipCountry(selectedCountry);
-                setValue("citizenshipCountry", selectedCountry);
-              }}
+              onSelect={handleSelectcountryOfCitizenship}
               countries={citizenshipCountryCodes}
               searchable
               placeholder="Select Citizenship Country"
@@ -414,7 +507,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
                       : "border-gray-300"
                   } focus:outline-none focus:border-Indigo`}
                   {...register("deniedVisaToAnyCountry")}
-                  value={true}
+                  value="true"
                 />
                 <span className="ml-2 text-gray-700">Yes</span>
               </label>
@@ -427,7 +520,7 @@ const AddFamilyMemberModal: React.FC<Props> = ({
                       : "border-gray-300"
                   } focus:outline-none focus:border-Indigo`}
                   {...register("deniedVisaToAnyCountry")}
-                  value={false}
+                  value="false"
                 />
                 <span className="ml-2 text-gray-700">No</span>
               </label>
@@ -563,7 +656,13 @@ const AddFamilyMemberModal: React.FC<Props> = ({
               }`}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Adding..." : "Add Family Member"}
+              {isSubmitting
+                ? isEditMode
+                  ? "Editing..."
+                  : "Adding..."
+                : isEditMode
+                ? "Edit Family Member"
+                : "Add Family Member"}
             </button>
           </div>
         </form>

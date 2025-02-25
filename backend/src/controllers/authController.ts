@@ -1,4 +1,4 @@
-//@ts-ignore
+//@ts-nocheck
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -11,19 +11,19 @@ import { v4 as uuidv4 } from "uuid";
 import dotenv from "dotenv";
 dotenv.config();
 
-
 export function generateApplicationId() {
   const randomNum = Math.floor(1000 + Math.random() * 90000); // generates a number between 1000-99999
   return `MH${randomNum}`;
 }
 
- 
 async function login(req: any, res: any) {
   console.log("login is run");
   try {
     const JWT_SECRET: any = process.env.JWT_SECRET;
     const { email, password } = req.body;
     const user: any = await User.findOne({ email });
+
+    console.log(user);
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
@@ -150,6 +150,7 @@ async function googleLogin(req: any, res: any) {
         if (!visaDataId) {
           const visaData = new VisaData(riskAssessmentData);
           const resultVisaData = await visaData.save({ session });
+          //@ts-ignore
           visaDataId = resultVisaData._id;
         } else {
           // If visaDataId exists, check if visa data is already saved for that id, if not then update
@@ -514,7 +515,6 @@ async function checkifPaymentIsDone(req: any, res: any) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
-
 
 export {
   login,

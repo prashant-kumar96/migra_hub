@@ -238,7 +238,7 @@ const SignUpModal = () => {
             />
           </div>
 
-          <div className="relative mb-2">
+          <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
@@ -315,7 +315,7 @@ const SignUpModal = () => {
               )}
             </div>
 
-            <div className="mt-4 flex items-start">
+            {/* <div className="mt-4 flex items-start">
               <input
                 type="checkbox"
                 id="terms"
@@ -335,8 +335,8 @@ const SignUpModal = () => {
                   Terms of Use.
                 </Link>
               </label>
-            </div>
-
+            </div> */}
+            {/* 
             <div className="mt-2 flex items-start">
               <input
                 type="checkbox"
@@ -348,7 +348,7 @@ const SignUpModal = () => {
               <label htmlFor="tips" className="text-sm text-gray-700">
                 Send me important tips and updates about the visa process.
               </label>
-            </div>
+            </div> */}
 
             <div className="flex items-center justify-between mt-6">
               <button

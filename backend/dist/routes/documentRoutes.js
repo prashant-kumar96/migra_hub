@@ -1,7 +1,7 @@
 //@ts-nocheck
 import express from "express";
 import verifyToken from "../middleware/authenticate.js";
-import { getAdditionalDocuments, getSinglePassportData, getSingleProofOfFundsData, getSingleProofOfTiesData, uploadAdditionalDocuments, uploadPassportImages, uploadProofOfFundsImages, uploadProofOfTiesImages, } from "../controllers/documentController.js";
+import { getAdditionalDocuments, getSinglePassportData, getSingleProofOfFundsData, getSingleProofOfTiesData, uploadAdditionalDocuments, uploadPassportImages, getUploadedDocuments, uploadProofOfFundsImages, uploadProofOfTiesImages, uploadDocuments } from "../controllers/documentController.js";
 const router = express.Router();
 import multer from "multer";
 import path from "path";
@@ -43,11 +43,13 @@ const upload = multer({
     // },
 });
 router.post("/uploadPassportImages", upload.array("images", 10), uploadPassportImages);
+router.post('/upload', uploadDocuments);
 router.post("/uploadproofOfFundsImages", upload.array("images", 10), uploadProofOfFundsImages);
 router.post("/uploadProofOfTiesImages", upload.array("images", 10), uploadProofOfTiesImages);
 router.post("/uploadAdditionalDocuments", upload.array("images", 10), uploadAdditionalDocuments);
 router.get("/getSinglePassportData", verifyToken, getSinglePassportData);
 router.get("/getSingleProofOfFundsData", verifyToken, getSingleProofOfFundsData);
+router.get("/uploadedDocuments", getUploadedDocuments);
 router.get("/getSingleProofOfTiesData", verifyToken, getSingleProofOfTiesData);
 router.get("/getAdditionalDocuments", verifyToken, getAdditionalDocuments);
 export default router;

@@ -85,6 +85,7 @@ if(applicationCharges?.primaryApplicant && !applicationCharges?.primaryApplicant
   return items;
 
   },[applicationCharges])
+  
 const paidItems = useMemo(() => {
       if(!applicationCharges) return [];
       const items = [];

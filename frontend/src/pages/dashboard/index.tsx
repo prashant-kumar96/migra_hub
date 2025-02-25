@@ -139,7 +139,7 @@ const Dashboard: React.FC = () => {
         resultVisaData?.data?.areYouApplyingFromPassportCountry === "true" &&
         resultVisaData?.data?.haveSpouseOrProperty === "true" &&
         resultVisaData?.data?.travelledInternationallyAndReturnedHome ===
-          "true" &&
+        "true" &&
         resultVisaData?.data?.deniedVisaToAnyCountry === false
       ) {
         setRiskValue("LOW");
@@ -148,7 +148,7 @@ const Dashboard: React.FC = () => {
         (resultVisaData?.data?.areYouApplyingFromPassportCountry === "false" ||
           resultVisaData?.data?.haveSpouseOrProperty === "true" ||
           resultVisaData?.data?.travelledInternationallyAndReturnedHome ===
-            "true")
+          "true")
       ) {
         setRiskValue("MEDIUM");
       }
@@ -182,7 +182,7 @@ const Dashboard: React.FC = () => {
   if (loading || isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Loader text="Loading..." />
+        <Loader className="text-Indigo" text="Loading..." />
       </div>
     );
   }
@@ -198,49 +198,49 @@ const Dashboard: React.FC = () => {
         <>
           {applicationStatus?.applicationStatus?.profileCompletion ==
             "pending" && (
-            <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-              <h2 className="text-2xl font-bold text-Indigo mb-4">
-                Travel Visa Denial Risk
-              </h2>
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <RiSlowDownFill className="text-green-500" size={24} />
-                <span className="text-xl font-medium text-gray-900">
-                  {riskValue}
-                </span>
-              </div>
-              <p className="text-lg text-gray-600 italic mb-6">
-                But our service gets your risk even lower
-              </p>
-              <Link
-                href="/dashboard/profile"
-                className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
-              >
-                Complete Profile and Payment
-                <svg
-                  className="w-4 h-4 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+                <h2 className="text-2xl font-bold text-Indigo mb-4">
+                  Travel Visa Denial Risk
+                </h2>
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <RiSlowDownFill className="text-green-500" size={24} />
+                  <span className="text-xl font-medium text-gray-900">
+                    {riskValue}
+                  </span>
+                </div>
+                <p className="text-lg text-gray-600 italic mb-6">
+                  But our service gets your risk even lower
+                </p>
+                <Link
+                  href="/dashboard/profile"
+                  className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
-            </div>
-          )}
+                  Complete Profile and Payment
+                  <svg
+                    className="w-4 h-4 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            )}
 
           {applicationStatus?.applicationStatus && (
-            <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <div className="bg-white rounded-lg shadow-lg  p-6 mt-8">
               <h2 className="text-2xl font-bold text-Indigo mb-4">
                 Application Status
               </h2>
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm  sm:hidden">
-                  <thead className="bg-gradient-to-r  text-gray-600">
+              <div className=" ">
+                <table className="max-w-6xl w-full bg-white border-collapse border border-gray-200 shadow-sm  sm:hidden">
+                  <thead className="bg-gray-50 text-gray-600">
                     <tr>
                       <th className="px-4 py-3 text-left text-sm font-medium">
                         Field
@@ -285,7 +285,7 @@ const Dashboard: React.FC = () => {
                         const capitalizedDisplayValue =
                           typeof displayValue === "string"
                             ? displayValue.charAt(0).toUpperCase() +
-                              displayValue.slice(1)
+                            displayValue.slice(1)
                             : displayValue;
                         return (
                           <tr key={key} className="hover:bg-gray-50">
@@ -293,15 +293,14 @@ const Dashboard: React.FC = () => {
                               {capitalizedTitle}
                             </td>
                             <td
-                              className={` ${
-                                displayValue === "pending"
+                              className={` ${displayValue === "pending"
                                   ? "text-yellow-500"
                                   : displayValue === "completed" ||
                                     displayValue === "Yes" ||
                                     displayValue == "approved"
-                                  ? "text-green-600"
-                                  : ""
-                              } px-4 py-3 text-sm text-gray-600`}
+                                    ? "text-green-600"
+                                    : ""
+                                } px-4 py-3 text-sm text-gray-600`}
                             >
                               {capitalizedDisplayValue}
                             </td>
@@ -320,120 +319,122 @@ const Dashboard: React.FC = () => {
                   </tr> */}
                   </tbody>
                 </table>
-                <table className="min-w-full bg-white border-collapse border border-gray-200 shadow-sm hidden sm:table">
-                  <thead className="bg-gradient-to-r  text-gray-600">
-                    <tr>
-                      {Object.entries(
-                        applicationStatus?.applicationStatus || {}
-                      )
-                        .filter(
-                          ([key]) =>
-                            ![
-                              "_id",
-                              "__v",
-                              "createdAt",
-                              "updatedAt",
-                              "status",
-                              "reviewSubmit",
-                              "userId",
-                              "applicationId",
-                            ].includes(key)
+                <div className="relative overflow-auto shadow-md sm:rounded-lg w-full max-w-6xl  ">
+
+                  <table className="text-left rtl:text-right ">
+                    <thead className="bg-gray-100  text-gray-600">
+                      <tr>
+                        {Object.entries(
+                          applicationStatus?.applicationStatus || {}
                         )
-                        .sort(([keyA], [keyB]) => {
-                          const order = [
-                            "riskAssessment",
-                            "profileCompletion",
-                            "payment",
-                            "documentUpload",
-                            "assignedCaseManager",
-                            "visaApplied",
-                            "visaStatus",
-                          ];
-                          return order.indexOf(keyA) - order.indexOf(keyB);
-                        })
-                        .map(([key]) => {
-                          const title = key.replace(/([A-Z])/g, " $1").trim();
-                          const capitalizedTitle =
-                            title.charAt(0).toUpperCase() + title.slice(1);
-                          return (
-                            <th
-                              key={key}
-                              className="px-4 py-3 text-left text-sm font-medium"
-                            >
-                              {capitalizedTitle}
-                            </th>
-                          );
-                        })}
-                      {/* <th className="px-4 py-3 text-left text-sm font-medium">
+                          .filter(
+                            ([key]) =>
+                              ![
+                                "_id",
+                                "__v",
+                                "createdAt",
+                                "updatedAt",
+                                "status",
+                                "reviewSubmit",
+                                "userId",
+                                "applicationId",
+                              ].includes(key)
+                          )
+                          .sort(([keyA], [keyB]) => {
+                            const order = [
+                              "riskAssessment",
+                              "profileCompletion",
+                              "payment",
+                              "documentUpload",
+                              "assignedCaseManager",
+                              "visaApplied",
+                              "visaStatus",
+                            ];
+                            return order.indexOf(keyA) - order.indexOf(keyB);
+                          })
+                          .map(([key]) => {
+                            const title = key.replace(/([A-Z])/g, " $1").trim();
+                            const capitalizedTitle =
+                              title.charAt(0).toUpperCase() + title.slice(1);
+                            return (
+                              <th
+                                key={key}
+                                className="px-4 py-3  text-base text-Indigo  whitespace-nowrap font-medium"
+                              >
+                                {capitalizedTitle}
+                              </th>
+                            );
+                          })}
+                        {/* <th className="px-4 py-3 text-left text-sm font-medium">
                       Relationship
                     </th> */}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 text-gray-800">
-                    <tr className="hover:bg-gray-50">
-                      {Object.entries(
-                        applicationStatus?.applicationStatus || {}
-                      )
-                        .filter(
-                          ([key]) =>
-                            ![
-                              "_id",
-                              "__v",
-                              "createdAt",
-                              "updatedAt",
-                              "userId",
-                              "status",
-                              "reviewSubmit",
-                              "applicationId",
-                            ].includes(key)
+                      </tr>
+                    </thead>
+                    <tbody className="divide-x divide-gray-200 text-gray-800">
+                      <tr className="hover:bg-gray-50">
+                        {Object.entries(
+                          applicationStatus?.applicationStatus || {}
                         )
-                        .sort(([keyA], [keyB]) => {
-                          const order = [
-                            "riskAssessment",
-                            "profileCompletion",
-                            "payment",
-                            "documentUpload",
-                            "assignedCaseManager",
-                            "visaApplied",
-                            "visaStatus",
-                          ];
-                          return order.indexOf(keyA) - order.indexOf(keyB);
-                        })
-                        .map(([, value]) => {
-                          let displayValue = value;
-                          if (typeof value === "boolean") {
-                            displayValue = value ? "Yes" : "No";
-                          }
-                          const capitalizedDisplayValue =
-                            typeof displayValue === "string"
-                              ? displayValue.charAt(0).toUpperCase() +
+                          .filter(
+                            ([key]) =>
+                              ![
+                                "_id",
+                                "__v",
+                                "createdAt",
+                                "updatedAt",
+                                "userId",
+                                "status",
+                                "reviewSubmit",
+                                "applicationId",
+                              ].includes(key)
+                          )
+                          .sort(([keyA], [keyB]) => {
+                            const order = [
+                              "riskAssessment",
+                              "profileCompletion",
+                              "payment",
+                              "documentUpload",
+                              "assignedCaseManager",
+                              "visaApplied",
+                              "visaStatus",
+                            ];
+                            return order.indexOf(keyA) - order.indexOf(keyB);
+                          })
+                          .map(([, value]) => {
+                            let displayValue = value;
+                            if (typeof value === "boolean") {
+                              displayValue = value ? "Yes" : "No";
+                            }
+                            const capitalizedDisplayValue =
+                              typeof displayValue === "string"
+                                ? displayValue.charAt(0).toUpperCase() +
                                 displayValue.slice(1)
-                              : displayValue;
-                          return (
-                            <td
-                              key={value}
-                              className={` ${
-                                displayValue === "pending"
-                                  ? "text-yellow-500"
-                                  : displayValue === "completed" ||
-                                    displayValue === "Yes" ||
-                                    displayValue == "approved"
-                                  ? "text-green-600"
-                                  : ""
-                              } px-4 py-3 text-sm text-gray-600`}
-                            >
-                              {capitalizedDisplayValue}
-                            </td>
-                          );
-                        })}
-                      {/* <td className="px-4 py-3 text-sm text-gray-600">
+                                : displayValue;
+                            return (
+                              <td
+                                key={value}
+                                className={` ${displayValue === "pending"
+                                    ? "text-yellow-500"
+                                    : displayValue === "completed" ||
+                                      displayValue === "Yes" ||
+                                      displayValue == "approved"
+                                      ? "text-lime-500"
+                                      : ""
+                                  } px-4 py-3 text-base text-gray-600`}
+                              >
+                                {capitalizedDisplayValue}
+                              </td>
+                            );
+                          })}
+                        {/* <td className="px-4 py-3 text-sm text-gray-600">
                       {userDetails?.isPrimaryApplicant
                         ? "Primary Applicant"
                         : "Family Member"}
                     </td> */}
-                    </tr>
-                  </tbody>
-                </table>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

@@ -9,9 +9,9 @@ import visaDataRoutes from "./routes/visaDataRoutes.js";
 import personalDataRoutes from "./routes/personalDataRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import caseManagerRoutes from "./routes/caseManagerRoutes.js";
-import familyMemberRoutes from './routes/famillyMemberRoutes.js'
-import applicationStatusRoutes from './routes/applicationStatusRoutes.js'
-import pricingRoutes from './routes/pricingRoutes.js'
+import familyMemberRoutes from "./routes/famillyMemberRoutes.js";
+import applicationStatusRoutes from "./routes/applicationStatusRoutes.js";
+import pricingRoutes from "./routes/pricingRoutes.js";
 import { MongoClient } from "mongodb";
 import { connectToDatabase, connectWithMongoose } from "./utils/database.js";
 import User from "./models/User.js";
@@ -40,7 +40,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 app.post("/create-checkout-session", async (req, res) => {
   const { items } = req.body;
-
+  console.log("items", items);
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -48,7 +48,7 @@ app.post("/create-checkout-session", async (req, res) => {
         price_data: {
           currency: "usd",
           product_data: {
-            name: item.name,
+            name: item?.name ? item?.name : "Primary",
           },
           unit_amount: item.price * 100, // Convert dollars to cents
         },
@@ -84,31 +84,37 @@ app.post("/retrieve-session", async (req, res) => {
           $set: {
             stripePaymentSessionId: sessionId,
             isStripePaymentDone: true,
-             payment: true
+            payment: true,
           },
         },
         { new: true }
       );
 
-        if(result && result.applicationId){
-           const applicationStatus = await ApplicationStatus.findOne({applicationId: result.applicationId});
-            if(applicationStatus){
-                await ApplicationStatus.updateOne(
-                    {_id: applicationStatus._id},
-                    {$set: { payment: "completed" }}
-                )
-            }
-
-
-            // Update payment status for all linked family members
-            const familyMembers = await User.find({ primaryApplicationId: result.applicationId, _id: { $ne: userId } });
-               for (const familyMember of familyMembers) {
-                   await User.updateOne({_id: familyMember._id}, { $set: { payment: true, isStripePaymentDone: true } })
-               }
-
+      if (result && result.applicationId) {
+        const applicationStatus = await ApplicationStatus.findOne({
+          applicationId: result.applicationId,
+        });
+        if (applicationStatus) {
+          await ApplicationStatus.updateOne(
+            { _id: applicationStatus._id },
+            { $set: { payment: "completed" } }
+          );
         }
 
-        console.log(result, 'result')
+        // Update payment status for all linked family members
+        const familyMembers = await User.find({
+          primaryApplicationId: result.applicationId,
+          _id: { $ne: userId },
+        });
+        for (const familyMember of familyMembers) {
+          await User.updateOne(
+            { _id: familyMember._id },
+            { $set: { payment: true, isStripePaymentDone: true } }
+          );
+        }
+      }
+
+      console.log(result, "result");
     }
 
     res.status(200).json(session);
@@ -127,9 +133,9 @@ app.use("/api/visaData", visaDataRoutes);
 app.use("/api/personalData", personalDataRoutes);
 app.use("/api/document", documentRoutes);
 app.use("/api/caseManager", caseManagerRoutes);
-app.use('/api/family-member',familyMemberRoutes)
-app.use('/api/pricing',pricingRoutes);
-app.use('/api/application-status',applicationStatusRoutes)
+app.use("/api/family-member", familyMemberRoutes);
+app.use("/api/pricing", pricingRoutes);
+app.use("/api/application-status", applicationStatusRoutes);
 
 const client = new MongoClient(uri);
 app.get("/users", async (req: Request, res: Response) => {
@@ -203,8 +209,8 @@ app.get("/users", async (req: Request, res: Response) => {
             <h1>MigraHub Users</h1>
             <div class="user-card-container">
             ${result
-                .map(
-                  (user) => `
+              .map(
+                (user) => `
                      <div class="user-card">
                         <h2>${user.name}</h2>
                         <h4>Email: ${user.email}</h4>
@@ -212,8 +218,8 @@ app.get("/users", async (req: Request, res: Response) => {
                         <!-- Add more user details here -->
                      </div>
                    `
-                )
-                .join("")}
+              )
+              .join("")}
              </div>
             <div class="footer">
                 <p>© ${new Date().getFullYear()} MigraHub API</p>

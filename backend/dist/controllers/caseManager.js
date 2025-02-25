@@ -12,20 +12,26 @@ import User from "../models/User.js";
 import mongoose from "mongoose";
 import PersonalData from "../models/personalData.js";
 import UserDocument from "../models/userDocument.js";
+import ApplicationStatus from "../models/applicationStatus.js";
 export const assignCaseManagerToUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
     try {
-        console.log("assignCaseManagerToUser is run");
+        console.log("assignCaseManagerToUser started");
+        const { applicationId, caseManagerId, userId } = req.body;
         console.log("req.body", req.body);
-        const result = yield User.findByIdAndUpdate({ _id: (_a = req.body) === null || _a === void 0 ? void 0 : _a.userId }, { $set: { assignedCaseManagerId: (_b = req.body) === null || _b === void 0 ? void 0 : _b.caseManagerId } }, { new: true }).select("-password");
+        const result = yield User.findByIdAndUpdate({ _id: userId }, { $set: { assignedCaseManagerId: caseManagerId } }, { new: true }).select("-password");
         console.log("assignCaseManagerToUser result", result);
+        const applicationStatus = yield ApplicationStatus.findOne({ applicationId: applicationId });
+        if (applicationStatus) {
+            // Update the application status to assigned case manager
+            yield ApplicationStatus.updateOne({ _id: applicationStatus._id }, { $set: { assignedCaseManager: true } });
+        }
         if (result) {
             res.status(200).send({ message: "Case Manager assigned successfully" });
         }
     }
     catch (err) {
         console.log("ERROr=.>", err);
-        res.status(400).json({ message: err });
+        res.status(500).json({ message: "Internal server error", error: err });
     }
 });
 export const getAssignedUsersToCaseManager = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,15 +40,36 @@ export const getAssignedUsersToCaseManager = (req, res) => __awaiter(void 0, voi
         console.log("getAssignedUsersToCaseManager query", (_a = req.query) === null || _a === void 0 ? void 0 : _a.caseManagerId);
         const users = yield User.find({
             assignedCaseManagerId: new mongoose.Types.ObjectId((_b = req.query) === null || _b === void 0 ? void 0 : _b.caseManagerId),
-        }).select("-password");
-        // const users = await User.find();
-        console.log("usrs", users);
-        if (users.length > 0) {
-            res.status(200).json({ message: "Users fetched successfully", users });
+        })
+            .select("-password")
+            .lean(); // using .lean() for performance
+        if (!users || users.length === 0) {
+            return res
+                .status(200)
+                .json({ message: "No users found", users: [] });
         }
-        else {
-            res.status(200).json({ message: "No users found", users });
-        }
+        const populatedUsers = yield Promise.all(users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
+            let populatedUser = Object.assign({}, user); // Create a copy of user
+            if (user.applicationId) {
+                const applicationStatus = yield ApplicationStatus.findOne({
+                    applicationId: user.applicationId,
+                }).select('status').lean();
+                if (applicationStatus) {
+                    populatedUser = Object.assign(Object.assign({}, user), { status: applicationStatus.status });
+                }
+                else {
+                    populatedUser = Object.assign(Object.assign({}, user), { status: 'N/A' });
+                }
+            }
+            else {
+                populatedUser = Object.assign(Object.assign({}, user), { status: 'N/A' });
+            }
+            return populatedUser;
+        })));
+        console.log("populatedUsers", populatedUsers);
+        res
+            .status(200)
+            .json({ message: "Users fetched successfully", users: populatedUsers });
     }
     catch (err) {
         console.log("ERROr=.>", err);

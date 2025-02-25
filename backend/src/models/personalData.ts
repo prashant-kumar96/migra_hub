@@ -1,5 +1,5 @@
 import mongoose, { Document, ObjectId, Schema } from "mongoose";
-
+import moment from "moment";
 
 // Define an interface for the profile data
 interface IPersonalData extends Document {
@@ -7,7 +7,7 @@ interface IPersonalData extends Document {
   gender: "Male" | "Female" | "Other";
   terms: boolean;
   first_name: string;
-  middle_name: string;
+  middle_name?: string;
   last_name: string;
   dob: Date;
   passport_number: string;
@@ -56,7 +56,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   },
   middle_name: {
     type: String,
-    required: [false, "Middle name is required"],
+    // required: [true, "Middle name is required"],
     trim: true,
     minlength: [2, "Middle name must be at least 2 characters long"],
   },
@@ -69,13 +69,23 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
   dob: {
     type: Date,
     required: [false, "DOB is required"],
-    trim: true,
-     validate: {
-      validator: (value: Date) => value > new Date(),
-      message: "Passport expiry date must be in the future",
+    validate: {
+      validator: function (value: Date) {
+        // Calculate the age using only the year difference
+        const age = moment().diff(moment(value), "years", false); 
+        
+        // Check if the age is less than 18
+        if (age < 18) {
+          // Return false to indicate the validation failed
+          return false;
+        }
+        // If age is 18 or greater, return true
+        return true;
+      },
+      message: "User must be at least 18 years old",
     },
   },
-
+  
   passport_number: {
     type: String,
     required: [false, "Passport number is required"],
@@ -133,7 +143,7 @@ const PersonalDataSchema: Schema<IPersonalData> = new Schema({
       required: [false, "State is required"],
       trim: true,
     },
-  },
+  },  
   citizenshipCountry: {
     value: {
       type: String,
