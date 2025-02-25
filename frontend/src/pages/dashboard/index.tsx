@@ -77,18 +77,19 @@ const Dashboard: React.FC = () => {
   const isStepActive = (step: number) => {
     return currentStep >= step;
   };
-    const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-    useEffect(() => {
-    if (typeof window !== "undefined") {
-      const updateScreenSize = () => {
-        setIsSmallScreen(window.innerWidth < 640);
-      };
+  const [isSmallScreen, setIsSmallScreen] = useState(false); // Add isSmallScreen state
 
-      updateScreenSize();
-      window.addEventListener("resize", updateScreenSize);
-      return () => window.removeEventListener("resize", updateScreenSize);
-    }
+  // Use useEffect to detect screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 768); // Adjust breakpoint as needed (md: in Tailwind)
+    };
+
+    handleResize(); // Call on initial load
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -127,8 +128,6 @@ const Dashboard: React.FC = () => {
       fetchApplicationStatus();
     }
   }, [userDetails?.applicationId, user]);
-
-
 
   const fetchPrimaryApplicantData = async () => {
     // created a new method to get data
@@ -197,7 +196,6 @@ const Dashboard: React.FC = () => {
     );
   }
 
-
   return (
     <div className="p-4 md:p-6">
       {hasValidVisaData() ? (
@@ -240,79 +238,183 @@ const Dashboard: React.FC = () => {
             )}
 
           {applicationStatus?.applicationStatus && (
-           <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 mt-4 md:mt-8">
-           <h2 className="text-xl md:text-2xl font-bold text-Indigo mb-2 md:mb-4">
-             Application Status
-           </h2>
-           <div className="flex flex-col">
-             {Object.entries(applicationStatus?.applicationStatus || {})
-               .filter(
-                 ([key]) =>
-                   ![
-                     "_id",
-                     "__v",
-                     "createdAt",
-                     "updatedAt",
-                     "status",
-                     "reviewSubmit",
-                     "userId",
-                     "applicationId",
-                   ].includes(key)
-               )
-               .sort(([keyA], [keyB]) => {
-                 const order = [
-                   "riskAssessment",
-                   "profileCompletion",
-                   "payment",
-                   "documentUpload",
-                   "assignedCaseManager",
-                   "visaApplied",
-                   "visaStatus",
-                 ];
-                 return order.indexOf(keyA) - order.indexOf(keyB);
-               })
-               .map(([key, value]) => {
-                 const title = key.replace(/([A-Z])/g, " $1").trim();
-                 const capitalizedTitle =
-                   title.charAt(0).toUpperCase() + title.slice(1);
-                 let displayValue = value;
-                 if (typeof value === "boolean") {
-                   displayValue = value ? "Yes" : "No";
-                 }
-                 const capitalizedDisplayValue =
-                   typeof displayValue === "string"
-                     ? displayValue.charAt(0).toUpperCase() +
-                     displayValue.slice(1)
-                     : displayValue;
+            <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 mt-4 md:mt-8">
+              <h2 className="text-xl md:text-2xl font-bold text-Indigo mb-2 md:mb-4">
+                Application Status
+              </h2>
 
-                 return (
-                   <div
-                     key={key}
-                     className={`flex ${isSmallScreen ? 'flex-col' : 'flex-row'}  items-start border-b py-2`}  /* Added border and padding */
-                   >
-                     <div
-                       className={`px-2 py-2 md:px-4 md:py-3 text-xs md:text-base font-medium ${isSmallScreen ? 'text-Indigo' : 'text-gray-600'} w-1/2 md:w-1/3`}
-                     >
-                       {capitalizedTitle}
-                     </div>
-                     <div
-                       className={`px-2 py-2 md:px-4 md:py-3 text-xs md:text-base text-gray-600 w-1/2 md:w-2/3 ${
-                         displayValue === "pending"
-                           ? "text-yellow-500"
-                           : displayValue === "completed" ||
-                             displayValue === "Yes" ||
-                             displayValue == "approved"
-                           ? "text-lime-500"
-                           : ""
-                       }`}
-                     >
-                       {capitalizedDisplayValue}
-                     </div>
-                   </div>
-                 );
-               })}
-           </div>
-         </div>
+              {/* Mobile Layout */}
+              <div className="flex flex-col md:hidden">
+                {Object.entries(applicationStatus?.applicationStatus || {})
+                  .filter(
+                    ([key]) =>
+                      ![
+                        "_id",
+                        "__v",
+                        "createdAt",
+                        "updatedAt",
+                        "status",
+                        "reviewSubmit",
+                        "userId",
+                        "applicationId",
+                      ].includes(key)
+                  )
+                  .sort(([keyA], [keyB]) => {
+                    const order = [
+                      "riskAssessment",
+                      "profileCompletion",
+                      "payment",
+                      "documentUpload",
+                      "assignedCaseManager",
+                      "visaApplied",
+                      "visaStatus",
+                    ];
+                    return order.indexOf(keyA) - order.indexOf(keyB);
+                  })
+                  .map(([key, value]) => {
+                    const title = key.replace(/([A-Z])/g, " $1").trim();
+                    const capitalizedTitle =
+                      title.charAt(0).toUpperCase() + title.slice(1);
+                    let displayValue = value;
+                    if (typeof value === "boolean") {
+                      displayValue = value ? "Yes" : "No";
+                    }
+                    const capitalizedDisplayValue =
+                      typeof displayValue === "string"
+                        ? displayValue.charAt(0).toUpperCase() +
+                        displayValue.slice(1)
+                        : displayValue;
+
+                    return (
+                      <div
+                        key={key}
+                        className="flex flex-row items-start border-b py-2"
+                      >
+                        <div className="px-2 py-2 text-xs md:text-base font-medium text-Indigo w-1/2">
+                          {capitalizedTitle}
+                        </div>
+                        <div
+                          className={`px-2 py-2 text-xs md:text-base text-gray-600 w-1/2 ${
+                            displayValue === "pending"
+                              ? "text-yellow-500"
+                              : displayValue === "completed" ||
+                                displayValue === "Yes" ||
+                                displayValue == "approved"
+                              ? "text-lime-500"
+                              : ""
+                          }`}
+                        >
+                          {capitalizedDisplayValue}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+
+              {/* Desktop Layout */}
+              <div className="hidden md:flex md:flex-col">
+                {/* Header Row */}
+                <div className="flex flex-row border-b border-gray-300">
+                  {Object.entries(applicationStatus?.applicationStatus || {})
+                    .filter(
+                      ([key]) =>
+                        ![
+                          "_id",
+                          "__v",
+                          "createdAt",
+                          "updatedAt",
+                          "status",
+                          "reviewSubmit",
+                          "userId",
+                          "applicationId",
+                        ].includes(key)
+                    )
+                    .sort(([keyA], [keyB]) => {
+                      const order = [
+                        "riskAssessment",
+                        "profileCompletion",
+                        "payment",
+                        "documentUpload",
+                        "assignedCaseManager",
+                        "visaApplied",
+                        "visaStatus",
+                      ];
+                      return order.indexOf(keyA) - order.indexOf(keyB);
+                    })
+                    .map(([key]) => {
+                      const title = key.replace(/([A-Z])/g, " $1").trim();
+                      const capitalizedTitle =
+                        title.charAt(0).toUpperCase() + title.slice(1);
+
+                      return (
+                        <div
+                          key={key}
+                          className="px-4 py-3 text-base font-medium text-gray-600 flex-1" // Changed to flex-1
+                        >
+                          {capitalizedTitle}
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {/* Data Row */}
+                <div className="flex flex-row">
+                  {Object.entries(applicationStatus?.applicationStatus || {})
+                    .filter(
+                      ([key]) =>
+                        ![
+                          "_id",
+                          "__v",
+                          "createdAt",
+                          "updatedAt",
+                          "userId",
+                          "status",
+                          "reviewSubmit",
+                          "applicationId",
+                        ].includes(key)
+                    )
+                    .sort(([keyA], [keyB]) => {
+                      const order = [
+                        "riskAssessment",
+                        "profileCompletion",
+                        "payment",
+                        "documentUpload",
+                        "assignedCaseManager",
+                        "visaApplied",
+                        "visaStatus",
+                      ];
+                      return order.indexOf(keyA) - order.indexOf(keyB);
+                    })
+                    .map(([, value]) => {
+                      let displayValue = value;
+                      if (typeof value === "boolean") {
+                        displayValue = value ? "Yes" : "No";
+                      }
+                      const capitalizedDisplayValue =
+                        typeof displayValue === "string"
+                          ? displayValue.charAt(0).toUpperCase() +
+                          displayValue.slice(1)
+                          : displayValue;
+                      return (
+                        <div
+                          key={value}
+                          className={`px-4 py-3 text-base text-gray-600 flex-1 ${ // Changed to flex-1
+                            displayValue === "pending"
+                              ? "text-yellow-500"
+                              : displayValue === "completed" ||
+                                displayValue === "Yes" ||
+                                displayValue == "approved"
+                              ? "text-lime-500"
+                              : ""
+                          }`}
+                        >
+                          {capitalizedDisplayValue}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </div>
           )}
         </>
       ) : (
