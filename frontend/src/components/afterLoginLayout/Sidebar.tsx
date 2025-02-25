@@ -275,8 +275,8 @@ const Sidebar = () => {
           <div className="text-center text-FloralWhite">
             <Link href="/">
               {isSmallScreen ? (
-                <span className="text-5xl text-FloralWhite font-bold font-sans">
-                  M
+                <span className="text-3xl lg:text-5xl text-FloralWhite font-bold font-sans">
+                  Migrahub
                 </span>
               ) : (
                 <Image
@@ -295,7 +295,7 @@ const Sidebar = () => {
               menuItems.map((item: any, index: number) => (
                 <li
                   key={index}
-                  className={`group cursor-pointer px-3 py-2 flex items-center rounded-md transition-colors duration-200
+                  className={`group text-sm cursor-pointer px-3 py-4 flex items-center rounded-md transition-colors duration-200
                       ${
                         activeLink === item.href && !item.disabled
                           ? "bg-FloralWhite text-Indigo"

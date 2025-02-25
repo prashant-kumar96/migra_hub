@@ -99,7 +99,7 @@ export const ProgressBar = ({ className }) => {
 
   return (
     <div
-      className={`w-full px-4 sm:px-0 sm:max-w-6xl mx-auto sticky top-0 bg-white z-10 ${className}`}
+      className={`w-full px-4 sm:px-0 sm:max-w-6xl mx-auto sticky top-0 bg-transparent bg-opacity-0 z-10 ${className}`}
     >
       <div className="relative">
         {/* Base Progress Line */}
