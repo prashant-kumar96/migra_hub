@@ -99,7 +99,7 @@ const paidItems = useMemo(() => {
     return items;
   },[applicationCharges])
 
-
+console.log('paid items',paidItems)
 
 
   if (loading || isLoading) {
@@ -174,13 +174,13 @@ const paidItems = useMemo(() => {
           <div className="max-w-3xl mx-auto">
               {isStripePaymentDone && (
                   <>
-                      <Confetti
+                      {/* <Confetti
                           width={width}
                           height={height}
                           recycle={false}
                           numberOfPieces={500}
                           gravity={0.3}
-                      />
+                      /> */}
                       <div className="mb-8 text-center">
                           <div className="bg-green-100 border border-green-400 rounded-lg p-6">
                               <div className="flex items-center justify-center mb-4">
@@ -216,7 +216,7 @@ const paidItems = useMemo(() => {
                       <div className="mb-6">
                             {paidItems?.map((item:any, index:number) => (
                                 <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200">
-                                    <span className="font-medium text-gray-700">{item.name} {item.relationship && `(${item.relationship})`}</span>
+                                    <span className="font-medium text-gray-700">{item.price == '145' ? 'Primary Applicant': item.name} {item.relationship && `(${item.relationship})`}</span>
                                     <span className="text-gray-600">
                                        ${item.price}
                                     </span>

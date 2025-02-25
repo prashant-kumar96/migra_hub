@@ -82,10 +82,13 @@ const sidebarData = [
   },
 ];
 
+
+
+
 const Sidebar = () => {
   const [role, setRole] = useState(null);
   const { logout } = useAuth();
-  const [menuItems, setMenuItems] = useState<any>([]); // Type the menuItems
+  const [menuItems, setMenuItems] = useState<any>([]);
   const [token, setToken] = useState("");
   const { data: session } = useSession();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -97,9 +100,7 @@ const Sidebar = () => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const { user, isLoading, isAuthenticated } = useAuth();
   const [error, setError] = useState<string | null>(null);
-//   const [isStripePaymentDone, setIsStripePaymentDone] = useState(false); // No longer needed
   const [applicationCharges, setApplicationCharges] = useState<any>(null);
-//   const [profileCompleteStatus, setProfileCompleteStatus] = useState(""); // No longer needed
   const [loading, setLoading] = useState(false);
 
   const applicationId = user?.user?.applicationId;
@@ -107,54 +108,56 @@ const Sidebar = () => {
   const router = useRouter();
 
   // Use the context
-  const { profileCompletionStatus, isPaymentDone, appLoading, appError, refreshAppStatus } = useAppContext();
+  const {
+    profileCompletionStatus,
+    isPaymentDone,
+    appLoading,
+    appError,
+    refreshAppStatus,
+  } = useAppContext();
 
+  const getmedata = async () => {
+    if (!applicationId) {
+      return;
+    }
 
-    const getmedata = async () => {
-        if (!applicationId) {
-            return;
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await me();
+      const userId = result?.data?.user?._id;
+      const userRole = result?.data?.user?.role?.toUpperCase().trim();
+      setSharedMedata(result?.data?.user);
+
+      const charges = await getApplicationCharges(userId);
+      setApplicationCharges(charges?.data?.applicationCharges || null);
+
+      const userMenu =
+        sidebarData.find((item) => item.role === userRole)?.menu || [];
+      const updatedMenuItems = userMenu.map((item: any) => {
+        if (item.name === "Payment" || item.name === "My Application") {
+          return {
+            ...item,
+            disabled: profileCompletionStatus !== "completed",
+          };
         }
+        return item;
+      });
+      setMenuItems(updatedMenuItems);
+    } catch (error: any) {
+      console.error("Error fetching data:", error);
+      setError(error.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setLoading(true);
-        setError(null);
-
-        try {
-
-            const result = await me();
-            const userId = result?.data?.user?._id;
-            const userRole = result?.data?.user?.role?.toUpperCase().trim(); //get the role here to correctly render the menu
-            setSharedMedata(result?.data?.user);
-
-            const charges = await getApplicationCharges(userId); // You probably still need this
-            setApplicationCharges(charges?.data?.applicationCharges || null);
-
-
-            // Set menu items based on fetched data and user role:
-            const userMenu = sidebarData.find((item) => item.role === userRole)?.menu || [];
-            const updatedMenuItems = userMenu.map((item: any) => {
-                if (item.name === "Payment" || item.name === "My Application") {
-                     return { ...item, disabled: profileCompletionStatus !== "completed" };
-                }
-                return item;
-            });
-            setMenuItems(updatedMenuItems);
-
-
-        } catch (error: any) {
-            console.error("Error fetching data:", error);
-            setError(error.message || "An unexpected error occurred.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (isAuthenticated) {
-            getmedata();
-        }
-    }, [isAuthenticated, applicationId, profileCompletionStatus]); // Depend on profileCompletionStatus
-
-
+  useEffect(() => {
+    if (isAuthenticated) {
+      getmedata();
+    }
+  }, [isAuthenticated, applicationId, profileCompletionStatus]);
 
   const handleSignout = async () => {
     router.push("/logout");
@@ -183,8 +186,6 @@ const Sidebar = () => {
     };
   }, [isSidebarOpen]);
 
-
-
   useEffect(() => {
     if (localStorage.getItem("token")) {
       setToken(localStorage.getItem("token"));
@@ -211,6 +212,18 @@ const Sidebar = () => {
   }, [router.pathname]);
 
   const renderLink = (item: any) => {
+    const linkContent = (
+      <span
+        className={` px-4 py-1 font-normal uppercase tracking-wide transition-colors ${
+          activeLink === item.href
+            ? "text-Indigo"
+            : "text-gray-400 " // Add group-hover here
+        }`}
+      >
+        {item.name}
+      </span>
+    );
+
     if (item.disabled) {
       return (
         <span
@@ -222,26 +235,11 @@ const Sidebar = () => {
     } else {
       return (
         <Link href={item.href} passHref>
-          <span
-            className={`px-4 py-1 font-normal uppercase tracking-wide transition-colors ${
-              activeLink === item.href
-                ? "text-Indigo"
-                : "text-gray-400 hover:text-FloralWhite"
-            }`}
-          >
-            {item.name}
-          </span>
+          {linkContent}
         </Link>
       );
     }
   };
-
-  // if (appLoading || loading) {
-  //       return <Loader text="Loading App Data..." />;  // Or some other loading indicator
-  // }
-  //   if (appError) {
-  //   return <div>Error: {appError}</div>; // Or more sophisticated error handling
-  // }
 
   return (
     <main className="flex min-h-screen">
@@ -251,7 +249,7 @@ const Sidebar = () => {
       {isSmallScreen && (
         <button
           onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-50 text-gray-700 hover:text-gray-900"
+          className="fixed top-4 left-4 z-50 text-gray-700 hover:text-gray-900 focus:outline-none"
         >
           <FaBars size={24} />
         </button>
@@ -265,8 +263,8 @@ const Sidebar = () => {
             ? `fixed top-0 left-0 h-screen w-64 transform ${
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
               } z-40`
-            : "w-[230px] h-screen fixed left-0 top-0"
-        }`}
+            : "w-[230px] h-screen flex flex-col justify-between fixed left-0 top-0"
+        }`} // Added flex, flex-col, justify-between
       >
         <div
           className={`flex ${
@@ -297,11 +295,11 @@ const Sidebar = () => {
               menuItems.map((item: any, index: number) => (
                 <li
                   key={index}
-                  className={`cursor-pointer px-3 py-2 flex items-center
+                  className={`group cursor-pointer px-3 py-2 flex items-center rounded-md transition-colors duration-200
                       ${
                         activeLink === item.href && !item.disabled
                           ? "bg-FloralWhite text-Indigo"
-                          : "hover:bg-gray-800 text-FloralWhite"
+                          : "hover:bg-gray-800"
                       }
                      ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}
                      `}
@@ -316,21 +314,23 @@ const Sidebar = () => {
               </li>
             )}
           </ul>
+        </div>
 
-          {/* Sign Out Button */}
-          <div className="p-3 bottom-0 shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
-            {session || token ? (
-              <button
-                className="bg-FloralWhite text-Indigo border-2 border-FloralWhite p-2 rounded-md w-full flex items-center justify-center hover:bg-transparent hover:text-FloralWhite hover:scale-75"
-                onClick={handleSignout}
-              >
-                <RiLogoutCircleRLine size={20} />
-                <span className="ml-3 uppercase leading-snug tracking-wide">
-                  Sign Out
-                </span>
-              </button>
-            ) : null}
-          </div>
+        {/* Sign Out Button */}
+        <div className="p-3  shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A]">
+          {" "}
+          {/* Removed bottom-0 and sticky */}
+          {session || token ? (
+            <button
+              className="bg-FloralWhite text-Indigo border-2 border-FloralWhite p-2 rounded-md w-full flex items-center justify-center hover:bg-transparent hover:text-FloralWhite transition-all duration-200"
+              onClick={handleSignout}
+            >
+              <RiLogoutCircleRLine size={20} />
+              <span className="ml-3 uppercase leading-snug tracking-wide">
+                Sign Out
+              </span>
+            </button>
+          ) : null}
         </div>
       </div>
 

@@ -31,6 +31,7 @@ interface Props {
   destinationCountry: string;
 }
 
+
 const StepsModal: React.FC<Props> = ({
   citizenshipCountry,
   setShouldStartjourneyShow,

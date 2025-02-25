@@ -361,7 +361,7 @@ const AfterLoginLayout = <P extends WithAuthProps>(
         <MemoizedSidebar />
         <div className="flex-1 lg:ml-12">
           {/* Sticky Progress Bar */}
-          <div className="sticky top-0 z-10 bg-white">
+          <div className="sticky top-10 z-10 bg-white">
             <ProgressBar className="py-4" />
           </div>
           <main className="w-full max-w-7xl mx-auto min-h-screen p-4">
