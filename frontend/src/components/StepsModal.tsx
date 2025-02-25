@@ -87,7 +87,7 @@ const StepsModal: React.FC<Props> = ({
       destinationCountry,
       passportCountry,
       areYouApplyingFromPassportCountry: undefined,  // Initialize as undefined
-      whereWillYouApplyForYourVisa: selectedCitizenshipcountry,
+      whereWillYouApplyForYourVisa: undefined,
       haveSpouseOrProperty: undefined, // Initialize as undefined
       travelledInternationallyAndReturnedHome: undefined, // Initialize as undefined
       deniedVisaToAnyCountry: undefined, // Initialize as undefined
@@ -127,43 +127,71 @@ const StepsModal: React.FC<Props> = ({
     return country ? country.label : null; // Return country name or null if not found
   };
 
-
-    const handleNextButtonClick = () => {
-
-      if (step > 0 && step < 5)
-        setProgressBarPercentage(progressBarpercentage + 20);
-      if (step === 1) {
-        if (data?.areYouApplyingFromPassportCountry === true) {
-          showError("");
-        } else {
-          if (!data.whereWillYouApplyForYourVisa) {
-            showError("Please select where you will apply for your visa");
-            return;
-          } else {
-            showError("");
-          }
-        }
+  const handleNextButtonClick = () => {
+    // Input validation for each step:
+    if (step === 0 && !data.passportCountry) {
+        showError("Please select your passport country.");
+        return;
+    }
+    if (step === 1) {
+      if (data.areYouApplyingFromPassportCountry === undefined) {
+        showError(
+          "Please answer whether you are applying from your passport country."
+        );
+        return;
+      } else if (
+        data.areYouApplyingFromPassportCountry === false &&  // Corrected condition
+        !data.whereWillYouApplyForYourVisa?.value
+      ) {
+        showError("Please select where you will apply for your visa.");
+        return;
       }
+    }
+    if (step === 2 && data.haveSpouseOrProperty === undefined) {
+      showError(
+        "Please answer whether you have a spouse or property in your home country."
+      );
+      return;
+    }
+    if (
+      step === 3 &&
+      data.travelledInternationallyAndReturnedHome === undefined
+    ) {
+      showError(
+        "Please answer whether you have traveled internationally and returned home."
+      );
+      return;
+    }
+    if (step === 4 && data.deniedVisaToAnyCountry === undefined) {
+      showError(
+        "Please answer whether you have been denied a visa to any country."
+      );
+      return;
+    }
 
-      if (step === 4) {
+    // If validation passes, proceed with existing logic:
+    showError(""); // Clear any previous error *before* potentially changing the step
+
+    if (step >= 0 && step < 4) { // Include step 0, and still go up to (but not including) 4
+      setProgressBarPercentage((prevPercentage) => {
+          const newPercentage = prevPercentage + 20;
+          return Math.min(newPercentage, 100); // Ensure it doesn't go above 100
+        });
+      setStep((prev) => prev + 1);
+    } else if (step === 4) {
+        // step is 4, going to 5.
+        setProgressBarPercentage(100); // jump to 100%.
+        setStep(5); // set step to 5.
         setSharedState(data);
         localStorage.setItem("assessmentData", JSON.stringify(data));
-        // setRedirection(true);
         (userId || path !== "/") && saveVisaData(data);
-
-      }
-
-      if (step === 5) {
+    } else if(step ===5){
         setSharedState(data);
         localStorage.setItem("assessmentData", JSON.stringify(data));
-        // setRedirection(true);
         (userId || path !== "/") && saveVisaData(data);
-      } else if (progressBarpercentage !== 100) {
-        // setProgressBarPercentage((prev) => prev + 10);
-        setStep((prev) => prev + 1);
-      }
-    };
-
+    }
+  };
+console.log('>>where will you apply for visa', data.whereWillYouApplyForYourVisa);
 
   const handleBackButtonClick = () => {
     if (step > 0 && step <= 5) {
@@ -223,6 +251,10 @@ const StepsModal: React.FC<Props> = ({
     return country.label;
   };
 
+  const selectedDestinationcountry = countryList()
+  .getData()
+  .find((country) => country.value === destinationCountry);
+
   return (
     <div>
       <div
@@ -281,7 +313,7 @@ const StepsModal: React.FC<Props> = ({
               >
                 <ProgressBar progressBarpercentage={progressBarpercentage} />
                 <h2
-                  className={`leading-relaxed text-center font-medium text-Indigo text-2xl  text-base ${
+                  className={`leading-relaxed text-center font-medium text-Indigo text-2xl   ${
                     step === 5 ? "py-0.5" : "py-6"
                   }
                   }`}
@@ -386,11 +418,21 @@ const StepsModal: React.FC<Props> = ({
                           checked={data.areYouApplyingFromPassportCountry === false} // Explicitly check for false
                         />
                       </div>
-                      {data.areYouApplyingFromPassportCountry === false && (  // Show only when explicitly false
+                      {data.areYouApplyingFromPassportCountry === false && ( 
+                       <>   
+                       <Increased/>
+                       <p className="text-sm text-justify  p-2  px-4 tracking-wide leading-5">
+                         {" "}
+                         {ModalData[step].firstLineForNo}
+                         {ModalData[step].secondLineForNo}
+                       </p>
+                        {/* // Show only when explicitly false */}
                         <div className="bg-[#F6EFE6] rounded-xl p-4 mt-6">
+                          
                           <h2 className="leading-relaxed text-center font-medium text-Indigo text-2xl ">
                             {ModalData[step].questionForNo} ?
                           </h2>
+                          
 
                           <ReactFlagsSelect
                             selected={data.whereWillYouApplyForYourVisa?.value || ""}
@@ -402,6 +444,7 @@ const StepsModal: React.FC<Props> = ({
                             searchable
                           />
                         </div>
+                        </>
                       )}
                     </div>
                   </>
