@@ -10,228 +10,292 @@ import { useAuth } from "@/context/auth-context";
 import { getApplicationStatusDetails } from "@/api/applicationStatus";
 
 
-export const ProgressBar = ({className}) => {
-    const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-    const [currentStep, setCurrentStep] = useState<number>(1); // set initial value to 1
+export const ProgressBar = ({ className }) => {
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(1); // set initial value to 1
 
-    const [applicationStatus, setApplicationStatus] = useState<any>(null);
-    const { user } = useAuth();
-    const currentStatus = user?.user?.status
-    const applicationId = user?.user?.applicationId;
+  const [applicationStatus, setApplicationStatus] = useState<any>(null);
+  const { user } = useAuth();
+  const currentStatus = user?.user?.status;
+  const applicationId = user?.user?.applicationId;
 
-    useEffect(() => {
-        const fetchApplicationStatus = async () => {
-            if (!applicationId) return;
+  useEffect(() => {
+    const fetchApplicationStatus = async () => {
+      if (!applicationId) return;
 
-            try {
-                const response = await getApplicationStatusDetails(applicationId);
-                setApplicationStatus(response?.data?.applicationStatus);
-            } catch (error) {
-                console.error('Error fetching application status:', error);
-                setApplicationStatus(null);
-            }
-        };
-
-        fetchApplicationStatus();
-    }, [applicationId]);
-
-    useEffect(() => {
-        if (!applicationStatus) return;
-
-        const steps = [];
-        let current = 1;
-
-        if (applicationStatus?.profileCompletion == 'completed') {
-            steps.push(1);
-            current = 1;
-        }
-
-        if (applicationStatus?.status == 'In Review' || applicationStatus?.status == 'in review') {
-            steps.push(1, 2);
-            current = 2;
-        }
-
-        if (applicationStatus?.visaApplied) {
-            steps.push(1, 2, 3);
-            current = 3
-        }
-
-        if (applicationStatus?.visaApproved == 'completed' || applicationStatus?.visaApproved == 'approved') {
-            steps.push(1, 2, 3, 4);
-            current = 4;
-        }
-
-        setCompletedSteps(steps);
-        setCurrentStep(current);
-    }, [applicationStatus]);
-
-
-    const isStepActive = (step: number) => {
-        return currentStep === step;
+      try {
+        const response = await getApplicationStatusDetails(applicationId);
+        setApplicationStatus(response?.data?.applicationStatus);
+      } catch (error) {
+        console.error("Error fetching application status:", error);
+        setApplicationStatus(null);
+      }
     };
 
-    const isStepCompleted = (step: number) => {
-        return completedSteps.includes(step);
-    };
+    fetchApplicationStatus();
+  }, [applicationId]);
 
-    // Calculate the width of the progress line based on completed steps
-    const getProgressWidth = () => {
-        const lastCompletedStep = Math.max(...completedSteps, 0);
-        // Ensure the progress doesn't exceed 100%
-        const progress = Math.min(((lastCompletedStep) / 3) * 100, 100);
+  useEffect(() => {
+    if (!applicationStatus) return;
 
-        return `${progress}%`;
-    };
+    const steps = [];
+    let current = 1;
 
-    // console.log(';; completedSteps', completedSteps)
-    // console.log(';; currentStep', currentStep)
-    // console.log(';; applicationStatus', applicationStatus)
-    const getStepStatus = (step: number) => {
-        if (isStepCompleted(step)) {
-            return 'bg-lime-500 text-white';
-        }
-        if (isStepActive(step)) {
-            return 'shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] text-FloralWhite font-bold';
-        }
-        return 'bg-gray-200 text-gray-600';
-    };
+    if (applicationStatus?.profileCompletion == "completed") {
+      steps.push(1);
+      current = 1;
+    }
 
-    return (
-        <div className={`w-full max-w-6xl mx-auto ${className} `}>
-            <div className="relative">
-                {/* Base Progress Line */}
-                <div className="h-1 bg-gray-200 absolute w-full top-1/2 -translate-y-1/2 " />
+    if (
+      applicationStatus?.status == "In Review" ||
+      applicationStatus?.status == "in review"
+    ) {
+      steps.push(1, 2);
+      current = 2;
+    }
 
-                {/* Active Progress Line */}
-                <div
-                    className="h-1 absolute top-1/2 -translate-y-1/2  transition-all duration-300"
-                    style={{
-                        width: getProgressWidth(),
-                        background: 'linear-gradient(to right, #bef264, #22c55e)',
-                    }}
-                />
+    if (applicationStatus?.visaApplied) {
+      steps.push(1, 2, 3);
+      current = 3;
+    }
 
-                {/* Steps */}
-                <div className="relative  flex justify-between">
-                    {/* Complete Profile */}
-                    <div className="flex flex-col items-center">
-                        <div
-                            className={`w-8 h-8 -bottom-5 rounded-full flex items-center justify-center relative ${getStepStatus(1)}`}
-                        >
-                            {isStepCompleted(1) ? (
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            ) : (
-                                '1'
-                            )}
-                            {isStepCompleted(1) && (
-                                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-                                    <div className="w-2 h-2 bg-lime-300 rounded-full"></div>
-                                </div>
-                            )}
-                        </div>
-                        <span
-                            className={`mt-7 font-sans text-base  ${isStepCompleted(1) ? 'text-gray-600 font-bold' : isStepActive(1) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
-                        >
-                            Complete Profile
-                        </span>
-                    </div>
+    if (
+      applicationStatus?.visaApproved == "completed" ||
+      applicationStatus?.visaApproved == "approved"
+    ) {
+      steps.push(1, 2, 3, 4);
+      current = 4;
+    }
 
-                    {/* Review & Submit */}
-                    <div className="flex flex-col items-center">
-                        <div
-                            className={`w-8 h-8 -bottom-5 rounded-full flex items-center justify-center relative ${getStepStatus(2)}`}
-                        >
-                            {isStepCompleted(2) ? (
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            ) : (
-                                '2'
-                            )}
-                            {isStepCompleted(2) && (
-                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                                    <div className="w-2 h-2 bg-lime-400 rounded-full"></div>
-                                </div>
-                            )}
-                        </div>
-                        <span
-                            className={`mt-7 font-sans text-base  ${isStepCompleted(2) ? 'text-gray-600 font-bold' : isStepActive(2) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
-                        >
-                            Review & Submit
-                        </span>
-                    </div>
+    setCompletedSteps(steps);
+    setCurrentStep(current);
+  }, [applicationStatus]);
 
-                    {/* Visa Applied */}
-                    <div className="flex flex-col items-center">
-                        <div
-                            className={`w-8 h-8 -bottom-5 rounded-full flex items-center justify-center relative ${getStepStatus(3)}`}
-                        >
-                            {isStepCompleted(3) ? (
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            ) : (
-                                '3'
-                            )}
-                            {isStepCompleted(3) && (
-                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                                    <div className="w-2 h-2 bg-lime-500 rounded-full"></div>
-                                </div>
-                            )}
-                        </div>
-                        <span
-                            className={`mt-7 font-sans text-base  ${isStepCompleted(3) ? 'text-gray-600 font-bold' : isStepActive(3) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
-                        >
-                            Visa Applied
-                        </span>
-                    </div>
+  const isStepActive = (step: number) => {
+    return currentStep === step;
+  };
 
-                    {/* Completed */}
-                    <div className="flex flex-col items-center">
-                        <div
-                            className={`w-8 h-8 -bottom-5 rounded-full flex items-center justify-center relative ${getStepStatus(4)}`}
-                        >
-                            {isStepCompleted(4) ? (
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            ) : (
-                                '4'
-                            )}
-                            {isStepCompleted(4) && (
-                                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                </div>
-                            )}
-                        </div>
-                        <span
-                            className={`mt-7 font-sans text-base  ${isStepCompleted(4) ? 'text-gray-600 font-bold' : isStepActive(4) ? 'text-Indigo font-bold' : 'text-gray-600'}`}
-                        >
-                            Completed
-                        </span>
-                    </div>
+  const isStepCompleted = (step: number) => {
+    return completedSteps.includes(step);
+  };
+
+  // Calculate the width of the progress line based on completed steps
+  const getProgressWidth = () => {
+    const lastCompletedStep = Math.max(...completedSteps, 0);
+    // Ensure the progress doesn't exceed 100%
+    const progress = Math.min((lastCompletedStep / 3) * 100, 100);
+
+    return `${progress}%`;
+  };
+
+  const getStepStatus = (step: number) => {
+    if (isStepCompleted(step)) {
+      return "bg-lime-500 text-white";
+    }
+    if (isStepActive(step)) {
+      return "shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] text-FloralWhite font-bold";
+    }
+    return "bg-gray-200 text-gray-600";
+  };
+
+  return (
+    <div className={`w-full px-4 sm:px-0 sm:max-w-6xl mx-auto ${className}`}>
+      {" "}
+      {/* Added padding for small screens */}
+      <div className="relative">
+        {/* Base Progress Line */}
+        <div className="h-1 bg-gray-200 absolute w-full top-1/2 -translate-y-1/2 " />
+
+        {/* Active Progress Line */}
+        <div
+          className="h-1 absolute top-1/2 -translate-y-1/2  transition-all duration-300"
+          style={{
+            width: getProgressWidth(),
+            background: "linear-gradient(to right, #bef264, #22c55e)",
+          }}
+        />
+
+        {/* Steps */}
+        <div className="relative flex justify-between">
+          {/* Complete Profile */}
+          <div className="flex flex-col items-center w-1/4">
+            {" "}
+            {/* Added width */}
+            <div
+              className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
+                1
+              )}`}
+            >
+              {isStepCompleted(1) ? (
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <span className="text-xs sm:text-base">1</span>
+              )}{" "}
+              {/* Smaller text */}
+              {isStepCompleted(1) && (
+                <div className="absolute -bottom-1 sm:-bottom-3 left-1/2 transform -translate-x-1/2">
+                  <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-300 rounded-full"></div>
                 </div>
+              )}
             </div>
+            <span
+              className={`mt-1 sm:mt-7 text-xs sm:text-base text-center ${
+                isStepCompleted(1)
+                  ? "text-gray-600 font-bold"
+                  : isStepActive(1)
+                  ? "text-Indigo font-bold"
+                  : "text-gray-600"
+              }`}
+            >
+              Complete Profile
+            </span>
+          </div>
+
+          {/* Review & Submit */}
+          <div className="flex flex-col items-center w-1/4">
+            {" "}
+            {/* Added width */}
+            <div
+              className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
+                2
+              )}`}
+            >
+              {isStepCompleted(2) ? (
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <span className="text-xs sm:text-base">2</span>
+              )}{" "}
+              {/* Smaller text */}
+              {isStepCompleted(2) && (
+                <div className="absolute -bottom-1 sm:-bottom-1 left-1/2 transform -translate-x-1/2">
+                  <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-400 rounded-full"></div>
+                </div>
+              )}
+            </div>
+            <span
+              className={`mt-1 sm:mt-7 text-xs sm:text-base text-center ${
+                isStepCompleted(2)
+                  ? "text-gray-600 font-bold"
+                  : isStepActive(2)
+                  ? "text-Indigo font-bold"
+                  : "text-gray-600"
+              }`}
+            >
+              Review & Submit
+            </span>
+          </div>
+
+          {/* Visa Applied */}
+          <div className="flex flex-col items-center w-1/4">
+            {" "}
+            {/* Added width */}
+            <div
+              className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
+                3
+              )}`}
+            >
+              {isStepCompleted(3) ? (
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <span className="text-xs sm:text-base">3</span>
+              )}{" "}
+              {/* Smaller text */}
+              {isStepCompleted(3) && (
+                <div className="absolute -bottom-1 sm:-bottom-1 left-1/2 transform -translate-x-1/2">
+                  <div className="w-1 h-1 sm:w-2 sm:h-2 bg-lime-500 rounded-full"></div>
+                </div>
+              )}
+            </div>
+            <span
+              className={`mt-1 sm:mt-7 text-xs sm:text-base text-center ${
+                isStepCompleted(3)
+                  ? "text-gray-600 font-bold"
+                  : isStepActive(3)
+                  ? "text-Indigo font-bold"
+                  : "text-gray-600"
+              }`}
+            >
+              Visa Applied
+            </span>
+          </div>
+
+          {/* Completed */}
+          <div className="flex flex-col items-center w-1/4">
+            {" "}
+            {/* Added width */}
+            <div
+              className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center relative ${getStepStatus(
+                4
+              )}`}
+            >
+              {isStepCompleted(4) ? (
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <span className="text-xs sm:text-base">4</span>
+              )}{" "}
+              {/* Smaller text */}
+              {isStepCompleted(4) && (
+                <div className="absolute -bottom-1 sm:-bottom-1 left-1/2 transform -translate-x-1/2">
+                  <div className="w-1 h-1 sm:w-2 sm:h-2 bg-green-500 rounded-full"></div>
+                </div>
+              )}
+            </div>
+            <span
+              className={`mt-1 sm:mt-7 text-xs sm:text-base text-center ${
+                isStepCompleted(4)
+                  ? "text-gray-600 font-bold"
+                  : isStepActive(4)
+                  ? "text-Indigo font-bold"
+                  : "text-gray-600"
+              }`}
+            >
+              Completed
+            </span>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 
@@ -302,10 +366,10 @@ const AfterLoginLayout = <P extends WithAuthProps>(WrappedComponent: ComponentTy
         return (
             <div className="flex h-screen">
                 <Sidebar />
-                 <div className="flex-1 ml-12">
-                 <ProgressBar className="mt-4 " />
+                 <div className="flex-1 lg:ml-12">
+                 <ProgressBar className="mt-10 " />
                     <main className="w-full max-w-7xl mx-auto min-h-screen p-4">
-                        <div className="w-full max-w-6xl mx-auto">
+                        <div className="w-full lg:max-w-6xl mx-auto">
                          <WrappedComponent {...props} user={user} isLoading={loading} />
 
                         </div>

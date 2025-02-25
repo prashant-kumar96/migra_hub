@@ -49,7 +49,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC = () => {
-  const [visaData, setVisaData] = useState(""); // restore visaData local state
+  const [visaData, setVisaData] = useState("");
   const [primaryApplicant, setPrimaryApplicant] = useState<any>(null);
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [sharedMedata, setSharedMedata] = useAtom(meDataAtom);
@@ -77,6 +77,19 @@ const Dashboard: React.FC = () => {
   const isStepActive = (step: number) => {
     return currentStep >= step;
   };
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+    useEffect(() => {
+    if (typeof window !== "undefined") {
+      const updateScreenSize = () => {
+        setIsSmallScreen(window.innerWidth < 640);
+      };
+
+      updateScreenSize();
+      window.addEventListener("resize", updateScreenSize);
+      return () => window.removeEventListener("resize", updateScreenSize);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchApplicationStatus = async () => {
@@ -115,10 +128,7 @@ const Dashboard: React.FC = () => {
     }
   }, [userDetails?.applicationId, user]);
 
-  // const closeModal = () => {
-  //   setIsModalOpen(false);
-  //   setSelectedMemberId(null);
-  // };
+
 
   const fetchPrimaryApplicantData = async () => {
     // created a new method to get data
@@ -187,37 +197,33 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  console.log("visadata", visaData);
 
-  // console.log(';; application log', applicationStatus?.profileCompletion )
-  // return  ''
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      {/* <ProgressBar /> */}
+    <div className="p-4 md:p-6">
       {hasValidVisaData() ? (
         <>
           {applicationStatus?.applicationStatus?.profileCompletion ==
             "pending" && (
-              <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-                <h2 className="text-2xl font-bold text-Indigo mb-4">
+              <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 text-center">
+                <h2 className="text-xl md:text-2xl font-bold text-Indigo mb-2 md:mb-4">
                   Travel Visa Denial Risk
                 </h2>
-                <div className="flex items-center justify-center gap-2 mb-4">
-                  <RiSlowDownFill className="text-green-500" size={24} />
-                  <span className="text-xl font-medium text-gray-900">
+                <div className="flex items-center justify-center gap-2 mb-2 md:mb-4">
+                  <RiSlowDownFill className="text-green-500 text-lg md:text-2xl" />
+                  <span className="text-base md:text-xl font-medium text-gray-900">
                     {riskValue}
                   </span>
                 </div>
-                <p className="text-lg text-gray-600 italic mb-6">
+                <p className="text-sm md:text-lg text-gray-600 italic mb-4 md:mb-6">
                   But our service gets your risk even lower
                 </p>
                 <Link
                   href="/dashboard/profile"
-                  className="inline-flex items-center tracking-widest px-6 py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
+                  className="inline-flex items-center tracking-widest px-4 py-2 md:px-6 md:py-3 text-sm font-medium text-white shadow-lg shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-md hover:opacity-90 transition-opacity"
                 >
                   Complete Profile and Payment
                   <svg
-                    className="w-4 h-4 ml-2"
+                    className="w-3 h-3 md:w-4 md:h-4 ml-2"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -234,209 +240,79 @@ const Dashboard: React.FC = () => {
             )}
 
           {applicationStatus?.applicationStatus && (
-            <div className="bg-white rounded-lg shadow-lg  p-6 mt-8">
-              <h2 className="text-2xl font-bold text-Indigo mb-4">
-                Application Status
-              </h2>
-              <div className=" ">
-                <table className="max-w-6xl w-full bg-white border-collapse border border-gray-200 shadow-sm  sm:hidden">
-                  <thead className="bg-gray-50 text-gray-600">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-sm font-medium">
-                        Field
-                      </th>
-                      <th className="px-4 py-3 text-left text-sm font-medium">
-                        Value
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200 text-gray-800">
-                    {Object.entries(applicationStatus?.applicationStatus || {})
-                      .filter(
-                        ([key]) =>
-                          ![
-                            "_id",
-                            "__v",
-                            "createdAt",
-                            "updatedAt",
-                            "userId",
-                            "applicationId",
-                          ].includes(key)
-                      )
-                      .sort(([keyA], [keyB]) => {
-                        const order = [
-                          "riskAssessment",
-                          "profileCompletion",
-                          "payment",
-                          "documentUpload",
-                          "visaApplied",
-                          "visaStatus",
-                        ];
-                        return order.indexOf(keyA) - order.indexOf(keyB);
-                      })
-                      .map(([key, value]) => {
-                        let displayValue = value;
-                        if (typeof value === "boolean") {
-                          displayValue = value ? "Yes" : "No";
-                        }
-                        const title = key.replace(/([A-Z])/g, " $1").trim();
-                        const capitalizedTitle =
-                          title.charAt(0).toUpperCase() + title.slice(1);
-                        const capitalizedDisplayValue =
-                          typeof displayValue === "string"
-                            ? displayValue.charAt(0).toUpperCase() +
-                            displayValue.slice(1)
-                            : displayValue;
-                        return (
-                          <tr key={key} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 text-sm font-semibold text-gray-800">
-                              {capitalizedTitle}
-                            </td>
-                            <td
-                              className={` ${displayValue === "pending"
-                                  ? "text-yellow-500"
-                                  : displayValue === "completed" ||
-                                    displayValue === "Yes" ||
-                                    displayValue == "approved"
-                                    ? "text-green-600"
-                                    : ""
-                                } px-4 py-3 text-sm text-gray-600`}
-                            >
-                              {capitalizedDisplayValue}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    {/* <tr className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-semibold text-gray-800">
-                      Relationship
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {userDetails?.isPrimaryApplicant
-                        ? "Primary Applicant"
-                        : "Family Member"}
-                    </td>
-                  </tr> */}
-                  </tbody>
-                </table>
-                <div className="relative overflow-auto shadow-md sm:rounded-lg w-full max-w-6xl  ">
+           <div className="bg-white rounded-lg shadow-lg p-4 md:p-6 mt-4 md:mt-8">
+           <h2 className="text-xl md:text-2xl font-bold text-Indigo mb-2 md:mb-4">
+             Application Status
+           </h2>
+           <div className="flex flex-col">
+             {Object.entries(applicationStatus?.applicationStatus || {})
+               .filter(
+                 ([key]) =>
+                   ![
+                     "_id",
+                     "__v",
+                     "createdAt",
+                     "updatedAt",
+                     "status",
+                     "reviewSubmit",
+                     "userId",
+                     "applicationId",
+                   ].includes(key)
+               )
+               .sort(([keyA], [keyB]) => {
+                 const order = [
+                   "riskAssessment",
+                   "profileCompletion",
+                   "payment",
+                   "documentUpload",
+                   "assignedCaseManager",
+                   "visaApplied",
+                   "visaStatus",
+                 ];
+                 return order.indexOf(keyA) - order.indexOf(keyB);
+               })
+               .map(([key, value]) => {
+                 const title = key.replace(/([A-Z])/g, " $1").trim();
+                 const capitalizedTitle =
+                   title.charAt(0).toUpperCase() + title.slice(1);
+                 let displayValue = value;
+                 if (typeof value === "boolean") {
+                   displayValue = value ? "Yes" : "No";
+                 }
+                 const capitalizedDisplayValue =
+                   typeof displayValue === "string"
+                     ? displayValue.charAt(0).toUpperCase() +
+                     displayValue.slice(1)
+                     : displayValue;
 
-                  <table className="text-left rtl:text-right ">
-                    <thead className="bg-gray-100  text-gray-600">
-                      <tr>
-                        {Object.entries(
-                          applicationStatus?.applicationStatus || {}
-                        )
-                          .filter(
-                            ([key]) =>
-                              ![
-                                "_id",
-                                "__v",
-                                "createdAt",
-                                "updatedAt",
-                                "status",
-                                "reviewSubmit",
-                                "userId",
-                                "applicationId",
-                              ].includes(key)
-                          )
-                          .sort(([keyA], [keyB]) => {
-                            const order = [
-                              "riskAssessment",
-                              "profileCompletion",
-                              "payment",
-                              "documentUpload",
-                              "assignedCaseManager",
-                              "visaApplied",
-                              "visaStatus",
-                            ];
-                            return order.indexOf(keyA) - order.indexOf(keyB);
-                          })
-                          .map(([key]) => {
-                            const title = key.replace(/([A-Z])/g, " $1").trim();
-                            const capitalizedTitle =
-                              title.charAt(0).toUpperCase() + title.slice(1);
-                            return (
-                              <th
-                                key={key}
-                                className="px-4 py-3  text-base text-Indigo  whitespace-nowrap font-medium"
-                              >
-                                {capitalizedTitle}
-                              </th>
-                            );
-                          })}
-                        {/* <th className="px-4 py-3 text-left text-sm font-medium">
-                      Relationship
-                    </th> */}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-x divide-gray-200 text-gray-800">
-                      <tr className="hover:bg-gray-50">
-                        {Object.entries(
-                          applicationStatus?.applicationStatus || {}
-                        )
-                          .filter(
-                            ([key]) =>
-                              ![
-                                "_id",
-                                "__v",
-                                "createdAt",
-                                "updatedAt",
-                                "userId",
-                                "status",
-                                "reviewSubmit",
-                                "applicationId",
-                              ].includes(key)
-                          )
-                          .sort(([keyA], [keyB]) => {
-                            const order = [
-                              "riskAssessment",
-                              "profileCompletion",
-                              "payment",
-                              "documentUpload",
-                              "assignedCaseManager",
-                              "visaApplied",
-                              "visaStatus",
-                            ];
-                            return order.indexOf(keyA) - order.indexOf(keyB);
-                          })
-                          .map(([, value]) => {
-                            let displayValue = value;
-                            if (typeof value === "boolean") {
-                              displayValue = value ? "Yes" : "No";
-                            }
-                            const capitalizedDisplayValue =
-                              typeof displayValue === "string"
-                                ? displayValue.charAt(0).toUpperCase() +
-                                displayValue.slice(1)
-                                : displayValue;
-                            return (
-                              <td
-                                key={value}
-                                className={` ${displayValue === "pending"
-                                    ? "text-yellow-500"
-                                    : displayValue === "completed" ||
-                                      displayValue === "Yes" ||
-                                      displayValue == "approved"
-                                      ? "text-lime-500"
-                                      : ""
-                                  } px-4 py-3 text-base text-gray-600`}
-                              >
-                                {capitalizedDisplayValue}
-                              </td>
-                            );
-                          })}
-                        {/* <td className="px-4 py-3 text-sm text-gray-600">
-                      {userDetails?.isPrimaryApplicant
-                        ? "Primary Applicant"
-                        : "Family Member"}
-                    </td> */}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+                 return (
+                   <div
+                     key={key}
+                     className={`flex ${isSmallScreen ? 'flex-col' : 'flex-row'}  items-start border-b py-2`}  /* Added border and padding */
+                   >
+                     <div
+                       className={`px-2 py-2 md:px-4 md:py-3 text-xs md:text-base font-medium ${isSmallScreen ? 'text-Indigo' : 'text-gray-600'} w-1/2 md:w-1/3`}
+                     >
+                       {capitalizedTitle}
+                     </div>
+                     <div
+                       className={`px-2 py-2 md:px-4 md:py-3 text-xs md:text-base text-gray-600 w-1/2 md:w-2/3 ${
+                         displayValue === "pending"
+                           ? "text-yellow-500"
+                           : displayValue === "completed" ||
+                             displayValue === "Yes" ||
+                             displayValue == "approved"
+                           ? "text-lime-500"
+                           : ""
+                       }`}
+                     >
+                       {capitalizedDisplayValue}
+                     </div>
+                   </div>
+                 );
+               })}
+           </div>
+         </div>
           )}
         </>
       ) : (
