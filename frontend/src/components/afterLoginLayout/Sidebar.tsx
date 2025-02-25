@@ -195,7 +195,7 @@ const Sidebar = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const updateScreenSize = () => {
-        setIsSmallScreen(window.innerWidth < 640);
+        setIsSmallScreen(window.innerWidth < 940);
         if (window.innerWidth >= 640) {
           setIsSidebarOpen(false); // Keep sidebar closed on larger screens
         }
@@ -260,10 +260,10 @@ const Sidebar = () => {
         ref={sidebarRef}
         className={`bg-gradient-to-r from-[#333366] to-[#2C415A] transition-transform duration-300 ease-in-out ${
           isSmallScreen
-            ? `fixed top-0 left-0 h-screen w-64 transform ${
+            ? `fixed top-0 left-0 h-full w-64 transform ${
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
               } z-40`
-            : "w-[230px] h-screen flex flex-col justify-between fixed left-0 top-0"
+            : "w-[230px] h-full flex flex-col justify-between fixed left-0 top-0"
         }`} // Added flex, flex-col, justify-between
       >
         <div
