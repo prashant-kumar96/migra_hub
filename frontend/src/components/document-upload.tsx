@@ -239,7 +239,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({ userId, applicationId }
 
     if (!paymentStatus?.status || primaryApplicantDetails?.applicationStatus?.payment === 'pending') {
         return (
-            <span className="text-xl text-white bg-red-500 rounded-md shadow-lg px-6 py-3 flex items-center justify-center h-full w-full mx-auto border border-red-700">
+            <span className="text-xl text-white  fixed mt-20 bg-red-500 rounded-md shadow-lg px-6 py-3 flex items-center justify-center h-20 w mx-auto border border-red-700">
                 Please Complete Payment First
             </span>
         );
