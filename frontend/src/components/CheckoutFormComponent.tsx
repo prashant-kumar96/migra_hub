@@ -96,13 +96,13 @@ export default function CheckoutForm({ items }: Props) {
       <div className="space-y-4 mb-8">
         {items.map(
           (item, index) =>
-            item.relationship === "Primary" && (
+            (item.relationship === "Primary" || item.price == 145) && (
               <div
                 key={index}
                 className="flex justify-between items-center py-3 border-b border-gray-200"
               >
                 <span className="font-medium text-gray-700">
-                  Primary Applicant Application ( {item.name} )
+                  Primary Applicant Application { item.name ? (item.name) : ''} 
                 </span>
                 <span className="text-gray-900 font-semibold">
                   ${item.price}
@@ -113,7 +113,7 @@ export default function CheckoutForm({ items }: Props) {
 
         {items.map(
           (item, index) =>
-            item.relationship !== "Primary" && (
+            (item.relationship   || item.price != 145) && (
               <div
                 key={index}
                 className="flex justify-between items-center py-3 border-b border-gray-200"

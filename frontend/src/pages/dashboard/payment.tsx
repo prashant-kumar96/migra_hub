@@ -165,7 +165,7 @@ console.log('paid items',paidItems)
 
 
   console.log(';; items',applicationCharges)
-
+  console.log(';; unpaidItems',unpaidItems)
  
 
   return (
@@ -216,7 +216,7 @@ console.log('paid items',paidItems)
                       <div className="mb-6">
                             {paidItems?.map((item:any, index:number) => (
                                 <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200">
-                                    <span className="font-medium text-gray-700">{item.price == '145' ? 'Primary Applicant': item.name} {item.relationship && `(${item.relationship})`}</span>
+                                    <span className="font-medium text-gray-700">{item.price === '145' ? 'Primary Applicant': item.name} {item.relationship && `(${item.relationship})`}</span>
                                     <span className="text-gray-600">
                                        ${item.price}
                                     </span>
