@@ -210,6 +210,8 @@ const LoginPage = () => {
             />
           </div>
 
+          
+
           <div className="relative mb-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
@@ -289,6 +291,17 @@ const LoginPage = () => {
                 <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>
               )}
             </div>
+
+            <p className="text-sm text-center my-10 text-gray-500 mt-4">
+            By signing up, I agree to Migrahub
+            <Link href="/terms-of-use" className="text-indigo-600 hover:underline ml-1">
+                Terms of Use
+            </Link>
+            &nbsp;and
+            <Link href="/privacy-policy" className="text-indigo-600 hover:underline ml-1">
+              Privacy Policy
+            </Link>.
+          </p>
 
             {showIndexPage && (
               <Link
