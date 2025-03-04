@@ -203,7 +203,7 @@ const TravelPlan = () => {
                   htmlFor="countries"
                   className="block mb-2 text-lg font-medium text-Indigo "
                 >
-                  Citizenship
+                  {/* Citizenship */}
                 </label>
                 <ReactFlagsSelect
                   selected={citizenshipCountry}

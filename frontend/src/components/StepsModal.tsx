@@ -44,6 +44,9 @@ const StepsModal: React.FC<Props> = ({
     setShouldStartjourneyShow(false);
   };
 
+  console.log(';; destination country',destinationCountry)
+  console.log(';; citizenship country',citizenshipCountry)
+
   useEffect(() => {
     const disableScroll = () => {
       document.body.style.overflow = "hidden";
@@ -79,7 +82,7 @@ const StepsModal: React.FC<Props> = ({
   console.log("step", step);
   const selectedCitizenshipcountry = countryList()
     .getData()
-    .find((country) => country.value === citizenshipCountry);
+    .find((country) => country.value === citizenshipCountry?.value);
 
 
     const [data, setData] = useState({
@@ -92,6 +95,8 @@ const StepsModal: React.FC<Props> = ({
       travelledInternationallyAndReturnedHome: undefined, // Initialize as undefined
       deniedVisaToAnyCountry: undefined, // Initialize as undefined
     });
+
+    console.log(';; state data',data)
 
 
   const saveVisaData = async (data: any) => {
@@ -396,9 +401,9 @@ console.log('>>where will you apply for visa', data.whereWillYouApplyForYourVisa
                             <p>
                               We will show you the earliest time you should plan
                               to travel, based on{" "}
-                              {selectedDestinationcountry.label} visa
+                              {selectedDestinationcountry?.label} visa
                               appointment wait time data for{" "}
-                              {selectedCitizenshipcountry.label} , to help
+                              {selectedCitizenshipcountry?.label} , to help
                               prevent you from missing your trip
                             </p>
                           </p>

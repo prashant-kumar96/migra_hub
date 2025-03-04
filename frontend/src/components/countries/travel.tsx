@@ -178,7 +178,7 @@ const Travel = () => {
                   {error.citizenshipCountryError}
                 </p>
               </div>
-              <div>
+              <div> 
                 <label
                   htmlFor="countries"
                   className="block mb-2  font-medium text-Indigo  text-[17px]"
@@ -210,12 +210,12 @@ const Travel = () => {
         {shouldStartjourneyShow && (
           <StepsModal
             setShouldStartjourneyShow={setShouldStartjourneyShow}
-            citizenshipCountry={citizenshipCountry}
+            citizenshipCountry={citizenshipCountry?.value}
             setCitizenshipCountry={setCitizenshipCountry}
             onSelectCitizenShipCountry={onSelectCitizenShipCountry}
             countryCodes={countriesCodes}
             onModalClose={() => console.log('Modal closed')}
-            destinationCountry={destinationCountry}
+            destinationCountry={destinationCountry?.value}
           />
         )}
       </div>
