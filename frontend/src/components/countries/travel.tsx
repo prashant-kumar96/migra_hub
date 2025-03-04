@@ -214,7 +214,7 @@ const Travel = () => {
             setCitizenshipCountry={setCitizenshipCountry}
             onSelectCitizenShipCountry={onSelectCitizenShipCountry}
             countryCodes={countriesCodes}
-            onModalClose={() => console.log('Modal closed')}
+            // onModalClose={() => console.log('Modal closed')}
             destinationCountry={destinationCountry?.value}
           />
         )}

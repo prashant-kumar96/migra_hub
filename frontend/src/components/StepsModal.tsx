@@ -39,8 +39,10 @@ const StepsModal: React.FC<Props> = ({
   countryCodes,
   destinationCountry,
 }) => {
+
+
   const handleCloseModal = () => {
-    onModalClose();
+    // onModalClose();
     setShouldStartjourneyShow(false);
   };
 
@@ -196,7 +198,8 @@ const StepsModal: React.FC<Props> = ({
         (userId || path !== "/") && saveVisaData(data);
     }
   };
-console.log('>>where will you apply for visa', data.whereWillYouApplyForYourVisa);
+
+  console.log('>>where will you apply for visa', data.whereWillYouApplyForYourVisa);
 
   const handleBackButtonClick = () => {
     if (step > 0 && step <= 5) {
