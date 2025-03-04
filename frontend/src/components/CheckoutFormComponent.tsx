@@ -22,6 +22,13 @@ export default function CheckoutForm({ items }: Props) {
   const handleCheckout = async () => {
     setLoading(true);
     const stripe = await stripePromise;
+
+    if (!stripe) {
+      console.error("Stripe.js failed to load");
+      setLoading(false);
+      return; // Prevent further execution if Stripe.js didn't load
+    }
+
     console.log("items", items);
     // return;
     try {
@@ -37,25 +44,25 @@ export default function CheckoutForm({ items }: Props) {
       if (!response.ok) {
         const errorData = await response.json();
         console.error("Error creating checkout session:", errorData);
-        throw new Error(
-          errorData.message || "Failed to create checkout session"
-        );
+        console.log(errorData.error || 'Failed to connect with the server. Please try again later.'); //user friendly message
+        return;  // Exit the function to prevent further execution on error
       }
 
       const session = await response.json();
 
       // Redirect to Stripe Checkout
-      const result = await stripe?.redirectToCheckout({
+      const result = await stripe.redirectToCheckout({  // Removed the question mark
         sessionId: session.id,
       });
       console.log("result of stripe payment", result);
-      if (result?.error) {
+      if (result.error) {
         console.error(result.error.message);
-        throw new Error(result.error.message);
+        alert(result.error.message); //show error message
+        // No need to `throw` here, alert is sufficient, and we return below
       }
     } catch (error: any) {
       console.error("Error during checkout:", error);
-      // Handle error here
+      alert("An unexpected error occurred. Please try again."); // Handle other errors
     } finally {
       setLoading(false);
     }
@@ -65,6 +72,10 @@ export default function CheckoutForm({ items }: Props) {
     return items.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  // The following useMemo calls are probably not necessary and could add
+  // overhead, especially if `items` changes frequently.  Simple calculations
+  // within the render function are often fine.  I've left them in, but consider
+  // removing them unless you have a specific performance reason to keep them.
   const primaryApplicantPrice = useMemo(() => {
     const primaryApplicantItem = items.find(
       (item) => item.name === "Visa Application"
@@ -102,7 +113,7 @@ export default function CheckoutForm({ items }: Props) {
                 className="flex justify-between items-center py-3 border-b border-gray-200"
               >
                 <span className="font-medium text-gray-700">
-                  Primary Applicant Application { item.name ? (item.name) : ''} 
+                  Primary Applicant Application {item.name ? (item.name) : ''}
                 </span>
                 <span className="text-gray-900 font-semibold">
                   ${item.price}
@@ -113,7 +124,7 @@ export default function CheckoutForm({ items }: Props) {
 
         {items.map(
           (item, index) =>
-            (item.relationship   || item.price != 145) && (
+            (item.relationship || item.price != 145) && (
               <div
                 key={index}
                 className="flex justify-between items-center py-3 border-b border-gray-200"

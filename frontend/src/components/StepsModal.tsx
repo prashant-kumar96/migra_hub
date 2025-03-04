@@ -42,8 +42,8 @@ const StepsModal: React.FC<Props> = ({
 
 
   const handleCloseModal = () => {
-    // onModalClose();
-    setShouldStartjourneyShow(false);
+    onModalClose();
+    // setShouldStartjourneyShow(false);
   };
 
   console.log(';; destination country',destinationCountry)
@@ -101,7 +101,7 @@ const StepsModal: React.FC<Props> = ({
     console.log(';; state data',data)
 
 
-  const saveVisaData = async (data: any) => {
+  const saveVisaData = async (data: any,step) => {
     // Add userId to the data object
     const visaDataWithUserId = { ...data, userId };
     try {
@@ -109,7 +109,7 @@ const StepsModal: React.FC<Props> = ({
 
       if (response.status === 200) {
         setRedirection(true);
-        handleCloseModal();
+        // handleCloseModal();
       } else {
         console.error(
           "Error saving data:",
@@ -120,7 +120,7 @@ const StepsModal: React.FC<Props> = ({
       console.error("Error saving data:", error.message || error);
     } finally {
       // Ensure modal closes after the API call, whether it succeeds or fails
-      handleCloseModal();
+      // handleCloseModal();
     }
   };
 
@@ -195,7 +195,7 @@ const StepsModal: React.FC<Props> = ({
     } else if(step ===5){
         setSharedState(data);
         localStorage.setItem("assessmentData", JSON.stringify(data));
-        (userId || path !== "/") && saveVisaData(data);
+        (userId || path !== "/") && saveVisaData(data, step);
     }
   };
 

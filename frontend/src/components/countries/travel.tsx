@@ -36,6 +36,10 @@ const Travel = () => {
     }
   }, [selectedCountry]);
 
+  const handleModalClose = () => {
+    setShouldStartjourneyShow(false);
+  };
+
 
   
   const [shouldStartjourneyShow, setShouldStartjourneyShow] = useState(false);
@@ -207,6 +211,7 @@ const Travel = () => {
             </div>
           </div>
         </div>
+        
         {shouldStartjourneyShow && (
           <StepsModal
             setShouldStartjourneyShow={setShouldStartjourneyShow}
@@ -214,11 +219,12 @@ const Travel = () => {
             setCitizenshipCountry={setCitizenshipCountry}
             onSelectCitizenShipCountry={onSelectCitizenShipCountry}
             countryCodes={countriesCodes}
-            // onModalClose={() => console.log('Modal closed')}
+            onModalClose={handleModalClose}
             destinationCountry={destinationCountry?.value}
           />
         )}
       </div>
+
       {/* <div className="inline-flex w-[360px] items-center justify-center p-2 rounded-xl bg-transparent text-FloralWhite shadow-lg shadow-blue-gray-500/40 shadow-md mt-3 ml-8 space-x-3">
         <span className="text-[18px] text-Indigo">Get in Touch: </span>
         <IoLogoWhatsapp className="text-[#33CC66]" size={30} />

@@ -40,6 +40,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 app.post("/create-checkout-session", async (req, res) => {
   const { items } = req.body;
+  console.log("req body", req.body);
   console.log("items", items);
   try {
     const session = await stripe.checkout.sessions.create({
@@ -72,7 +73,7 @@ app.post("/retrieve-session", async (req, res) => {
 
   console.log("retrieve-session is run ");
   console.log("session Id : ", sessionId);
-
+  console.log('user id',userId)
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     console.log(session);
