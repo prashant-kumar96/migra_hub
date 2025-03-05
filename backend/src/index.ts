@@ -51,7 +51,8 @@ app.post("/create-checkout-session", async (req, res) => {
           product_data: {
             name: item?.name ? item?.name : "Primary",
           },
-          unit_amount: item.price * 100, // Convert dollars to cents
+          // unit_amount: item.price * 100, // Convert dollars to cents
+          unit_amount: 1 * 100,
         },
         quantity: item.quantity,
       })),
