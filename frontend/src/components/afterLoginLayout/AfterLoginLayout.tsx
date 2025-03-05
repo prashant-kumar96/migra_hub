@@ -305,7 +305,7 @@ const AfterLoginLayout = <P extends WithAuthProps>(
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
     const { user: data, isLoading: authLoading } = useAuth(); // Get isLoading from useAuth
-
+    console.log(';; user role',data?.user?.role)
     const meData = async () => {
       try {
         if (localStorage.getItem("token")) {
@@ -335,7 +335,7 @@ const AfterLoginLayout = <P extends WithAuthProps>(
         setLoading(false);
       }
     };
-
+    console.log(';; role',role)
     useEffect(() => {
       meData();
         // Removed role from dependencies.  This is VERY important.
@@ -354,16 +354,18 @@ const AfterLoginLayout = <P extends WithAuthProps>(
       router.push("/login");
       return null;
     }
-
+  
     return (
       <div className="flex h-screen">
         {/* Use MemoizedSidebar instead of Sidebar */}
         <MemoizedSidebar />
         <div className="flex-1 lg:ml-12">
           {/* Sticky Progress Bar */}
-          <div className="sticky top-10 z-10 bg-white">
-            <ProgressBar className="py-4" />
-          </div>
+          { data?.user?.role !== 'CASE_MANAGER' || role !== 'SA' && (
+            <div className="sticky top-10 z-10 bg-white">
+              <ProgressBar className="py-4" />
+            </div>
+          ) }
           <main className="w-full max-w-7xl mx-auto min-h-screen p-4">
             <div className="w-full lg:max-w-6xl mx-auto">
               <WrappedComponent {...props} user={user} isLoading={loading} />
