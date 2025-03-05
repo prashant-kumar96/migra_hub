@@ -38,6 +38,7 @@ const options = [
   { code: "hi", label: "Hindi" },
   { code: "zh", label: "Chinese" },
 ];
+
 const PersonalInfo = ({
   userId,
   userEmail,
@@ -612,7 +613,7 @@ const PersonalInfo = ({
             placeholder="John"
             errors={errors.first_name}
           />
-          <Input
+          {/* <Input
             label="Middle Name"
             type="text"
             id="middle_name"
@@ -630,7 +631,7 @@ const PersonalInfo = ({
             }}
             placeholder="Singh"
             errors={errors.middle_name}
-          />
+          /> */}
           <Input
             label="Last Name"
             type="text"
@@ -960,7 +961,7 @@ const PersonalInfo = ({
             className="ms-2 text-base font-medium text-gray-500"
           >
             I agree with the{" "}
-            <a href="#" className="text-blue-600 hover:underline">
+            <a href="/dashboard/profile/terms-of-service" className="text-blue-600 hover:underline">
               terms and conditions
             </a>
             .

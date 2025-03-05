@@ -44,7 +44,7 @@ const EditPersonalInfo = ({
   } = useForm({
     defaultValues: {
       first_name: "",
-      middle_name: "",
+      // middle_name: "",
       last_name: "",
       email: "",
       dob: "",
@@ -183,7 +183,7 @@ const EditPersonalInfo = ({
     if (personalData) {
       reset({
         first_name: personalData?.first_name || "",
-        middle_name: personalData?.middle_name || "",
+        // middle_name: personalData?.middle_name || "",
         last_name: personalData?.last_name || "",
         email: personalData?.email || "",
         dob: moment(personalData?.dob).format("YYYY-MM-DD"),
@@ -234,7 +234,7 @@ const EditPersonalInfo = ({
                 register={register}
                 readOnly={true}
               />
-              <Input
+              {/* <Input
                 label="Middle Name"
                 type="text"
                 id="middle_name"
@@ -242,7 +242,7 @@ const EditPersonalInfo = ({
                 // onChange={handleInputChange}
                 register={register}
                 placeholder="Singh"
-              />
+              /> */}
               <Input
                 label="Last Name"
                 type="text"

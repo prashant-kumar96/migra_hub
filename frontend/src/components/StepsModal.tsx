@@ -613,7 +613,7 @@ const StepsModal: React.FC<Props> = ({
                   </>
                 )}
 
-                {step === 5 && <SignUpModal />}
+                {step === 5 && <SignUpModal onBackClick={handleBackButtonClick} />}
               </div>
 
               <div className="flex p-1.5 bg-indigo-50 w-fit m-auto items-center gap-2 text-gray-900 mb-4 rounded text-base">
@@ -631,7 +631,7 @@ const StepsModal: React.FC<Props> = ({
 
               <div
                 className={`flex items-center  ${
-                  step === 5 ? "md:p-1 md:px-5" : "p-4 md:p-5"
+                  step === 5 ? "hidden  md:p-1 md:px-5" : "p-4 md:p-5"
                 }
                 border-t border-gray-200 rounded-b`}
               >
@@ -646,7 +646,7 @@ const StepsModal: React.FC<Props> = ({
                 <button
                   data-modal-hide="default-modal"
                   type="button"
-                  className="py-2.5 px-5 ms-3 text-base font-medium text-FloralWhite tracking-wide focus:outline-none shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-lg border border-gray-200 focus:z-10 focus:ring-4 focus:ring-gray-100 w-1/2"
+                  className={` ${step === 5 ? 'hidden' : ''} py-2.5 px-5 ms-3 text-base font-medium text-FloralWhite tracking-wide focus:outline-none shadow-blue-gray-500/40 bg-gradient-to-r from-[#333366] to-[#2C415A] rounded-lg border border-gray-200 focus:z-10 focus:ring-4 focus:ring-gray-100 w-1/2`}
                   onClick={handleNextButtonClick}
                 >
                   Next

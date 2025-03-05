@@ -43,7 +43,7 @@ const GoogleLoginButton = ({ onSignIn, onSignOut, session, disabled }) => {
   );
 };
 
-const SignUpModal = () => {
+const SignUpModal = ({onBackClick}) => {
   const router = useRouter();
   const [sharedState] = useAtom(visaDataAtom);
   const { data: session, status } = useSession();
@@ -361,6 +361,15 @@ const SignUpModal = () => {
             </div> */}
 
             <div className="flex items-center justify-between mt-6">
+            <button
+            onClick={onBackClick}
+                // type="submit"
+                disabled={authState.isLoading}
+                className="bg-indigo-900 text-white py-2 px-6 rounded-md disabled:opacity-50 disabled:bg-gray-100"
+              >
+                Back
+              </button>
+
               <button
                 type="submit"
                 disabled={authState.isLoading}
